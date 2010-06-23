@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<project default="compile" name="Compile VisiGraph">
+    <target name="compile" >
+    	<tstamp/>
+        <jar destfile="jar/VisiGraph (${DSTAMP}${TSTAMP}).jar" filesetmanifest="mergewithoutmain">
+            <manifest>
+                <attribute name="Main-Class" value="edu.belmont.mth.visigraph.Main"/>
+                <attribute name="Class-Path" value="."/>
+            </manifest>
+            <fileset dir="bin"/>
+        </jar>
+    </target>
+</project>
