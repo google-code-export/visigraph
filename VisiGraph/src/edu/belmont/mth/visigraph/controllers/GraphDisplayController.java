@@ -14,6 +14,7 @@ import java.util.TreeSet;
 import java.util.Vector;
 import java.util.Map.Entry;
 import javax.swing.*;
+import javax.swing.border.*;
 import edu.belmont.mth.visigraph.gui.*;
 import edu.belmont.mth.visigraph.models.*;
 import edu.belmont.mth.visigraph.models.functions.*;
@@ -34,7 +35,7 @@ public class GraphDisplayController extends JPanel
 	
 	protected Graph										graph;
 	protected Tool										tool;
-	protected JPanel									barPanel;
+	protected JPanel									toolbarPanel;
 	protected JToolBar									toolBar;
 	protected JButton									pointerToolButton;
 	protected JButton									vertexToolButton;
@@ -42,6 +43,7 @@ public class GraphDisplayController extends JPanel
 	protected JButton									captionToolButton;
 	protected JButton									cutToolButton;
 	protected JButton									paintToolButton;
+	protected JPanel									nonToolbarPanel;
 	protected JToolBar									arrangeBar;
 	protected JButton									arrangeCircleButton;
 	protected JButton									arrangeGridButton;
@@ -67,6 +69,7 @@ public class GraphDisplayController extends JPanel
 	protected JToolBar									functionBar;
 	protected JButton									oneTimeFunctionsButton;
 	protected JButton									dynamicFunctionsButton;
+	protected JPanel									viewportPanel;
 	protected JComponent								viewport;
 	
 	protected JPopupMenu								popupMenu;
@@ -189,13 +192,17 @@ public class GraphDisplayController extends JPanel
 		// Resources
 		ResourceBundle imageIcons = ResourceBundle.getBundle("edu.belmont.mth.visigraph.resources.ImageIconBundle");
 		
-		// Bar panel
-		barPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
-		add(barPanel, BorderLayout.PAGE_START);
+		// Toolbar panel
+		toolbarPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
+		toolbarPanel.setMaximumSize(new Dimension(Integer.MAX_VALUE, 24));
+		//toolbarPanel.setBorder(new EmptyBorder(-5,-5,-2,-5));
 		
 		// Tool Bar
 		toolBar = new JToolBar();
-		barPanel.add(toolBar);
+		toolBar.setOrientation(SwingConstants.VERTICAL);
+		toolBar.setFloatable(false);
+		toolbarPanel.add(toolBar);
+		add(toolbarPanel, BorderLayout.WEST);
 		
 		// Tool buttons
 		pointerToolButton = new JButton((ImageIcon) imageIcons.getObject("pointer_tool_icon"));
@@ -292,9 +299,14 @@ public class GraphDisplayController extends JPanel
 		
 		setTool(Tool.POINTER_TOOL);
 		
+		// Non-Toolbar panel
+		nonToolbarPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
+		nonToolbarPanel.setMaximumSize(new Dimension(Integer.MAX_VALUE, 32));
+		add(nonToolbarPanel, BorderLayout.NORTH);
+		
 		// Arrange Bar
 		arrangeBar = new JToolBar();
-		barPanel.add(arrangeBar);
+		nonToolbarPanel.add(arrangeBar);
 		
 		// Arrange buttons
 		arrangeCircleButton = new JButton((ImageIcon) imageIcons.getObject("arrange_circle_icon"));
@@ -473,7 +485,7 @@ public class GraphDisplayController extends JPanel
 		
 		// View Bar
 		viewBar = new JToolBar();
-		barPanel.add(viewBar);
+		nonToolbarPanel.add(viewBar);
 		
 		// View buttons
 		showVertexLabelsButton = new JButton((ImageIcon) imageIcons.getObject("show_vertex_labels_icon"));
@@ -530,7 +542,7 @@ public class GraphDisplayController extends JPanel
 		
 		// Zoom Bar
 		zoomBar = new JToolBar();
-		barPanel.add(zoomBar);
+		nonToolbarPanel.add(zoomBar);
 		
 		// Zoom buttons
 		zoomGraphButton = new JButton((ImageIcon) imageIcons.getObject("zoom_graph_icon"));
@@ -593,7 +605,7 @@ public class GraphDisplayController extends JPanel
 		
 		// Function Bar
 		functionBar = new JToolBar();
-		barPanel.add(functionBar);
+		nonToolbarPanel.add(functionBar);
 		
 		// Zoom buttons
 		oneTimeFunctionsButton = new JButton((ImageIcon) imageIcons.getObject("one_time_functions_icon"));
@@ -625,6 +637,11 @@ public class GraphDisplayController extends JPanel
 		functionsToBeRun = new TreeSet<AbstractFunction>();
 		
 		refreshFunctionMenus();
+		
+		// Viewport panel
+		viewportPanel = new JPanel(new BorderLayout());
+		viewportPanel.setBorder(new BevelBorder(BevelBorder.LOWERED));
+		add(viewportPanel, BorderLayout.CENTER);
 		
 		// Viewport
 		viewport = new JComponent()
@@ -694,7 +711,7 @@ public class GraphDisplayController extends JPanel
 		isMouseDownOnCanvas = false;
 		currentMousePoint = new Point(0, 0);
 		pastMousePoint = new Point(0, 0);
-		add(viewport, BorderLayout.CENTER);
+		viewportPanel.add(viewport, BorderLayout.CENTER);
 		
 		// PopupMenu
 		popupMenu = new JPopupMenu();
@@ -873,8 +890,8 @@ public class GraphDisplayController extends JPanel
 		
 		// StatusBar
 		statusBar = new JPanel(new FlowLayout(FlowLayout.LEFT));
-		
-		add(statusBar, BorderLayout.PAGE_END);
+		statusBar.setMaximumSize(new Dimension(Integer.MAX_VALUE, 12));
+		add(statusBar, BorderLayout.SOUTH);
 	}
 	
 	public void initializeFunctions()
