@@ -1,0 +1,268 @@
+/**
+ * ObservableList.java
+ */
+package edu.belmont.mth.visigraph.models;
+
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Iterator;
+import java.util.List;
+import java.util.ListIterator;
+
+import edu.belmont.mth.visigraph.views.Observer;
+
+/**
+ * @author Cameron Behar
+ *
+ */
+public class ObservableList<T> extends Observable implements List<T>
+{	
+	protected String name;
+	protected ArrayList<T> list;
+	protected boolean notificationsSuspended;
+	protected Observer elementObserver;
+	
+ 	public ObservableList(String name)
+	{
+ 		this.name = name;
+		list = new ArrayList<T>();
+		notificationsSuspended = false;
+		elementObserver = new Observer()
+		{
+			public void hasChanged(Object source)
+			{
+				if(!notificationsSuspended)
+					notifyObservers(source);
+			}	
+		};
+	}
+	
+	public boolean add(T e)
+	{
+		suspendNotifications(true);
+			boolean ret = list.add(e);
+			if(e instanceof Observable)
+				((Observable)e).addObserver(elementObserver);
+		suspendNotifications(false);
+		
+		notifyObservers(name + "\tadd\t[null]\t" + e);
+		return ret;
+	}
+
+	public String getName()
+	{
+		return name;
+	}
+	
+	public void add(int index, T element)
+	{
+		suspendNotifications(true);
+			list.add(index, element);
+			if(element instanceof Observable)
+				((Observable)element).addObserver(elementObserver);
+		suspendNotifications(false);
+		
+		notifyObservers(name + "\tadd\t[null]\t" + element + "\t@\t" + index);
+	}
+
+	public boolean addAll(Collection<? extends T> c)
+	{
+		int originalSize = size();
+		
+		suspendNotifications(true);
+			boolean ret = list.addAll(c);
+			for(T element : c)
+				if(element instanceof Observable)
+					((Observable)element).addObserver(elementObserver);
+		suspendNotifications(false);
+		
+		notifyObservers(name + "\taddAll\t" + originalSize + "\t" + list.size());
+		return ret;
+	}
+
+	public boolean addAll(int index, Collection<? extends T> c)
+	{
+		int originalSize = size();
+		
+		suspendNotifications(true);
+			boolean ret = list.addAll(index, c);
+			for(T element : c)
+				if(element instanceof Observable)
+					((Observable)element).addObserver(elementObserver);
+		suspendNotifications(false);
+		
+		notifyObservers(name + "\taddAll\t" + originalSize + "\t" + list.size() + "\t@\t" + index);
+		return ret;
+	}
+
+	public void clear()
+	{
+		int originalSize = size();
+		
+		suspendNotifications(true);
+			for(T element : list)
+				if(element instanceof Observable)
+					((Observable)element).deleteObserver(elementObserver);
+			list.clear();
+		suspendNotifications(false);
+		
+		notifyObservers(name + "\tclear\t" + originalSize + "\t0");
+	}
+
+	public boolean contains(Object o)
+	{
+		return list.contains(o);
+	}
+
+	public boolean containsAll(Collection<?> c)
+	{
+		return list.containsAll(c);
+	}
+
+	public T get(int index)
+	{
+		return list.get(index);
+	}
+
+	public int indexOf(Object o)
+	{
+		return list.indexOf(o);
+	}
+
+	public boolean isEmpty()
+	{
+		return list.isEmpty();
+	}
+
+	public Iterator<T> iterator()
+	{
+		return list.iterator();
+	}
+
+	public int lastIndexOf(Object o)
+	{
+		return list.lastIndexOf(o);
+	}
+
+	public ListIterator<T> listIterator()
+	{
+		return list.listIterator();
+	}
+
+	public ListIterator<T> listIterator(int index)
+	{
+		return list.listIterator(index);
+	}
+
+	public boolean remove(Object o)
+	{
+		suspendNotifications(true);
+			boolean ret = list.remove(o);
+			if(o instanceof Observable)
+				((Observable)o).deleteObserver(elementObserver);
+		suspendNotifications(false);
+		
+		notifyObservers(name + "\tremove\t" + o + "\t[null]");
+		return ret;
+	}
+
+	public T remove(int index)
+	{
+		int originalSize = size();
+		
+		suspendNotifications(true);
+			T ret = list.remove(index);
+			if(ret instanceof Observable)
+				((Observable)ret).deleteObserver(elementObserver);
+		suspendNotifications(false);
+		
+		notifyObservers(name + "\tremove\t" + originalSize + "\t" + list.size());
+		return ret;
+	}
+
+	public boolean removeAll(Collection<?> c)
+	{
+		int originalSize = size();
+		
+		suspendNotifications(true);
+			for(Object element : c)
+			{
+				int index = list.indexOf(element);
+				if(index > -1 && list.get(index) instanceof Observable)
+					((Observable)list.get(index)).deleteObserver(elementObserver);
+			}
+			boolean ret = list.removeAll(c);
+		suspendNotifications(false);
+		
+		notifyObservers(name + "\tremoveAll\t" + originalSize + "\t" + list.size());
+		return ret;
+	}
+
+	public boolean retainAll(Collection<?> c)
+	{
+		int originalSize = size();
+		
+		suspendNotifications(true);
+			for(T element : list)
+				if(!c.contains(element))
+					if(element instanceof Observable)
+						((Observable)element).deleteObserver(elementObserver);
+			boolean ret = list.retainAll(c);
+		suspendNotifications(false);
+		
+		notifyObservers(name + "\tretainAll\t" + originalSize + "\t" + list.size());
+		return ret;
+	}
+
+	public T set(int index, T element)
+	{
+		T originalItem = list.get(index);
+		
+		suspendNotifications(true);
+			if(list.get(index) != element)
+			{
+				if(list.get(index) instanceof Observable)
+					((Observable)list.get(index)).deleteObserver(elementObserver);
+				
+				if(element instanceof Observable)
+					((Observable)element).addObserver(elementObserver);
+			}
+			T ret = list.set(index, element);
+		suspendNotifications(false);
+		
+		notifyObservers(name + "\tset\t" + originalItem + "\t" + element);
+		return ret;
+	}
+
+	public int size()
+	{
+		return list.size();
+	}
+	
+	public List<T> subList(int fromIndex, int toIndex)
+	{
+		return list.subList(fromIndex, toIndex);
+	}
+
+	public Object[] toArray()
+	{
+		return list.toArray();
+	}
+
+	@SuppressWarnings("hiding")
+	public <T> T[] toArray(T[] a)
+	{
+		return (T[])list.toArray(a);
+	}
+
+	public boolean suspendNotifications(boolean s)
+	{
+		boolean ret = notificationsSuspended;
+		notificationsSuspended = s;
+		return ret;
+	}
+}
+
+
+
+
