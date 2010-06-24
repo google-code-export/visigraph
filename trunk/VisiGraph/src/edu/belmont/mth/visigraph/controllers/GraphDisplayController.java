@@ -6,11 +6,12 @@ package edu.belmont.mth.visigraph.controllers;
 import java.awt.*;
 import java.awt.event.*;
 import java.awt.geom.*;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.ResourceBundle;
 import java.util.Set;
-import java.util.TreeMap;
 import java.util.TreeSet;
 import java.util.Vector;
 import java.util.Map.Entry;
@@ -484,9 +485,9 @@ public class GraphDisplayController extends JPanel
 		
 		arrangeBar.add(new JToolBar.Separator());
 		
-		alignVerticallyButton = new JButton((ImageIcon) imageIcons.getObject("align_vertically_icon"));
-		arrangeBar.add(alignVerticallyButton);
-		alignVerticallyButton.addActionListener(new ActionListener()
+		alignHorizontallyButton = new JButton((ImageIcon) imageIcons.getObject("align_horizontally_icon"));
+		arrangeBar.add(alignHorizontallyButton);
+		alignHorizontallyButton.addActionListener(new ActionListener()
 		{
 			public void actionPerformed(ActionEvent e)
 			{
@@ -506,10 +507,10 @@ public class GraphDisplayController extends JPanel
 						graph.vertexes.get(i).y.set(centerY);
 			}
 		});
-
-		alignHorizontallyButton = new JButton((ImageIcon) imageIcons.getObject("align_horizontally_icon"));
-		arrangeBar.add(alignHorizontallyButton);
-		alignHorizontallyButton.addActionListener(new ActionListener()
+		
+		alignVerticallyButton = new JButton((ImageIcon) imageIcons.getObject("align_vertically_icon"));
+		arrangeBar.add(alignVerticallyButton);
+		alignVerticallyButton.addActionListener(new ActionListener()
 		{
 			public void actionPerformed(ActionEvent e)
 			{
@@ -536,17 +537,18 @@ public class GraphDisplayController extends JPanel
 		{
 			public void actionPerformed(ActionEvent e)
 			{
-				TreeMap<Double, Vertex> selectedVertexes = new TreeMap<Double, Vertex>();
+				Vector<Vertex> selectedVertexes = new Vector<Vertex>();
 				
 				for(int i = 0; i < graph.vertexes.size(); ++i)
 					if(graph.vertexes.get(i).isSelected.get())
-						selectedVertexes.put(graph.vertexes.get(i).x.get(), graph.vertexes.get(i));
+						selectedVertexes.add(graph.vertexes.get(i));
 				
-				double spacing = (selectedVertexes.lastKey() - selectedVertexes.firstKey()) / (double)(selectedVertexes.size() - 1); 
-				double currentX = selectedVertexes.firstKey() - spacing;
+				Collections.sort(selectedVertexes, new Comparator<Vertex>() { public int compare(Vertex v1, Vertex v2) { return new Double(Math.signum(v1.x.get() - v2.x.get())).intValue() ; } } );
+				double spacing = (selectedVertexes.lastElement().x.get() - selectedVertexes.firstElement().x.get()) / (double)(selectedVertexes.size() - 1); 
+				double currentX = selectedVertexes.firstElement().x.get() - spacing;
 				
-				for(Entry<Double, Vertex> entry : selectedVertexes.entrySet())
-					entry.getValue().x.set(currentX += spacing);
+				for(Vertex vertex : selectedVertexes)
+					vertex.x.set(currentX += spacing);
 			}
 		});
 		
@@ -556,17 +558,18 @@ public class GraphDisplayController extends JPanel
 		{
 			public void actionPerformed(ActionEvent e)
 			{
-				TreeMap<Double, Vertex> selectedVertexes = new TreeMap<Double, Vertex>();
+				Vector<Vertex> selectedVertexes = new Vector<Vertex>();
 				
 				for(int i = 0; i < graph.vertexes.size(); ++i)
 					if(graph.vertexes.get(i).isSelected.get())
-						selectedVertexes.put(graph.vertexes.get(i).y.get(), graph.vertexes.get(i));
+						selectedVertexes.add(graph.vertexes.get(i));
 				
-				double spacing = (selectedVertexes.lastKey() - selectedVertexes.firstKey()) / (double)(selectedVertexes.size() - 1); 
-				double currentY = selectedVertexes.firstKey() - spacing;
+				Collections.sort(selectedVertexes, new Comparator<Vertex>() { public int compare(Vertex v1, Vertex v2) { return new Double(Math.signum(v1.y.get() - v2.y.get())).intValue() ; } } );
+				double spacing = (selectedVertexes.lastElement().y.get() - selectedVertexes.firstElement().y.get()) / (double)(selectedVertexes.size() - 1); 
+				double currentY = selectedVertexes.firstElement().y.get() - spacing;
 				
-				for(Entry<Double, Vertex> entry : selectedVertexes.entrySet())
-					entry.getValue().y.set(currentY += spacing);
+				for(Vertex vertex : selectedVertexes)
+					vertex.y.set(currentY += spacing);
 			}
 		});
 		
