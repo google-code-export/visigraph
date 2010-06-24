@@ -37,13 +37,14 @@ public class Edge extends Observable
 	protected Point2D.Double		center;
 	protected Dimension				size;
 	protected boolean				isLinear;
+	protected boolean				notificationsSuspended;
 	protected Observer				vertexObserver	= new Observer()
 													{
 														@Override
 														public void hasChanged(Object source)
 														{
 															// Only reset the edge if the one of the vertexes moved
-															if (from != null && to != null && handleX != null && handleY != null && source instanceof Property<?>)
+															if (!notificationsSuspended && from != null && to != null && handleX != null && handleY != null && source instanceof Property<?>)
 															{
 																Property<?> propertyChanged = (Property<?>)source;
 																
@@ -78,6 +79,8 @@ public class Edge extends Observable
 	
 	public Edge(int id, boolean isDirected, Vertex from, Vertex to, double weight, int color, String label, boolean isSelected)
 	{
+		notificationsSuspended = true;
+		
 		this.id = id;
 		this.isDirected = isDirected;
 		
@@ -124,6 +127,8 @@ public class Edge extends Observable
 		this.center = new Point2D.Double();
 		this.size = new Dimension();
 		
+		notificationsSuspended = false;
+		
 		isLinear = true;
 		fixHandle();
 		refresh();
@@ -131,6 +136,8 @@ public class Edge extends Observable
 	
 	public Edge(Map<String, Object> members, Map<Integer, Vertex> vertexes)
 	{
+		notificationsSuspended = true;
+		
 		this.id = new Integer(members.get("id").toString());
 		this.isDirected = new Boolean(members.get("isDirected").toString());
 		
@@ -177,6 +184,8 @@ public class Edge extends Observable
 		this.line = new Line2D.Double();
 		this.center = new Point2D.Double();
 		this.size = new Dimension();
+		
+		notificationsSuspended = false;
 		
 		fixHandle();
 		refresh();
@@ -274,6 +283,17 @@ public class Edge extends Observable
 				updateArc();
 			}
 		}
+	}
+	
+	public void setHandlePoint2D(Point2D.Double point)
+	{
+		notificationsSuspended = true;
+		
+		handleX.set(point.x);
+		handleY.set(point.y);
+		fixHandle();
+		
+		notificationsSuspended = false;
 	}
 	
 	protected void updateArc()
