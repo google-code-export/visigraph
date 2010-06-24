@@ -10,6 +10,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.ResourceBundle;
 import java.util.Set;
+import java.util.TreeMap;
 import java.util.TreeSet;
 import java.util.Vector;
 import java.util.Map.Entry;
@@ -49,11 +50,10 @@ public class GraphDisplayController extends JPanel
 	protected JButton									arrangeGridButton;
 	protected JButton									arrangeTreeButton;
 	protected JButton									arrangeWebButton;
-	protected JToolBar									alignBar;
-	protected JButton									alignHorizontalButton;
-	protected JButton									alignVerticalButton;
-	protected JButton									alignDiagonalRightButton;
-	protected JButton									alignDiagonalLeftButton;
+	protected JButton									alignVerticallyButton;
+	protected JButton									alignHorizontallyButton;
+	protected JButton									distributeHorizontallyButton;
+	protected JButton									distributeVerticallyButton;
 	protected JToolBar									viewBar;
 	protected JButton									showVertexLabelsButton;
 	protected JButton									showVertexWeightsButton;
@@ -71,7 +71,6 @@ public class GraphDisplayController extends JPanel
 	protected JButton									dynamicFunctionsButton;
 	protected JPanel									viewportPanel;
 	protected JComponent								viewport;
-	
 	protected JPopupMenu								popupMenu;
 	protected JMenuItem									selectAllVerticesItem;
 	protected JMenuItem									selectAllEdgesItem;
@@ -480,6 +479,94 @@ public class GraphDisplayController extends JPanel
 						}
 					} 
 				} ).start();	
+			}
+		});
+		
+		arrangeBar.add(new JToolBar.Separator());
+		
+		alignVerticallyButton = new JButton((ImageIcon) imageIcons.getObject("align_vertically_icon"));
+		arrangeBar.add(alignVerticallyButton);
+		alignVerticallyButton.addActionListener(new ActionListener()
+		{
+			public void actionPerformed(ActionEvent e)
+			{
+				double centerY = 0.0, selectedCount = 0.0;
+				
+				for(int i = 0; i < graph.vertexes.size(); ++i)
+					if(graph.vertexes.get(i).isSelected.get())
+					{
+						centerY += graph.vertexes.get(i).y.get();
+						++selectedCount;
+					}
+				
+				centerY /= selectedCount;
+				
+				for(int i = 0; i < graph.vertexes.size(); ++i)
+					if(graph.vertexes.get(i).isSelected.get())
+						graph.vertexes.get(i).y.set(centerY);
+			}
+		});
+
+		alignHorizontallyButton = new JButton((ImageIcon) imageIcons.getObject("align_horizontally_icon"));
+		arrangeBar.add(alignHorizontallyButton);
+		alignHorizontallyButton.addActionListener(new ActionListener()
+		{
+			public void actionPerformed(ActionEvent e)
+			{
+				double centerX = 0.0, selectedCount = 0.0;
+				
+				for(int i = 0; i < graph.vertexes.size(); ++i)
+					if(graph.vertexes.get(i).isSelected.get())
+					{
+						centerX += graph.vertexes.get(i).x.get();
+						++selectedCount;
+					}
+				
+				centerX /= selectedCount;
+				
+				for(int i = 0; i < graph.vertexes.size(); ++i)
+					if(graph.vertexes.get(i).isSelected.get())
+						graph.vertexes.get(i).x.set(centerX);
+			}
+		});
+		
+		distributeHorizontallyButton = new JButton((ImageIcon) imageIcons.getObject("distribute_horizontally_icon"));
+		arrangeBar.add(distributeHorizontallyButton);
+		distributeHorizontallyButton.addActionListener(new ActionListener()
+		{
+			public void actionPerformed(ActionEvent e)
+			{
+				TreeMap<Double, Vertex> selectedVertexes = new TreeMap<Double, Vertex>();
+				
+				for(int i = 0; i < graph.vertexes.size(); ++i)
+					if(graph.vertexes.get(i).isSelected.get())
+						selectedVertexes.put(graph.vertexes.get(i).x.get(), graph.vertexes.get(i));
+				
+				double spacing = (selectedVertexes.lastKey() - selectedVertexes.firstKey()) / (double)(selectedVertexes.size() - 1); 
+				double currentX = selectedVertexes.firstKey() - spacing;
+				
+				for(Entry<Double, Vertex> entry : selectedVertexes.entrySet())
+					entry.getValue().x.set(currentX += spacing);
+			}
+		});
+		
+		distributeVerticallyButton = new JButton((ImageIcon) imageIcons.getObject("distribute_vertically_icon"));
+		arrangeBar.add(distributeVerticallyButton);
+		distributeVerticallyButton.addActionListener(new ActionListener()
+		{
+			public void actionPerformed(ActionEvent e)
+			{
+				TreeMap<Double, Vertex> selectedVertexes = new TreeMap<Double, Vertex>();
+				
+				for(int i = 0; i < graph.vertexes.size(); ++i)
+					if(graph.vertexes.get(i).isSelected.get())
+						selectedVertexes.put(graph.vertexes.get(i).y.get(), graph.vertexes.get(i));
+				
+				double spacing = (selectedVertexes.lastKey() - selectedVertexes.firstKey()) / (double)(selectedVertexes.size() - 1); 
+				double currentY = selectedVertexes.firstKey() - spacing;
+				
+				for(Entry<Double, Vertex> entry : selectedVertexes.entrySet())
+					entry.getValue().y.set(currentY += spacing);
 			}
 		});
 		
