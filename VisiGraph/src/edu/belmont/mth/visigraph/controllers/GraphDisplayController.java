@@ -39,37 +39,41 @@ public class GraphDisplayController extends JPanel
 	protected Tool										tool;
 	protected JPanel									toolbarPanel;
 	protected JToolBar									toolBar;
-	protected JButton									pointerToolButton;
-	protected JButton									vertexToolButton;
-	protected JButton									edgeToolButton;
-	protected JButton									captionToolButton;
-	protected JButton									cutToolButton;
-	protected JButton									paintToolButton;
-	protected JPanel									nonToolbarPanel;
+	protected JButton									 pointerToolButton;
+	protected JButton									 vertexToolButton;
+	protected JButton									 edgeToolButton;
+	protected JButton									 captionToolButton;
+	protected JButton									 cutToolButton;
+	protected JButton									 paintToolButton;
+	protected JPanel									 nonToolbarPanel;
 	protected JToolBar									arrangeBar;
-	protected JButton									arrangeCircleButton;
-	protected JButton									arrangeGridButton;
-	protected JButton									arrangeTreeButton;
-	protected JButton									arrangeWebButton;
-	protected JButton									alignVerticallyButton;
-	protected JButton									alignHorizontallyButton;
-	protected JButton									distributeHorizontallyButton;
-	protected JButton									distributeVerticallyButton;
+	protected JButton									 arrangeCircleButton;
+	protected JButton									 arrangeGridButton;
+	protected JButton									 arrangeTreeButton;
+	protected JButton									 arrangeWebButton;
+	protected JButton									 alignVerticallyButton;
+	protected JButton									 alignHorizontallyButton;
+	protected JButton									 distributeHorizontallyButton;
+	protected JButton									 distributeVerticallyButton;
+	protected JButton									 rotateLeft90Button;
+	protected JButton									 rotateRight90Button;
+	protected JButton									 flipHorizontallyButton;
+	protected JButton									 flipVerticallyButton;
 	protected JToolBar									viewBar;
-	protected JButton									showVertexLabelsButton;
-	protected JButton									showVertexWeightsButton;
-	protected JButton									showEdgeHandlesButton;
-	protected JButton									showEdgeLabelsButton;
-	protected JButton									showEdgeWeightsButton;
-	protected JButton									showCrossingsButton;
+	protected JButton									 showVertexLabelsButton;
+	protected JButton									 showVertexWeightsButton;
+	protected JButton									 showEdgeHandlesButton;
+	protected JButton									 showEdgeLabelsButton;
+	protected JButton									 showEdgeWeightsButton;
+	protected JButton									 showCrossingsButton;
 	protected JToolBar									zoomBar;
-	protected JButton									zoomGraphButton;
-	protected JButton									zoomOneToOneButton;
-	protected JButton									zoomInButton;
-	protected JButton									zoomOutButton;
+	protected JButton									 zoomGraphButton;
+	protected JButton									 zoomOneToOneButton;
+	protected JButton									 zoomInButton;
+	protected JButton									 zoomOutButton;
 	protected JToolBar									functionBar;
-	protected JButton									oneTimeFunctionsButton;
-	protected JButton									dynamicFunctionsButton;
+	protected JButton									 oneTimeFunctionsButton;
+	protected JButton									 dynamicFunctionsButton;
 	protected JPanel									viewportPanel;
 	protected JComponent								viewport;
 	protected JPopupMenu								popupMenu;
@@ -581,6 +585,116 @@ public class GraphDisplayController extends JPanel
 				
 				for(Vertex vertex : selectedVertexes)
 					vertex.y.set(currentY += spacing);
+			}
+		});
+		
+		arrangeBar.add(new JToolBar.Separator());
+		
+		rotateLeft90Button = new JButton((ImageIcon) imageIcons.getObject("rotate_left_90_icon"));
+		arrangeBar.add(rotateLeft90Button);
+		rotateLeft90Button.addActionListener(new ActionListener()
+		{
+			public void actionPerformed(ActionEvent e)
+			{
+				int selectedVertexCount = 0;
+				Point2D.Double centroid = new Point2D.Double();
+				
+				for(Vertex vertex : graph.vertexes)
+					if(vertex.isSelected.get())
+					{
+						centroid.x += vertex.x.get();
+						centroid.y += vertex.y.get();
+						++selectedVertexCount;
+					}
+				
+				centroid.x /= (double)selectedVertexCount;
+				centroid.y /= (double)selectedVertexCount;
+				
+				for(Vertex vertex : graph.vertexes)
+					if(vertex.isSelected.get())
+					{
+						double oldVertexX = vertex.x.get();
+						vertex.x.set(centroid.x - (centroid.y - vertex.y.get()));
+						vertex.y.set(centroid.y + (centroid.x - oldVertexX));
+					}
+			}
+		});
+		
+		rotateRight90Button = new JButton((ImageIcon) imageIcons.getObject("rotate_right_90_icon"));
+		arrangeBar.add(rotateRight90Button);
+		rotateRight90Button.addActionListener(new ActionListener()
+		{
+			public void actionPerformed(ActionEvent e)
+			{
+				int selectedVertexCount = 0;
+				Point2D.Double centroid = new Point2D.Double();
+				
+				for(Vertex vertex : graph.vertexes)
+					if(vertex.isSelected.get())
+					{
+						centroid.x += vertex.x.get();
+						centroid.y += vertex.y.get();
+						++selectedVertexCount;
+					}
+				
+				centroid.x /= (double)selectedVertexCount;
+				centroid.y /= (double)selectedVertexCount;
+				
+				for(Vertex vertex : graph.vertexes)
+					if(vertex.isSelected.get())
+					{
+						double oldVertexX = vertex.x.get();
+						vertex.x.set(centroid.x + (centroid.y - vertex.y.get()));
+						vertex.y.set(centroid.y - (centroid.x - oldVertexX));
+					}
+			}
+		});
+		
+		flipHorizontallyButton = new JButton((ImageIcon) imageIcons.getObject("flip_horizontally_icon"));
+		arrangeBar.add(flipHorizontallyButton);
+		flipHorizontallyButton.addActionListener(new ActionListener()
+		{
+			public void actionPerformed(ActionEvent e)
+			{
+				int selectedVertexCount = 0;
+				double centerX = 0.0;
+				
+				for(Vertex vertex : graph.vertexes)
+					if(vertex.isSelected.get())
+					{
+						centerX += vertex.x.get();
+						++selectedVertexCount;
+					}
+				
+				centerX /= (double)selectedVertexCount;
+				
+				for(Vertex vertex : graph.vertexes)
+					if(vertex.isSelected.get())
+						vertex.x.set(2.0 * centerX - vertex.x.get());
+			}
+		});
+		
+		flipVerticallyButton = new JButton((ImageIcon) imageIcons.getObject("flip_vertically_icon"));
+		arrangeBar.add(flipVerticallyButton);
+		flipVerticallyButton.addActionListener(new ActionListener()
+		{
+			public void actionPerformed(ActionEvent e)
+			{
+				int selectedVertexCount = 0;
+				double centerY = 0.0;
+				
+				for(Vertex vertex : graph.vertexes)
+					if(vertex.isSelected.get())
+					{
+						centerY += vertex.y.get();
+						++selectedVertexCount;
+					}
+				
+				centerY /= (double)selectedVertexCount;
+				
+				for(Vertex vertex : graph.vertexes)
+					if(vertex.isSelected.get())
+						vertex.y.set(2.0 * centerY - vertex.y.get());
 			}
 		});
 		
