@@ -85,8 +85,8 @@ public class GlobalSettings
 	public static final double					edgeSnapToLineMarginRatio					= 0.05;
 	public static final double					areCloseDistance							= 0.01;
 	
-	public static final double					arrangeCircleRadius							= 200.0;
-	
+	public static final double					arrangeCircleRadiusMultiplier				= 10.0;
+	public static final double					arrangeGridSpacing							= 150.0;
 	public static final Dimension				arrangeBoxSize								= new Dimension(600, 600);
 	
 	public static final double					attractiveForce								= 0.0000001;
