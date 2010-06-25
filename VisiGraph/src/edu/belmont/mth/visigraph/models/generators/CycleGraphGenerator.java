@@ -4,7 +4,7 @@
 package edu.belmont.mth.visigraph.models.generators;
 
 import edu.belmont.mth.visigraph.models.*;
-import edu.belmont.mth.visigraph.settings.*;
+import edu.belmont.mth.visigraph.settings.GlobalSettings;
 
 /**
  * @author Cameron Behar
@@ -26,12 +26,13 @@ public class CycleGraphGenerator extends AbstractGraphGenerator
 	{
 		String[] params = args.split("\\s+");
 		int n = Integer.parseInt(params[0]);
+		double radius = GlobalSettings.arrangeCircleRadiusMultiplier * n;
 		double degreesPerVertex = 2 * Math.PI / n;
 
 		Graph ret = super.generate(args, allowLoops, allowDirectedEdges, allowMultipleEdges, allowCycles);
 		
 		for(int i = 0; i < n; ++i)
-			ret.vertexes.add(new Vertex(i, GlobalSettings.arrangeCircleRadius * Math.cos(degreesPerVertex * i - Math.PI / 2.0), GlobalSettings.arrangeCircleRadius * Math.sin(degreesPerVertex * i - Math.PI / 2.0)));
+			ret.vertexes.add(new Vertex(i,radius * Math.cos(degreesPerVertex * i - Math.PI / 2.0), radius * Math.sin(degreesPerVertex * i - Math.PI / 2.0)));
 		
 		for(int i = 0; i < n; ++i)
 			ret.edges.add(new Edge(ret.nextEdgeId(), false, ret.vertexes.get(i), ret.vertexes.get((i + 1) % n)));

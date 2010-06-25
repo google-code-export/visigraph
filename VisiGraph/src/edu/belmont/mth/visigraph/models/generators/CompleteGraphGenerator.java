@@ -28,12 +28,13 @@ public class CompleteGraphGenerator extends AbstractGraphGenerator
 	{
 		String[] params = args.split("\\s+");
 		int n = Integer.parseInt(params[0]);
+		double radius = GlobalSettings.arrangeCircleRadiusMultiplier * n;
 		double degreesPerVertex = 2 * Math.PI / n;
 
 		Graph ret = super.generate(args, allowLoops, allowDirectedEdges, allowMultipleEdges, allowCycles);
 		
 		for(int i = 0; i < n; ++i)
-			ret.vertexes.add(new Vertex(i, GlobalSettings.arrangeCircleRadius * Math.cos(degreesPerVertex * i - Math.PI / 2.0), GlobalSettings.arrangeCircleRadius * Math.sin(degreesPerVertex * i - Math.PI / 2.0)));
+			ret.vertexes.add(new Vertex(i, radius * Math.cos(degreesPerVertex * i - Math.PI / 2.0), radius * Math.sin(degreesPerVertex * i - Math.PI / 2.0)));
 		
 		for(int i = 0; i < n; ++i)
 			for(int j = i + 1; j < n; ++j)

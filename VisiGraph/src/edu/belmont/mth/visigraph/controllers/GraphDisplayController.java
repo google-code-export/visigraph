@@ -315,13 +315,16 @@ public class GraphDisplayController extends JPanel
 		{
 			public void actionPerformed(ActionEvent e)
 			{
+				double radius = GlobalSettings.arrangeCircleRadiusMultiplier * graph.vertexes.size();
 				double degreesPerVertex = 2 * Math.PI / graph.vertexes.size();
 				
 				for (int i = 0; i < graph.vertexes.size(); ++i)
 				{
-					graph.vertexes.get(i).x.set(GlobalSettings.arrangeCircleRadius * Math.cos(degreesPerVertex * i - Math.PI / 2.0));
-					graph.vertexes.get(i).y.set(GlobalSettings.arrangeCircleRadius * Math.sin(degreesPerVertex * i - Math.PI / 2.0));
+					graph.vertexes.get(i).x.set(radius * Math.cos(degreesPerVertex * i - Math.PI / 2.0));
+					graph.vertexes.get(i).y.set(radius * Math.sin(degreesPerVertex * i - Math.PI / 2.0));
 				}
+				
+				zoomGraph();
 			}
 		});
 		
@@ -331,16 +334,19 @@ public class GraphDisplayController extends JPanel
 		{
 			public void actionPerformed(ActionEvent e)
 			{
-				int rows = (int) Math.round(Math.sqrt(graph.vertexes.size()));
-				int columns = (int) Math.ceil(graph.vertexes.size() / (double) rows);
-				double rowSpace = GlobalSettings.arrangeBoxSize.getHeight() / (rows - 1.0);
-				double colSpace = GlobalSettings.arrangeBoxSize.getWidth() / (columns - 1.0);
+				int n = graph.vertexes.size();
+				int rows = (int) Math.round(Math.sqrt(n));
+				int columns = (int) Math.ceil(n / (double) rows);
+				Point2D.Double location = new Point2D.Double((columns / 2.0) * -GlobalSettings.arrangeGridSpacing, (rows / 2.0) * -GlobalSettings.arrangeGridSpacing);
 				
-				for (int i = 0; i < graph.vertexes.size(); ++i)
-				{
-					graph.vertexes.get(i).x.set((i % columns) * colSpace - GlobalSettings.arrangeBoxSize.getWidth() / 2.0);
-					graph.vertexes.get(i).y.set((i / columns) * rowSpace - GlobalSettings.arrangeBoxSize.getHeight() / 2.0);
-				}
+				for (int row = 0; row < rows; ++row)
+					for(int col = 0; (row < rows - 1 && col < columns) || (row == rows - 1 && col < (n % columns == 0 ? columns : n % columns)); ++col)
+					{
+						graph.vertexes.get(row * columns + col).x.set(location.x + GlobalSettings.arrangeGridSpacing * col);
+						graph.vertexes.get(row * columns + col).y.set(location.y + GlobalSettings.arrangeGridSpacing * row);
+					}
+				
+				zoomGraph();
 			}
 		});
 		
@@ -390,23 +396,28 @@ public class GraphDisplayController extends JPanel
 					levels.remove(levels.size() - 1);
 				
 				// Now for the layout!
-				double rowSpace = GlobalSettings.arrangeBoxSize.getHeight() / (levels.size() - 1.0);
+				double y = 0.0;
+				double largestWidth = 0;
+				for (Vector<Vertex> level : levels)
+					largestWidth = Math.max(largestWidth, level.size() * 150.0);
 				
 				for (int row = 0; row < levels.size(); ++row)
 				{
 					Vector<Vertex> level = levels.get(row);
-					double y = row * rowSpace - GlobalSettings.arrangeBoxSize.getHeight() / 2.0;
-					double colSpace = GlobalSettings.arrangeBoxSize.getWidth() / (level.size());
+					y += 150;
+					double colSpace = largestWidth / (level.size());
 					
 					for (int col = 0; col < level.size(); ++col)
 					{
 						Vertex vertex = level.get(col);
-						double x = (col + .5) * colSpace - GlobalSettings.arrangeBoxSize.getWidth() / 2.0;
+						double x = (col + .5) * colSpace - largestWidth / 2.0;
 						
 						vertex.x.set(x);
 						vertex.y.set(y);
 					}
 				}
+				
+				zoomGraph();
 			}
 		});
 		

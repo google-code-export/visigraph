@@ -4,6 +4,7 @@
 package edu.belmont.mth.visigraph.models.generators;
 
 import edu.belmont.mth.visigraph.models.*;
+import edu.belmont.mth.visigraph.settings.GlobalSettings;
 
 /**
  * @author Cameron Behar
@@ -30,10 +31,10 @@ public class CompleteBipartiteGraphGenerator extends AbstractGraphGenerator
 		Graph ret = super.generate(args, allowLoops, allowDirectedEdges, allowMultipleEdges, allowCycles);
 		
 		for(int j = 0; j < r; ++j)
-			ret.vertexes.add(new Vertex(ret.nextVertexId(), (j - (r / 2)) * 50.0, -100));
+			ret.vertexes.add(new Vertex(ret.nextVertexId(), (j - (r / 2)) * GlobalSettings.arrangeGridSpacing, -GlobalSettings.arrangeGridSpacing));
 		
 		for(int j = 0; j < s; ++j)
-			ret.vertexes.add(new Vertex(ret.nextVertexId(), (j - (s / 2)) * 50.0, 100));
+			ret.vertexes.add(new Vertex(ret.nextVertexId(), (j - (s / 2)) * GlobalSettings.arrangeGridSpacing, GlobalSettings.arrangeGridSpacing));
 		
 		for(int j = 0; j < r; ++j)
 			for(int k = 0; k < s; ++k)

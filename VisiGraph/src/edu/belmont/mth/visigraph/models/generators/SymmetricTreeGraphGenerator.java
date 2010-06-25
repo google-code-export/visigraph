@@ -4,11 +4,9 @@
 package edu.belmont.mth.visigraph.models.generators;
 
 import java.util.Vector;
-
 import edu.belmont.mth.visigraph.models.Edge;
 import edu.belmont.mth.visigraph.models.Graph;
 import edu.belmont.mth.visigraph.models.Vertex;
-import edu.belmont.mth.visigraph.settings.GlobalSettings;
 
 /**
  * @author Cameron Behar
@@ -60,15 +58,16 @@ public class SymmetricTreeGraphGenerator extends AbstractGraphGenerator
 		
 		Graph ret = super.generate(args, allowLoops, allowDirectedEdges, allowMultipleEdges, allowCycles);
 		 
-		Vector<Vertex> level = new Vector<Vertex>();
 		Vertex root = new Vertex(ret.nextVertexId());
 		ret.vertexes.add(root);
-		level.add(root);
-		levels.add(level);
+		
+		Vector<Vertex> roots = new Vector<Vertex>();
+		roots.add(root);
+		levels.add(roots);
 		
 		for(int i = 1; i < levelCount; ++i)
 		{
-			level = new Vector<Vertex>();
+			Vector<Vertex> level = new Vector<Vertex>();
 			
 			for(Vertex parent : levels.lastElement())
 			{
@@ -86,18 +85,21 @@ public class SymmetricTreeGraphGenerator extends AbstractGraphGenerator
 		
 		// Now for layout!
 		
-		double rowSpace = GlobalSettings.arrangeBoxSize.getHeight() / (levels.size() - 1.0);
+		double y = 0.0;
+		double largestWidth = 0;
+		for (Vector<Vertex> level : levels)
+			largestWidth = Math.max(largestWidth, level.size() * 150.0);
 		
-		for(int row = 0; row < levels.size(); ++row)
+		for (int row = 0; row < levels.size(); ++row)
 		{
-			level = levels.get(row); 
-			double y = row * rowSpace - (GlobalSettings.arrangeBoxSize.getHeight() / 2.0);
-			double colSpace = GlobalSettings.arrangeBoxSize.getWidth() / (level.size());
+			Vector<Vertex> level = levels.get(row);
+			y += 150;
+			double colSpace = largestWidth / (level.size());
 			
-			for(int col = 0; col < level.size(); ++col)
+			for (int col = 0; col < level.size(); ++col)
 			{
 				Vertex vertex = level.get(col);
-				double x = (col + .5) * colSpace - (GlobalSettings.arrangeBoxSize.getWidth() / 2.0);
+				double x = (col + .5) * colSpace - largestWidth / 2.0;
 				
 				vertex.x.set(x);
 				vertex.y.set(y);
