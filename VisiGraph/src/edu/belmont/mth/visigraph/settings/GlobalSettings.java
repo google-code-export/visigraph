@@ -78,7 +78,7 @@ public class GlobalSettings
 	public static final boolean					 defaultEdgeIsSelected						= false;
 	public static final double					 defaultEdgeThickness						= 0.75;
 	public static final double					 defaultEdgeHandleRadius					= 2.0;
-	public static final double					 defaultEdgeHandleClickMargin				= 2.0;
+	public static final double					 defaultEdgeHandleClickMargin				= 2.5;
 	
 	public static final Point2D					 defaultVertexLocation						= new Point2D.Double(0.0, 0.0);
 	public static final double					 defaultVertexWeight						= 1.0;
@@ -86,9 +86,12 @@ public class GlobalSettings
 	public static final String					 defaultVertexPrefix						= "v";
 	public static final boolean					 defaultVertexIsSelected					= false;
 	public static final double					 defaultVertexRadius						= 5.0;
+	public static final double					 defaultVertexClickMargin					= 2.5;
 	
 	public static final String					 defaultCaptionText							= "";
 	public static final boolean					 defaultCaptionIsSelected					= false;
+	public static final double					 defaultCaptionHandleClickMargin			= 2.5;
+	public static final double					 defaultCaptionEditorClickMargin			= 2.5;
 	
 	public static final double					 snapGridSize								= 50.0;
 	public static final double					 edgeSnapToLineMarginRatio					= 0.05;

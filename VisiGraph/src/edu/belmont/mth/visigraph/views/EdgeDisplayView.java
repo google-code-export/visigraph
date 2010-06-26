@@ -85,9 +85,9 @@ public class EdgeDisplayView
 			g2D.drawString(e.weight.get().toString(), (float)(e.handleX.get() - e.handleRadius.get() - 12), (float)(e.handleY.get() + e.handleRadius.get() + 12));
 	}
 	
-	public static boolean wasClicked(Edge edge, Point point)
+	public static boolean wasClicked(Edge edge, Point point, double scale)
 	{
-		return (Point2D.distance(edge.handleX.get(), edge.handleY.get(), point.x, point.y) <= edge.handleRadius.get() + GlobalSettings.defaultEdgeHandleClickMargin);
+		return (Point2D.distance(edge.handleX.get(), edge.handleY.get(), point.x, point.y) <= edge.handleRadius.get() + GlobalSettings.defaultEdgeHandleClickMargin / scale);
 	}
 	
 	public static boolean wasSelected(Edge edge, Rectangle selection)
