@@ -30,88 +30,36 @@ import edu.belmont.mth.visigraph.views.*;
 @SuppressWarnings("serial")
 public class GraphDisplayController extends JPanel
 {
-	public enum Tool
-	{
-		POINTER_TOOL, VERTEX_TOOL, EDGE_TOOL, CAPTION_TOOL, CUT_TOOL, PAINT_TOOL
-	}
+	protected Graph				   graph;
+	protected GraphDisplaySettings 	settings;
+	protected Palette			   	palette;
 	
-	protected Graph										graph;
-	protected Tool										tool;
-	protected JPanel									toolbarPanel;
-	protected JToolBar									toolBar;
-	protected JButton									 pointerToolButton;
-	protected JButton									 vertexToolButton;
-	protected JButton									 edgeToolButton;
-	protected JButton									 captionToolButton;
-	protected JButton									 cutToolButton;
-	protected JButton									 paintToolButton;
-	protected JPanel									 nonToolbarPanel;
-	protected JToolBar									arrangeBar;
-	protected JButton									 arrangeCircleButton;
-	protected JButton									 arrangeGridButton;
-	protected JButton									 arrangeTreeButton;
-	protected JButton									 arrangeWebButton;
-	protected JButton									 alignVerticallyButton;
-	protected JButton									 alignHorizontallyButton;
-	protected JButton									 distributeHorizontallyButton;
-	protected JButton									 distributeVerticallyButton;
-	protected JButton									 rotateLeft90Button;
-	protected JButton									 rotateRight90Button;
-	protected JButton									 flipHorizontallyButton;
-	protected JButton									 flipVerticallyButton;
-	protected JToolBar									viewBar;
-	protected JButton									 showVertexLabelsButton;
-	protected JButton									 showVertexWeightsButton;
-	protected JButton									 showEdgeHandlesButton;
-	protected JButton									 showEdgeLabelsButton;
-	protected JButton									 showEdgeWeightsButton;
-	protected JButton									 showCrossingsButton;
-	protected JToolBar									zoomBar;
-	protected JButton									 zoomGraphButton;
-	protected JButton									 zoomOneToOneButton;
-	protected JButton									 zoomInButton;
-	protected JButton									 zoomOutButton;
-	protected JToolBar									functionBar;
-	protected JButton									 oneTimeFunctionsButton;
-	protected JButton									 dynamicFunctionsButton;
-	protected JPanel									viewportPanel;
-	protected JComponent								viewport;
-	protected JPopupMenu								popupMenu;
-	protected JMenuItem									selectAllVerticesItem;
-	protected JMenuItem									selectAllEdgesItem;
-	protected JMenuItem									propertiesItem;
-	protected JMenuItem									vertexItem;
-	protected JMenuItem									vertexLabelItem;
-	protected JMenuItem									vertexRadiusItem;
-	protected JMenuItem									vertexColorItem;
-	protected JMenuItem									vertexWeightItem;
-	protected JMenuItem									edgeItem;
-	protected JMenuItem									edgeWeightItem;
-	protected JMenuItem									edgeColorItem;
-	protected JMenuItem									edgeLabelItem;
-	protected JMenuItem									edgeThicknessItem;
-	protected JPopupMenu								paintMenu;
-	protected JPopupMenu								oneTimeFunctionsMenu;
-	protected JPopupMenu								dynamicFunctionsMenu;
-	protected JPanel									statusBar;
-	protected Palette									palette;
-	protected GraphDisplaySettings						settings;
-	protected boolean									isMouseDownOnCanvas;
-	protected boolean									isMouseDownOnPaintToolButton;
-	protected boolean									pointerToolClickedObject;
-	protected boolean									cutToolClickedObject;
-	protected boolean									paintToolClickedObject;
-	protected Point										currentMousePoint;
-	protected Point										pastMousePoint;
-	protected Vertex									fromVertex;
-	protected AffineTransform							transform;;
-	protected Timer										paintMenuTimer;
-	protected int										paintColor;
-	protected Set<AbstractFunction>						allFunctions;
-	protected Map<JMenuItem, AbstractFunction>			oneTimeFunctionMenuItems;
-	protected Map<JCheckBoxMenuItem, AbstractFunction>	dynamicFunctionMenuItems;
-	protected Map<AbstractFunction, JLabel>				selectedFunctionLabels;
-	protected Set<AbstractFunction>						functionsToBeRun;
+	protected JPanel			   toolToolBarPanel;
+	protected ToolToolBar		    toolToolBar;
+	protected JPanel			   nonToolToolbarPanel;
+	protected ArrangeToolBar	    arrangeToolBar;
+	protected ViewToolBar		    viewToolBar;
+	protected ZoomToolBar		    zoomToolBar;
+	protected FunctionToolBar	    functionToolBar;								 
+	protected JPanel			   viewportPanel;
+	protected JComponent		    viewport;
+	protected ViewportPopupMenu	    viewportPopupMenu;
+	protected JPanel			   statusBar;
+	protected Map<AbstractFunction, JLabel>	selectedFunctionLabels;
+	
+	protected Tool					tool;
+	protected int					paintColor;
+	protected boolean				isMouseDownOnCanvas;
+	protected boolean				isMouseDownOnPaintToolButton;
+	protected boolean				pointerToolClickedObject;
+	protected boolean				cutToolClickedObject;
+	protected boolean				paintToolClickedObject;
+	protected Point					currentMousePoint;
+	protected Point					pastMousePoint;
+	protected Vertex				fromVertex;
+	protected AffineTransform		transform;
+	protected Set<AbstractFunction>	functionsToBeRun;
+	protected ResourceBundle		imageIcons;
 	
 	public GraphDisplayController(Graph graph)
 	{
@@ -148,9 +96,6 @@ public class GraphDisplayController extends JPanel
 			}
 		});
 		
-		// Initialize all functions
-		initializeFunctions();
-		
 		// Initialize the toolbar, buttons, and viewport
 		initializeComponents();
 		
@@ -181,684 +126,52 @@ public class GraphDisplayController extends JPanel
 	public void hasSettingChanged(Object source)
 	{
 		repaint();
-		refreshPaintMenu();
-		refreshToolBar();
-		refreshViewBar();
+
+		if(toolToolBar != null)
+			toolToolBar.refreshPaintMenu();
+		
+		if(viewToolBar != null)
+			viewToolBar.refresh();
 	}
 	
 	public void initializeComponents()
 	{
-		// This
 		setLayout(new BorderLayout());
 		setBackground(GlobalSettings.defaultGraphBackgroundDisplayColor);
 		setOpaque(true);
 		
-		// Resources
-		ResourceBundle imageIcons = ResourceBundle.getBundle("edu.belmont.mth.visigraph.resources.ImageIconBundle");
+		imageIcons = ResourceBundle.getBundle("edu.belmont.mth.visigraph.resources.ImageIconBundle");
 		
-		// Toolbar panel
-		toolbarPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
-		toolbarPanel.setMaximumSize(new Dimension(Integer.MAX_VALUE, 24));
-		//toolbarPanel.setBorder(new EmptyBorder(-5,-5,-2,-5));
+		toolToolBarPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
+		toolToolBarPanel.setMaximumSize(new Dimension(Integer.MAX_VALUE, 24));
+		add(toolToolBarPanel, BorderLayout.WEST);
 		
-		// Tool Bar
-		toolBar = new JToolBar();
-		toolBar.setOrientation(SwingConstants.VERTICAL);
-		toolBar.setFloatable(false);
-		toolbarPanel.add(toolBar);
-		add(toolbarPanel, BorderLayout.WEST);
+		toolToolBar = new ToolToolBar();
+		toolToolBarPanel.add(toolToolBar);
 		
-		// Tool buttons
-		pointerToolButton = new JButton((ImageIcon) imageIcons.getObject("pointer_tool_icon"));
-		pointerToolButton.addActionListener(new ActionListener()
-		{
-			public void actionPerformed(ActionEvent e)
-			{
-				setTool(Tool.POINTER_TOOL);
-				graph.deselectAll();
-			}
-		});
-		toolBar.add(pointerToolButton);
+		nonToolToolbarPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
+		nonToolToolbarPanel.setMaximumSize(new Dimension(Integer.MAX_VALUE, 32));
+		add(nonToolToolbarPanel, BorderLayout.NORTH);
 		
-		vertexToolButton = new JButton((ImageIcon) imageIcons.getObject("vertex_tool_icon"));
-		vertexToolButton.addActionListener(new ActionListener()
-		{
-			public void actionPerformed(ActionEvent e)
-			{
-				setTool(Tool.VERTEX_TOOL);
-				graph.deselectAll();
-			}
-		});
-		toolBar.add(vertexToolButton);
+		arrangeToolBar = new ArrangeToolBar();
+		nonToolToolbarPanel.add(arrangeToolBar);
 		
-		edgeToolButton = new JButton((ImageIcon) imageIcons.getObject("edge_tool_icon"));
-		edgeToolButton.addActionListener(new ActionListener()
-		{
-			public void actionPerformed(ActionEvent e)
-			{
-				setTool(Tool.EDGE_TOOL);
-				graph.deselectAll();
-			}
-		});
-		toolBar.add(edgeToolButton);
+		viewToolBar = new ViewToolBar();
+		nonToolToolbarPanel.add(viewToolBar);
 		
-		captionToolButton = new JButton((ImageIcon) imageIcons.getObject("caption_tool_icon"));
-		captionToolButton.addActionListener(new ActionListener()
-		{
-			public void actionPerformed(ActionEvent e)
-			{
-				setTool(Tool.CAPTION_TOOL);
-				graph.deselectAll();
-			}
-		});
-		toolBar.add(captionToolButton);
+		zoomToolBar = new ZoomToolBar();
+		nonToolToolbarPanel.add(zoomToolBar);
 		
-		cutToolButton = new JButton((ImageIcon) imageIcons.getObject("cut_tool_icon"));
-		cutToolButton.addActionListener(new ActionListener()
-		{
-			public void actionPerformed(ActionEvent e)
-			{
-				setTool(Tool.CUT_TOOL);
-				graph.deselectAll();
-			}
-		});
-		toolBar.add(cutToolButton);
+		functionToolBar = new FunctionToolBar();
+		nonToolToolbarPanel.add(functionToolBar);
 		
-		paintToolButton = new JButton((ImageIcon) imageIcons.getObject("paint_tool_icon"));
-		paintToolButton.addMouseListener(new MouseAdapter()
-		{
-			@Override
-			public void mouseExited(MouseEvent e)
-			{
-				isMouseDownOnPaintToolButton = false;
-			}
-			
-			@Override
-			public void mousePressed(MouseEvent event)
-			{
-				graph.deselectAll();
-				setTool(Tool.PAINT_TOOL);
-				isMouseDownOnPaintToolButton = true;
-				paintMenuTimer.start();
-			}
-			
-			@Override
-			public void mouseReleased(MouseEvent event)
-			{
-				isMouseDownOnPaintToolButton = false;
-			}
-		});
-		toolBar.add(paintToolButton);
-		paintMenuTimer = new Timer(GlobalSettings.paintToolButtonDelay, new ActionListener()
-		{
-			@Override
-			public void actionPerformed(ActionEvent e)
-			{
-				paintMenuTimer.stop();
-				
-				if (isMouseDownOnPaintToolButton)
-					paintMenu.show(paintToolButton, 0, paintToolButton.getHeight());
-			}
-		});
-		
-		setTool(Tool.POINTER_TOOL);
-		
-		// Non-Toolbar panel
-		nonToolbarPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
-		nonToolbarPanel.setMaximumSize(new Dimension(Integer.MAX_VALUE, 32));
-		add(nonToolbarPanel, BorderLayout.NORTH);
-		
-		// Arrange Bar
-		arrangeBar = new JToolBar();
-		nonToolbarPanel.add(arrangeBar);
-		
-		// Arrange buttons
-		arrangeCircleButton = new JButton((ImageIcon) imageIcons.getObject("arrange_circle_icon"));
-		arrangeBar.add(arrangeCircleButton);
-		arrangeCircleButton.addActionListener(new ActionListener()
-		{
-			public void actionPerformed(ActionEvent e)
-			{
-				double radius = GlobalSettings.arrangeCircleRadiusMultiplier * graph.vertexes.size();
-				double degreesPerVertex = 2 * Math.PI / graph.vertexes.size();
-				
-				for (int i = 0; i < graph.vertexes.size(); ++i)
-				{
-					graph.vertexes.get(i).x.set(radius * Math.cos(degreesPerVertex * i - Math.PI / 2.0));
-					graph.vertexes.get(i).y.set(radius * Math.sin(degreesPerVertex * i - Math.PI / 2.0));
-				}
-				
-				zoomGraph();
-			}
-		});
-		
-		arrangeGridButton = new JButton((ImageIcon) imageIcons.getObject("arrange_grid_icon"));
-		arrangeBar.add(arrangeGridButton);
-		arrangeGridButton.addActionListener(new ActionListener()
-		{
-			public void actionPerformed(ActionEvent e)
-			{
-				int n = graph.vertexes.size();
-				int rows = (int) Math.round(Math.sqrt(n));
-				int columns = (int) Math.ceil(n / (double) rows);
-				Point2D.Double location = new Point2D.Double((columns / 2.0) * -GlobalSettings.arrangeGridSpacing, (rows / 2.0) * -GlobalSettings.arrangeGridSpacing);
-				
-				for (int row = 0; row < rows; ++row)
-					for(int col = 0; (row < rows - 1 && col < columns) || (row == rows - 1 && col < (n % columns == 0 ? columns : n % columns)); ++col)
-					{
-						graph.vertexes.get(row * columns + col).x.set(location.x + GlobalSettings.arrangeGridSpacing * col);
-						graph.vertexes.get(row * columns + col).y.set(location.y + GlobalSettings.arrangeGridSpacing * row);
-					}
-				
-				zoomGraph();
-			}
-		});
-		
-		arrangeTreeButton = new JButton((ImageIcon) imageIcons.getObject("arrange_tree_icon"));
-		arrangeBar.add(arrangeTreeButton);
-		arrangeTreeButton.addActionListener(new ActionListener()
-		{
-			public void actionPerformed(ActionEvent e)
-			{
-				Vector<Vertex> allNodes = new Vector<Vertex>();
-				Vector<Vector<Vertex>> levels = new Vector<Vector<Vertex>>();
-				
-				// First we need to add all selected vertexes to a root level of the tree
-				levels.add(new Vector<Vertex>());
-				for (Vertex vertex : graph.vertexes)
-					if (vertex.isSelected.get())
-					{
-						levels.get(0).add(vertex);
-						allNodes.add(vertex);
-					}
-				
-				// While the last level has vertexes, add all their neighbors to the next level that haven't yet been otherwise added
-				while (levels.lastElement().size() > 0)
-				{
-					levels.add(new Vector<Vertex>());
-					
-					for (Vertex vertex : levels.get(levels.size() - 2))
-						for (Vertex neighbor : graph.getNeighbors(vertex))
-							if (!allNodes.contains(neighbor))
-							{
-								levels.lastElement().add(neighbor);
-								allNodes.add(neighbor);
-							}
-				}
-				
-				// If there were any nodes that weren't added yet, give them their own level
-				if (allNodes.size() < graph.vertexes.size())
-					for (Vertex vertex : levels.get(levels.size() - 1))
-						if (!allNodes.contains(vertex))
-						{
-							levels.lastElement().add(vertex);
-							allNodes.add(vertex);
-						}
-				
-				// If the last level is empty, remove it
-				if (levels.lastElement().size() == 0)
-					levels.remove(levels.size() - 1);
-				
-				// Now for the layout!
-				double y = 0.0;
-				double largestWidth = 0;
-				for (Vector<Vertex> level : levels)
-					largestWidth = Math.max(largestWidth, level.size() * 150.0);
-				
-				for (int row = 0; row < levels.size(); ++row)
-				{
-					Vector<Vertex> level = levels.get(row);
-					y += 150;
-					double colSpace = largestWidth / (level.size());
-					
-					for (int col = 0; col < level.size(); ++col)
-					{
-						Vertex vertex = level.get(col);
-						double x = (col + .5) * colSpace - largestWidth / 2.0;
-						
-						vertex.x.set(x);
-						vertex.y.set(y);
-					}
-				}
-				
-				zoomGraph();
-			}
-		});
-		
-		arrangeWebButton = new JButton((ImageIcon) imageIcons.getObject("arrange_web_icon"));
-		arrangeBar.add(arrangeWebButton);
-		arrangeWebButton.addActionListener(new ActionListener()
-		{
-			public void actionPerformed(ActionEvent e)
-			{
-				new Timer(50, new ActionListener() {
-					public void actionPerformed(ActionEvent arg0)
-					{
-						Timer timer = (Timer)arg0.getSource(); 
-						if(timer.getDelay() >= 500)
-						{
-							timer.stop(); return; 
-						}
-						
-						timer.setDelay((int)(timer.getDelay() * GlobalSettings.applyForcesDecelerationFactor));
-						
-						HashMap<Vertex, Point2D.Double> forces = new HashMap<Vertex, Point2D.Double>();
-					
-						// Initialize the hashmap of forces
-						for (int i = 0; i < graph.vertexes.size(); ++i)
-							forces.put(graph.vertexes.get(i), new Point2D.Double(0, 0));
-						
-						// Calculate all repulsive forces
-						for (int i = 0; i < graph.vertexes.size(); ++i)
-							for (int j = i + 1; j < graph.vertexes.size(); ++j)
-							{
-								Vertex v0 = graph.vertexes.get(i);
-								Vertex v1 = graph.vertexes.get(j);
-								
-								double xDiff = v1.x.get() - v0.x.get();
-								double yDiff = v1.y.get() - v0.y.get();
-								double distanceSquared = (xDiff * xDiff + yDiff * yDiff);
-								double xForce = GlobalSettings.repulsiveForce * (xDiff / distanceSquared);
-								double yForce = GlobalSettings.repulsiveForce * (yDiff / distanceSquared);
-								
-								forces.get(v0).x += xForce;
-								forces.get(v0).y += yForce;
-								
-								// And because every action has an opposite and equal reaction
-								forces.get(v1).x -= xForce;
-								forces.get(v1).y -= yForce;
-							}
-						
-						// Calculate all attractive forces
-						for (Edge edge : graph.edges)
-							if (edge.from != edge.to)
-							{
-								double xDiff = edge.to.x.get() - edge.from.x.get();
-								double yDiff = edge.to.y.get() - edge.from.y.get();
-								double distanceSquared = (xDiff * xDiff + yDiff * yDiff);
-								double xForce = GlobalSettings.attractiveForce * xDiff * distanceSquared;
-								double yForce = GlobalSettings.attractiveForce * yDiff * distanceSquared;
-								
-								forces.get(edge.from).x += xForce;
-								forces.get(edge.from).y += yForce;
-								
-								// And because every action has an opposite and equal reaction
-								forces.get(edge.to).x -= xForce;
-								forces.get(edge.to).y -= yForce;
-							}
-						
-						// Apply all net forces
-						for (Vertex v : graph.vertexes)
-						{
-							v.x.set(v.x.get() + forces.get(v).x);
-							v.y.set(v.y.get() + forces.get(v).y);
-						}
-					} 
-				} ).start();	
-			}
-		});
-		
-		arrangeBar.add(new JToolBar.Separator());
-		
-		alignHorizontallyButton = new JButton((ImageIcon) imageIcons.getObject("align_horizontally_icon"));
-		arrangeBar.add(alignHorizontallyButton);
-		alignHorizontallyButton.addActionListener(new ActionListener()
-		{
-			public void actionPerformed(ActionEvent e)
-			{
-				double centerY = 0.0, selectedCount = 0.0;
-				
-				for(int i = 0; i < graph.vertexes.size(); ++i)
-					if(graph.vertexes.get(i).isSelected.get())
-					{
-						centerY += graph.vertexes.get(i).y.get();
-						++selectedCount;
-					}
-				
-				centerY /= selectedCount;
-				
-				for(int i = 0; i < graph.vertexes.size(); ++i)
-					if(graph.vertexes.get(i).isSelected.get())
-						graph.vertexes.get(i).y.set(centerY);
-			}
-		});
-		
-		alignVerticallyButton = new JButton((ImageIcon) imageIcons.getObject("align_vertically_icon"));
-		arrangeBar.add(alignVerticallyButton);
-		alignVerticallyButton.addActionListener(new ActionListener()
-		{
-			public void actionPerformed(ActionEvent e)
-			{
-				double centerX = 0.0, selectedCount = 0.0;
-				
-				for(int i = 0; i < graph.vertexes.size(); ++i)
-					if(graph.vertexes.get(i).isSelected.get())
-					{
-						centerX += graph.vertexes.get(i).x.get();
-						++selectedCount;
-					}
-				
-				centerX /= selectedCount;
-				
-				for(int i = 0; i < graph.vertexes.size(); ++i)
-					if(graph.vertexes.get(i).isSelected.get())
-						graph.vertexes.get(i).x.set(centerX);
-			}
-		});
-		
-		distributeHorizontallyButton = new JButton((ImageIcon) imageIcons.getObject("distribute_horizontally_icon"));
-		arrangeBar.add(distributeHorizontallyButton);
-		distributeHorizontallyButton.addActionListener(new ActionListener()
-		{
-			public void actionPerformed(ActionEvent e)
-			{
-				Vector<Vertex> selectedVertexes = new Vector<Vertex>();
-				
-				for(int i = 0; i < graph.vertexes.size(); ++i)
-					if(graph.vertexes.get(i).isSelected.get())
-						selectedVertexes.add(graph.vertexes.get(i));
-				
-				Collections.sort(selectedVertexes, new Comparator<Vertex>() { public int compare(Vertex v1, Vertex v2) { return new Double(Math.signum(v1.x.get() - v2.x.get())).intValue() ; } } );
-				double spacing = (selectedVertexes.lastElement().x.get() - selectedVertexes.firstElement().x.get()) / (double)(selectedVertexes.size() - 1); 
-				double currentX = selectedVertexes.firstElement().x.get() - spacing;
-				
-				for(Vertex vertex : selectedVertexes)
-					vertex.x.set(currentX += spacing);
-			}
-		});
-		
-		distributeVerticallyButton = new JButton((ImageIcon) imageIcons.getObject("distribute_vertically_icon"));
-		arrangeBar.add(distributeVerticallyButton);
-		distributeVerticallyButton.addActionListener(new ActionListener()
-		{
-			public void actionPerformed(ActionEvent e)
-			{
-				Vector<Vertex> selectedVertexes = new Vector<Vertex>();
-				
-				for(int i = 0; i < graph.vertexes.size(); ++i)
-					if(graph.vertexes.get(i).isSelected.get())
-						selectedVertexes.add(graph.vertexes.get(i));
-				
-				Collections.sort(selectedVertexes, new Comparator<Vertex>() { public int compare(Vertex v1, Vertex v2) { return new Double(Math.signum(v1.y.get() - v2.y.get())).intValue() ; } } );
-				double spacing = (selectedVertexes.lastElement().y.get() - selectedVertexes.firstElement().y.get()) / (double)(selectedVertexes.size() - 1); 
-				double currentY = selectedVertexes.firstElement().y.get() - spacing;
-				
-				for(Vertex vertex : selectedVertexes)
-					vertex.y.set(currentY += spacing);
-			}
-		});
-		
-		arrangeBar.add(new JToolBar.Separator());
-		
-		rotateLeft90Button = new JButton((ImageIcon) imageIcons.getObject("rotate_left_90_icon"));
-		arrangeBar.add(rotateLeft90Button);
-		rotateLeft90Button.addActionListener(new ActionListener()
-		{
-			public void actionPerformed(ActionEvent e)
-			{
-				int selectedVertexCount = 0;
-				Point2D.Double centroid = new Point2D.Double();
-				
-				for(Vertex vertex : graph.vertexes)
-					if(vertex.isSelected.get())
-					{
-						centroid.x += vertex.x.get();
-						centroid.y += vertex.y.get();
-						++selectedVertexCount;
-					}
-				
-				centroid.x /= (double)selectedVertexCount;
-				centroid.y /= (double)selectedVertexCount;
-				
-				for(Vertex vertex : graph.vertexes)
-					if(vertex.isSelected.get())
-					{
-						double oldVertexX = vertex.x.get();
-						vertex.x.set(centroid.x - (centroid.y - vertex.y.get()));
-						vertex.y.set(centroid.y + (centroid.x - oldVertexX));
-					}
-			}
-		});
-		
-		rotateRight90Button = new JButton((ImageIcon) imageIcons.getObject("rotate_right_90_icon"));
-		arrangeBar.add(rotateRight90Button);
-		rotateRight90Button.addActionListener(new ActionListener()
-		{
-			public void actionPerformed(ActionEvent e)
-			{
-				int selectedVertexCount = 0;
-				Point2D.Double centroid = new Point2D.Double();
-				
-				for(Vertex vertex : graph.vertexes)
-					if(vertex.isSelected.get())
-					{
-						centroid.x += vertex.x.get();
-						centroid.y += vertex.y.get();
-						++selectedVertexCount;
-					}
-				
-				centroid.x /= (double)selectedVertexCount;
-				centroid.y /= (double)selectedVertexCount;
-				
-				for(Vertex vertex : graph.vertexes)
-					if(vertex.isSelected.get())
-					{
-						double oldVertexX = vertex.x.get();
-						vertex.x.set(centroid.x + (centroid.y - vertex.y.get()));
-						vertex.y.set(centroid.y - (centroid.x - oldVertexX));
-					}
-			}
-		});
-		
-		flipHorizontallyButton = new JButton((ImageIcon) imageIcons.getObject("flip_horizontally_icon"));
-		arrangeBar.add(flipHorizontallyButton);
-		flipHorizontallyButton.addActionListener(new ActionListener()
-		{
-			public void actionPerformed(ActionEvent e)
-			{
-				int selectedVertexCount = 0;
-				double centerX = 0.0;
-				
-				for(Vertex vertex : graph.vertexes)
-					if(vertex.isSelected.get())
-					{
-						centerX += vertex.x.get();
-						++selectedVertexCount;
-					}
-				
-				centerX /= (double)selectedVertexCount;
-				
-				for(Vertex vertex : graph.vertexes)
-					if(vertex.isSelected.get())
-						vertex.x.set(2.0 * centerX - vertex.x.get());
-			}
-		});
-		
-		flipVerticallyButton = new JButton((ImageIcon) imageIcons.getObject("flip_vertically_icon"));
-		arrangeBar.add(flipVerticallyButton);
-		flipVerticallyButton.addActionListener(new ActionListener()
-		{
-			public void actionPerformed(ActionEvent e)
-			{
-				int selectedVertexCount = 0;
-				double centerY = 0.0;
-				
-				for(Vertex vertex : graph.vertexes)
-					if(vertex.isSelected.get())
-					{
-						centerY += vertex.y.get();
-						++selectedVertexCount;
-					}
-				
-				centerY /= (double)selectedVertexCount;
-				
-				for(Vertex vertex : graph.vertexes)
-					if(vertex.isSelected.get())
-						vertex.y.set(2.0 * centerY - vertex.y.get());
-			}
-		});
-		
-		// View Bar
-		viewBar = new JToolBar();
-		nonToolbarPanel.add(viewBar);
-		
-		// View buttons
-		showVertexLabelsButton = new JButton((ImageIcon) imageIcons.getObject("show_vertex_labels_icon"));
-		showVertexLabelsButton.addActionListener(new ActionListener()
-		{
-			public void actionPerformed(ActionEvent e)
-			{
-				settings.showVertexLabels.set(!settings.showVertexLabels.get());
-			}
-		});
-		viewBar.add(showVertexLabelsButton);
-		
-		showVertexWeightsButton = new JButton((ImageIcon) imageIcons.getObject("show_vertex_weights_icon"));
-		showVertexWeightsButton.addActionListener(new ActionListener()
-		{
-			public void actionPerformed(ActionEvent e)
-			{
-				settings.showVertexWeights.set(!settings.showVertexWeights.get());
-			}
-		});
-		viewBar.add(showVertexWeightsButton);
-		
-		showEdgeHandlesButton = new JButton((ImageIcon) imageIcons.getObject("show_edge_handles_icon"));
-		showEdgeHandlesButton.addActionListener(new ActionListener()
-		{
-			public void actionPerformed(ActionEvent e)
-			{
-				settings.showEdgeHandles.set(!settings.showEdgeHandles.get());
-			}
-		});
-		viewBar.add(showEdgeHandlesButton);
-		
-		showEdgeLabelsButton = new JButton((ImageIcon) imageIcons.getObject("show_edge_labels_icon"));
-		showEdgeLabelsButton.addActionListener(new ActionListener()
-		{
-			public void actionPerformed(ActionEvent e)
-			{
-				settings.showEdgeLabels.set(!settings.showEdgeLabels.get());
-			}
-		});
-		viewBar.add(showEdgeLabelsButton);
-		
-		showEdgeWeightsButton = new JButton((ImageIcon) imageIcons.getObject("show_edge_weights_icon"));
-		showEdgeWeightsButton.addActionListener(new ActionListener()
-		{
-			public void actionPerformed(ActionEvent e)
-			{
-				settings.showEdgeWeights.set(!settings.showEdgeWeights.get());
-			}
-		});
-		viewBar.add(showEdgeWeightsButton);
-		
-		refreshViewBar();
-		
-		// Zoom Bar
-		zoomBar = new JToolBar();
-		nonToolbarPanel.add(zoomBar);
-		
-		// Zoom buttons
-		zoomGraphButton = new JButton((ImageIcon) imageIcons.getObject("zoom_graph_icon"));
-		zoomGraphButton.addActionListener(new ActionListener()
-		{
-			public void actionPerformed(ActionEvent e)
-			{
-				zoomGraph();
-			}
-		});
-		zoomBar.add(zoomGraphButton);
-		
-		zoomOneToOneButton = new JButton((ImageIcon) imageIcons.getObject("zoom_one_to_one_icon"));
-		zoomOneToOneButton.addActionListener(new ActionListener()
-		{
-			public void actionPerformed(ActionEvent e)
-			{
-				zoomOneToOne();
-			}
-		});
-		zoomBar.add(zoomOneToOneButton);
-		
-		zoomInButton = new JButton((ImageIcon) imageIcons.getObject("zoom_in_icon"));
-		zoomInButton.addActionListener(new ActionListener()
-		{
-			public void actionPerformed(ActionEvent e)
-			{
-				Point2D.Double viewportCenter = new Point2D.Double(viewport.getWidth() / 2.0, viewport.getHeight() / 2.0);
-				Point2D.Double zoomCenter = new Point2D.Double();
-				try
-				{
-					transform.inverseTransform(viewportCenter, zoomCenter);
-				}
-				catch (NoninvertibleTransformException e1)
-				{}
-				
-				zoomCenter(zoomCenter, GlobalSettings.zoomInFactor);
-			}
-		});
-		zoomBar.add(zoomInButton);
-		
-		zoomOutButton = new JButton((ImageIcon) imageIcons.getObject("zoom_out_icon"));
-		zoomOutButton.addActionListener(new ActionListener()
-		{
-			public void actionPerformed(ActionEvent e)
-			{
-				Point2D.Double viewportCenter = new Point2D.Double(viewport.getWidth() / 2.0, viewport.getHeight() / 2.0);
-				Point2D.Double zoomCenter = new Point2D.Double();
-				try
-				{
-					transform.inverseTransform(viewportCenter, zoomCenter);
-				}
-				catch (NoninvertibleTransformException e1)
-				{}
-				
-				zoomCenter(zoomCenter, GlobalSettings.zoomOutFactor);
-			}
-		});
-		zoomBar.add(zoomOutButton);
-		
-		// Function Bar
-		functionBar = new JToolBar();
-		nonToolbarPanel.add(functionBar);
-		
-		// Zoom buttons
-		oneTimeFunctionsButton = new JButton((ImageIcon) imageIcons.getObject("one_time_functions_icon"));
-		oneTimeFunctionsButton.addActionListener(new ActionListener()
-		{
-			public void actionPerformed(ActionEvent e)
-			{
-				oneTimeFunctionsMenu.show(oneTimeFunctionsButton, 0, oneTimeFunctionsButton.getHeight());
-			}
-		});
-		functionBar.add(oneTimeFunctionsButton);
-		
-		dynamicFunctionsButton = new JButton((ImageIcon) imageIcons.getObject("dynamic_functions_icon"));
-		dynamicFunctionsButton.addActionListener(new ActionListener()
-		{
-			public void actionPerformed(ActionEvent e)
-			{
-				dynamicFunctionsMenu.show(dynamicFunctionsButton, 0, dynamicFunctionsButton.getHeight());
-			}
-		});
-		functionBar.add(dynamicFunctionsButton);
-		
-		oneTimeFunctionsMenu = new JPopupMenu();
-		dynamicFunctionsMenu = new JPopupMenu();
-		
-		oneTimeFunctionMenuItems = new HashMap<JMenuItem, AbstractFunction>();
-		dynamicFunctionMenuItems = new HashMap<JCheckBoxMenuItem, AbstractFunction>();
 		selectedFunctionLabels = new HashMap<AbstractFunction, JLabel>();
 		functionsToBeRun = new TreeSet<AbstractFunction>();
 		
-		refreshFunctionMenus();
-		
-		// Viewport panel
 		viewportPanel = new JPanel(new BorderLayout());
 		viewportPanel.setBorder(new BevelBorder(BevelBorder.LOWERED));
 		add(viewportPanel, BorderLayout.CENTER);
 		
-		// Viewport
 		viewport = new JComponent()
 		{
 			@Override
@@ -927,197 +240,11 @@ public class GraphDisplayController extends JPanel
 		currentMousePoint = new Point(0, 0);
 		pastMousePoint = new Point(0, 0);
 		viewportPanel.add(viewport, BorderLayout.CENTER);
+		viewportPopupMenu = new ViewportPopupMenu();
 		
-		// PopupMenu
-		popupMenu = new JPopupMenu();
-		
-		selectAllVerticesItem = new JMenuItem("Select all vertices");
-		selectAllVerticesItem.addActionListener(new ActionListener()
-		{
-			public void actionPerformed(ActionEvent arg0)
-			{
-				for (Vertex v : graph.vertexes)
-					v.isSelected.set(true);
-			}
-		});
-		popupMenu.add(selectAllVerticesItem);
-		
-		selectAllEdgesItem = new JMenuItem("Select all edges");
-		selectAllEdgesItem.addActionListener(new ActionListener()
-		{
-			public void actionPerformed(ActionEvent arg0)
-			{
-				for (Edge e : graph.edges)
-					e.isSelected.set(true);
-			}
-		});
-		popupMenu.add(selectAllEdgesItem);
-		
-		propertiesItem = new JMenu("Properties");
-		popupMenu.add(propertiesItem);
-		
-		vertexItem = new JMenu("Vertex");
-		propertiesItem.add(vertexItem);
-		
-		vertexLabelItem = new JMenuItem("Label");
-		vertexLabelItem.addActionListener(new ActionListener()
-		{
-			public void actionPerformed(ActionEvent e)
-			{
-				String value = JOptionPane.showInputDialog(viewport, "New label:", GlobalSettings.applicationName, JOptionPane.QUESTION_MESSAGE);
-				if (value != null)
-					for (Vertex vertex : graph.vertexes)
-						if (vertex.isSelected.get())
-							vertex.label.set(value);
-			}
-		});
-		vertexItem.add(vertexLabelItem);
-		
-		vertexRadiusItem = new JMenuItem("Radius");
-		vertexRadiusItem.addActionListener(new ActionListener()
-		{
-			public void actionPerformed(ActionEvent e)
-			{
-				String value = JOptionPane.showInputDialog(viewport, "New radius:", GlobalSettings.applicationName, JOptionPane.QUESTION_MESSAGE);
-				if (value != null)
-				{
-					double radius = Double.parseDouble(value);
-					
-					for (Vertex vertex : graph.vertexes)
-						if (vertex.isSelected.get())
-							vertex.radius.set(radius);
-				}
-			}
-		});
-		vertexItem.add(vertexRadiusItem);
-		
-		vertexColorItem = new JMenuItem("Color");
-		vertexColorItem.addActionListener(new ActionListener()
-		{
-			public void actionPerformed(ActionEvent e)
-			{
-				String value = JOptionPane.showInputDialog(viewport, "New color:", GlobalSettings.applicationName, JOptionPane.QUESTION_MESSAGE);
-				if (value != null)
-				{
-					int color = Integer.parseInt(value);
-					
-					for (Vertex vertex : graph.vertexes)
-						if (vertex.isSelected.get())
-							vertex.color.set(color);
-				}
-			}
-		});
-		vertexItem.add(vertexColorItem);
-		
-		vertexWeightItem = new JMenuItem("Weight");
-		vertexWeightItem.addActionListener(new ActionListener()
-		{
-			public void actionPerformed(ActionEvent e)
-			{
-				String value = JOptionPane.showInputDialog(viewport, "New weight:", GlobalSettings.applicationName, JOptionPane.QUESTION_MESSAGE);
-				if (value != null)
-				{
-					double weight = Double.parseDouble(value);
-					
-					for (Vertex vertex : graph.vertexes)
-						if (vertex.isSelected.get())
-							vertex.weight.set(weight);
-				}
-			}
-		});
-		vertexItem.add(vertexWeightItem);
-		
-		edgeItem = new JMenu("Edge");
-		propertiesItem.add(edgeItem);
-		
-		edgeWeightItem = new JMenuItem("Weight");
-		edgeWeightItem.addActionListener(new ActionListener()
-		{
-			public void actionPerformed(ActionEvent e)
-			{
-				String value = JOptionPane.showInputDialog(viewport, "New weight:", GlobalSettings.applicationName, JOptionPane.QUESTION_MESSAGE);
-				if (value != null)
-				{
-					double weight = Double.parseDouble(value);
-					
-					for (Edge edge : graph.edges)
-						if (edge.isSelected.get())
-							edge.weight.set(weight);
-				}
-			}
-		});
-		edgeItem.add(edgeWeightItem);
-		
-		edgeColorItem = new JMenuItem("Color");
-		edgeColorItem.addActionListener(new ActionListener()
-		{
-			public void actionPerformed(ActionEvent e)
-			{
-				String value = JOptionPane.showInputDialog(viewport, "New color:", GlobalSettings.applicationName, JOptionPane.QUESTION_MESSAGE);
-				if (value != null)
-				{
-					int color = Integer.parseInt(value);
-					
-					for (Edge edge : graph.edges)
-						if (edge.isSelected.get())
-							edge.color.set(color);
-				}
-			}
-		});
-		edgeItem.add(edgeColorItem);
-		
-		edgeLabelItem = new JMenuItem("Label");
-		edgeLabelItem.addActionListener(new ActionListener()
-		{
-			public void actionPerformed(ActionEvent e)
-			{
-				String label = JOptionPane.showInputDialog(viewport, "New label:", GlobalSettings.applicationName, JOptionPane.QUESTION_MESSAGE);
-				if (label != null)
-					for (Edge edge : graph.edges)
-						if (edge.isSelected.get())
-							edge.label.set(label);
-			}
-		});
-		edgeItem.add(edgeLabelItem);
-		
-		edgeThicknessItem = new JMenuItem("Thickness");
-		edgeThicknessItem.addActionListener(new ActionListener()
-		{
-			public void actionPerformed(ActionEvent e)
-			{
-				String value = JOptionPane.showInputDialog(viewport, "New thickness:", GlobalSettings.applicationName, JOptionPane.QUESTION_MESSAGE);
-				if (value != null)
-				{
-					double thickness = Double.parseDouble(value);
-					
-					for (Edge edge : graph.edges)
-						if (edge.isSelected.get())
-							edge.thickness.set(thickness);
-				}
-			}
-		});
-		edgeItem.add(edgeThicknessItem);
-		
-		// PaintMenu
-		paintMenu = new JPopupMenu();
-		refreshPaintMenu();
-		setPaintColor(0);
-		
-		// StatusBar
 		statusBar = new JPanel(new FlowLayout(FlowLayout.LEFT));
 		statusBar.setMaximumSize(new Dimension(Integer.MAX_VALUE, 12));
 		add(statusBar, BorderLayout.SOUTH);
-	}
-	
-	public void initializeFunctions()
-	{
-		allFunctions = new TreeSet<AbstractFunction>();
-		
-		allFunctions.add(new CountEdgesFunction());
-		allFunctions.add(new CountVertexesFunction());
-		allFunctions.add(new CountCrossingsFunction());
-		allFunctions.add(new IsEulerianFunction());
-		allFunctions.add(new IsConnectedFunction());
 	}
 	
 	public void paintSelectionRectangle(Graphics2D g2D)
@@ -1169,20 +296,8 @@ public class GraphDisplayController extends JPanel
 		if (isMouseDownOnCanvas)
 			switch (tool)
 			{
-				case POINTER_TOOL:
-					{
-						if (!pointerToolClickedObject)
-							paintSelectionRectangle(g2D);
-						
-						break;
-					}
-				case CUT_TOOL:
-					{
-						if (!cutToolClickedObject)
-							paintSelectionRectangle(g2D);
-						
-						break;
-					}
+				case POINTER_TOOL: if (!pointerToolClickedObject) paintSelectionRectangle(g2D); break;
+				case CUT_TOOL: if (!cutToolClickedObject) paintSelectionRectangle(g2D); break;
 				case EDGE_TOOL:
 					{
 						// For the edge tool we might need to paint the temporary drag-edge
@@ -1194,200 +309,30 @@ public class GraphDisplayController extends JPanel
 						
 						break;
 					}
-				case PAINT_TOOL:
-					{
-						if (!paintToolClickedObject)
-							paintSelectionRectangle(g2D);
-						
-						break;
-					}
+				case PAINT_TOOL: if (!paintToolClickedObject) paintSelectionRectangle(g2D); break;
 			}
-	}
-	
-	public void refreshFunctionMenus()
-	{
-		if (oneTimeFunctionsMenu != null && dynamicFunctionsMenu != null)
-		{
-			oneTimeFunctionsMenu.removeAll();
-			dynamicFunctionsMenu.removeAll();
-			
-			oneTimeFunctionMenuItems = new HashMap<JMenuItem, AbstractFunction>();
-			dynamicFunctionMenuItems = new HashMap<JCheckBoxMenuItem, AbstractFunction>();
-			
-			ActionListener oneTimeFunctionMenuItemActionListener = new ActionListener()
-			{
-				public void actionPerformed(ActionEvent arg0)
-				{
-					JMenuItem oneTimeFunctionMenuItem = (JMenuItem) arg0.getSource();
-					functionsToBeRun.add(oneTimeFunctionMenuItems.get(oneTimeFunctionMenuItem));
-					repaint();
-				}
-			};
-			ActionListener dynamicFunctionMenuItemActionListener = new ActionListener()
-			{
-				public void actionPerformed(ActionEvent arg0)
-				{
-					JCheckBoxMenuItem dynamicFunctionMenuItem = (JCheckBoxMenuItem) arg0.getSource();
-					
-					if (dynamicFunctionMenuItem.isSelected())
-					{
-						JLabel functionLabel = new JLabel();
-						JToolBar functionToolBar = new JToolBar();
-						functionToolBar.add(functionLabel);
-						statusBar.add(functionToolBar);
-						selectedFunctionLabels.put(dynamicFunctionMenuItems.get(dynamicFunctionMenuItem), functionLabel);
-					}
-					else
-					{
-						statusBar.remove(selectedFunctionLabels.get(dynamicFunctionMenuItems.get(dynamicFunctionMenuItem)).getParent());
-						selectedFunctionLabels.remove(dynamicFunctionMenuItems.get(dynamicFunctionMenuItem));
-					}
-					
-					repaint();
-				}
-			};
-			
-			for (AbstractFunction function : allFunctions)
-			{
-				JCheckBoxMenuItem dynamicFunctionMenuItem = new JCheckBoxMenuItem(function.toString());
-				dynamicFunctionMenuItem.addActionListener(dynamicFunctionMenuItemActionListener);
-				dynamicFunctionsMenu.add(dynamicFunctionMenuItem);
-				dynamicFunctionMenuItems.put(dynamicFunctionMenuItem, function);
-				
-				JMenuItem oneTimeFunctionMenuItem = new JMenuItem(function.toString());
-				oneTimeFunctionMenuItem.addActionListener(oneTimeFunctionMenuItemActionListener);
-				oneTimeFunctionsMenu.add(oneTimeFunctionMenuItem);
-				oneTimeFunctionMenuItems.put(oneTimeFunctionMenuItem, function);
-			}
-		}
-	}
-	
-	public void refreshPaintMenu()
-	{
-		if (paintMenu != null)
-		{
-			paintMenu.removeAll();
-			
-			ActionListener paintMenuItemActionListener = new ActionListener()
-			{
-				public void actionPerformed(ActionEvent arg0)
-				{
-					try
-					{
-						setPaintColor(Integer.parseInt(((JMenuItem) arg0.getSource()).getText()));
-					}
-					catch (NumberFormatException e)
-					{
-						setPaintColor(-1);
-					}
-				}
-			};
-			
-			JCheckBoxMenuItem emptyBrushMenuItem = new JCheckBoxMenuItem("<none>");
-			emptyBrushMenuItem.addActionListener(paintMenuItemActionListener);
-			paintMenu.add(emptyBrushMenuItem);
-			for (int i = 0; i < palette.getElementColorCount(); ++i)
-			{
-				JCheckBoxMenuItem brushMenuItem = new JCheckBoxMenuItem(i + "");
-				brushMenuItem.addActionListener(paintMenuItemActionListener);
-				paintMenu.add(brushMenuItem);
-			}
-		}
-	}
-	
-	public void refreshToolBar()
-	{
-		if (toolBar != null)
-		{
-			for (Component toolButton : toolBar.getComponents())
-				if (toolButton instanceof JButton)
-					((JButton) toolButton).setSelected(false);
-			
-			switch (this.tool)
-			{
-				case POINTER_TOOL:
-					pointerToolButton.setSelected(true);
-					break;
-				case VERTEX_TOOL:
-					vertexToolButton.setSelected(true);
-					break;
-				case EDGE_TOOL:
-					edgeToolButton.setSelected(true);
-					break;
-				case CUT_TOOL:
-					cutToolButton.setSelected(true);
-					break;
-				case CAPTION_TOOL:
-					captionToolButton.setSelected(true);
-					break;
-				case PAINT_TOOL:
-					paintToolButton.setSelected(true);
-					break;
-			}
-		}
-	}
-	
-	public void refreshViewBar()
-	{
-		if (showVertexLabelsButton != null && showVertexLabelsButton.isSelected() != settings.showVertexLabels.get())
-			showVertexLabelsButton.setSelected(settings.showVertexLabels.get());
-		
-		if (showVertexWeightsButton != null && showVertexWeightsButton.isSelected() != settings.showVertexWeights.get())
-			showVertexWeightsButton.setSelected(settings.showVertexWeights.get());
-		
-		if (showEdgeHandlesButton != null && showEdgeHandlesButton.isSelected() != settings.showEdgeHandles.get())
-			showEdgeHandlesButton.setSelected(settings.showEdgeHandles.get());
-		
-		if (showEdgeLabelsButton != null && showEdgeLabelsButton.isSelected() != settings.showEdgeLabels.get())
-			showEdgeLabelsButton.setSelected(settings.showEdgeLabels.get());
-		
-		if (showEdgeWeightsButton != null && showEdgeWeightsButton.isSelected() != settings.showEdgeWeights.get())
-			showEdgeWeightsButton.setSelected(settings.showEdgeWeights.get());
-	}
-	
-	public void setPaintColor(int color)
-	{
-		this.paintColor = color;
-		
-		for (Component paintMenuItem : paintMenu.getComponents())
-			if (paintMenuItem instanceof JMenuItem)
-				((JCheckBoxMenuItem) paintMenuItem).setState(false);
-		
-		if (color + 1 < paintMenu.getComponentCount() && paintMenu.getComponent(color + 1) instanceof JMenuItem)
-			((JCheckBoxMenuItem) paintMenu.getComponent(color + 1)).setState(true);
-	}
+	}	
 	
 	public void setTool(Tool tool)
 	{
 		this.tool = tool;
-		refreshToolBar();
+		if(toolToolBar != null)
+			toolToolBar.refresh();
 		
 		Cursor cursor;
 		ResourceBundle cursors = ResourceBundle.getBundle("edu.belmont.mth.visigraph.resources.CursorBundle");
+		
 		switch (this.tool)
 		{
-			case POINTER_TOOL:
-				cursor = (Cursor) cursors.getObject("pointer_tool_cursor");
-				break;
-			case VERTEX_TOOL:
-				cursor = (Cursor) cursors.getObject("vertex_tool_cursor");
-				break;
-			case EDGE_TOOL:
-				cursor = (Cursor) cursors.getObject("edge_tool_cursor");
-				break;
-			case CUT_TOOL:
-				cursor = (Cursor) cursors.getObject("cut_tool_cursor");
-				break;
-			case CAPTION_TOOL:
-				cursor = (Cursor) cursors.getObject("caption_tool_cursor");
-				break;
-			case PAINT_TOOL:
-				cursor = (Cursor) cursors.getObject("paint_tool_cursor");
-				break;
-			default:
-				cursor = Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR);
-				break;
+			case POINTER_TOOL: cursor = (Cursor) cursors.getObject("pointer_tool_cursor"); break;
+			case VERTEX_TOOL:  cursor = (Cursor) cursors.getObject("vertex_tool_cursor");  break;
+			case EDGE_TOOL:    cursor = (Cursor) cursors.getObject("edge_tool_cursor");    break;
+			case CUT_TOOL:	   cursor = (Cursor) cursors.getObject("cut_tool_cursor");	   break;
+			case CAPTION_TOOL: cursor = (Cursor) cursors.getObject("caption_tool_cursor"); break;
+			case PAINT_TOOL:   cursor = (Cursor) cursors.getObject("paint_tool_cursor");   break;
+			default:           cursor = Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR); break;
 		}
+		
 		setCursor(cursor);
 	}
 	
@@ -1696,7 +641,7 @@ public class GraphDisplayController extends JPanel
 									edge.fixHandle();
 					
 					if (event.getButton() == MouseEvent.BUTTON3)
-						popupMenu.show(viewport, event.getPoint().x, event.getPoint().y);
+						viewportPopupMenu.show(viewport, event.getPoint().x, event.getPoint().y);
 					
 					break;
 				}
@@ -1796,7 +741,7 @@ public class GraphDisplayController extends JPanel
 		viewport.repaint();
 	}
 	
-	public void zoomGraph()
+	public void zoomFit()
 	{
 		if (graph.vertexes.size() > 0)
 			zoomFit(GraphDisplayView.getBounds(graph));
@@ -1812,6 +757,1030 @@ public class GraphDisplayController extends JPanel
 	{
 		transform.setTransform(GlobalSettings.maximumZoomFactor, transform.getShearY(), transform.getShearX(), GlobalSettings.maximumZoomFactor, transform.getTranslateX(), transform.getTranslateY());
 		viewport.repaint();
+	}
+	
+	public enum Tool
+	{
+		POINTER_TOOL, VERTEX_TOOL, EDGE_TOOL, CAPTION_TOOL, CUT_TOOL, PAINT_TOOL
+	}
+	
+	protected class ToolToolBar extends JToolBar
+	{
+		protected JButton pointerToolButton;
+		protected JButton vertexToolButton;
+		protected JButton edgeToolButton;
+		protected JButton captionToolButton;
+		protected JButton cutToolButton;
+		protected JButton paintToolButton;
+		protected JPopupMenu paintMenu;
+		protected Timer	paintMenuTimer;
+		
+		public ToolToolBar()
+		{
+			this.setOrientation(SwingConstants.VERTICAL);
+			this.setFloatable(false);
+			
+			pointerToolButton = new JButton((ImageIcon) imageIcons.getObject("pointer_tool_icon"));
+			pointerToolButton.addActionListener(new ActionListener()
+			{
+				public void actionPerformed(ActionEvent e)
+				{
+					setTool(Tool.POINTER_TOOL);
+					graph.deselectAll();
+				}
+			});
+			pointerToolButton.setSelected(true);
+			this.add(pointerToolButton);
+			
+			vertexToolButton = new JButton((ImageIcon) imageIcons.getObject("vertex_tool_icon"));
+			vertexToolButton.addActionListener(new ActionListener()
+			{
+				public void actionPerformed(ActionEvent e)
+				{
+					setTool(Tool.VERTEX_TOOL);
+					graph.deselectAll();
+				}
+			});
+			this.add(vertexToolButton);
+			
+			edgeToolButton = new JButton((ImageIcon) imageIcons.getObject("edge_tool_icon"));
+			edgeToolButton.addActionListener(new ActionListener()
+			{
+				public void actionPerformed(ActionEvent e)
+				{
+					setTool(Tool.EDGE_TOOL);
+					graph.deselectAll();
+				}
+			});
+			this.add(edgeToolButton);
+			
+			captionToolButton = new JButton((ImageIcon) imageIcons.getObject("caption_tool_icon"));
+			captionToolButton.addActionListener(new ActionListener()
+			{
+				public void actionPerformed(ActionEvent e)
+				{
+					setTool(Tool.CAPTION_TOOL);
+					graph.deselectAll();
+				}
+			});
+			this.add(captionToolButton);
+			
+			cutToolButton = new JButton((ImageIcon) imageIcons.getObject("cut_tool_icon"));
+			cutToolButton.addActionListener(new ActionListener()
+			{
+				public void actionPerformed(ActionEvent e)
+				{
+					setTool(Tool.CUT_TOOL);
+					graph.deselectAll();
+				}
+			});
+			this.add(cutToolButton);
+			
+			paintToolButton = new JButton((ImageIcon) imageIcons.getObject("paint_tool_icon"));
+			paintToolButton.addMouseListener(new MouseAdapter()
+			{
+				@Override
+				public void mouseExited(MouseEvent e)
+				{
+					isMouseDownOnPaintToolButton = false;
+				}
+				
+				@Override
+				public void mousePressed(MouseEvent event)
+				{
+					graph.deselectAll();
+					setTool(Tool.PAINT_TOOL);
+					isMouseDownOnPaintToolButton = true;
+					paintMenuTimer.start();
+				}
+				
+				@Override
+				public void mouseReleased(MouseEvent event)
+				{
+					isMouseDownOnPaintToolButton = false;
+				}
+			});
+			paintMenuTimer = new Timer(GlobalSettings.paintToolButtonDelay, new ActionListener()
+			{
+				@Override
+				public void actionPerformed(ActionEvent e)
+				{
+					paintMenuTimer.stop();
+					
+					if (isMouseDownOnPaintToolButton)
+						paintMenu.show(paintToolButton, 0, paintToolButton.getHeight());
+				}
+			});
+			this.add(paintToolButton);
+			
+			setTool(Tool.POINTER_TOOL);
+			
+			paintMenu = new JPopupMenu();
+			refreshPaintMenu();
+			paintColor = -1;
+			
+			refresh();
+		}
+	
+		public void refresh()
+		{
+			for (Component toolButton : this.getComponents())
+				if (toolButton instanceof JButton)
+					((JButton) toolButton).setSelected(false);
+			
+			switch (tool)
+			{
+				case POINTER_TOOL: pointerToolButton.setSelected(true); break;
+				case VERTEX_TOOL:  vertexToolButton.setSelected(true);	break;
+				case EDGE_TOOL:	   edgeToolButton.setSelected(true);	break;
+				case CUT_TOOL:	   cutToolButton.setSelected(true);		break;
+				case CAPTION_TOOL: captionToolButton.setSelected(true);	break;
+				case PAINT_TOOL:   paintToolButton.setSelected(true);	break;
+			}
+		}
+		
+		public void refreshPaintMenu()
+		{
+			paintMenu.removeAll();
+			
+			ActionListener paintMenuItemActionListener = new ActionListener()
+			{
+				public void actionPerformed(ActionEvent arg0)
+				{
+					try
+					{
+						paintColor = Integer.parseInt(((JMenuItem) arg0.getSource()).getText());				
+					}
+					catch (NumberFormatException e)
+					{
+						paintColor = -1;
+					}
+					
+					for (Component paintMenuItem : paintMenu.getComponents())
+						if (paintMenuItem instanceof JMenuItem)
+							((JCheckBoxMenuItem) paintMenuItem).setState(false);
+					
+					if (paintColor + 1 < paintMenu.getComponentCount() && paintMenu.getComponent(paintColor + 1) instanceof JMenuItem)
+						((JCheckBoxMenuItem) paintMenu.getComponent(paintColor + 1)).setState(true);
+				}
+			};
+			
+			JCheckBoxMenuItem emptyBrushMenuItem = new JCheckBoxMenuItem("<none>");
+			emptyBrushMenuItem.addActionListener(paintMenuItemActionListener);
+			emptyBrushMenuItem.setSelected(true);
+			paintMenu.add(emptyBrushMenuItem);
+			
+			for (int i = 0; i < palette.getElementColorCount(); ++i)
+			{
+				JCheckBoxMenuItem brushMenuItem = new JCheckBoxMenuItem(i + "");
+				brushMenuItem.addActionListener(paintMenuItemActionListener);
+				paintMenu.add(brushMenuItem);
+			}
+		}
+	}
+	
+	protected class ArrangeToolBar extends JToolBar
+	{
+		protected JButton arrangeCircleButton;
+		protected JButton arrangeGridButton;
+		protected JButton arrangeTreeButton;
+		protected JButton arrangeWebButton;
+		protected JButton alignVerticallyButton;
+		protected JButton alignHorizontallyButton;
+		protected JButton distributeHorizontallyButton;
+		protected JButton distributeVerticallyButton;
+		protected JButton rotateLeft90Button;
+		protected JButton rotateRight90Button;
+		protected JButton flipHorizontallyButton;
+		protected JButton flipVerticallyButton;	
+		
+		public ArrangeToolBar()
+		{
+			arrangeCircleButton = new JButton((ImageIcon) imageIcons.getObject("arrange_circle_icon"));
+			this.add(arrangeCircleButton);
+			arrangeCircleButton.addActionListener(new ActionListener()
+			{
+				public void actionPerformed(ActionEvent e)
+				{
+					double radius = GlobalSettings.arrangeCircleRadiusMultiplier * graph.vertexes.size();
+					double degreesPerVertex = 2 * Math.PI / graph.vertexes.size();
+					
+					for (int i = 0; i < graph.vertexes.size(); ++i)
+					{
+						graph.vertexes.get(i).x.set(radius * Math.cos(degreesPerVertex * i - Math.PI / 2.0));
+						graph.vertexes.get(i).y.set(radius * Math.sin(degreesPerVertex * i - Math.PI / 2.0));
+					}
+					
+					zoomFit();
+				}
+			});
+			
+			arrangeGridButton = new JButton((ImageIcon) imageIcons.getObject("arrange_grid_icon"));
+			this.add(arrangeGridButton);
+			arrangeGridButton.addActionListener(new ActionListener()
+			{
+				public void actionPerformed(ActionEvent e)
+				{
+					int n = graph.vertexes.size();
+					int rows = (int) Math.round(Math.sqrt(n));
+					int columns = (int) Math.ceil(n / (double) rows);
+					Point2D.Double location = new Point2D.Double((columns / 2.0) * -GlobalSettings.arrangeGridSpacing, (rows / 2.0) * -GlobalSettings.arrangeGridSpacing);
+					
+					for (int row = 0; row < rows; ++row)
+						for(int col = 0; (row < rows - 1 && col < columns) || (row == rows - 1 && col < (n % columns == 0 ? columns : n % columns)); ++col)
+						{
+							graph.vertexes.get(row * columns + col).x.set(location.x + GlobalSettings.arrangeGridSpacing * col);
+							graph.vertexes.get(row * columns + col).y.set(location.y + GlobalSettings.arrangeGridSpacing * row);
+						}
+					
+					zoomFit();
+				}
+			});
+			
+			arrangeTreeButton = new JButton((ImageIcon) imageIcons.getObject("arrange_tree_icon"));
+			this.add(arrangeTreeButton);
+			arrangeTreeButton.addActionListener(new ActionListener()
+			{
+				public void actionPerformed(ActionEvent e)
+				{
+					Vector<Vertex> allNodes = new Vector<Vertex>();
+					Vector<Vector<Vertex>> levels = new Vector<Vector<Vertex>>();
+					
+					// First we need to add all selected vertexes to a root level of the tree
+					levels.add(new Vector<Vertex>());
+					for (Vertex vertex : graph.vertexes)
+						if (vertex.isSelected.get())
+						{
+							levels.get(0).add(vertex);
+							allNodes.add(vertex);
+						}
+					
+					// While the last level has vertexes, add all their neighbors to the next level that haven't yet been otherwise added
+					while (levels.lastElement().size() > 0)
+					{
+						levels.add(new Vector<Vertex>());
+						
+						for (Vertex vertex : levels.get(levels.size() - 2))
+							for (Vertex neighbor : graph.getNeighbors(vertex))
+								if (!allNodes.contains(neighbor))
+								{
+									levels.lastElement().add(neighbor);
+									allNodes.add(neighbor);
+								}
+					}
+					
+					// If there were any nodes that weren't added yet, give them their own level
+					if (allNodes.size() < graph.vertexes.size())
+						for (Vertex vertex : levels.get(levels.size() - 1))
+							if (!allNodes.contains(vertex))
+							{
+								levels.lastElement().add(vertex);
+								allNodes.add(vertex);
+							}
+					
+					// If the last level is empty, remove it
+					if (levels.lastElement().size() == 0)
+						levels.remove(levels.size() - 1);
+					
+					// Now for the layout!
+					double y = 0.0;
+					double largestWidth = 0;
+					for (Vector<Vertex> level : levels)
+						largestWidth = Math.max(largestWidth, level.size() * 150.0);
+					
+					for (int row = 0; row < levels.size(); ++row)
+					{
+						Vector<Vertex> level = levels.get(row);
+						y += 150;
+						double colSpace = largestWidth / (level.size());
+						
+						for (int col = 0; col < level.size(); ++col)
+						{
+							Vertex vertex = level.get(col);
+							double x = (col + .5) * colSpace - largestWidth / 2.0;
+							
+							vertex.x.set(x);
+							vertex.y.set(y);
+						}
+					}
+					
+					zoomFit();
+				}
+			});
+			
+			arrangeWebButton = new JButton((ImageIcon) imageIcons.getObject("arrange_web_icon"));
+			this.add(arrangeWebButton);
+			arrangeWebButton.addActionListener(new ActionListener()
+			{
+				public void actionPerformed(ActionEvent e)
+				{
+					new Timer(50, new ActionListener() {
+						public void actionPerformed(ActionEvent arg0)
+						{
+							Timer timer = (Timer)arg0.getSource(); 
+							if(timer.getDelay() >= 500)
+							{
+								timer.stop(); return; 
+							}
+							
+							timer.setDelay((int)(timer.getDelay() * GlobalSettings.applyForcesDecelerationFactor));
+							
+							HashMap<Vertex, Point2D.Double> forces = new HashMap<Vertex, Point2D.Double>();
+						
+							// Initialize the hashmap of forces
+							for (int i = 0; i < graph.vertexes.size(); ++i)
+								forces.put(graph.vertexes.get(i), new Point2D.Double(0, 0));
+							
+							// Calculate all repulsive forces
+							for (int i = 0; i < graph.vertexes.size(); ++i)
+								for (int j = i + 1; j < graph.vertexes.size(); ++j)
+								{
+									Vertex v0 = graph.vertexes.get(i);
+									Vertex v1 = graph.vertexes.get(j);
+									
+									double xDiff = v1.x.get() - v0.x.get();
+									double yDiff = v1.y.get() - v0.y.get();
+									double distanceSquared = (xDiff * xDiff + yDiff * yDiff);
+									double xForce = GlobalSettings.repulsiveForce * (xDiff / distanceSquared);
+									double yForce = GlobalSettings.repulsiveForce * (yDiff / distanceSquared);
+									
+									forces.get(v0).x += xForce;
+									forces.get(v0).y += yForce;
+									
+									// And because every action has an opposite and equal reaction
+									forces.get(v1).x -= xForce;
+									forces.get(v1).y -= yForce;
+								}
+							
+							// Calculate all attractive forces
+							for (Edge edge : graph.edges)
+								if (edge.from != edge.to)
+								{
+									double xDiff = edge.to.x.get() - edge.from.x.get();
+									double yDiff = edge.to.y.get() - edge.from.y.get();
+									double distanceSquared = (xDiff * xDiff + yDiff * yDiff);
+									double xForce = GlobalSettings.attractiveForce * xDiff * distanceSquared;
+									double yForce = GlobalSettings.attractiveForce * yDiff * distanceSquared;
+									
+									forces.get(edge.from).x += xForce;
+									forces.get(edge.from).y += yForce;
+									
+									// And because every action has an opposite and equal reaction
+									forces.get(edge.to).x -= xForce;
+									forces.get(edge.to).y -= yForce;
+								}
+							
+							// Apply all net forces
+							for (Vertex v : graph.vertexes)
+							{
+								v.x.set(v.x.get() + forces.get(v).x);
+								v.y.set(v.y.get() + forces.get(v).y);
+							}
+						} 
+					} ).start();	
+				}
+			});
+			
+			this.add(new JToolBar.Separator());
+			
+			alignHorizontallyButton = new JButton((ImageIcon) imageIcons.getObject("align_horizontally_icon"));
+			this.add(alignHorizontallyButton);
+			alignHorizontallyButton.addActionListener(new ActionListener()
+			{
+				public void actionPerformed(ActionEvent e)
+				{
+					double centerY = 0.0, selectedCount = 0.0;
+					
+					for(int i = 0; i < graph.vertexes.size(); ++i)
+						if(graph.vertexes.get(i).isSelected.get())
+						{
+							centerY += graph.vertexes.get(i).y.get();
+							++selectedCount;
+						}
+					
+					centerY /= selectedCount;
+					
+					for(int i = 0; i < graph.vertexes.size(); ++i)
+						if(graph.vertexes.get(i).isSelected.get())
+							graph.vertexes.get(i).y.set(centerY);
+				}
+			});
+			
+			alignVerticallyButton = new JButton((ImageIcon) imageIcons.getObject("align_vertically_icon"));
+			this.add(alignVerticallyButton);
+			alignVerticallyButton.addActionListener(new ActionListener()
+			{
+				public void actionPerformed(ActionEvent e)
+				{
+					double centerX = 0.0, selectedCount = 0.0;
+					
+					for(int i = 0; i < graph.vertexes.size(); ++i)
+						if(graph.vertexes.get(i).isSelected.get())
+						{
+							centerX += graph.vertexes.get(i).x.get();
+							++selectedCount;
+						}
+					
+					centerX /= selectedCount;
+					
+					for(int i = 0; i < graph.vertexes.size(); ++i)
+						if(graph.vertexes.get(i).isSelected.get())
+							graph.vertexes.get(i).x.set(centerX);
+				}
+			});
+			
+			distributeHorizontallyButton = new JButton((ImageIcon) imageIcons.getObject("distribute_horizontally_icon"));
+			this.add(distributeHorizontallyButton);
+			distributeHorizontallyButton.addActionListener(new ActionListener()
+			{
+				public void actionPerformed(ActionEvent e)
+				{
+					Vector<Vertex> selectedVertexes = new Vector<Vertex>();
+					
+					for(int i = 0; i < graph.vertexes.size(); ++i)
+						if(graph.vertexes.get(i).isSelected.get())
+							selectedVertexes.add(graph.vertexes.get(i));
+					
+					Collections.sort(selectedVertexes, new Comparator<Vertex>() { public int compare(Vertex v1, Vertex v2) { return new Double(Math.signum(v1.x.get() - v2.x.get())).intValue() ; } } );
+					double spacing = (selectedVertexes.lastElement().x.get() - selectedVertexes.firstElement().x.get()) / (double)(selectedVertexes.size() - 1); 
+					double currentX = selectedVertexes.firstElement().x.get() - spacing;
+					
+					for(Vertex vertex : selectedVertexes)
+						vertex.x.set(currentX += spacing);
+				}
+			});
+			
+			distributeVerticallyButton = new JButton((ImageIcon) imageIcons.getObject("distribute_vertically_icon"));
+			this.add(distributeVerticallyButton);
+			distributeVerticallyButton.addActionListener(new ActionListener()
+			{
+				public void actionPerformed(ActionEvent e)
+				{
+					Vector<Vertex> selectedVertexes = new Vector<Vertex>();
+					
+					for(int i = 0; i < graph.vertexes.size(); ++i)
+						if(graph.vertexes.get(i).isSelected.get())
+							selectedVertexes.add(graph.vertexes.get(i));
+					
+					Collections.sort(selectedVertexes, new Comparator<Vertex>() { public int compare(Vertex v1, Vertex v2) { return new Double(Math.signum(v1.y.get() - v2.y.get())).intValue() ; } } );
+					double spacing = (selectedVertexes.lastElement().y.get() - selectedVertexes.firstElement().y.get()) / (double)(selectedVertexes.size() - 1); 
+					double currentY = selectedVertexes.firstElement().y.get() - spacing;
+					
+					for(Vertex vertex : selectedVertexes)
+						vertex.y.set(currentY += spacing);
+				}
+			});
+			
+			this.add(new JToolBar.Separator());
+			
+			rotateLeft90Button = new JButton((ImageIcon) imageIcons.getObject("rotate_left_90_icon"));
+			this.add(rotateLeft90Button);
+			rotateLeft90Button.addActionListener(new ActionListener()
+			{
+				public void actionPerformed(ActionEvent e)
+				{
+					int selectedVertexCount = 0;
+					Point2D.Double centroid = new Point2D.Double();
+					
+					for(Vertex vertex : graph.vertexes)
+						if(vertex.isSelected.get())
+						{
+							centroid.x += vertex.x.get();
+							centroid.y += vertex.y.get();
+							++selectedVertexCount;
+						}
+					
+					centroid.x /= (double)selectedVertexCount;
+					centroid.y /= (double)selectedVertexCount;
+					
+					for(Vertex vertex : graph.vertexes)
+						if(vertex.isSelected.get())
+						{
+							double oldVertexX = vertex.x.get();
+							vertex.x.set(centroid.x - (centroid.y - vertex.y.get()));
+							vertex.y.set(centroid.y + (centroid.x - oldVertexX));
+						}
+				}
+			});
+			
+			rotateRight90Button = new JButton((ImageIcon) imageIcons.getObject("rotate_right_90_icon"));
+			this.add(rotateRight90Button);
+			rotateRight90Button.addActionListener(new ActionListener()
+			{
+				public void actionPerformed(ActionEvent e)
+				{
+					int selectedVertexCount = 0;
+					Point2D.Double centroid = new Point2D.Double();
+					
+					for(Vertex vertex : graph.vertexes)
+						if(vertex.isSelected.get())
+						{
+							centroid.x += vertex.x.get();
+							centroid.y += vertex.y.get();
+							++selectedVertexCount;
+						}
+					
+					centroid.x /= (double)selectedVertexCount;
+					centroid.y /= (double)selectedVertexCount;
+					
+					for(Vertex vertex : graph.vertexes)
+						if(vertex.isSelected.get())
+						{
+							double oldVertexX = vertex.x.get();
+							vertex.x.set(centroid.x + (centroid.y - vertex.y.get()));
+							vertex.y.set(centroid.y - (centroid.x - oldVertexX));
+						}
+				}
+			});
+			
+			flipHorizontallyButton = new JButton((ImageIcon) imageIcons.getObject("flip_horizontally_icon"));
+			this.add(flipHorizontallyButton);
+			flipHorizontallyButton.addActionListener(new ActionListener()
+			{
+				public void actionPerformed(ActionEvent e)
+				{
+					int selectedVertexCount = 0;
+					double centerX = 0.0;
+					
+					for(Vertex vertex : graph.vertexes)
+						if(vertex.isSelected.get())
+						{
+							centerX += vertex.x.get();
+							++selectedVertexCount;
+						}
+					
+					centerX /= (double)selectedVertexCount;
+					
+					for(Vertex vertex : graph.vertexes)
+						if(vertex.isSelected.get())
+							vertex.x.set(2.0 * centerX - vertex.x.get());
+				}
+			});
+			
+			flipVerticallyButton = new JButton((ImageIcon) imageIcons.getObject("flip_vertically_icon"));
+			this.add(flipVerticallyButton);
+			flipVerticallyButton.addActionListener(new ActionListener()
+			{
+				public void actionPerformed(ActionEvent e)
+				{
+					int selectedVertexCount = 0;
+					double centerY = 0.0;
+					
+					for(Vertex vertex : graph.vertexes)
+						if(vertex.isSelected.get())
+						{
+							centerY += vertex.y.get();
+							++selectedVertexCount;
+						}
+					
+					centerY /= (double)selectedVertexCount;
+					
+					for(Vertex vertex : graph.vertexes)
+						if(vertex.isSelected.get())
+							vertex.y.set(2.0 * centerY - vertex.y.get());
+				}
+			});
+		}
+	}
+	
+	protected class ViewToolBar extends JToolBar
+	{
+		protected JButton showVertexLabelsButton;
+		protected JButton showVertexWeightsButton;
+		protected JButton showEdgeHandlesButton;
+		protected JButton showEdgeLabelsButton;
+		protected JButton showEdgeWeightsButton;
+		protected JButton showCrossingsButton;
+		
+		public ViewToolBar()
+		{
+			showVertexLabelsButton = new JButton((ImageIcon) imageIcons.getObject("show_vertex_labels_icon"));
+			showVertexLabelsButton.addActionListener(new ActionListener()
+			{
+				public void actionPerformed(ActionEvent e)
+				{
+					settings.showVertexLabels.set(!settings.showVertexLabels.get());
+				}
+			});
+			this.add(showVertexLabelsButton);
+			
+			showVertexWeightsButton = new JButton((ImageIcon) imageIcons.getObject("show_vertex_weights_icon"));
+			showVertexWeightsButton.addActionListener(new ActionListener()
+			{
+				public void actionPerformed(ActionEvent e)
+				{
+					settings.showVertexWeights.set(!settings.showVertexWeights.get());
+				}
+			});
+			this.add(showVertexWeightsButton);
+			
+			showEdgeHandlesButton = new JButton((ImageIcon) imageIcons.getObject("show_edge_handles_icon"));
+			showEdgeHandlesButton.addActionListener(new ActionListener()
+			{
+				public void actionPerformed(ActionEvent e)
+				{
+					settings.showEdgeHandles.set(!settings.showEdgeHandles.get());
+				}
+			});
+			this.add(showEdgeHandlesButton);
+			
+			showEdgeLabelsButton = new JButton((ImageIcon) imageIcons.getObject("show_edge_labels_icon"));
+			showEdgeLabelsButton.addActionListener(new ActionListener()
+			{
+				public void actionPerformed(ActionEvent e)
+				{
+					settings.showEdgeLabels.set(!settings.showEdgeLabels.get());
+				}
+			});
+			this.add(showEdgeLabelsButton);
+			
+			showEdgeWeightsButton = new JButton((ImageIcon) imageIcons.getObject("show_edge_weights_icon"));
+			showEdgeWeightsButton.addActionListener(new ActionListener()
+			{
+				public void actionPerformed(ActionEvent e)
+				{
+					settings.showEdgeWeights.set(!settings.showEdgeWeights.get());
+				}
+			});
+			this.add(showEdgeWeightsButton);
+			
+			this.refresh();
+		}
+		
+		public void refresh()
+		{
+			if (showVertexLabelsButton != null && showVertexLabelsButton.isSelected() != settings.showVertexLabels.get())
+				showVertexLabelsButton.setSelected(settings.showVertexLabels.get());
+			
+			if (showVertexWeightsButton != null && showVertexWeightsButton.isSelected() != settings.showVertexWeights.get())
+				showVertexWeightsButton.setSelected(settings.showVertexWeights.get());
+			
+			if (showEdgeHandlesButton != null && showEdgeHandlesButton.isSelected() != settings.showEdgeHandles.get())
+				showEdgeHandlesButton.setSelected(settings.showEdgeHandles.get());
+			
+			if (showEdgeLabelsButton != null && showEdgeLabelsButton.isSelected() != settings.showEdgeLabels.get())
+				showEdgeLabelsButton.setSelected(settings.showEdgeLabels.get());
+			
+			if (showEdgeWeightsButton != null && showEdgeWeightsButton.isSelected() != settings.showEdgeWeights.get())
+				showEdgeWeightsButton.setSelected(settings.showEdgeWeights.get());
+		}
+	}
+	
+	protected class ZoomToolBar extends JToolBar
+	{
+		protected JButton zoomGraphButton;
+		protected JButton zoomOneToOneButton;
+		protected JButton zoomInButton;
+		protected JButton zoomOutButton;
+		
+		public ZoomToolBar()
+		{
+			zoomGraphButton = new JButton((ImageIcon) imageIcons.getObject("zoom_graph_icon"));
+			zoomGraphButton.addActionListener(new ActionListener()
+			{
+				public void actionPerformed(ActionEvent e)
+				{
+					zoomFit();
+				}
+			});
+			this.add(zoomGraphButton);
+			
+			zoomOneToOneButton = new JButton((ImageIcon) imageIcons.getObject("zoom_one_to_one_icon"));
+			zoomOneToOneButton.addActionListener(new ActionListener()
+			{
+				public void actionPerformed(ActionEvent e)
+				{
+					zoomOneToOne();
+				}
+			});
+			this.add(zoomOneToOneButton);
+			
+			zoomInButton = new JButton((ImageIcon) imageIcons.getObject("zoom_in_icon"));
+			zoomInButton.addActionListener(new ActionListener()
+			{
+				public void actionPerformed(ActionEvent e)
+				{
+					Point2D.Double viewportCenter = new Point2D.Double(viewport.getWidth() / 2.0, viewport.getHeight() / 2.0);
+					Point2D.Double zoomCenter = new Point2D.Double();
+					try
+					{
+						transform.inverseTransform(viewportCenter, zoomCenter);
+					}
+					catch (NoninvertibleTransformException e1)
+					{}
+					
+					zoomCenter(zoomCenter, GlobalSettings.zoomInFactor);
+				}
+			});
+			this.add(zoomInButton);
+			
+			zoomOutButton = new JButton((ImageIcon) imageIcons.getObject("zoom_out_icon"));
+			zoomOutButton.addActionListener(new ActionListener()
+			{
+				public void actionPerformed(ActionEvent e)
+				{
+					Point2D.Double viewportCenter = new Point2D.Double(viewport.getWidth() / 2.0, viewport.getHeight() / 2.0);
+					Point2D.Double zoomCenter = new Point2D.Double();
+					try
+					{
+						transform.inverseTransform(viewportCenter, zoomCenter);
+					}
+					catch (NoninvertibleTransformException e1)
+					{}
+					
+					zoomCenter(zoomCenter, GlobalSettings.zoomOutFactor);
+				}
+			});
+			this.add(zoomOutButton);
+		}
+	}
+	
+	protected class FunctionToolBar extends JToolBar
+	{
+		protected JButton								  oneTimeFunctionsButton;
+		protected JPopupMenu							  oneTimeFunctionsMenu;
+		protected Map<JMenuItem, AbstractFunction>		   oneTimeFunctionMenuItems;
+		
+		protected JButton								  dynamicFunctionsButton;
+		protected JPopupMenu							  dynamicFunctionsMenu;
+		protected Map<JCheckBoxMenuItem, AbstractFunction> dynamicFunctionMenuItems;
+		
+		public FunctionToolBar()
+		{
+			oneTimeFunctionsButton = new JButton((ImageIcon) imageIcons.getObject("one_time_functions_icon"));
+			oneTimeFunctionsButton.addActionListener(new ActionListener()
+			{
+				public void actionPerformed(ActionEvent e)
+				{
+					oneTimeFunctionsMenu.show(oneTimeFunctionsButton, 0, oneTimeFunctionsButton.getHeight());
+				}
+			});
+			this.add(oneTimeFunctionsButton);
+			
+			dynamicFunctionsButton = new JButton((ImageIcon) imageIcons.getObject("dynamic_functions_icon"));
+			dynamicFunctionsButton.addActionListener(new ActionListener()
+			{
+				public void actionPerformed(ActionEvent e)
+				{
+					dynamicFunctionsMenu.show(dynamicFunctionsButton, 0, dynamicFunctionsButton.getHeight());
+				}
+			});
+			this.add(dynamicFunctionsButton);
+			
+			oneTimeFunctionsMenu = new JPopupMenu();
+			dynamicFunctionsMenu = new JPopupMenu();
+			
+			oneTimeFunctionMenuItems = new HashMap<JMenuItem, AbstractFunction>();
+			dynamicFunctionMenuItems = new HashMap<JCheckBoxMenuItem, AbstractFunction>();
+			
+			refresh();
+		}
+		
+		public void refresh()
+		{
+			if (oneTimeFunctionsMenu != null && dynamicFunctionsMenu != null)
+			{
+				oneTimeFunctionsMenu.removeAll();
+				dynamicFunctionsMenu.removeAll();
+				
+				oneTimeFunctionMenuItems = new HashMap<JMenuItem, AbstractFunction>();
+				dynamicFunctionMenuItems = new HashMap<JCheckBoxMenuItem, AbstractFunction>();
+				
+				ActionListener oneTimeFunctionMenuItemActionListener = new ActionListener()
+				{
+					public void actionPerformed(ActionEvent arg0)
+					{
+						JMenuItem oneTimeFunctionMenuItem = (JMenuItem) arg0.getSource();
+						functionsToBeRun.add(oneTimeFunctionMenuItems.get(oneTimeFunctionMenuItem));
+						viewport.repaint();
+					}
+				};
+				ActionListener dynamicFunctionMenuItemActionListener = new ActionListener()
+				{
+					public void actionPerformed(ActionEvent arg0)
+					{
+						JCheckBoxMenuItem dynamicFunctionMenuItem = (JCheckBoxMenuItem) arg0.getSource();
+						
+						if (dynamicFunctionMenuItem.isSelected())
+						{
+							JLabel functionLabel = new JLabel();
+							JToolBar functionToolBar = new JToolBar();
+							functionToolBar.add(functionLabel);
+							statusBar.add(functionToolBar);
+							selectedFunctionLabels.put(dynamicFunctionMenuItems.get(dynamicFunctionMenuItem), functionLabel);
+						}
+						else
+						{
+							statusBar.remove(selectedFunctionLabels.get(dynamicFunctionMenuItems.get(dynamicFunctionMenuItem)).getParent());
+							statusBar.validate();
+							selectedFunctionLabels.remove(dynamicFunctionMenuItems.get(dynamicFunctionMenuItem));
+						}
+						
+						viewport.repaint();
+					}
+				};
+				
+				for (AbstractFunction function : GlobalSettings.allFunctions)
+				{
+					JCheckBoxMenuItem dynamicFunctionMenuItem = new JCheckBoxMenuItem(function.toString());
+					dynamicFunctionMenuItem.addActionListener(dynamicFunctionMenuItemActionListener);
+					dynamicFunctionsMenu.add(dynamicFunctionMenuItem);
+					dynamicFunctionMenuItems.put(dynamicFunctionMenuItem, function);
+					
+					JMenuItem oneTimeFunctionMenuItem = new JMenuItem(function.toString());
+					oneTimeFunctionMenuItem.addActionListener(oneTimeFunctionMenuItemActionListener);
+					oneTimeFunctionsMenu.add(oneTimeFunctionMenuItem);
+					oneTimeFunctionMenuItems.put(oneTimeFunctionMenuItem, function);
+				}
+			}
+		}
+	}
+	
+	protected class ViewportPopupMenu extends JPopupMenu
+	{
+		protected JMenuItem selectAllVerticesItem;
+		protected JMenuItem selectAllEdgesItem;
+		protected JMenuItem propertiesItem;
+		protected JMenuItem vertexItem;
+		protected JMenuItem vertexLabelItem;
+		protected JMenuItem vertexRadiusItem;
+		protected JMenuItem vertexColorItem;
+		protected JMenuItem vertexWeightItem;
+		protected JMenuItem edgeItem;
+		protected JMenuItem edgeWeightItem;
+		protected JMenuItem edgeColorItem;
+		protected JMenuItem edgeLabelItem;
+		protected JMenuItem edgeThicknessItem;
+		
+		public ViewportPopupMenu()
+		{
+			selectAllVerticesItem = new JMenuItem("Select all vertices");
+			selectAllVerticesItem.addActionListener(new ActionListener()
+			{
+				public void actionPerformed(ActionEvent arg0)
+				{
+					for (Vertex v : graph.vertexes)
+						v.isSelected.set(true);
+				}
+			});
+			this.add(selectAllVerticesItem);
+			
+			selectAllEdgesItem = new JMenuItem("Select all edges");
+			selectAllEdgesItem.addActionListener(new ActionListener()
+			{
+				public void actionPerformed(ActionEvent arg0)
+				{
+					for (Edge e : graph.edges)
+						e.isSelected.set(true);
+				}
+			});
+			this.add(selectAllEdgesItem);
+			
+			propertiesItem = new JMenu("Properties");
+			this.add(propertiesItem);
+			
+			vertexItem = new JMenu("Vertex");
+			propertiesItem.add(vertexItem);
+			
+			vertexLabelItem = new JMenuItem("Label");
+			vertexLabelItem.addActionListener(new ActionListener()
+			{
+				public void actionPerformed(ActionEvent e)
+				{
+					String value = JOptionPane.showInputDialog(viewport, "New label:", GlobalSettings.applicationName, JOptionPane.QUESTION_MESSAGE);
+					if (value != null)
+						for (Vertex vertex : graph.vertexes)
+							if (vertex.isSelected.get())
+								vertex.label.set(value);
+				}
+			});
+			vertexItem.add(vertexLabelItem);
+			
+			vertexRadiusItem = new JMenuItem("Radius");
+			vertexRadiusItem.addActionListener(new ActionListener()
+			{
+				public void actionPerformed(ActionEvent e)
+				{
+					String value = JOptionPane.showInputDialog(viewport, "New radius:", GlobalSettings.applicationName, JOptionPane.QUESTION_MESSAGE);
+					if (value != null)
+					{
+						double radius = Double.parseDouble(value);
+						
+						for (Vertex vertex : graph.vertexes)
+							if (vertex.isSelected.get())
+								vertex.radius.set(radius);
+					}
+				}
+			});
+			vertexItem.add(vertexRadiusItem);
+			
+			vertexColorItem = new JMenuItem("Color");
+			vertexColorItem.addActionListener(new ActionListener()
+			{
+				public void actionPerformed(ActionEvent e)
+				{
+					String value = JOptionPane.showInputDialog(viewport, "New color:", GlobalSettings.applicationName, JOptionPane.QUESTION_MESSAGE);
+					if (value != null)
+					{
+						int color = Integer.parseInt(value);
+						
+						for (Vertex vertex : graph.vertexes)
+							if (vertex.isSelected.get())
+								vertex.color.set(color);
+					}
+				}
+			});
+			vertexItem.add(vertexColorItem);
+			
+			vertexWeightItem = new JMenuItem("Weight");
+			vertexWeightItem.addActionListener(new ActionListener()
+			{
+				public void actionPerformed(ActionEvent e)
+				{
+					String value = JOptionPane.showInputDialog(viewport, "New weight:", GlobalSettings.applicationName, JOptionPane.QUESTION_MESSAGE);
+					if (value != null)
+					{
+						double weight = Double.parseDouble(value);
+						
+						for (Vertex vertex : graph.vertexes)
+							if (vertex.isSelected.get())
+								vertex.weight.set(weight);
+					}
+				}
+			});
+			vertexItem.add(vertexWeightItem);
+			
+			edgeItem = new JMenu("Edge");
+			propertiesItem.add(edgeItem);
+			
+			edgeWeightItem = new JMenuItem("Weight");
+			edgeWeightItem.addActionListener(new ActionListener()
+			{
+				public void actionPerformed(ActionEvent e)
+				{
+					String value = JOptionPane.showInputDialog(viewport, "New weight:", GlobalSettings.applicationName, JOptionPane.QUESTION_MESSAGE);
+					if (value != null)
+					{
+						double weight = Double.parseDouble(value);
+						
+						for (Edge edge : graph.edges)
+							if (edge.isSelected.get())
+								edge.weight.set(weight);
+					}
+				}
+			});
+			edgeItem.add(edgeWeightItem);
+			
+			edgeColorItem = new JMenuItem("Color");
+			edgeColorItem.addActionListener(new ActionListener()
+			{
+				public void actionPerformed(ActionEvent e)
+				{
+					String value = JOptionPane.showInputDialog(viewport, "New color:", GlobalSettings.applicationName, JOptionPane.QUESTION_MESSAGE);
+					if (value != null)
+					{
+						int color = Integer.parseInt(value);
+						
+						for (Edge edge : graph.edges)
+							if (edge.isSelected.get())
+								edge.color.set(color);
+					}
+				}
+			});
+			edgeItem.add(edgeColorItem);
+			
+			edgeLabelItem = new JMenuItem("Label");
+			edgeLabelItem.addActionListener(new ActionListener()
+			{
+				public void actionPerformed(ActionEvent e)
+				{
+					String label = JOptionPane.showInputDialog(viewport, "New label:", GlobalSettings.applicationName, JOptionPane.QUESTION_MESSAGE);
+					if (label != null)
+						for (Edge edge : graph.edges)
+							if (edge.isSelected.get())
+								edge.label.set(label);
+				}
+			});
+			edgeItem.add(edgeLabelItem);
+			
+			edgeThicknessItem = new JMenuItem("Thickness");
+			edgeThicknessItem.addActionListener(new ActionListener()
+			{
+				public void actionPerformed(ActionEvent e)
+				{
+					String value = JOptionPane.showInputDialog(viewport, "New thickness:", GlobalSettings.applicationName, JOptionPane.QUESTION_MESSAGE);
+					if (value != null)
+					{
+						double thickness = Double.parseDouble(value);
+						
+						for (Edge edge : graph.edges)
+							if (edge.isSelected.get())
+								edge.thickness.set(thickness);
+					}
+				}
+			});
+			edgeItem.add(edgeThicknessItem);
+		}
 	}
 }
 

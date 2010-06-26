@@ -7,10 +7,9 @@ import javax.swing.*;
 
 import edu.belmont.mth.visigraph.models.Graph;
 import edu.belmont.mth.visigraph.models.generators.*;
-
+import edu.belmont.mth.visigraph.settings.GlobalSettings;
 import java.awt.*;
 import java.awt.event.*;
-import java.util.Vector;
 
 /**
  * @author Cameron Behar
@@ -20,7 +19,6 @@ import java.util.Vector;
 public class NewGraphDialog extends JDialog implements ActionListener
 {
 	protected static NewGraphDialog		dialog;
-	protected static Vector<AbstractGraphGenerator>	functions;
 	protected static JComboBox			functionComboBox;
 	protected static JLabel				functionParametersLabel;
 	protected static JTextField			functionParametersField;
@@ -56,8 +54,7 @@ public class NewGraphDialog extends JDialog implements ActionListener
 		functionLabel.setHorizontalAlignment(SwingConstants.RIGHT);
 		inputPanel.add(functionLabel, gridBagConstraints);
 		
-		initializeGraphGenerators();
-		functionComboBox = new JComboBox(functions);
+		functionComboBox = new JComboBox(GlobalSettings.allGraphGenerators);
 		functionComboBox.addItemListener(new ItemListener()
 		{
 			public void itemStateChanged(ItemEvent arg0)
@@ -191,16 +188,5 @@ public class NewGraphDialog extends JDialog implements ActionListener
 			functionParametersField.requestFocus();
 		}
 	}
-	
-	private void initializeGraphGenerators()
-	{
-		functions = new Vector<AbstractGraphGenerator>();
-		functions.add(new EmptyGraphGenerator());
-		functions.add(new CycleGraphGenerator());
-		functions.add(new CompleteGraphGenerator());
-		functions.add(new CompleteBipartiteGraphGenerator());
-		functions.add(new SymmetricTreeGraphGenerator());
-		functions.add(new CartesianProductOfCompleteBipartiteGraphAndCycleGeneratorScott());
-		functions.add(new CartesianProductOfCompleteBipartiteGraphAndCycleGeneratorBehar());
-	}
+
 }
