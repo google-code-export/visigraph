@@ -25,7 +25,7 @@ public class GraphWindow extends JInternalFrame
 		super("", true, true, true, true);
 		this.setSize(GlobalSettings.defaultGraphWindowSize);
 		this.add(gdc = new GraphDisplayController(g));
-		this.addInternalFrameListener(new InternalFrameListener() { public void internalFrameActivated(InternalFrameEvent arg0) { gdc.zoomGraph(); } public void internalFrameClosed(InternalFrameEvent e) { } public void internalFrameClosing(InternalFrameEvent e) { } public void internalFrameDeactivated(InternalFrameEvent e) { } public void internalFrameDeiconified(InternalFrameEvent e) { } public void internalFrameIconified(InternalFrameEvent e) { } public void internalFrameOpened(InternalFrameEvent e) { }});
+		this.addInternalFrameListener(new InternalFrameListener() { public void internalFrameActivated(InternalFrameEvent arg0) { gdc.zoomFit(); } public void internalFrameClosed(InternalFrameEvent e) { } public void internalFrameClosing(InternalFrameEvent e) { } public void internalFrameDeactivated(InternalFrameEvent e) { } public void internalFrameDeiconified(InternalFrameEvent e) { } public void internalFrameIconified(InternalFrameEvent e) { } public void internalFrameOpened(InternalFrameEvent e) { }});
 		this.updateTitle();
 		this.setVisible(true);
 		this.requestFocus();
