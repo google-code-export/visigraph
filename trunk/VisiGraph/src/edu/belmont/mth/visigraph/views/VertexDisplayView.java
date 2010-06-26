@@ -40,9 +40,9 @@ public class VertexDisplayView
 			g2D.drawString(v.weight.get().toString(), (float)(v.x.get() + v.radius.get() + 3f), v.y.get().floatValue());
 	}
 
-	public static boolean wasClicked(Vertex vertex, Point point)
+	public static boolean wasClicked(Vertex vertex, Point point, double scale)
 	{
-		return (Point2D.distance(vertex.x.get(), vertex.y.get(), point.x, point.y) <= vertex.radius.get());
+		return (Point2D.distance(vertex.x.get(), vertex.y.get(), point.x, point.y) <= vertex.radius.get() + GlobalSettings.defaultVertexClickMargin / scale);
 	}
 	
 	public static boolean wasSelected(Vertex vertex, Rectangle selection)

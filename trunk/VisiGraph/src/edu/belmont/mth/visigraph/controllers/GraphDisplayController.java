@@ -426,7 +426,7 @@ public class GraphDisplayController extends JPanel
 					for(int i = graph.vertexes.size() - 1; i >= 0; --i)
 					{
 						Vertex vertex = graph.vertexes.get(i);
-						if (VertexDisplayView.wasClicked(vertex, currentMousePoint))
+						if (VertexDisplayView.wasClicked(vertex, currentMousePoint, transform.getScaleX()))
 						{
 							if (!vertex.isSelected.get() && !isShiftDown)
 								graph.deselectAll();
@@ -441,7 +441,7 @@ public class GraphDisplayController extends JPanel
 						for(int i = graph.edges.size() - 1; i >= 0; --i)
 						{
 							Edge edge = graph.edges.get(i);
-							if (EdgeDisplayView.wasClicked(edge, currentMousePoint))
+							if (EdgeDisplayView.wasClicked(edge, currentMousePoint, transform.getScaleX()))
 							{
 								if (!edge.isSelected.get() && !isShiftDown)
 									graph.deselectAll();
@@ -456,7 +456,7 @@ public class GraphDisplayController extends JPanel
 						for(int i = graph.captions.size() - 1; i >= 0; --i)
 						{
 							Caption caption = graph.captions.get(i);
-							if (CaptionDisplayView.wasHandleClicked(caption, currentMousePoint))
+							if (CaptionDisplayView.wasHandleClicked(caption, currentMousePoint, transform.getScaleX()))
 							{
 								if (!caption.isSelected.get() && !isShiftDown)
 									graph.deselectAll();
@@ -471,7 +471,7 @@ public class GraphDisplayController extends JPanel
 						for(int i = graph.captions.size() - 1; i >= 0; --i)
 						{
 							Caption caption = graph.captions.get(i);
-							if (CaptionDisplayView.wasEditorClicked(caption, currentMousePoint))
+							if (CaptionDisplayView.wasEditorClicked(caption, currentMousePoint, transform.getScaleX()))
 							{
 								if (!caption.isSelected.get() && !isShiftDown)
 									graph.deselectAll();
@@ -507,7 +507,7 @@ public class GraphDisplayController extends JPanel
 						boolean fromVertexClicked = false;
 						
 						for (Vertex vertex : graph.vertexes)
-							if (VertexDisplayView.wasClicked(vertex, currentMousePoint))
+							if (VertexDisplayView.wasClicked(vertex, currentMousePoint, transform.getScaleX()))
 								if (fromVertex == null)
 								{
 									// If the user has not yet defined a from Vertex, make this one so
@@ -554,7 +554,7 @@ public class GraphDisplayController extends JPanel
 					if (event.getButton() == MouseEvent.BUTTON1)
 					{
 						for (Vertex vertex : graph.vertexes)
-							if (VertexDisplayView.wasClicked(vertex, currentMousePoint))
+							if (VertexDisplayView.wasClicked(vertex, currentMousePoint, transform.getScaleX()))
 							{
 								graph.vertexes.remove(vertex);
 								cutToolClickedObject = true;
@@ -563,7 +563,7 @@ public class GraphDisplayController extends JPanel
 						
 						if (!cutToolClickedObject)
 							for (Edge edge : graph.edges)
-								if (EdgeDisplayView.wasClicked(edge, currentMousePoint))
+								if (EdgeDisplayView.wasClicked(edge, currentMousePoint, transform.getScaleX()))
 								{
 									graph.edges.remove(edge);
 									cutToolClickedObject = true;
@@ -572,7 +572,7 @@ public class GraphDisplayController extends JPanel
 						
 						if (!cutToolClickedObject)
 							for (Caption caption : graph.captions)
-								if (CaptionDisplayView.wasHandleClicked(caption, currentMousePoint))
+								if (CaptionDisplayView.wasHandleClicked(caption, currentMousePoint, transform.getScaleX()))
 								{
 									graph.captions.remove(caption);
 									cutToolClickedObject = true;
@@ -589,7 +589,7 @@ public class GraphDisplayController extends JPanel
 					if (event.getButton() == MouseEvent.BUTTON1)
 					{
 						for (Vertex vertex : graph.vertexes)
-							if (VertexDisplayView.wasClicked(vertex, currentMousePoint))
+							if (VertexDisplayView.wasClicked(vertex, currentMousePoint, transform.getScaleX()))
 							{
 								vertex.color.set(paintColor);
 								paintToolClickedObject = true;
@@ -598,7 +598,7 @@ public class GraphDisplayController extends JPanel
 						
 						if (!paintToolClickedObject)
 							for (Edge edge : graph.edges)
-								if (EdgeDisplayView.wasClicked(edge, currentMousePoint))
+								if (EdgeDisplayView.wasClicked(edge, currentMousePoint, transform.getScaleX()))
 								{
 									edge.color.set(paintColor);
 									paintToolClickedObject = true;
@@ -649,7 +649,7 @@ public class GraphDisplayController extends JPanel
 				{
 					if (fromVertex != null)
 						for (Vertex vertex : graph.vertexes)
-							if (!vertex.isSelected.get() && VertexDisplayView.wasClicked(vertex, currentMousePoint))
+							if (!vertex.isSelected.get() && VertexDisplayView.wasClicked(vertex, currentMousePoint, transform.getScaleX()))
 							{
 								graph.edges.add(new Edge(graph.nextEdgeId(), graph.allowDirectedEdges, fromVertex, vertex));
 								fromVertex = null;

@@ -7,6 +7,7 @@ import java.awt.*;
 import java.awt.geom.*;
 import java.util.ResourceBundle;
 import edu.belmont.mth.visigraph.models.*;
+import edu.belmont.mth.visigraph.settings.GlobalSettings;
 import edu.belmont.mth.visigraph.settings.GraphDisplaySettings;
 
 /**
@@ -41,9 +42,15 @@ public class CaptionDisplayView
 		}
 	}
 	
-	public static boolean wasHandleClicked(Caption c, Point p)
+	public static boolean wasHandleClicked(Caption c, Point p, double scale)
 	{
-		return getHandleRectangle(c).contains(p);
+		Rectangle2D.Double handle = getHandleRectangle(c);
+		handle.x -= GlobalSettings.defaultCaptionHandleClickMargin / scale;
+		handle.y -= GlobalSettings.defaultCaptionHandleClickMargin / scale;
+		handle.width  += 2.0 * GlobalSettings.defaultCaptionHandleClickMargin / scale;
+		handle.height += 2.0 * GlobalSettings.defaultCaptionHandleClickMargin / scale;
+		
+		return handle.contains(p);
 	}
 	
 	public static boolean wasHandleSelected(Caption c, Rectangle r)
@@ -51,9 +58,15 @@ public class CaptionDisplayView
 		return getHandleRectangle(c).intersects(r);
 	}
 	
-	public static boolean wasEditorClicked(Caption c, Point p)
+	public static boolean wasEditorClicked(Caption c, Point p, double scale)
 	{
-		return getEditorRectangle(c).contains(p);
+		Rectangle2D.Double editor = getEditorRectangle(c);
+		editor.x -= GlobalSettings.defaultCaptionEditorClickMargin / scale;
+		editor.y -= GlobalSettings.defaultCaptionEditorClickMargin / scale;
+		editor.width  += 2.0 * GlobalSettings.defaultCaptionEditorClickMargin / scale;
+		editor.height += 2.0 * GlobalSettings.defaultCaptionEditorClickMargin / scale;
+		
+		return editor.contains(p);
 	}
 	
 	public static Rectangle2D.Double getHandleRectangle(Caption c)
