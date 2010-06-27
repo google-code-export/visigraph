@@ -5,8 +5,7 @@ package edu.belmont.mth.visigraph.models.functions;
 
 import java.awt.*;
 import java.awt.geom.*;
-import java.util.Vector;
-
+import java.util.*;
 import edu.belmont.mth.visigraph.models.*;
 import edu.belmont.mth.visigraph.settings.GlobalSettings;
 
@@ -14,7 +13,7 @@ import edu.belmont.mth.visigraph.settings.GlobalSettings;
  * @author Cameron Behar
  *
  */
-public class CountCrossingsFunction extends AbstractFunction
+public class CountCrossingsFunction extends FunctionBase
 {
 	public Object evaluate(Graphics2D g2D, Palette p, Graph g)
 	{

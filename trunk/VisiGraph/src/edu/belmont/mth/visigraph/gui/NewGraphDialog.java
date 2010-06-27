@@ -4,8 +4,7 @@
 package edu.belmont.mth.visigraph.gui;
 
 import javax.swing.*;
-
-import edu.belmont.mth.visigraph.models.Graph;
+import edu.belmont.mth.visigraph.models.*;
 import edu.belmont.mth.visigraph.models.generators.*;
 import edu.belmont.mth.visigraph.settings.GlobalSettings;
 import java.awt.*;
@@ -88,6 +87,29 @@ public class NewGraphDialog extends JDialog implements ActionListener
 		gridBagConstraints.gridx = 1;
 		gridBagConstraints.gridy = 3;
 		gridBagConstraints.gridwidth = 1;
+		allowLoopsCheckBox.addItemListener(new ItemListener()
+		{
+			@Override
+			public void itemStateChanged(ItemEvent arg0)
+			{
+				GraphGeneratorBase generator = (GraphGeneratorBase)functionComboBox.getSelectedItem();
+				
+				if(!generator.areCyclesAllowed().isForced())
+				{
+					if(allowLoopsCheckBox.isSelected())
+					{
+						allowCyclesCheckBox.setEnabled(false);
+						allowCyclesCheckBox.setSelected(true);
+					}
+					else
+					{
+						
+						if(!allowMultipleEdgesCheckBox.isSelected())
+							allowCyclesCheckBox.setEnabled(true);
+					}
+				}
+			}
+		});
 		inputPanel.add(allowLoopsCheckBox, gridBagConstraints);
 		
 		allowDirectedEdgesCheckBox = new JCheckBox("Allow directed edges");
@@ -102,6 +124,28 @@ public class NewGraphDialog extends JDialog implements ActionListener
 		gridBagConstraints.gridx = 1;
 		gridBagConstraints.gridy = 4;
 		gridBagConstraints.gridwidth = 1;
+		allowMultipleEdgesCheckBox.addItemListener(new ItemListener()
+		{
+			@Override
+			public void itemStateChanged(ItemEvent e)
+			{
+				GraphGeneratorBase generator = (GraphGeneratorBase)functionComboBox.getSelectedItem();
+				
+				if(!generator.areCyclesAllowed().isForced())
+				{
+					if(allowMultipleEdgesCheckBox.isSelected())
+					{
+						allowCyclesCheckBox.setEnabled(false);
+						allowCyclesCheckBox.setSelected(true);
+					}
+					else
+					{
+						if(!allowLoopsCheckBox.isSelected())
+							allowCyclesCheckBox.setEnabled(true);
+					}
+				}
+			} 
+		});
 		inputPanel.add(allowMultipleEdgesCheckBox, gridBagConstraints);
 		
 		allowCyclesCheckBox = new JCheckBox("Allow cycles");
@@ -109,6 +153,40 @@ public class NewGraphDialog extends JDialog implements ActionListener
 		gridBagConstraints.gridx = 2;
 		gridBagConstraints.gridy = 4;
 		gridBagConstraints.gridwidth = 1;
+		allowCyclesCheckBox.addItemListener(new ItemListener()
+		{
+			@Override
+			public void itemStateChanged(ItemEvent e)
+			{
+				GraphGeneratorBase generator = (GraphGeneratorBase)functionComboBox.getSelectedItem();
+				
+				if(!generator.areLoopsAllowed().isForced())
+				{
+					if(allowCyclesCheckBox.isSelected())
+					{
+						allowLoopsCheckBox.setEnabled(true);
+					}
+					else
+					{
+						allowLoopsCheckBox.setEnabled(false);
+						allowLoopsCheckBox.setSelected(false);
+					}
+				}
+				
+				if(!generator.areMultipleEdgesAllowed().isForced())
+				{
+					if(allowCyclesCheckBox.isSelected())
+					{
+						allowMultipleEdgesCheckBox.setEnabled(true);
+					}
+					else
+					{
+						allowMultipleEdgesCheckBox.setEnabled(false);
+						allowMultipleEdgesCheckBox.setSelected(false);
+					}
+				}
+			} 
+		});
 		inputPanel.add(allowCyclesCheckBox, gridBagConstraints);
 		
 		//Create and initialize the buttons
@@ -158,35 +236,34 @@ public class NewGraphDialog extends JDialog implements ActionListener
 	public void actionPerformed(ActionEvent e)
 	{
 		if ("Ok".equals(e.getActionCommand()))
-			value = ((AbstractGraphGenerator)functionComboBox.getSelectedObjects()[0]).generate(functionParametersField.getText(), allowLoopsCheckBox.isSelected(), allowDirectedEdgesCheckBox.isSelected(), allowMultipleEdgesCheckBox.isSelected(), allowCyclesCheckBox.isSelected());
+			value = ((GraphGeneratorBase)functionComboBox.getSelectedObjects()[0]).generate(functionParametersField.getText(), allowLoopsCheckBox.isSelected(), allowDirectedEdgesCheckBox.isSelected(), allowMultipleEdgesCheckBox.isSelected(), allowCyclesCheckBox.isSelected());
 		
 		NewGraphDialog.dialog.setVisible(false);
 	}
 	
 	private void functionChanged(Object item)
 	{
-		if (item instanceof AbstractGraphGenerator)
+		if (item instanceof GraphGeneratorBase)
 		{
-			AbstractGraphGenerator function = (AbstractGraphGenerator) item;
+			GraphGeneratorBase function = (GraphGeneratorBase) item;
 			
-			functionParametersLabel.setEnabled(function.allowParameters());
-			functionParametersField.setEnabled(function.allowParameters());
+			functionParametersLabel.setEnabled(function.areParametersAllowed().isTrue());
+			functionParametersField.setEnabled(function.areParametersAllowed().isTrue());
 			
-			allowLoopsCheckBox.setSelected(function.allowLoops());
-			allowLoopsCheckBox.setEnabled(!function.forceAllowLoops());
+			allowLoopsCheckBox.setSelected(function.areLoopsAllowed().isTrue());
+			allowLoopsCheckBox.setEnabled(!function.areLoopsAllowed().isForced());
 			
-			allowDirectedEdgesCheckBox.setSelected(function.allowDirectedEdges());
-			allowDirectedEdgesCheckBox.setEnabled(!function.forceAllowDirectedEdges());
+			allowDirectedEdgesCheckBox.setSelected(function.areDirectedEdgesAllowed().isTrue());
+			allowDirectedEdgesCheckBox.setEnabled(!function.areDirectedEdgesAllowed().isForced());
 			
-			allowMultipleEdgesCheckBox.setSelected(function.allowMultipleEdges());
-			allowMultipleEdgesCheckBox.setEnabled(!function.forceAllowMultipleEdges());
+			allowMultipleEdgesCheckBox.setSelected(function.areMultipleEdgesAllowed().isTrue());
+			allowMultipleEdgesCheckBox.setEnabled(!function.areMultipleEdgesAllowed().isForced());
 			
-			allowCyclesCheckBox.setSelected(function.allowCycles());
-			allowCyclesCheckBox.setEnabled(!function.forceAllowCycles());
+			allowCyclesCheckBox.setSelected(function.areCyclesAllowed().isTrue());
+			allowCyclesCheckBox.setEnabled(!function.areCyclesAllowed().isForced());
 			
 			functionParametersField.setText("");
 			functionParametersField.requestFocus();
 		}
 	}
-
 }

@@ -4,9 +4,7 @@
 package edu.belmont.mth.visigraph.models;
 
 import java.awt.geom.*;
-import java.util.HashMap;
-import java.util.Map;
-
+import java.util.*;
 import edu.belmont.mth.visigraph.settings.*;
 import edu.belmont.mth.visigraph.utilities.*;
 
@@ -14,7 +12,7 @@ import edu.belmont.mth.visigraph.utilities.*;
  * @author Cameron Behar
  *
  */
-public class Vertex extends Observable
+public class Vertex extends ObservableBase
 {	
 	public final int               id;
 	public final Property<Double>  x;

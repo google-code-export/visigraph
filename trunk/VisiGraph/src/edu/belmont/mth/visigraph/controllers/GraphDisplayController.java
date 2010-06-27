@@ -6,16 +6,10 @@ package edu.belmont.mth.visigraph.controllers;
 import java.awt.*;
 import java.awt.event.*;
 import java.awt.geom.*;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.ResourceBundle;
-import java.util.Set;
-import java.util.TreeSet;
-import java.util.Vector;
-import java.util.Map.Entry;
+import java.util.*;
+import java.util.Map.*;
 import javax.swing.*;
+import javax.swing.Timer;
 import javax.swing.border.*;
 import edu.belmont.mth.visigraph.gui.*;
 import edu.belmont.mth.visigraph.models.*;
@@ -45,7 +39,7 @@ public class GraphDisplayController extends JPanel
 	protected JComponent		    viewport;
 	protected ViewportPopupMenu	    viewportPopupMenu;
 	protected JPanel			   statusBar;
-	protected Map<AbstractFunction, JLabel>	selectedFunctionLabels;
+	protected Map<FunctionBase, JLabel>	selectedFunctionLabels;
 	
 	protected Tool					tool;
 	protected int					paintColor;
@@ -58,14 +52,14 @@ public class GraphDisplayController extends JPanel
 	protected Point					pastMousePoint;
 	protected Vertex				fromVertex;
 	protected AffineTransform		transform;
-	protected Set<AbstractFunction>	functionsToBeRun;
+	protected Set<FunctionBase>	functionsToBeRun;
 	protected ResourceBundle		imageIcons;
 	
 	public GraphDisplayController(Graph graph)
 	{
 		// Add/bind graph
 		this.graph = graph;
-		graph.addObserver(new Observer()
+		graph.addObserver(new ObserverBase()
 		{
 			@Override
 			public void hasChanged(Object source)
@@ -76,7 +70,7 @@ public class GraphDisplayController extends JPanel
 		
 		// Add/bind palette
 		palette = new Palette();
-		palette.addObserver(new Observer()
+		palette.addObserver(new ObserverBase()
 		{
 			@Override
 			public void hasChanged(Object source)
@@ -87,7 +81,7 @@ public class GraphDisplayController extends JPanel
 		
 		// Add/bind display settings
 		settings = new GraphDisplaySettings();
-		settings.addObserver(new Observer()
+		settings.addObserver(new ObserverBase()
 		{
 			@Override
 			public void hasChanged(Object source)
@@ -165,8 +159,8 @@ public class GraphDisplayController extends JPanel
 		functionToolBar = new FunctionToolBar();
 		nonToolToolbarPanel.add(functionToolBar);
 		
-		selectedFunctionLabels = new HashMap<AbstractFunction, JLabel>();
-		functionsToBeRun = new TreeSet<AbstractFunction>();
+		selectedFunctionLabels = new HashMap<FunctionBase, JLabel>();
+		functionsToBeRun = new TreeSet<FunctionBase>();
 		
 		viewportPanel = new JPanel(new BorderLayout());
 		viewportPanel.setBorder(new BevelBorder(BevelBorder.LOWERED));
@@ -270,11 +264,11 @@ public class GraphDisplayController extends JPanel
 			g2D.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BICUBIC);
 		
 		// Apply any one-time functions
-		Set<AbstractFunction> run = new TreeSet<AbstractFunction>();
+		Set<FunctionBase> run = new TreeSet<FunctionBase>();
 		run.addAll(functionsToBeRun);
 		functionsToBeRun.clear();
 		
-		for (AbstractFunction function : run)
+		for (FunctionBase function : run)
 			JOptionPane.showMessageDialog(viewport, function.getDescription() +": " + function.evaluate(g2D, palette, graph), GlobalSettings.applicationName, JOptionPane.OK_OPTION + JOptionPane.INFORMATION_MESSAGE);
 		
 		// Clear everything
@@ -289,7 +283,7 @@ public class GraphDisplayController extends JPanel
 		GraphDisplayView.paint(g2D, graph, palette, settings);
 		
 		// Apply any selected functions
-		for (Entry<AbstractFunction, JLabel> entry : selectedFunctionLabels.entrySet())
+		for (Entry<FunctionBase, JLabel> entry : selectedFunctionLabels.entrySet())
 			entry.getValue().setText(entry.getKey().getDescription() + ": " + entry.getKey().evaluate(g2D, palette, graph));
 		
 		// Paint controller-specific stuff
@@ -516,9 +510,22 @@ public class GraphDisplayController extends JPanel
 									fromVertexClicked = true;
 									break;
 								}
-								else
-									// If the user has already defined a from Vertex, add an edge between it and this one
-									graph.edges.add(new Edge(graph.nextEdgeId(), graph.allowDirectedEdges, fromVertex, vertex));
+								else // If the user has already defined a from Vertex, try to add an edge between it and this one
+								{
+									// Only allow loops if the graph specifies to
+									if(graph.areLoopsAllowed || vertex != fromVertex)
+									{
+										// Only allow multiple edges if the graph specifies to
+										if(graph.areMultipleEdgesAllowed || graph.getEdges(fromVertex, vertex).size() == 0)
+										{
+											// Only allow a cycle if the graph specifies to
+											if(graph.areCyclesAllowed || !graph.areConnected(fromVertex, vertex))
+											{
+												graph.edges.add(new Edge(graph.nextEdgeId(), graph.areDirectedEdgesAllowed, fromVertex, vertex));
+											}
+										}
+									}
+								}
 						
 						// If the user didn't click a from vertex (clicked a to Vertex or nothing), reset and deselect all
 						if (!fromVertexClicked && event.getButton() == MouseEvent.BUTTON1)
@@ -648,15 +655,26 @@ public class GraphDisplayController extends JPanel
 			case EDGE_TOOL:
 				{
 					if (fromVertex != null)
+					{
 						for (Vertex vertex : graph.vertexes)
-							if (!vertex.isSelected.get() && VertexDisplayView.wasClicked(vertex, currentMousePoint, transform.getScaleX()))
+						{
+							if (fromVertex != vertex && VertexDisplayView.wasClicked(vertex, currentMousePoint, transform.getScaleX()))
 							{
-								graph.edges.add(new Edge(graph.nextEdgeId(), graph.allowDirectedEdges, fromVertex, vertex));
-								fromVertex = null;
-								graph.deselectAll();
+								// Only allow multiple edges if the graph specifies to
+								if(graph.areMultipleEdgesAllowed || graph.getEdges(fromVertex, vertex).size() == 0)
+								{
+									// Only allow a cycle if the graph specifies to
+									if(graph.areCyclesAllowed || !graph.areConnected(fromVertex, vertex))
+									{
+										graph.edges.add(new Edge(graph.nextEdgeId(), graph.areDirectedEdgesAllowed, fromVertex, vertex));
+										fromVertex = null;
+										graph.deselectAll();
+									}
+								}
 								break;
 							}
-					
+						}
+					}
 					break;
 				}
 			case CUT_TOOL:
@@ -1499,11 +1517,11 @@ public class GraphDisplayController extends JPanel
 	{
 		protected JButton								  oneTimeFunctionsButton;
 		protected JPopupMenu							  oneTimeFunctionsMenu;
-		protected Map<JMenuItem, AbstractFunction>		   oneTimeFunctionMenuItems;
+		protected Map<JMenuItem, FunctionBase>		   oneTimeFunctionMenuItems;
 		
 		protected JButton								  dynamicFunctionsButton;
 		protected JPopupMenu							  dynamicFunctionsMenu;
-		protected Map<JCheckBoxMenuItem, AbstractFunction> dynamicFunctionMenuItems;
+		protected Map<JCheckBoxMenuItem, FunctionBase> dynamicFunctionMenuItems;
 		
 		public FunctionToolBar()
 		{
@@ -1530,8 +1548,8 @@ public class GraphDisplayController extends JPanel
 			oneTimeFunctionsMenu = new JPopupMenu();
 			dynamicFunctionsMenu = new JPopupMenu();
 			
-			oneTimeFunctionMenuItems = new HashMap<JMenuItem, AbstractFunction>();
-			dynamicFunctionMenuItems = new HashMap<JCheckBoxMenuItem, AbstractFunction>();
+			oneTimeFunctionMenuItems = new HashMap<JMenuItem, FunctionBase>();
+			dynamicFunctionMenuItems = new HashMap<JCheckBoxMenuItem, FunctionBase>();
 			
 			refresh();
 		}
@@ -1543,8 +1561,8 @@ public class GraphDisplayController extends JPanel
 				oneTimeFunctionsMenu.removeAll();
 				dynamicFunctionsMenu.removeAll();
 				
-				oneTimeFunctionMenuItems = new HashMap<JMenuItem, AbstractFunction>();
-				dynamicFunctionMenuItems = new HashMap<JCheckBoxMenuItem, AbstractFunction>();
+				oneTimeFunctionMenuItems = new HashMap<JMenuItem, FunctionBase>();
+				dynamicFunctionMenuItems = new HashMap<JCheckBoxMenuItem, FunctionBase>();
 				
 				ActionListener oneTimeFunctionMenuItemActionListener = new ActionListener()
 				{
@@ -1580,7 +1598,7 @@ public class GraphDisplayController extends JPanel
 					}
 				};
 				
-				for (AbstractFunction function : GlobalSettings.allFunctions)
+				for (FunctionBase function : GlobalSettings.allFunctions)
 				{
 					JCheckBoxMenuItem dynamicFunctionMenuItem = new JCheckBoxMenuItem(function.toString());
 					dynamicFunctionMenuItem.addActionListener(dynamicFunctionMenuItemActionListener);

@@ -4,12 +4,10 @@
 package edu.belmont.mth.visigraph.gui;
 
 import javax.swing.*;
-import javax.swing.event.InternalFrameEvent;
-import javax.swing.event.InternalFrameListener;
-
+import javax.swing.event.*;
 import edu.belmont.mth.visigraph.controllers.*;
 import edu.belmont.mth.visigraph.models.*;
-import edu.belmont.mth.visigraph.settings.GlobalSettings;
+import edu.belmont.mth.visigraph.settings.*;
 
 /**
  * @author Cameron Behar
@@ -18,7 +16,7 @@ import edu.belmont.mth.visigraph.settings.GlobalSettings;
 @SuppressWarnings("serial")
 public class GraphWindow extends JInternalFrame
 {
-	GraphDisplayController gdc;
+	protected GraphDisplayController gdc;
 	
 	public GraphWindow(Graph g)
 	{

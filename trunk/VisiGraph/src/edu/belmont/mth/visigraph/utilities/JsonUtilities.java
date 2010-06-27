@@ -4,12 +4,9 @@
 package edu.belmont.mth.visigraph.utilities;
 
 import java.awt.Color;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Vector;
-import java.util.Map.Entry;
-import edu.belmont.mth.visigraph.models.Observable.Property;
+import java.util.*;
+import java.util.Map.*;
+import edu.belmont.mth.visigraph.models.ObservableBase.*;
 
 /**
  * @author Cameron Behar

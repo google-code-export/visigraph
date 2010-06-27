@@ -7,7 +7,7 @@ import java.awt.*;
 import java.awt.geom.*;
 import edu.belmont.mth.visigraph.models.*;
 import edu.belmont.mth.visigraph.settings.*;
-import edu.belmont.mth.visigraph.utilities.GeometryUtilities;
+import edu.belmont.mth.visigraph.utilities.*;
 
 /**
  * @author Cameron Behar

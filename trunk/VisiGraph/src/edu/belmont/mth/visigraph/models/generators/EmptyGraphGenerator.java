@@ -11,14 +11,14 @@ import edu.belmont.mth.visigraph.settings.GlobalSettings;
  * @author Cameron Behar
  * 
  */
-public class EmptyGraphGenerator extends AbstractGraphGenerator
+public class EmptyGraphGenerator extends GraphGeneratorBase
 {
-	public Graph generate(String args, boolean allowLoops, boolean allowDirectedEdges, boolean allowMultipleEdges, boolean allowCycles)
+	public Graph generate(String args, boolean areLoopsAllowed, boolean areDirectedEdgesAllowed, boolean areMultipleEdgesAllowed, boolean areCyclesAllowed)
 	{
+		Graph ret = super.generate(args, areLoopsAllowed, areDirectedEdgesAllowed, areMultipleEdgesAllowed, areCyclesAllowed);
+		
 		String[] params = args.split("\\s+");
 		int n = (params[0].trim().length() > 0 ? Integer.parseInt(params[0]) : 0);
-		
-		Graph ret = new Graph("Untitled " + getDescription(), allowLoops, allowDirectedEdges, allowMultipleEdges, allowCycles);
 		
 		int rows = (int) Math.round(Math.sqrt(n));
 		int columns = (int) Math.ceil(n / (double) rows);
@@ -34,5 +34,30 @@ public class EmptyGraphGenerator extends AbstractGraphGenerator
 	public String getDescription()
 	{
 		return "Empty graph";
+	}
+	
+	public BooleanRule areLoopsAllowed()
+	{
+		return BooleanRule.DefaultFalse;
+	}
+
+	public BooleanRule areMultipleEdgesAllowed()
+	{
+		return BooleanRule.DefaultFalse;
+	}
+
+	public BooleanRule areDirectedEdgesAllowed()
+	{
+		return BooleanRule.DefaultFalse;
+	}
+	
+	public BooleanRule areCyclesAllowed()
+	{
+		return BooleanRule.DefaultTrue;
+	}
+	
+	public BooleanRule areParametersAllowed()
+	{
+		return BooleanRule.DefaultTrue;
 	}
 }

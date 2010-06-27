@@ -4,9 +4,9 @@
 package edu.belmont.mth.visigraph.utilities;
 
 import java.awt.geom.*;
-import java.util.Vector;
+import java.util.*;
 import edu.belmont.mth.visigraph.models.*;
-import edu.belmont.mth.visigraph.settings.GlobalSettings;
+import edu.belmont.mth.visigraph.settings.*;
 import static java.lang.Math.*;
 
 /**

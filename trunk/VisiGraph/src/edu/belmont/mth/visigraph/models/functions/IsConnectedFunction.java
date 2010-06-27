@@ -4,16 +4,14 @@
 package edu.belmont.mth.visigraph.models.functions;
 
 import java.awt.*;
-import java.util.HashSet;
-import java.util.Set;
-
+import java.util.*;
 import edu.belmont.mth.visigraph.models.*;
 
 /**
  * @author Cameron Behar
  *
  */
-public class IsConnectedFunction extends AbstractFunction
+public class IsConnectedFunction extends FunctionBase
 {
 	public Object evaluate(Graphics2D g2D, Palette p, Graph g)
 	{

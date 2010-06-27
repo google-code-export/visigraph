@@ -12,51 +12,16 @@ import edu.belmont.mth.visigraph.models.Vertex;
  * @author Cameron Behar
  *
  */
-public class SymmetricTreeGraphGenerator extends AbstractGraphGenerator
+public class SymmetricTreeGraphGenerator extends GraphGeneratorBase
 {
-	public boolean allowCycles()
+	public Graph generate(String args, boolean areLoopsAllowed, boolean areDirectedEdgesAllowed, boolean areMultipleEdgesAllowed, boolean areCyclesAllowed)
 	{
-		return false;
-	}
-
-	public boolean allowLoops()
-	{
-		return false;
-	}
-
-	public boolean allowMultipleEdges()
-	{
-		return false;
-	}
-
-	public boolean forceAllowCycles()
-	{
-		return true;
-	}
-
-	public boolean forceAllowDirectedEdges()
-	{
-		return true;
-	}
-
-	public boolean forceAllowLoops()
-	{
-		return true;
-	}
-
-	public boolean forceAllowMultipleEdges()
-	{
-		return true;
-	}
-
-	public Graph generate(String args, boolean allowLoops, boolean allowDirectedEdges, boolean allowMultipleEdges, boolean allowCycles)
-	{
+		Graph ret = super.generate(args, areLoopsAllowed, areDirectedEdgesAllowed, areMultipleEdgesAllowed, areCyclesAllowed);
+		
 		String[] parts = args.split("\\s+");
 		int levelCount = Integer.parseInt(parts[0]);
 		int fanOut = Integer.parseInt(parts[1]);
 		Vector<Vector<Vertex>> levels = new Vector<Vector<Vertex>>();
-		
-		Graph ret = super.generate(args, allowLoops, allowDirectedEdges, allowMultipleEdges, allowCycles);
 		 
 		Vertex root = new Vertex(ret.nextVertexId());
 		ret.vertexes.add(root);
@@ -113,4 +78,29 @@ public class SymmetricTreeGraphGenerator extends AbstractGraphGenerator
 	{
 		return "Symmetric tree";
 	}	
+
+	public BooleanRule areLoopsAllowed()
+	{
+		return BooleanRule.ForcedFalse;
+	}
+	
+	public BooleanRule areDirectedEdgesAllowed()
+	{
+		return BooleanRule.ForcedFalse;
+	}
+
+	public BooleanRule areMultipleEdgesAllowed()
+	{
+		return BooleanRule.ForcedFalse;
+	}
+	
+	public BooleanRule areCyclesAllowed()
+	{
+		return BooleanRule.ForcedFalse;
+	}
+
+	public BooleanRule areParametersAllowed()
+	{
+		return BooleanRule.ForcedTrue;
+	}
 }

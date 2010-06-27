@@ -3,31 +3,26 @@
  */
 package edu.belmont.mth.visigraph.models;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Iterator;
-import java.util.List;
-import java.util.ListIterator;
-
-import edu.belmont.mth.visigraph.views.Observer;
+import java.util.*;
+import edu.belmont.mth.visigraph.views.*;
 
 /**
  * @author Cameron Behar
  *
  */
-public class ObservableList<T> extends Observable implements List<T>
+public class ObservableList<T> extends ObservableBase implements List<T>
 {	
 	protected String name;
 	protected ArrayList<T> list;
 	protected boolean notificationsSuspended;
-	protected Observer elementObserver;
+	protected ObserverBase elementObserver;
 	
  	public ObservableList(String name)
 	{
  		this.name = name;
 		list = new ArrayList<T>();
 		notificationsSuspended = false;
-		elementObserver = new Observer()
+		elementObserver = new ObserverBase()
 		{
 			public void hasChanged(Object source)
 			{
@@ -41,8 +36,8 @@ public class ObservableList<T> extends Observable implements List<T>
 	{
 		suspendNotifications(true);
 			boolean ret = list.add(e);
-			if(e instanceof Observable)
-				((Observable)e).addObserver(elementObserver);
+			if(e instanceof ObservableBase)
+				((ObservableBase)e).addObserver(elementObserver);
 		suspendNotifications(false);
 		
 		notifyObservers(name + "\tadd\t[null]\t" + e);
@@ -58,8 +53,8 @@ public class ObservableList<T> extends Observable implements List<T>
 	{
 		suspendNotifications(true);
 			list.add(index, element);
-			if(element instanceof Observable)
-				((Observable)element).addObserver(elementObserver);
+			if(element instanceof ObservableBase)
+				((ObservableBase)element).addObserver(elementObserver);
 		suspendNotifications(false);
 		
 		notifyObservers(name + "\tadd\t[null]\t" + element + "\t@\t" + index);
@@ -72,8 +67,8 @@ public class ObservableList<T> extends Observable implements List<T>
 		suspendNotifications(true);
 			boolean ret = list.addAll(c);
 			for(T element : c)
-				if(element instanceof Observable)
-					((Observable)element).addObserver(elementObserver);
+				if(element instanceof ObservableBase)
+					((ObservableBase)element).addObserver(elementObserver);
 		suspendNotifications(false);
 		
 		notifyObservers(name + "\taddAll\t" + originalSize + "\t" + list.size());
@@ -87,8 +82,8 @@ public class ObservableList<T> extends Observable implements List<T>
 		suspendNotifications(true);
 			boolean ret = list.addAll(index, c);
 			for(T element : c)
-				if(element instanceof Observable)
-					((Observable)element).addObserver(elementObserver);
+				if(element instanceof ObservableBase)
+					((ObservableBase)element).addObserver(elementObserver);
 		suspendNotifications(false);
 		
 		notifyObservers(name + "\taddAll\t" + originalSize + "\t" + list.size() + "\t@\t" + index);
@@ -101,8 +96,8 @@ public class ObservableList<T> extends Observable implements List<T>
 		
 		suspendNotifications(true);
 			for(T element : list)
-				if(element instanceof Observable)
-					((Observable)element).deleteObserver(elementObserver);
+				if(element instanceof ObservableBase)
+					((ObservableBase)element).deleteObserver(elementObserver);
 			list.clear();
 		suspendNotifications(false);
 		
@@ -158,8 +153,8 @@ public class ObservableList<T> extends Observable implements List<T>
 	{
 		suspendNotifications(true);
 			boolean ret = list.remove(o);
-			if(o instanceof Observable)
-				((Observable)o).deleteObserver(elementObserver);
+			if(o instanceof ObservableBase)
+				((ObservableBase)o).deleteObserver(elementObserver);
 		suspendNotifications(false);
 		
 		notifyObservers(name + "\tremove\t" + o + "\t[null]");
@@ -172,8 +167,8 @@ public class ObservableList<T> extends Observable implements List<T>
 		
 		suspendNotifications(true);
 			T ret = list.remove(index);
-			if(ret instanceof Observable)
-				((Observable)ret).deleteObserver(elementObserver);
+			if(ret instanceof ObservableBase)
+				((ObservableBase)ret).deleteObserver(elementObserver);
 		suspendNotifications(false);
 		
 		notifyObservers(name + "\tremove\t" + originalSize + "\t" + list.size());
@@ -188,8 +183,8 @@ public class ObservableList<T> extends Observable implements List<T>
 			for(Object element : c)
 			{
 				int index = list.indexOf(element);
-				if(index > -1 && list.get(index) instanceof Observable)
-					((Observable)list.get(index)).deleteObserver(elementObserver);
+				if(index > -1 && list.get(index) instanceof ObservableBase)
+					((ObservableBase)list.get(index)).deleteObserver(elementObserver);
 			}
 			boolean ret = list.removeAll(c);
 		suspendNotifications(false);
@@ -205,8 +200,8 @@ public class ObservableList<T> extends Observable implements List<T>
 		suspendNotifications(true);
 			for(T element : list)
 				if(!c.contains(element))
-					if(element instanceof Observable)
-						((Observable)element).deleteObserver(elementObserver);
+					if(element instanceof ObservableBase)
+						((ObservableBase)element).deleteObserver(elementObserver);
 			boolean ret = list.retainAll(c);
 		suspendNotifications(false);
 		
@@ -221,11 +216,11 @@ public class ObservableList<T> extends Observable implements List<T>
 		suspendNotifications(true);
 			if(list.get(index) != element)
 			{
-				if(list.get(index) instanceof Observable)
-					((Observable)list.get(index)).deleteObserver(elementObserver);
+				if(list.get(index) instanceof ObservableBase)
+					((ObservableBase)list.get(index)).deleteObserver(elementObserver);
 				
-				if(element instanceof Observable)
-					((Observable)element).addObserver(elementObserver);
+				if(element instanceof ObservableBase)
+					((ObservableBase)element).addObserver(elementObserver);
 			}
 			T ret = list.set(index, element);
 		suspendNotifications(false);

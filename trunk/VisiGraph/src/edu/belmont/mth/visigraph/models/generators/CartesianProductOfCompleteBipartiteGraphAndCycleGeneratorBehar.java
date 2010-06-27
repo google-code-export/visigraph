@@ -9,30 +9,12 @@ import edu.belmont.mth.visigraph.models.*;
  * @author Cameron Behar
  *
  */
-public class CartesianProductOfCompleteBipartiteGraphAndCycleGeneratorBehar extends AbstractGraphGenerator
+public class CartesianProductOfCompleteBipartiteGraphAndCycleGeneratorBehar extends GraphGeneratorBase
 {	
-	public boolean forceAllowLoops()
+	public Graph generate(String args, boolean areLoopsAllowed, boolean areDirectedEdgesAllowed, boolean areMultipleEdgesAllowed, boolean areCyclesAllowed)
 	{
-		return true;
-	}
-	
-	public boolean forceAllowMultipleEdges()
-	{
-		return true;
-	}
-	
-	public boolean forceAllowDirectedEdges()
-	{
-		return true;
-	}
+		Graph ret = super.generate(args, areLoopsAllowed, areDirectedEdgesAllowed, areMultipleEdgesAllowed, areCyclesAllowed);
 		
-	public boolean forceAllowCycles()
-	{
-		return true;
-	}
-	
-	public Graph generate(String args, boolean allowLoops, boolean allowDirectedEdges, boolean allowMultipleEdges, boolean allowCycles)
-	{
 		String[] params = args.split("\\s+");
 		int r = Integer.parseInt(params[0]);
 		int s = Integer.parseInt(params[1]);
@@ -44,8 +26,6 @@ public class CartesianProductOfCompleteBipartiteGraphAndCycleGeneratorBehar exte
 		int southwest = (int) Math.floor(s / 2.0);
 		
 		int linkHeight = (Math.max(r, s) + 2) * 50;
-		
-		Graph ret = super.generate(args, allowLoops, allowDirectedEdges, allowMultipleEdges, allowCycles);
 		
 		// Add all the links plus the ends of the chain
 		for(int i = -1; i <= n; ++i)
@@ -100,5 +80,30 @@ public class CartesianProductOfCompleteBipartiteGraphAndCycleGeneratorBehar exte
 	public String getDescription()
 	{
 		return "Cartesian product of a complete bipartite graph and cycle (Behar)";
+	}
+
+	public BooleanRule areLoopsAllowed()
+	{
+		return BooleanRule.DefaultFalse;
+	}
+	
+	public BooleanRule areDirectedEdgesAllowed()
+	{
+		return BooleanRule.ForcedFalse;
+	}
+
+	public BooleanRule areMultipleEdgesAllowed()
+	{
+		return BooleanRule.DefaultFalse;
+	}
+	
+	public BooleanRule areCyclesAllowed()
+	{
+		return BooleanRule.ForcedTrue;
+	}
+
+	public BooleanRule areParametersAllowed()
+	{
+		return BooleanRule.ForcedTrue;
 	}
 }

@@ -4,51 +4,47 @@
 package edu.belmont.mth.visigraph.models;
 
 import java.awt.geom.Point2D;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
-import java.util.Vector;
-import java.util.Map.Entry;
+import java.util.*;
+import java.util.Map.*;
 import edu.belmont.mth.visigraph.settings.GlobalSettings;
 import edu.belmont.mth.visigraph.utilities.*;
-import edu.belmont.mth.visigraph.views.Observer;
+import edu.belmont.mth.visigraph.views.ObserverBase;
 
 /**
  * @author Cameron Behar
  * 
  */
-public class Graph extends Observable
+public class Graph extends ObservableBase
 {
 	public final Property<String>        name;
 	public final ObservableList<Vertex>  vertexes;
 	public final ObservableList<Edge>    edges;
 	public final ObservableList<Caption> captions;
-	public final boolean				 allowLoops;
-	public final boolean				 allowMultipleEdges;
-	public final boolean				 allowDirectedEdges;
-	public final boolean				 allowCycles;
+	public final boolean				 areLoopsAllowed;
+	public final boolean				 areMultipleEdgesAllowed;
+	public final boolean				 areDirectedEdgesAllowed;
+	public final boolean				 areCyclesAllowed;
 	protected boolean					 notificationsSuspended;
-	protected Observer					 vertexListObserver;
-	protected Observer					 edgeListObserver;
-	protected Observer					 captionListObserver;
+	protected ObserverBase					 vertexListObserver;
+	protected ObserverBase					 edgeListObserver;
+	protected ObserverBase					 captionListObserver;
 	
 	public Graph()
 	{
 		this(GlobalSettings.defaultGraphName, true, true, true, true);
 	}
 	
-	public Graph(String name, boolean allowLoops, boolean allowDirectedEdges, boolean allowMultipleEdges, boolean allowCycles)
+	public Graph(String name, boolean areLoopsAllowed, boolean areDirectedEdgesAllowed, boolean areMultipleEdgesAllowed, boolean areCyclesAllowed)
 	{
 		this.name = new Property<String>(name, "name");
 		
-		this.allowLoops         = allowLoops;
-		this.allowDirectedEdges = allowDirectedEdges;
-		this.allowMultipleEdges = allowMultipleEdges;
-		this.allowCycles        = allowCycles;
+		this.areLoopsAllowed         = areLoopsAllowed;
+		this.areDirectedEdgesAllowed = areDirectedEdgesAllowed;
+		this.areMultipleEdgesAllowed = areMultipleEdgesAllowed;
+		this.areCyclesAllowed        = areCyclesAllowed;
 		
 		this.notificationsSuspended = false;
-		this.vertexListObserver     = new Observer()
+		this.vertexListObserver     = new ObserverBase()
 		{
 			public void hasChanged(Object source)
 			{
@@ -58,7 +54,7 @@ public class Graph extends Observable
 					notifyObservers(source);
 			}
 		};
-		this.edgeListObserver       = new Observer()
+		this.edgeListObserver       = new ObserverBase()
 		{
 			public void hasChanged(Object source)
 			{
@@ -66,7 +62,7 @@ public class Graph extends Observable
 					notifyObservers(source);
 			}
 		};
-		this.captionListObserver    = new Observer()
+		this.captionListObserver    = new ObserverBase()
 		{
 			public void hasChanged(Object source)
 			{
@@ -92,13 +88,13 @@ public class Graph extends Observable
 		
 		this.name = new Property<String>(members.get("name").toString(), "name");
 		
-		this.allowLoops         = new Boolean(members.get("allowLoops").toString());
-		this.allowDirectedEdges = new Boolean(members.get("allowDirectedEdges").toString());
-		this.allowMultipleEdges = new Boolean(members.get("allowMultipleEdges").toString());
-		this.allowCycles        = new Boolean(members.get("allowCycles").toString());
+		this.areLoopsAllowed         = new Boolean(members.get("areLoopsAllowed").toString());
+		this.areDirectedEdgesAllowed = new Boolean(members.get("areDirectedEdgesAllowed").toString());
+		this.areMultipleEdgesAllowed = new Boolean(members.get("areMultipleEdgesAllowed").toString());
+		this.areCyclesAllowed        = new Boolean(members.get("areCyclesAllowed").toString());
 		
 		this.notificationsSuspended = false;
-		this.vertexListObserver     = new Observer()
+		this.vertexListObserver     = new ObserverBase()
 		{
 			public void hasChanged(Object source)
 			{
@@ -108,7 +104,7 @@ public class Graph extends Observable
 					notifyObservers(source);
 			}
 		};
-		this.edgeListObserver       = new Observer()
+		this.edgeListObserver       = new ObserverBase()
 		{
 			public void hasChanged(Object source)
 			{
@@ -116,7 +112,7 @@ public class Graph extends Observable
 					notifyObservers(source);
 			}
 		};
-		this.captionListObserver    = new Observer()
+		this.captionListObserver    = new ObserverBase()
 		{
 			public void hasChanged(Object source)
 			{
@@ -293,6 +289,29 @@ public class Graph extends Observable
 		return ret;
 	}
 	
+	public boolean areConnected(Vertex from, Vertex to)
+	{
+		Set<Vertex> visited = new HashSet<Vertex>();
+		Stack<Vertex> toVisit = new Stack<Vertex>();
+		
+		toVisit.push(to);
+		
+		while(!toVisit.isEmpty())
+		{
+			Vertex vertex = toVisit.pop();
+			if(vertex == from) return true;
+			visited.add(vertex);
+			
+			Set<Vertex> neighbors = getNeighbors(vertex);
+			
+			for(Vertex neighbor : neighbors)
+				if(!visited.contains(neighbor))
+					toVisit.push(neighbor);
+		}
+		
+		return false;
+	}
+	
 	public int nextEdgeId()
 	{
 		return edges.size();
@@ -314,14 +333,14 @@ public class Graph extends Observable
 	{
 		HashMap<String, Object> members = new HashMap<String, Object>();
 		
-		members.put("name",               name              );
-		members.put("vertexes",           vertexes          );
-		members.put("edges",              edges             );
-		members.put("captions",           captions          );
-		members.put("allowLoops",         allowLoops        );
-		members.put("allowMultipleEdges", allowMultipleEdges);
-		members.put("allowDirectedEdges", allowDirectedEdges);
-		members.put("allowCycles",        allowCycles       );
+		members.put("name",                    name                   );
+		members.put("vertexes",                vertexes               );
+		members.put("edges",                   edges                  );
+		members.put("captions",                captions               );
+		members.put("areLoopsAllowed",         areLoopsAllowed        );
+		members.put("areDirectedEdgesAllowed", areDirectedEdgesAllowed);
+		members.put("areMultipleEdgesAllowed", areMultipleEdgesAllowed);
+		members.put("areCyclesAllowed",        areCyclesAllowed       );
 		
 		return JsonUtilities.formatObject(members);
 	}
@@ -348,7 +367,7 @@ public class Graph extends Observable
 		
 		for(Edge edge : graph.edges)
 		{
-			Edge newEdge = new Edge(this.nextEdgeId(), edge.isDirected && this.allowDirectedEdges, newVertexes.get(edge.from), newVertexes.get(edge.to));
+			Edge newEdge = new Edge(this.nextEdgeId(), edge.isDirected && this.areDirectedEdgesAllowed, newVertexes.get(edge.from), newVertexes.get(edge.to));
 			newEdge.handleX.set(edge.handleX.get());
 			newEdge.handleY.set(edge.handleY.get());
 			newEdge.label.set(edge.label.get());
@@ -373,5 +392,16 @@ public class Graph extends Observable
 		notifyObservers(this);
 	}
 }
+
+
+
+
+
+
+
+
+
+
+
 
 
