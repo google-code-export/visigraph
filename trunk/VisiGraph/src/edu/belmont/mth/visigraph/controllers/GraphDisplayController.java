@@ -1629,6 +1629,7 @@ public class GraphDisplayController extends JPanel
 		protected JMenuItem edgeColorItem;
 		protected JMenuItem edgeLabelItem;
 		protected JMenuItem edgeThicknessItem;
+		protected JMenuItem edgeHandleRadiusItem;
 		
 		public ViewportPopupMenu()
 		{

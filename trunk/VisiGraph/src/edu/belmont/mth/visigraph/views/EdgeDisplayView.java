@@ -19,6 +19,7 @@ public class EdgeDisplayView
 	{
 		// Decide where we should draw the handle and/or arrow head
 		Point2D apparentHandleLocation = e.isLinear() ? GeometryUtilities.midpoint(e.from, e.to) : e.getHandlePoint2D();
+		double handleRadius = e.thickness.get() * GlobalSettings.defaultEdgeHandleRadiusRatio;
 		
 		Stroke oldStroke = g2D.getStroke();
 		
@@ -37,7 +38,7 @@ public class EdgeDisplayView
 		
 		// Draw handle
 		if(s.showEdgeHandles.get())
-			g2D.fill(new Ellipse2D.Double(apparentHandleLocation.getX() - e.handleRadius.get(), apparentHandleLocation.getY() - e.handleRadius.get(), e.handleRadius.get() * 2.0, e.handleRadius.get() * 2.0));
+			g2D.fill(new Ellipse2D.Double(apparentHandleLocation.getX() - handleRadius, apparentHandleLocation.getY() - handleRadius, handleRadius * 2.0, handleRadius * 2.0));
 		
 		// Draw arrow head for directed edges
 		if(e.isDirected)
@@ -78,16 +79,16 @@ public class EdgeDisplayView
 
 		// Draw edge label
 		if(s.showEdgeLabels.get())
-			g2D.drawString(e.label.get(), (float)(e.handleX.get() + e.handleRadius.get() + 1), (float)(e.handleY.get() - e.handleRadius.get() - 1));
+			g2D.drawString(e.label.get(), (float)(e.handleX.get() + handleRadius + 1), (float)(e.handleY.get() - handleRadius - 1));
 
 		// Draw edge weight label
 		if(s.showEdgeWeights.get())
-			g2D.drawString(e.weight.get().toString(), (float)(e.handleX.get() - e.handleRadius.get() - 12), (float)(e.handleY.get() + e.handleRadius.get() + 12));
+			g2D.drawString(e.weight.get().toString(), (float)(e.handleX.get() - handleRadius - 12), (float)(e.handleY.get() + handleRadius + 12));
 	}
 	
 	public static boolean wasClicked(Edge edge, Point point, double scale)
 	{
-		return (Point2D.distance(edge.handleX.get(), edge.handleY.get(), point.x, point.y) <= edge.handleRadius.get() + GlobalSettings.defaultEdgeHandleClickMargin / scale);
+		return (Point2D.distance(edge.handleX.get(), edge.handleY.get(), point.x, point.y) <= edge.thickness.get() * GlobalSettings.defaultEdgeHandleRadiusRatio + GlobalSettings.defaultEdgeHandleClickMargin / scale);
 	}
 	
 	public static boolean wasSelected(Edge edge, Rectangle selection)
