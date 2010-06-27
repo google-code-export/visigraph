@@ -3,19 +3,17 @@
  */
 package edu.belmont.mth.visigraph.models;
 
-import java.awt.Color;
-import java.util.Collection;
-import java.util.HashMap;
-
-import edu.belmont.mth.visigraph.settings.GlobalSettings;
-import edu.belmont.mth.visigraph.utilities.JsonUtilities;
+import java.awt.*;
+import java.util.*;
+import edu.belmont.mth.visigraph.settings.*;
+import edu.belmont.mth.visigraph.utilities.*;
 import edu.belmont.mth.visigraph.views.*;
 
 /**
  * @author Cameron Behar
  * 
  */
-public class Palette extends Observable
+public class Palette extends ObservableBase
 {
 	public final Property<Color>	graphBackground;
 	public final Property<Color>	graphText;
@@ -71,7 +69,7 @@ public class Palette extends Observable
 		
 		elementColors          = new ObservableList<Color>("elementColors");
 		for (Color c : GlobalSettings.defaultElementDisplayColors) elementColors.add(new Color(c.getRGB()));
-		elementColors.addObserver(new Observer()
+		elementColors.addObserver(new ObserverBase()
 		{
 			public void hasChanged(Object source)
 			{
@@ -109,7 +107,7 @@ public class Palette extends Observable
 		elementColors          = new ObservableList<Color>("elementColors");
 		for (Color c : p.elementColors)
 			addElementColor(c);
-		elementColors.addObserver(new Observer()
+		elementColors.addObserver(new ObserverBase()
 		{
 			public void hasChanged(Object source)
 			{

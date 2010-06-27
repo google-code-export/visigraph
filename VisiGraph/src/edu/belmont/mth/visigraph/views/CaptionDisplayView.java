@@ -5,10 +5,9 @@ package edu.belmont.mth.visigraph.views;
 
 import java.awt.*;
 import java.awt.geom.*;
-import java.util.ResourceBundle;
+import java.util.*;
 import edu.belmont.mth.visigraph.models.*;
-import edu.belmont.mth.visigraph.settings.GlobalSettings;
-import edu.belmont.mth.visigraph.settings.GraphDisplaySettings;
+import edu.belmont.mth.visigraph.settings.*;
 
 /**
  * @author Cameron Behar

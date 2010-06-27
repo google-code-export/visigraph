@@ -5,7 +5,6 @@ package edu.belmont.mth.visigraph.views;
 
 import java.awt.*;
 import java.awt.geom.*;
-
 import edu.belmont.mth.visigraph.models.*;
 import edu.belmont.mth.visigraph.settings.*;
 

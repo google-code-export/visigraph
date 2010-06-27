@@ -1,17 +1,16 @@
 /**
- * AbstractFunction.java
+ * FunctionBase.java
  */
 package edu.belmont.mth.visigraph.models.functions;
 
 import java.awt.*;
-
 import edu.belmont.mth.visigraph.models.*;
 
 /**
  * @author Cameron Behar
  *
  */
-public abstract class AbstractFunction implements Comparable<AbstractFunction>
+public abstract class FunctionBase implements Comparable<FunctionBase>
 {	
 	public abstract Object evaluate(Graphics2D g2D, Palette p, Graph g);
 	
@@ -22,7 +21,7 @@ public abstract class AbstractFunction implements Comparable<AbstractFunction>
 		return getDescription();
 	}
 	
-	public int compareTo(AbstractFunction f)
+	public int compareTo(FunctionBase f)
 	{
 		return getDescription().compareTo(f.getDescription());
 	}

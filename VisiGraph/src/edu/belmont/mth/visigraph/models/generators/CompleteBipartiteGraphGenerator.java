@@ -10,25 +10,15 @@ import edu.belmont.mth.visigraph.settings.GlobalSettings;
  * @author Cameron Behar
  *
  */
-public class CompleteBipartiteGraphGenerator extends AbstractGraphGenerator
+public class CompleteBipartiteGraphGenerator extends GraphGeneratorBase
 {
-	public boolean forceAllowCycles()
+	public Graph generate(String args, boolean areLoopsAllowed, boolean areDirectedEdgesAllowed, boolean areMultipleEdgesAllowed, boolean areCyclesAllowed)
 	{
-		return true;
-	}
-	
-	public boolean forceAllowDirectedEdges()
-	{
-		return true;
-	}
-	
-	public Graph generate(String args, boolean allowLoops, boolean allowDirectedEdges, boolean allowMultipleEdges, boolean allowCycles)
-	{
+		Graph ret = super.generate(args, areLoopsAllowed, areDirectedEdgesAllowed, areMultipleEdgesAllowed, areCyclesAllowed);
+		
 		String[] params = args.split("\\s+");
 		int r = Integer.parseInt(params[0]);
 		int s = Integer.parseInt(params[1]);
-		
-		Graph ret = super.generate(args, allowLoops, allowDirectedEdges, allowMultipleEdges, allowCycles);
 		
 		for(int j = 0; j < r; ++j)
 			ret.vertexes.add(new Vertex(ret.nextVertexId(), (j - (r / 2)) * GlobalSettings.arrangeGridSpacing, -GlobalSettings.arrangeGridSpacing));
@@ -46,5 +36,30 @@ public class CompleteBipartiteGraphGenerator extends AbstractGraphGenerator
 	public String getDescription()
 	{
 		return "Complete bipartite graph";
+	}
+
+	public BooleanRule areLoopsAllowed()
+	{
+		return BooleanRule.DefaultFalse;
+	}
+	
+	public BooleanRule areDirectedEdgesAllowed()
+	{
+		return BooleanRule.ForcedFalse;
+	}
+
+	public BooleanRule areMultipleEdgesAllowed()
+	{
+		return BooleanRule.DefaultFalse;
+	}
+	
+	public BooleanRule areCyclesAllowed()
+	{
+		return BooleanRule.ForcedTrue;
+	}
+
+	public BooleanRule areParametersAllowed()
+	{
+		return BooleanRule.ForcedTrue;
 	}
 }

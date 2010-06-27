@@ -3,18 +3,10 @@
  */
 package edu.belmont.mth.visigraph.settings;
 
-import java.awt.Color;
-import java.awt.Dimension;
+import java.awt.*;
 import java.awt.geom.*;
 import edu.belmont.mth.visigraph.models.functions.*;
-import edu.belmont.mth.visigraph.models.generators.AbstractGraphGenerator;
-import edu.belmont.mth.visigraph.models.generators.CartesianProductOfCompleteBipartiteGraphAndCycleGeneratorBehar;
-import edu.belmont.mth.visigraph.models.generators.CartesianProductOfCompleteBipartiteGraphAndCycleGeneratorScott;
-import edu.belmont.mth.visigraph.models.generators.CompleteBipartiteGraphGenerator;
-import edu.belmont.mth.visigraph.models.generators.CompleteGraphGenerator;
-import edu.belmont.mth.visigraph.models.generators.CycleGraphGenerator;
-import edu.belmont.mth.visigraph.models.generators.EmptyGraphGenerator;
-import edu.belmont.mth.visigraph.models.generators.SymmetricTreeGraphGenerator;
+import edu.belmont.mth.visigraph.models.generators.*;
 
 /**
  * @author Cameron Behar
@@ -105,20 +97,6 @@ public class GlobalSettings
 	public static final double					 repulsiveForce								= -80.0;
 	public static final double					 applyForcesDecelerationFactor				= 1.1;
 	
-	public static final boolean 				 defaultAllowLoops							= false;
-	public static final boolean 				 defaultForceAllowLoops						= false;
-	
-	public static final boolean 				 defaultAllowMultipleEdges					= false;
-	public static final boolean 				 defaultForceAllowMultipleEdges				= false;
-	
-	public static final boolean 				 defaultAllowDirectedEdges					= false;
-	public static final boolean 				 defaultForceAllowDirectedEdges				= false;
-	
-	public static final boolean 				 defaultAllowCycles							= true;
-	public static final boolean 				 defaultForceAllowCycles					= false;
-	
-	public static final boolean 				 defaultAllowParameters						= true;
-	
 	public static final double					 zoomInFactor								= 1.2;
 	public static final double					 zoomOutFactor								= 0.8;
 	public static final double					 maximumZoomFactor							= 2.0;
@@ -137,6 +115,6 @@ public class GlobalSettings
 	
 	public static final int						 paintToolButtonDelay						= 750;
 
-	public static final AbstractGraphGenerator[] allGraphGenerators							= new AbstractGraphGenerator[] { new EmptyGraphGenerator(), new CycleGraphGenerator(), new CompleteGraphGenerator(), new CompleteBipartiteGraphGenerator(), new SymmetricTreeGraphGenerator(), new CartesianProductOfCompleteBipartiteGraphAndCycleGeneratorScott(), new CartesianProductOfCompleteBipartiteGraphAndCycleGeneratorBehar() };
-	public static final AbstractFunction[]		 allFunctions								= new AbstractFunction[] { new CountEdgesFunction(), new CountVertexesFunction(), new CountCrossingsFunction(), new IsEulerianFunction(), new IsConnectedFunction() };
+	public static final GraphGeneratorBase[] 	 allGraphGenerators							= new GraphGeneratorBase[] { new EmptyGraphGenerator(), new CycleGraphGenerator(), new CompleteGraphGenerator(), new CompleteBipartiteGraphGenerator(), new SymmetricTreeGraphGenerator(), new CartesianProductOfCompleteBipartiteGraphAndCycleGeneratorScott(), new CartesianProductOfCompleteBipartiteGraphAndCycleGeneratorBehar() };
+	public static final FunctionBase[]		 	 allFunctions								= new FunctionBase[] { new CountEdgesFunction(), new CountVertexesFunction(), new CountCrossingsFunction(), new IsEulerianFunction(), new IsConnectedFunction() };
 }

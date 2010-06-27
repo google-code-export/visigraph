@@ -6,13 +6,11 @@ package edu.belmont.mth.visigraph.gui;
 import java.awt.*;
 import java.awt.datatransfer.*;
 import java.awt.event.*;
-import java.beans.PropertyVetoException;
-import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.util.Scanner;
+import java.beans.*;
+import java.io.*;
+import java.util.*;
 import javax.swing.*;
-import javax.swing.filechooser.FileNameExtensionFilter;
+import javax.swing.filechooser.*;
 import edu.belmont.mth.visigraph.models.*;
 import edu.belmont.mth.visigraph.settings.GlobalSettings;
 
@@ -242,7 +240,7 @@ public class MainWindow extends JFrame implements ClipboardOwner
 					Graph graph = graphWindow.gdc.getGraph();
 					
 					// Make a copy of graph containing only selected elements, then remove them from the original
-					Graph copy = new Graph("cut", graph.allowLoops, graph.allowDirectedEdges, graph.allowMultipleEdges, graph.allowCycles);
+					Graph copy = new Graph("cut", graph.areLoopsAllowed, graph.areDirectedEdgesAllowed, graph.areMultipleEdgesAllowed, graph.areCyclesAllowed);
 					
 					for(Vertex vertex : graph.vertexes)
 						if(vertex.isSelected.get())
@@ -309,7 +307,7 @@ public class MainWindow extends JFrame implements ClipboardOwner
 					Graph graph = graphWindow.gdc.getGraph();
 					
 					// Make a copy of graph containing only selected elements
-					Graph copy = new Graph("copy", graph.allowLoops, graph.allowDirectedEdges, graph.allowMultipleEdges, graph.allowCycles);
+					Graph copy = new Graph("copy", graph.areLoopsAllowed, graph.areDirectedEdgesAllowed, graph.areMultipleEdgesAllowed, graph.areCyclesAllowed);
 					
 					for(Vertex vertex : graph.vertexes)
 						if(vertex.isSelected.get())

@@ -1,10 +1,12 @@
+/**
+ * ObservableBase.java
+ */
 package edu.belmont.mth.visigraph.models;
 
-import java.util.Vector;
+import java.util.*;
+import edu.belmont.mth.visigraph.views.ObserverBase;
 
-import edu.belmont.mth.visigraph.views.Observer;
-
-public class Observable
+public abstract class ObservableBase
 {
 	// Should really be protected, but inter-package access requires it be public (idk?)
 	public class Property<T>
@@ -13,12 +15,12 @@ public class Observable
 		protected T			defaultValue;
 		protected String	name;
 		protected boolean	notificationsSuspended	= false;
-		protected Observer	valueObserver;
+		protected ObserverBase	valueObserver;
 		
 		public Property(final T initialValue, final String name)
 		{
 			this.name = name;
-			valueObserver = new Observer()
+			valueObserver = new ObserverBase()
 			{
 				public void hasChanged(Object source)
 				{
@@ -54,11 +56,11 @@ public class Observable
 			if (this.value != value)
 			{
 				suspendNotifications(true);
-				if (this.value instanceof Observable)
-					((Observable) this.value).deleteObserver(valueObserver);
+				if (this.value instanceof ObservableBase)
+					((ObservableBase) this.value).deleteObserver(valueObserver);
 				this.value = value;
-				if (value instanceof Observable)
-					((Observable) value).addObserver(valueObserver);
+				if (value instanceof ObservableBase)
+					((ObservableBase) value).addObserver(valueObserver);
 				suspendNotifications(false);
 				
 				notifyObservers(this);
@@ -73,27 +75,27 @@ public class Observable
 		}
 	}
 	
-	protected Vector<Observer>	observers	= new Vector<Observer>();
+	protected Vector<ObserverBase> observers = new Vector<ObserverBase>();
 	
-	public void addObserver(Observer o)
+	public void addObserver(ObserverBase o)
 	{
 		observers.add(o);
 		notifyObserver(o, this);
 	}
 	
-	public void deleteObserver(Observer o)
+	public void deleteObserver(ObserverBase o)
 	{
 		observers.remove(o);
 	}
 	
-	public void notifyObserver(Observer o, Object source)
+	public void notifyObserver(ObserverBase o, Object source)
 	{
 		o.hasChanged(source);
 	}
 	
 	public void notifyObservers(Object source)
 	{
-		for (Observer observer : observers)
+		for (ObserverBase observer : observers)
 			notifyObserver(observer, source);
 	}
 }

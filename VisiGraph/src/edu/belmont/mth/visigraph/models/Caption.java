@@ -3,9 +3,7 @@
  */
 package edu.belmont.mth.visigraph.models;
 
-import java.util.HashMap;
-import java.util.Map;
-
+import java.util.*;
 import edu.belmont.mth.visigraph.settings.*;
 import edu.belmont.mth.visigraph.utilities.*;
 
@@ -13,7 +11,7 @@ import edu.belmont.mth.visigraph.utilities.*;
  * @author Cameron Behar
  *
  */
-public class Caption extends Observable
+public class Caption extends ObservableBase
 {	
 	public final Property<Double> x;
 	public final Property<Double> y;

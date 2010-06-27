@@ -5,19 +5,17 @@ package edu.belmont.mth.visigraph.models;
 
 import java.awt.*;
 import java.awt.geom.*;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Vector;
+import java.util.*;
 import edu.belmont.mth.visigraph.settings.*;
 import edu.belmont.mth.visigraph.utilities.*;
-import edu.belmont.mth.visigraph.views.Observer;
+import edu.belmont.mth.visigraph.views.*;
 import static edu.belmont.mth.visigraph.utilities.GeometryUtilities.*;
 
 /**
  * @author Cameron Behar
  * 
  */
-public class Edge extends Observable
+public class Edge extends ObservableBase
 {
 	public final int				id;
 	public final boolean			isDirected;
@@ -38,7 +36,7 @@ public class Edge extends Observable
 	protected Dimension				size;
 	protected boolean				isLinear;
 	protected boolean				notificationsSuspended;
-	protected Observer				vertexObserver	= new Observer()
+	protected ObserverBase				vertexObserver	= new ObserverBase()
 													{
 														@Override
 														public void hasChanged(Object source)
