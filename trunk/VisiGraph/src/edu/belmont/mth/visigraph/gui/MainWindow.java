@@ -82,6 +82,7 @@ public class MainWindow extends JFrame implements ClipboardOwner
 				}
 			}
 		});
+		newGraphMenuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_N, ActionEvent.CTRL_MASK));
 		fileMenu.add(newGraphMenuItem);
 		
 		duplicateGraphMenuItem = new JMenuItem("Duplicate");
@@ -107,9 +108,10 @@ public class MainWindow extends JFrame implements ClipboardOwner
 				}
 			}
 		});
+		duplicateGraphMenuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_D, ActionEvent.CTRL_MASK));
 		fileMenu.add(duplicateGraphMenuItem);
 		
-		fileMenu.add(new JSeparator());
+		fileMenu.addSeparator();
 		
 		openGraphMenuItem = new JMenuItem("Open...");
 		openGraphMenuItem.addActionListener(new ActionListener()
@@ -158,6 +160,7 @@ public class MainWindow extends JFrame implements ClipboardOwner
 				}
 			}
 		});
+		openGraphMenuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_O, ActionEvent.CTRL_MASK));
 		fileMenu.add(openGraphMenuItem);
 		
 		saveGraphMenuItem = new JMenuItem("Save...");
@@ -208,9 +211,10 @@ public class MainWindow extends JFrame implements ClipboardOwner
 				}
 			}
 		});
+		saveGraphMenuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_S, ActionEvent.CTRL_MASK));
 		fileMenu.add(saveGraphMenuItem);
 		
-		fileMenu.add(new JSeparator());
+		fileMenu.addSeparator();
 		
 		exitGraphMenuItem = new JMenuItem("Exit");
 		exitGraphMenuItem.addActionListener(new ActionListener()
@@ -484,7 +488,7 @@ public class MainWindow extends JFrame implements ClipboardOwner
 		helpContentsMenuItem = new JMenuItem("Help contents...");
 		helpMenu.add(helpContentsMenuItem);
 		
-		helpMenu.add(new JSeparator());
+		helpMenu.addSeparator();
 		
 		aboutVisiGraphMenuItem = new JMenuItem("About...");
 		helpMenu.add(aboutVisiGraphMenuItem);

@@ -144,6 +144,18 @@ public class Graph extends ObservableBase
 		this.captions.addObserver(captionListObserver);
 	}
 
+	public void selectAll()
+	{
+		for (Edge edge : edges)
+			edge.isSelected.set(true);
+		
+		for (Vertex vertex : vertexes)
+			vertex.isSelected.set(true);
+		
+		for (Caption caption : captions)
+			caption.isSelected.set(true);
+	}
+	
 	public void deselectAll()
 	{
 		for (Edge edge : edges)
