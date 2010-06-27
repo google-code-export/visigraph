@@ -52,7 +52,7 @@ public class GraphDisplayController extends JPanel
 	protected Point					pastMousePoint;
 	protected Vertex				fromVertex;
 	protected AffineTransform		transform;
-	protected Set<FunctionBase>	functionsToBeRun;
+	protected Set<FunctionBase>	    functionsToBeRun;
 	protected ResourceBundle		imageIcons;
 	
 	public GraphDisplayController(Graph graph)
@@ -380,6 +380,13 @@ public class GraphDisplayController extends JPanel
 					for (Edge edge : graph.edges)
 						if (edge.isSelected.get())
 							edge.fixHandle();
+					
+					break;
+				}
+			case KeyEvent.VK_A:
+				{
+					if(event.isControlDown())
+						graph.selectAll();
 					
 					break;
 				}
@@ -1616,6 +1623,7 @@ public class GraphDisplayController extends JPanel
 	
 	protected class ViewportPopupMenu extends JPopupMenu
 	{
+		protected JMenuItem selectAll;
 		protected JMenuItem selectAllVerticesItem;
 		protected JMenuItem selectAllEdgesItem;
 		protected JMenuItem propertiesItem;
@@ -1633,6 +1641,16 @@ public class GraphDisplayController extends JPanel
 		
 		public ViewportPopupMenu()
 		{
+			selectAll = new JMenuItem("Select all");
+			selectAll.addActionListener(new ActionListener()
+			{
+				public void actionPerformed(ActionEvent arg0)
+				{
+					graph.selectAll();
+				}
+			});
+			this.add(selectAll);
+			
 			selectAllVerticesItem = new JMenuItem("Select all vertices");
 			selectAllVerticesItem.addActionListener(new ActionListener()
 			{
@@ -1654,6 +1672,8 @@ public class GraphDisplayController extends JPanel
 				}
 			});
 			this.add(selectAllEdgesItem);
+			
+			this.addSeparator();
 			
 			propertiesItem = new JMenu("Properties");
 			this.add(propertiesItem);
