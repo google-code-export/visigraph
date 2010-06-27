@@ -69,7 +69,7 @@ public class GlobalSettings
 	public static final String					 defaultEdgePrefix							= "e";
 	public static final boolean					 defaultEdgeIsSelected						= false;
 	public static final double					 defaultEdgeThickness						= 0.75;
-	public static final double					 defaultEdgeHandleRadius					= 2.0;
+	public static final double					 defaultEdgeHandleRadiusRatio				= 2.5;
 	public static final double					 defaultEdgeHandleClickMargin				= 2.5;
 	
 	public static final Point2D					 defaultVertexLocation						= new Point2D.Double(0.0, 0.0);

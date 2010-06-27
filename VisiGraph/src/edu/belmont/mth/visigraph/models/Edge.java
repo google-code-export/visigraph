@@ -26,7 +26,6 @@ public class Edge extends ObservableBase
 	public final Property<String>	label;
 	public final Property<Boolean>	isSelected;
 	public final Property<Double>	thickness;
-	public final Property<Double>	handleRadius;
 	public final Property<Double>	handleX;
 	public final Property<Double>	handleY;
 	
@@ -36,7 +35,7 @@ public class Edge extends ObservableBase
 	protected Dimension				size;
 	protected boolean				isLinear;
 	protected boolean				notificationsSuspended;
-	protected ObserverBase				vertexObserver	= new ObserverBase()
+	protected ObserverBase			vertexObserver	= new ObserverBase()
 													{
 														@Override
 														public void hasChanged(Object source)
@@ -93,7 +92,6 @@ public class Edge extends ObservableBase
 		this.label = new Property<String>(label, "label");
 		this.isSelected = new Property<Boolean>(isSelected, "isSelected");
 		this.thickness = new Property<Double>(GlobalSettings.defaultEdgeThickness, "thickness");
-		this.handleRadius = new Property<Double>(GlobalSettings.defaultEdgeHandleRadius, "handleRadius");
 		
 		this.handleX = new Property<Double>(0.0, "handleX")
 		{
@@ -150,7 +148,6 @@ public class Edge extends ObservableBase
 		this.label = new Property<String>(members.get("id").toString(), "label");
 		this.isSelected = new Property<Boolean>(new Boolean(members.get("isSelected").toString()), "isSelected");
 		this.thickness = new Property<Double>(new Double(members.get("thickness").toString()), "thickness");
-		this.handleRadius = new Property<Double>(new Double(members.get("handleRadius").toString()), "handleRadius");
 		
 		this.isLinear = members.containsKey("isLinear") ? new Boolean(members.get("isLinear").toString()) : false;
 		this.handleX = new Property<Double>(this.isLinear ? 0.0 : new Double(members.get("handleX").toString()), "handleX")
@@ -354,7 +351,6 @@ public class Edge extends ObservableBase
 		members.put("label",        label       );
 		members.put("isSelected",   isSelected  );
 		members.put("thickness",    thickness   );
-		members.put("handleRadius", handleRadius);
 		members.put("isLinear",     isLinear    );
 		
 		if(!isLinear)

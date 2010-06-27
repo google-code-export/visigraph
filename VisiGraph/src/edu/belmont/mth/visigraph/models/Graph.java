@@ -373,7 +373,6 @@ public class Graph extends ObservableBase
 			newEdge.label.set(edge.label.get());
 			newEdge.color.set(edge.color.get());
 			newEdge.weight.set(edge.weight.get());
-			newEdge.handleRadius.set(edge.handleRadius.get());
 			newEdge.isSelected.set(edge.isSelected.get());
 			newEdge.thickness.set(newEdge.thickness.get());
 			this.edges.add(newEdge);
