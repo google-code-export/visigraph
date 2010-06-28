@@ -38,7 +38,7 @@ public class GlobalSettings
 	public static final Color					 defaultSelectedEdgeHandleDisplayColor		= Color.blue;
 	public static final Color					 defaultSelectedEdgeLabelDisplayColor		= Color.blue;
 	
-	public static final double					 defaultDirectedEdgeArrowSize				= 5.0;
+	public static final double					 defaultDirectedEdgeArrowRatio				= 7.0;
 	
 	public static final Color					 defaultCaptionTextDisplayColor				= Color.black;
 	public static final Color					 defaultSelectedCaptionTextDisplayColor		= new Color(0, 0, 150);
