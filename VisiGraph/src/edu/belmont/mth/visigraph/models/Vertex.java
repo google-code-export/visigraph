@@ -14,7 +14,7 @@ import edu.belmont.mth.visigraph.utilities.*;
  */
 public class Vertex extends ObservableBase
 {	
-	public final int               id;
+	public final Property<Integer> id;
 	public final Property<Double>  x;
 	public final Property<Double>  y;
 	public final Property<String>  label;
@@ -50,26 +50,26 @@ public class Vertex extends ObservableBase
 	
 	public Vertex(int id, double x, double y, String label, double radius, int color, boolean isSelected)
 	{
-		this.id = id;
-		this.x = new Property<Double>(x, "x"); 
-		this.y = new Property<Double>(y, "y");
-		this.label = new Property<String>(label, "label");
-		this.radius = new Property<Double>(radius, "radius");
-		this.color = new Property<Integer>(color, "color");
+		this.id         = new Property<Integer>(id, "id");
+		this.x          = new Property<Double>(x, "x"); 
+		this.y          = new Property<Double>(y, "y");
+		this.label      = new Property<String>(label, "label");
+		this.radius     = new Property<Double>(radius, "radius");
+		this.color      = new Property<Integer>(color, "color");
 		this.isSelected = new Property<Boolean>(isSelected, "isSelected");
-		this.weight = new Property<Double>(GlobalSettings.defaultVertexWeight, "weight");
+		this.weight     = new Property<Double>(GlobalSettings.defaultVertexWeight, "weight");
 	}
 
 	public Vertex(Map<String, Object> members)
 	{
-		this.id = new Integer(members.get("id").toString());
-		this.x = new Property<Double>(new Double(members.get("x").toString()), "x");
-		this.y = new Property<Double>(new Double(members.get("y").toString()), "y");
-		this.label = new Property<String>(members.get("label").toString(), "label");
-		this.radius = new Property<Double>(new Double(members.get("radius").toString()), "radius");
-		this.color = new Property<Integer>(new Integer(members.get("color").toString()), "color");
+		this.id         = new Property<Integer>(new Integer(members.get("id").toString()), "id");
+		this.x          = new Property<Double>(new Double(members.get("x").toString()), "x");
+		this.y          = new Property<Double>(new Double(members.get("y").toString()), "y");
+		this.label      = new Property<String>(members.get("label").toString(), "label");
+		this.radius     = new Property<Double>(new Double(members.get("radius").toString()), "radius");
+		this.color      = new Property<Integer>(new Integer(members.get("color").toString()), "color");
 		this.isSelected = new Property<Boolean>(new Boolean(members.get("isSelected").toString()), "isSelected");
-		this.weight = new Property<Double>(new Double(members.get("weight").toString()), "weight");
+		this.weight     = new Property<Double>(new Double(members.get("weight").toString()), "weight");
 	}
 	
 	public Vertex(String json)

@@ -17,7 +17,6 @@ import static edu.belmont.mth.visigraph.utilities.GeometryUtilities.*;
  */
 public class Edge extends ObservableBase
 {
-	public final int				id;
 	public final boolean			isDirected;
 	public final Vertex				from;
 	public final Vertex				to;
@@ -54,31 +53,30 @@ public class Edge extends ObservableBase
 														}
 													};
 	
-	public Edge(int id, boolean isDirected, Vertex from, Vertex to)
+	public Edge(boolean isDirected, Vertex from, Vertex to)
 	{
-		this(id, isDirected, from, to, GlobalSettings.defaultEdgeWeight);
+		this(isDirected, from, to, GlobalSettings.defaultEdgeWeight);
 	}
 	
-	public Edge(int id, boolean isDirected, Vertex from, Vertex to, double weight)
+	public Edge(boolean isDirected, Vertex from, Vertex to, double weight)
 	{
-		this(id, isDirected, from, to, weight, GlobalSettings.defaultEdgeColor);
+		this(isDirected, from, to, weight, GlobalSettings.defaultEdgeColor);
 	}
 	
-	public Edge(int id, boolean isDirected, Vertex from, Vertex to, double weight, int color)
+	public Edge(boolean isDirected, Vertex from, Vertex to, double weight, int color)
 	{
-		this(id, isDirected, from, to, weight, color, GlobalSettings.defaultEdgePrefix + id);
+		this(isDirected, from, to, weight, color, GlobalSettings.defaultEdgePrefix);
 	}
 	
-	public Edge(int id, boolean isDirected, Vertex from, Vertex to, double weight, int color, String label)
+	public Edge(boolean isDirected, Vertex from, Vertex to, double weight, int color, String label)
 	{
-		this(id, isDirected, from, to, weight, color, label, GlobalSettings.defaultEdgeIsSelected);
+		this(isDirected, from, to, weight, color, label, GlobalSettings.defaultEdgeIsSelected);
 	}
 	
-	public Edge(int id, boolean isDirected, Vertex from, Vertex to, double weight, int color, String label, boolean isSelected)
+	public Edge(boolean isDirected, Vertex from, Vertex to, double weight, int color, String label, boolean isSelected)
 	{
 		notificationsSuspended = true;
 		
-		this.id = id;
 		this.isDirected = isDirected;
 		
 		this.from = from;
@@ -134,7 +132,6 @@ public class Edge extends ObservableBase
 	{
 		notificationsSuspended = true;
 		
-		this.id = new Integer(members.get("id").toString());
 		this.isDirected = new Boolean(members.get("isDirected").toString());
 		
 		this.from = vertexes.get(new Integer(members.get("from.id").toString()));
@@ -145,7 +142,7 @@ public class Edge extends ObservableBase
 		
 		this.weight = new Property<Double>(new Double(members.get("weight").toString()), "weight");
 		this.color = new Property<Integer>(new Integer(members.get("color").toString()), "color");
-		this.label = new Property<String>(members.get("id").toString(), "label");
+		this.label = new Property<String>(members.get("label").toString(), "label");
 		this.isSelected = new Property<Boolean>(new Boolean(members.get("isSelected").toString()), "isSelected");
 		this.thickness = new Property<Double>(new Double(members.get("thickness").toString()), "thickness");
 		
@@ -338,7 +335,6 @@ public class Edge extends ObservableBase
 	{
 		HashMap<String, Object> members = new HashMap<String, Object>();
 		
-		members.put("id",           id          );
 		members.put("isDirected",   isDirected  );
 		members.put("from.id",      from.id     );
 		members.put("to.id",        to.id       );

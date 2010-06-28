@@ -40,7 +40,7 @@ public class SymmetricTreeGraphGenerator extends GraphGeneratorBase
 				{
 					Vertex child = new Vertex(ret.nextVertexId());
 					ret.vertexes.add(child);
-					ret.edges.add(new Edge(ret.nextEdgeId(), false, parent, child));
+					ret.edges.add(new Edge(false, parent, child));
 					level.add(child);
 				}
 			}

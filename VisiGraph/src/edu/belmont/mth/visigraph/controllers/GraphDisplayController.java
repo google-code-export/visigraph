@@ -720,7 +720,7 @@ public class GraphDisplayController extends JPanel implements ClipboardOwner
 											// Only allow a cycle if the graph specifies to
 											if(graph.areCyclesAllowed || !graph.areConnected(fromVertex, vertex))
 											{
-												graph.edges.add(new Edge(graph.nextEdgeId(), graph.areDirectedEdgesAllowed, fromVertex, vertex));
+												graph.edges.add(new Edge(graph.areDirectedEdgesAllowed, fromVertex, vertex));
 											}
 										}
 									}
@@ -865,7 +865,7 @@ public class GraphDisplayController extends JPanel implements ClipboardOwner
 									// Only allow a cycle if the graph specifies to
 									if(graph.areCyclesAllowed || !graph.areConnected(fromVertex, vertex))
 									{
-										graph.edges.add(new Edge(graph.nextEdgeId(), graph.areDirectedEdgesAllowed, fromVertex, vertex));
+										graph.edges.add(new Edge(graph.areDirectedEdgesAllowed, fromVertex, vertex));
 										fromVertex = null;
 										graph.deselectAll();
 									}
