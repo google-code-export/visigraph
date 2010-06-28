@@ -3,6 +3,8 @@
  */
 package edu.belmont.mth.visigraph.gui;
 
+import java.io.File;
+
 import javax.swing.*;
 import javax.swing.event.*;
 import edu.belmont.mth.visigraph.controllers.*;
@@ -17,10 +19,12 @@ import edu.belmont.mth.visigraph.settings.*;
 public class GraphWindow extends JInternalFrame
 {
 	protected GraphDisplayController gdc;
+	private File file;
 	
 	public GraphWindow(Graph g)
 	{
 		super("", true, true, true, true);
+		this.file = null;
 		this.setSize(GlobalSettings.defaultGraphWindowSize);
 		this.add(gdc = new GraphDisplayController(g));
 		this.addInternalFrameListener(new InternalFrameListener() { public void internalFrameActivated(InternalFrameEvent arg0) { gdc.zoomFit(); } public void internalFrameClosed(InternalFrameEvent e) { } public void internalFrameClosing(InternalFrameEvent e) { } public void internalFrameDeactivated(InternalFrameEvent e) { } public void internalFrameDeiconified(InternalFrameEvent e) { } public void internalFrameIconified(InternalFrameEvent e) { } public void internalFrameOpened(InternalFrameEvent e) { }});
@@ -33,5 +37,15 @@ public class GraphWindow extends JInternalFrame
 	public void updateTitle()
 	{
 		this.setTitle(GlobalSettings.applicationName + " - " + gdc.getGraph().name.get());
+	}
+	
+	public File getFile()
+	{
+		return this.file;
+	}
+	
+	public void setFile(File file)
+	{
+		this.file = file;
 	}
 }
