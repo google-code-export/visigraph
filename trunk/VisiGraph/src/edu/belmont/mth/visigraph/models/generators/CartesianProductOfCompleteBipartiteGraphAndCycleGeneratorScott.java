@@ -47,12 +47,12 @@ public class CartesianProductOfCompleteBipartiteGraphAndCycleGeneratorScott exte
 			if(i != -1 && i != n)
 				for(int j = 0; j < r; ++j)
 					for(int k = 0; k < s; ++k)
-						ret.edges.add(new Edge(ret.nextEdgeId(), false, ret.vertexes.get(ret.vertexes.size() - r - s + j), ret.vertexes.get(ret.vertexes.size() - s + k)));
+						ret.edges.add(new Edge(false, ret.vertexes.get(ret.vertexes.size() - r - s + j), ret.vertexes.get(ret.vertexes.size() - s + k)));
 			
 			// Add the edges between this bipartite graph and the previous one
 			if(i > -1)
 				for(int j = 0; j < r + s; ++j)
-					ret.edges.add(new Edge(ret.nextEdgeId(), false, ret.vertexes.get(ret.vertexes.size() - r - s - j - 1), ret.vertexes.get(ret.vertexes.size() - j - 1)));
+					ret.edges.add(new Edge(false, ret.vertexes.get(ret.vertexes.size() - r - s - j - 1), ret.vertexes.get(ret.vertexes.size() - j - 1)));
 		}
 		
 		// For aesthetic reasons, make the vertices at the end of the chains smaller

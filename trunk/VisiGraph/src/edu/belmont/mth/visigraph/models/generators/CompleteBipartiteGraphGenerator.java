@@ -28,7 +28,7 @@ public class CompleteBipartiteGraphGenerator extends GraphGeneratorBase
 		
 		for(int j = 0; j < r; ++j)
 			for(int k = 0; k < s; ++k)
-				ret.edges.add(new Edge(ret.nextEdgeId(), false, ret.vertexes.get(j), ret.vertexes.get(k + r)));
+				ret.edges.add(new Edge(false, ret.vertexes.get(j), ret.vertexes.get(k + r)));
 		
 		return ret;
 	}

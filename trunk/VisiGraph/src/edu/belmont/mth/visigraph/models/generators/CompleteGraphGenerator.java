@@ -26,7 +26,7 @@ public class CompleteGraphGenerator extends GraphGeneratorBase
 		
 		for(int i = 0; i < n; ++i)
 			for(int j = i + 1; j < n; ++j)
-				ret.edges.add(new Edge(ret.nextEdgeId(), false, ret.vertexes.get(i), ret.vertexes.get(j)));
+				ret.edges.add(new Edge(false, ret.vertexes.get(i), ret.vertexes.get(j)));
 		
 		return ret;
 	}

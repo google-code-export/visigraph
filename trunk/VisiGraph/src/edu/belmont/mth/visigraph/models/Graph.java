@@ -25,9 +25,9 @@ public class Graph extends ObservableBase
 	public final boolean				 areDirectedEdgesAllowed;
 	public final boolean				 areCyclesAllowed;
 	protected boolean					 notificationsSuspended;
-	protected ObserverBase					 vertexListObserver;
-	protected ObserverBase					 edgeListObserver;
-	protected ObserverBase					 captionListObserver;
+	protected ObserverBase				 vertexListObserver;
+	protected ObserverBase				 edgeListObserver;
+	protected ObserverBase				 captionListObserver;
 	
 	public Graph()
 	{
@@ -129,7 +129,7 @@ public class Graph extends ObservableBase
 		
 		Map<Integer, Vertex> vertexMap = new HashMap<Integer, Vertex>();
 		for(int i = 0; i < this.vertexes.size(); ++i)
-			vertexMap.put(this.vertexes.get(i).id, this.vertexes.get(i));
+			vertexMap.put(this.vertexes.get(i).id.get(), this.vertexes.get(i));
 		
 		this.edges = new ObservableList<Edge>("edges");
 		for(Object edge : (Iterable<?>)members.get("edges"))
@@ -324,14 +324,15 @@ public class Graph extends ObservableBase
 		return false;
 	}
 	
-	public int nextEdgeId()
-	{
-		return edges.size();
-	}
-	
 	public int nextVertexId()
 	{
-		return vertexes.size();
+		int maxInt = -1;
+		
+		for(Vertex vertex : vertexes)
+			if(vertex.id.get() > maxInt)
+				maxInt = vertex.id.get();
+		
+		return maxInt + 1;
 	}
 	
 	public boolean suspendNotifications(boolean s)
@@ -361,40 +362,25 @@ public class Graph extends ObservableBase
 	{
 		suspendNotifications(true);
 		
-		Map<Vertex, Vertex> newVertexes = new HashMap<Vertex, Vertex>();
+		Map<Integer, Vertex> newVertexes = new HashMap<Integer, Vertex>();
 		
 		for(Vertex vertex : graph.vertexes)
 		{
-			Vertex newVertex = new Vertex(this.nextVertexId());
-			newVertex.x.set(vertex.x.get());
-			newVertex.y.set(vertex.y.get());
-			newVertex.label.set(vertex.label.get());
-			newVertex.color.set(vertex.color.get());
-			newVertex.weight.set(vertex.weight.get());
-			newVertex.radius.set(vertex.radius.get());
-			newVertex.isSelected.set(vertex.isSelected.get());
+			Vertex newVertex = new Vertex(vertex.toString());
+			newVertexes.put(newVertex.id.get(), newVertex);
+			newVertex.id.set(this.nextVertexId());
 			this.vertexes.add(newVertex);
-			newVertexes.put(vertex, newVertex);
 		}
 		
 		for(Edge edge : graph.edges)
 		{
-			Edge newEdge = new Edge(this.nextEdgeId(), edge.isDirected && this.areDirectedEdgesAllowed, newVertexes.get(edge.from), newVertexes.get(edge.to));
-			newEdge.handleX.set(edge.handleX.get());
-			newEdge.handleY.set(edge.handleY.get());
-			newEdge.label.set(edge.label.get());
-			newEdge.color.set(edge.color.get());
-			newEdge.weight.set(edge.weight.get());
-			newEdge.isSelected.set(edge.isSelected.get());
-			newEdge.thickness.set(newEdge.thickness.get());
+			Edge newEdge = new Edge(edge.toString(), newVertexes);
 			this.edges.add(newEdge);
 		}
 		
 		for(Caption caption : graph.captions)
 		{
-			Caption newCaption = new Caption(caption.x.get(), caption.y.get());
-			newCaption.text.set(caption.text.get());
-			newCaption.isSelected.set(caption.isSelected.get());
+			Caption newCaption = new Caption(caption.toString());
 			this.captions.add(newCaption);
 		}
 		
