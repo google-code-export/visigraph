@@ -26,6 +26,7 @@ public class MainWindow extends JFrame
 	protected final JMenuItem	  duplicateGraphMenuItem;
 	protected final JMenuItem	  openGraphMenuItem;
 	protected final JMenuItem	  saveGraphMenuItem;
+	protected final JMenuItem	  saveAsGraphMenuItem;
 	protected final JMenuItem	  exitGraphMenuItem;
 	protected final JMenu		 windowsMenu;
 	protected final JMenuItem	  cascadeMenuItem;
@@ -158,56 +159,29 @@ public class MainWindow extends JFrame
 		openGraphMenuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_O, ActionEvent.CTRL_MASK));
 		fileMenu.add(openGraphMenuItem);
 		
-		saveGraphMenuItem = new JMenuItem("Save...");
+		saveGraphMenuItem = new JMenuItem("Save");
 		saveGraphMenuItem.addActionListener(new ActionListener()
 		{
 			@Override
 			public void actionPerformed(ActionEvent arg0)
 			{
-				JInternalFrame selectedFrame = desktopPane.getSelectedFrame();
-				
-				if(selectedFrame instanceof GraphWindow)
-				{
-					GraphWindow graphWindow = ((GraphWindow)selectedFrame);
-					Graph graph = graphWindow.gdc.getGraph();
-
-					fileChooser.setFileFilter(new FileNameExtensionFilter("VisiGraph Graph File", "vsg"));
-					fileChooser.setMultiSelectionEnabled(false);
-
-					boolean success = false;
-					
-					while(!success)
-					{ 
-						if(fileChooser.showSaveDialog(thisFrame) == JFileChooser.APPROVE_OPTION)
-						{
-				            try
-							{
-				            	File selectedFile = fileChooser.getSelectedFile();
-				            	
-				            	if(!selectedFile.getName().endsWith(".vsg"))
-				            		selectedFile = new File(selectedFile.getAbsolutePath() + ".vsg");
-				            	
-				            	graph.name.set(selectedFile.getName().substring(0, selectedFile.getName().length() - 4));
-				            	graphWindow.updateTitle();
-				            	
-								FileWriter fw = new FileWriter(selectedFile);
-								fw.write(graph.toString());
-								fw.close();
-								success = true;
-							}
-							catch (IOException e)
-							{
-								success = false;
-							}
-						}
-						else
-							success = true;
-					}
-				}
+				try	{ save(); }
+				catch (IOException e) { }
 			}
 		});
 		saveGraphMenuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_S, ActionEvent.CTRL_MASK));
 		fileMenu.add(saveGraphMenuItem);
+		
+		saveAsGraphMenuItem = new JMenuItem("Save As...");
+		saveAsGraphMenuItem.addActionListener(new ActionListener()
+		{
+			@Override
+			public void actionPerformed(ActionEvent arg0)
+			{
+				saveAs();
+			}
+		});
+		fileMenu.add(saveAsGraphMenuItem);
 		
 		fileMenu.addSeparator();
 		
@@ -344,6 +318,70 @@ public class MainWindow extends JFrame
 		setJMenuBar(menuBar);
 		
 		this.setVisible(true);
+	}
+	
+	public void saveAs()
+	{
+		JInternalFrame selectedFrame = desktopPane.getSelectedFrame();
+		
+		if(selectedFrame instanceof GraphWindow)
+		{
+			fileChooser.setFileFilter(new FileNameExtensionFilter("VisiGraph Graph File", "vsg"));
+			fileChooser.setMultiSelectionEnabled(false);
+
+			boolean success = false;
+			
+			while(!success)
+			{ 
+				if(fileChooser.showSaveDialog(thisFrame) == JFileChooser.APPROVE_OPTION)
+				{
+		            try
+					{
+		            	File selectedFile = fileChooser.getSelectedFile();
+		            	
+		            	if(!selectedFile.getName().endsWith(".vsg"))
+		            		selectedFile = new File(selectedFile.getAbsolutePath() + ".vsg");
+		            	
+		            	saveFile(selectedFile);
+						
+						success = true;
+					}
+					catch (IOException e)
+					{
+						success = false;
+					}
+				}
+				else
+					success = true;
+			}
+		}
+	}
+	
+	public void save() throws IOException
+	{
+		JInternalFrame selectedFrame = desktopPane.getSelectedFrame();
+		GraphWindow graphWindow = ((GraphWindow)selectedFrame);
+		
+		if(graphWindow.getFile() == null)
+			saveAs();
+		else
+			saveFile(graphWindow.getFile());
+	}
+	
+	public void saveFile(File file) throws IOException
+	{
+		JInternalFrame selectedFrame = desktopPane.getSelectedFrame();
+		GraphWindow graphWindow = ((GraphWindow)selectedFrame);
+		Graph graph = graphWindow.gdc.getGraph();
+		
+		graph.name.set(file.getName().substring(0, file.getName().length() - 4));
+    	graphWindow.updateTitle();
+    	
+		FileWriter fw = new FileWriter(file);
+		fw.write(graph.toString());
+		fw.close();
+		
+		graphWindow.setFile(file);
 	}
 }
 
