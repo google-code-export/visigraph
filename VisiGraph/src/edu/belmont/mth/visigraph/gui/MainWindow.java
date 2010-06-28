@@ -4,7 +4,6 @@
 package edu.belmont.mth.visigraph.gui;
 
 import java.awt.*;
-import java.awt.datatransfer.*;
 import java.awt.event.*;
 import java.beans.*;
 import java.io.*;
@@ -19,7 +18,7 @@ import edu.belmont.mth.visigraph.settings.GlobalSettings;
  * 
  */
 @SuppressWarnings("serial")
-public class MainWindow extends JFrame implements ClipboardOwner
+public class MainWindow extends JFrame
 {
 	protected final JMenuBar	 menuBar;
 	protected final JMenu		 fileMenu;
@@ -28,10 +27,6 @@ public class MainWindow extends JFrame implements ClipboardOwner
 	protected final JMenuItem	  openGraphMenuItem;
 	protected final JMenuItem	  saveGraphMenuItem;
 	protected final JMenuItem	  exitGraphMenuItem;
-	protected final JMenu		 editMenu;
-	protected final JMenuItem	  cutMenuItem;
-	protected final JMenuItem	  copyMenuItem;
-	protected final JMenuItem	  pasteMenuItem;
 	protected final JMenu		 windowsMenu;
 	protected final JMenuItem	  cascadeMenuItem;
 	protected final JMenuItem	  showSideBySideMenuItem;
@@ -227,153 +222,6 @@ public class MainWindow extends JFrame implements ClipboardOwner
 		});
 		fileMenu.add(exitGraphMenuItem);
 		
-		editMenu = new JMenu("Edit");
-		menuBar.add(editMenu);
-		
-		cutMenuItem = new JMenuItem("Cut");
-		cutMenuItem.addActionListener(new ActionListener()
-		{
-			@Override
-			public void actionPerformed(ActionEvent arg0)
-			{
-				JInternalFrame selectedFrame = desktopPane.getSelectedFrame();
-				
-				if(selectedFrame instanceof GraphWindow)
-				{
-					GraphWindow graphWindow = ((GraphWindow)selectedFrame);
-					Graph graph = graphWindow.gdc.getGraph();
-					
-					// Make a copy of graph containing only selected elements, then remove them from the original
-					Graph copy = new Graph("cut", graph.areLoopsAllowed, graph.areDirectedEdgesAllowed, graph.areMultipleEdgesAllowed, graph.areCyclesAllowed);
-					
-					for(Vertex vertex : graph.vertexes)
-						if(vertex.isSelected.get())
-							copy.vertexes.add(vertex);
-					
-					for(Edge edge : graph.edges)
-						if(edge.isSelected.get() && edge.from.isSelected.get() && edge.to.isSelected.get())
-							copy.edges.add(edge);
-					
-					for(Caption caption : graph.captions)
-						if(caption.isSelected.get())
-							copy.captions.add(caption);
-					
-					// Delete all selected elements from the original graph
-					int i = 0;
-					while(i < graph.edges.size())
-					{
-						Edge edge = graph.edges.get(i);
-						if(edge.isSelected.get())
-							graph.edges.remove(i);
-						else
-							++i;
-					}
-					
-					i = 0;
-					while(i < graph.vertexes.size())
-					{
-						if(graph.vertexes.get(i).isSelected.get())
-							graph.vertexes.remove(i);
-						else
-							++i;
-					}
-					
-					i = 0;
-					while(i < graph.captions.size())
-					{
-						if(graph.captions.get(i).isSelected.get())
-							graph.captions.remove(i);
-						else
-							++i;
-					}
-					
-					// Send the JSON to the clipboard
-					StringSelection stringSelection = new StringSelection( copy.toString() );
-				    Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
-				    clipboard.setContents( stringSelection, thisFrame );
-				}
-			}
-		});
-		cutMenuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_X, ActionEvent.CTRL_MASK));
-		editMenu.add(cutMenuItem);
-		
-		copyMenuItem = new JMenuItem("Copy");
-		copyMenuItem.addActionListener(new ActionListener()
-		{
-			@Override
-			public void actionPerformed(ActionEvent arg0)
-			{
-				JInternalFrame selectedFrame = desktopPane.getSelectedFrame();
-				
-				if(selectedFrame instanceof GraphWindow)
-				{
-					GraphWindow graphWindow = ((GraphWindow)selectedFrame);
-					Graph graph = graphWindow.gdc.getGraph();
-					
-					// Make a copy of graph containing only selected elements
-					Graph copy = new Graph("copy", graph.areLoopsAllowed, graph.areDirectedEdgesAllowed, graph.areMultipleEdgesAllowed, graph.areCyclesAllowed);
-					
-					for(Vertex vertex : graph.vertexes)
-						if(vertex.isSelected.get())
-							copy.vertexes.add(vertex);
-					
-					for(Edge edge : graph.edges)
-						if(edge.isSelected.get() && edge.from.isSelected.get() && edge.to.isSelected.get())
-							copy.edges.add(edge);
-					
-					for(Caption caption : graph.captions)
-						if(caption.isSelected.get())
-							copy.captions.add(caption);
-					
-					// Send the JSON to the clipboard
-					StringSelection stringSelection = new StringSelection( copy.toString() );
-				    Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
-				    clipboard.setContents( stringSelection, thisFrame );
-				}
-			}
-		});
-		copyMenuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_C, ActionEvent.CTRL_MASK));
-		editMenu.add(copyMenuItem);
-		
-		pasteMenuItem = new JMenuItem("Paste");
-		pasteMenuItem.addActionListener(new ActionListener()
-		{
-			@Override
-			public void actionPerformed(ActionEvent arg0)
-			{
-				String result = "";
-				Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
-				
-				Transferable contents = clipboard.getContents(null);
-				boolean hasTransferableText = (contents != null) && contents.isDataFlavorSupported(DataFlavor.stringFlavor);
-				
-				if ( hasTransferableText )
-				{
-					try
-					{
-						result = (String)contents.getTransferData(DataFlavor.stringFlavor);
-						
-						JInternalFrame selectedFrame = desktopPane.getSelectedFrame();
-						
-						if(selectedFrame instanceof GraphWindow)
-						{
-							GraphWindow graphWindow = ((GraphWindow)selectedFrame);
-							Graph graph = graphWindow.gdc.getGraph();
-							graph.deselectAll();
-							graph.union(new Graph(result));
-						}
-					}
-					catch (Exception ex) 
-					{
-						System.out.println(ex);
-						ex.printStackTrace();
-					}
-				}	
-			}
-		});
-		pasteMenuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_V, ActionEvent.CTRL_MASK));
-		editMenu.add(pasteMenuItem);
-		
 		windowsMenu = new JMenu("Windows");
 		menuBar.add(windowsMenu);
 		
@@ -496,12 +344,6 @@ public class MainWindow extends JFrame implements ClipboardOwner
 		setJMenuBar(menuBar);
 		
 		this.setVisible(true);
-	}
-
-	@Override
-	public void lostOwnership(Clipboard clipboard, Transferable transferable)
-	{
-		// Who cares?
 	}
 }
 

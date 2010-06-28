@@ -280,15 +280,11 @@ public class Edge extends ObservableBase
 		}
 	}
 	
-	public void setHandlePoint2D(Point2D.Double point)
+	public boolean suspendNotifications(boolean s)
 	{
-		notificationsSuspended = true;
-		
-		handleX.set(point.x);
-		handleY.set(point.y);
-		fixHandle();
-		
-		notificationsSuspended = false;
+		boolean ret = notificationsSuspended;
+		notificationsSuspended = s;
+		return ret;
 	}
 	
 	protected void updateArc()

@@ -4,6 +4,7 @@
 package edu.belmont.mth.visigraph.controllers;
 
 import java.awt.*;
+import java.awt.datatransfer.*;
 import java.awt.event.*;
 import java.awt.geom.*;
 import java.util.*;
@@ -22,8 +23,10 @@ import edu.belmont.mth.visigraph.views.*;
  * 
  */
 @SuppressWarnings("serial")
-public class GraphDisplayController extends JPanel
+public class GraphDisplayController extends JPanel implements ClipboardOwner
 {
+	protected GraphDisplayController thisGdc;
+	
 	protected Graph				   graph;
 	protected GraphDisplaySettings 	settings;
 	protected Palette			   	palette;
@@ -48,6 +51,7 @@ public class GraphDisplayController extends JPanel
 	protected boolean				pointerToolClickedObject;
 	protected boolean				cutToolClickedObject;
 	protected boolean				paintToolClickedObject;
+	protected boolean				isMouseOverViewport;
 	protected Point					currentMousePoint;
 	protected Point					pastMousePoint;
 	protected Vertex				fromVertex;
@@ -57,6 +61,9 @@ public class GraphDisplayController extends JPanel
 	
 	public GraphDisplayController(Graph graph)
 	{
+		// Maintain instance
+		thisGdc = this;
+		
 		// Add/bind graph
 		this.graph = graph;
 		graph.addObserver(new ObserverBase()
@@ -97,6 +104,63 @@ public class GraphDisplayController extends JPanel
 		transform = new AffineTransform();
 	}
 	
+	public void cut()
+	{
+		copy();
+		
+		// Delete all selected elements from the original graph
+		int i = 0;
+		while(i < graph.edges.size())
+		{
+			Edge edge = graph.edges.get(i);
+			if(edge.isSelected.get())
+				graph.edges.remove(i);
+			else
+				++i;
+		}
+		
+		i = 0;
+		while(i < graph.vertexes.size())
+		{
+			if(graph.vertexes.get(i).isSelected.get())
+				graph.vertexes.remove(i);
+			else
+				++i;
+		}
+		
+		i = 0;
+		while(i < graph.captions.size())
+		{
+			if(graph.captions.get(i).isSelected.get())
+				graph.captions.remove(i);
+			else
+				++i;
+		}
+	}
+	
+	public void copy()
+	{
+		// Make a copy of graph containing only selected elements
+		Graph copy = new Graph("copy", graph.areLoopsAllowed, graph.areDirectedEdgesAllowed, graph.areMultipleEdgesAllowed, graph.areCyclesAllowed);
+		
+		for(Vertex vertex : graph.vertexes)
+			if(vertex.isSelected.get())
+				copy.vertexes.add(vertex);
+		
+		for(Edge edge : graph.edges)
+			if(edge.isSelected.get() && edge.from.isSelected.get() && edge.to.isSelected.get())
+				copy.edges.add(edge);
+		
+		for(Caption caption : graph.captions)
+			if(caption.isSelected.get())
+				copy.captions.add(caption);
+							
+		// Send the JSON to the clipboard
+		StringSelection stringSelection = new StringSelection( copy.toString() );
+	    Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
+	    clipboard.setContents( stringSelection, thisGdc );
+	}
+		
 	public Graph getGraph()
 	{
 		return graph;
@@ -189,6 +253,18 @@ public class GraphDisplayController extends JPanel
 				try { viewportMouseReleased(event); }
 				catch (NoninvertibleTransformException e) { }
 			}
+			
+			@Override
+			public void mouseEntered(MouseEvent event)
+			{
+				isMouseOverViewport = true;
+			}
+			
+			@Override
+			public void mouseExited(MouseEvent event)
+			{
+				isMouseOverViewport = false;
+			}
 		});
 		viewport.addMouseMotionListener(new MouseMotionAdapter()
 		{
@@ -239,6 +315,12 @@ public class GraphDisplayController extends JPanel
 		statusBar = new JPanel(new FlowLayout(FlowLayout.LEFT));
 		statusBar.setMaximumSize(new Dimension(Integer.MAX_VALUE, 12));
 		add(statusBar, BorderLayout.SOUTH);
+	}
+	
+	@Override
+	public void lostOwnership(Clipboard arg0, Transferable arg1)
+	{
+		// Who cares?
 	}
 	
 	public void paintSelectionRectangle(Graphics2D g2D)
@@ -306,6 +388,95 @@ public class GraphDisplayController extends JPanel
 				case PAINT_TOOL: if (!paintToolClickedObject) paintSelectionRectangle(g2D); break;
 			}
 	}	
+	
+	public void paste()
+	{
+		String result = "";
+		Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
+		
+		Transferable contents = clipboard.getContents(null);
+		boolean hasTransferableText = (contents != null) && contents.isDataFlavorSupported(DataFlavor.stringFlavor);
+		
+		if ( hasTransferableText )
+		{
+			try
+			{
+				result = (String)contents.getTransferData(DataFlavor.stringFlavor);
+				
+				Graph pasted = new Graph(result);
+				
+				// Find the centroid
+				double elementCount = 0.0;
+				Point2D.Double centroid = new Point2D.Double(0.0, 0.0);
+				
+				for(Vertex vertex : pasted.vertexes)
+				{
+					centroid.x += vertex.x.get();
+					centroid.y += vertex.y.get();
+					++elementCount;
+				}
+				
+				for(Edge edge : pasted.edges)
+				{
+					centroid.x += edge.handleX.get();
+					centroid.y += edge.handleY.get();
+					++elementCount;
+				}
+				
+				for(Caption caption : pasted.captions)
+				{
+					centroid.x += caption.x.get();
+					centroid.y += caption.y.get();
+					++elementCount;
+				}
+				
+				centroid.x /= elementCount;
+				centroid.y /= elementCount;
+				
+				// Center everything around the mouse or in the center of the viewport
+				Point2D.Double pastePoint = new Point2D.Double();
+				
+				if(isMouseOverViewport)
+					pastePoint = new Point2D.Double(currentMousePoint.x, currentMousePoint.y);
+				else
+					transform.inverseTransform(new Point2D.Double(viewport.getWidth() / 2.0, viewport.getHeight() / 2.0), pastePoint);
+				
+				pasted.suspendNotifications(true);
+				
+				for(Edge edge : pasted.edges)
+					edge.suspendNotifications(true);
+				
+				for(Vertex vertex : pasted.vertexes)
+				{
+					vertex.x.set(vertex.x.get() - centroid.x + pastePoint.x);
+					vertex.y.set(vertex.y.get() - centroid.y + pastePoint.y);
+				}
+				
+				for(Edge edge : pasted.edges)
+				{
+					edge.handleX.set(edge.handleX.get() - centroid.x + pastePoint.x);
+					edge.handleY.set(edge.handleY.get() - centroid.y + pastePoint.y);
+					edge.suspendNotifications(false);
+				}
+				
+				for(Caption caption : pasted.captions)
+				{
+					caption.x.set(caption.x.get() - centroid.x + pastePoint.x);
+					caption.y.set(caption.y.get() - centroid.y + pastePoint.y);
+				}
+				
+				pasted.suspendNotifications(false);
+				
+				graph.deselectAll();
+				graph.union(pasted);
+			}
+			catch (Exception ex) 
+			{
+				System.out.println(ex);
+				ex.printStackTrace();
+			}
+		}	
+	}
 	
 	public void setTool(Tool tool)
 	{
@@ -390,6 +561,27 @@ public class GraphDisplayController extends JPanel
 					
 					break;
 				}
+			case KeyEvent.VK_C:
+			{
+				if(event.isControlDown())
+					copy();
+				
+				break;
+			}
+			case KeyEvent.VK_X:
+			{
+				if(event.isControlDown())
+					cut();
+				
+				break;
+			}
+			case KeyEvent.VK_V:
+			{
+				if(event.isControlDown())
+					paste();
+				
+				break;
+			}
 		}
 	}
 	
@@ -1626,18 +1818,21 @@ public class GraphDisplayController extends JPanel
 		protected JMenuItem selectAll;
 		protected JMenuItem selectAllVerticesItem;
 		protected JMenuItem selectAllEdgesItem;
+		protected JMenuItem	cutMenuItem;
+		protected JMenuItem	copyMenuItem;
+		protected JMenuItem	pasteMenuItem;
 		protected JMenuItem propertiesItem;
-		protected JMenuItem vertexItem;
-		protected JMenuItem vertexLabelItem;
-		protected JMenuItem vertexRadiusItem;
-		protected JMenuItem vertexColorItem;
-		protected JMenuItem vertexWeightItem;
-		protected JMenuItem edgeItem;
-		protected JMenuItem edgeWeightItem;
-		protected JMenuItem edgeColorItem;
-		protected JMenuItem edgeLabelItem;
-		protected JMenuItem edgeThicknessItem;
-		protected JMenuItem edgeHandleRadiusItem;
+		protected JMenuItem  vertexItem;
+		protected JMenuItem   vertexLabelItem;
+		protected JMenuItem   vertexRadiusItem;
+		protected JMenuItem   vertexColorItem;
+		protected JMenuItem   vertexWeightItem;
+		protected JMenuItem  edgeItem;
+		protected JMenuItem   edgeWeightItem;
+		protected JMenuItem   edgeColorItem;
+		protected JMenuItem   edgeLabelItem;
+		protected JMenuItem   edgeThicknessItem;
+		protected JMenuItem   edgeHandleRadiusItem;
 		
 		public ViewportPopupMenu()
 		{
@@ -1672,6 +1867,41 @@ public class GraphDisplayController extends JPanel
 				}
 			});
 			this.add(selectAllEdgesItem);
+			
+			this.addSeparator();
+			
+			cutMenuItem = new JMenuItem("Cut");
+			cutMenuItem.addActionListener(new ActionListener()
+			{
+				@Override
+				public void actionPerformed(ActionEvent arg0)
+				{
+					cut();
+				}
+			});
+			this.add(cutMenuItem);
+			
+			copyMenuItem = new JMenuItem("Copy");
+			copyMenuItem.addActionListener(new ActionListener()
+			{
+				@Override
+				public void actionPerformed(ActionEvent arg0)
+				{		
+					copy();
+				}
+			});
+			this.add(copyMenuItem);
+			
+			pasteMenuItem = new JMenuItem("Paste");
+			pasteMenuItem.addActionListener(new ActionListener()
+			{
+				@Override
+				public void actionPerformed(ActionEvent arg0)
+				{
+					paste();
+				}
+			});
+			this.add(pasteMenuItem);
 			
 			this.addSeparator();
 			
