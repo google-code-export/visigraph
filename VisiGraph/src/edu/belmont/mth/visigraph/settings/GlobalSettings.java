@@ -46,9 +46,9 @@ public class GlobalSettings
 	public static final Color					 defaultCrossingDisplayColor				= Color.red;
 	public static final double					 defaultCrossingRadius						= 2.5;
 	
-	// Initialized with black, brown, and 6 colors--past 6 hues with no saturation or brightness difference, some of the colors become difficult to distinguish.
-	public static final Color[]					 defaultElementDisplayColors				= new Color[] { Color.black, new Color(185, 122, 27), Color.getHSBColor(0, .95f, .95f), Color.getHSBColor(1/6f, .95f, .95f), Color.getHSBColor(2/6f, .95f, .95f), Color.getHSBColor(3/6f, .95f, .95f), Color.getHSBColor(4/6f, .95f, .95f), Color.getHSBColor(5/6f, .95f, .95f) };
-	public static final Color					 defaultElementDisplayColor					= new Color(193, 193, 193);
+	// Initialized with black, gray, and 6 colors--past 6 hues with no saturation or brightness difference, some of the colors become difficult to distinguish.
+	public static final Color[]					 defaultElementDisplayColors				= new Color[] { new Color(193, 193, 193), new Color(185, 122, 27), Color.getHSBColor(0, .95f, .95f), Color.getHSBColor(1/6f, .95f, .95f), Color.getHSBColor(2/6f, .95f, .95f), Color.getHSBColor(3/6f, .95f, .95f), Color.getHSBColor(4/6f, .95f, .95f), Color.getHSBColor(5/6f, .95f, .95f) };
+	public static final Color					 defaultElementDisplayColor					= Color.black;
 	
 	public static final boolean					 defaultShowCrossings						= false;
 	public static final boolean					 defaultShowEdgeHandles						= true;
@@ -68,8 +68,8 @@ public class GlobalSettings
 	public static final int						 defaultEdgeColor							= -1;
 	public static final String					 defaultEdgePrefix							= "e";
 	public static final boolean					 defaultEdgeIsSelected						= false;
-	public static final double					 defaultEdgeThickness						= 0.75;
-	public static final double					 defaultEdgeHandleRadiusRatio				= 2.5;
+	public static final double					 defaultEdgeThickness						= 2.0;
+	public static final double					 defaultEdgeHandleRadiusRatio				= 2.0;
 	public static final double					 defaultEdgeHandleClickMargin				= 2.5;
 	
 	public static final Point2D					 defaultVertexLocation						= new Point2D.Double(0.0, 0.0);
@@ -90,8 +90,7 @@ public class GlobalSettings
 	public static final double					 areCloseDistance							= 0.01;
 	
 	public static final double					 arrangeCircleRadiusMultiplier				= 10.0;
-	public static final double					 arrangeGridSpacing							= 150.0;
-	public static final Dimension				 arrangeBoxSize								= new Dimension(600, 600);
+	public static final double					 arrangeGridSpacing							= 100.0;
 	
 	public static final double					 attractiveForce							= 0.0000001;
 	public static final double					 repulsiveForce								= -80.0;
