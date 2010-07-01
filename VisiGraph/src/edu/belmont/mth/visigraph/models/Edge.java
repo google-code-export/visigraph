@@ -3,7 +3,6 @@
  */
 package edu.belmont.mth.visigraph.models;
 
-import java.awt.*;
 import java.awt.geom.*;
 import java.util.*;
 import edu.belmont.mth.visigraph.settings.*;
@@ -28,13 +27,12 @@ public class Edge extends ObservableBase
 	public final Property<Double>	handleX;
 	public final Property<Double>	handleY;
 	
-	protected Arc2D.Double			arc;
-	protected Line2D.Double			line;
-	protected Point2D.Double		center;
-	protected Dimension				size;
-	protected boolean				isLinear;
-	protected boolean				notificationsSuspended;
-	protected ObserverBase			vertexObserver	= new ObserverBase()
+	private Arc2D.Double			arc;
+	private Line2D.Double			line;
+	private Point2D.Double			center;
+	private boolean					isLinear;
+	private boolean					notificationsSuspended;
+	private ObserverBase			vertexObserver	= new ObserverBase()
 													{
 														@Override
 														public void hasChanged(Object source)
@@ -119,7 +117,6 @@ public class Edge extends ObservableBase
 		this.arc = new Arc2D.Double();
 		this.line = new Line2D.Double();
 		this.center = new Point2D.Double();
-		this.size = new Dimension();
 		
 		notificationsSuspended = false;
 		
@@ -175,7 +172,6 @@ public class Edge extends ObservableBase
 		this.arc = new Arc2D.Double();
 		this.line = new Line2D.Double();
 		this.center = new Point2D.Double();
-		this.size = new Dimension();
 		
 		notificationsSuspended = false;
 		
@@ -284,7 +280,7 @@ public class Edge extends ObservableBase
 		return ret;
 	}
 	
-	protected void updateArc()
+	private void updateArc()
 	{
 		double radius = center.distance(from.x.get(), from.y.get());
 		
@@ -301,7 +297,7 @@ public class Edge extends ObservableBase
 			arc.setAngles(to.getPoint2D(), from.getPoint2D());
 	}
 	
-	protected void updateCenter()
+	private void updateCenter()
 	{
 		if(from == to)
 		{

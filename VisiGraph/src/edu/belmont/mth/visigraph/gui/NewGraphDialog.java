@@ -17,15 +17,15 @@ import java.awt.event.*;
 @SuppressWarnings("serial")
 public class NewGraphDialog extends JDialog implements ActionListener
 {
-	protected static NewGraphDialog		dialog;
-	protected static JComboBox			functionComboBox;
-	protected static JLabel				functionParametersLabel;
-	protected static JTextField			functionParametersField;
-	protected static JCheckBox			allowLoopsCheckBox;
-	protected static JCheckBox			allowDirectedEdgesCheckBox;
-	protected static JCheckBox			allowMultipleEdgesCheckBox;
-	protected static JCheckBox			allowCyclesCheckBox;
-	protected static Graph				value;
+	private static NewGraphDialog		dialog;
+	private static JComboBox			functionComboBox;
+	private static JLabel				functionParametersLabel;
+	private static JTextField			functionParametersField;
+	private static JCheckBox			allowLoopsCheckBox;
+	private static JCheckBox			allowDirectedEdgesCheckBox;
+	private static JCheckBox			allowMultipleEdgesCheckBox;
+	private static JCheckBox			allowCyclesCheckBox;
+	private static Graph				value;
 	
 	public static Graph showDialog(Component frameComp, Component locationComp)
 	{

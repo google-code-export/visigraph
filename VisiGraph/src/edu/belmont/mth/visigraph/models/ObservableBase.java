@@ -11,11 +11,11 @@ public abstract class ObservableBase
 	// Should really be protected, but inter-package access requires it be public (idk?)
 	public class Property<T>
 	{
-		protected T			value;
-		protected T			defaultValue;
-		protected String	name;
-		protected boolean	notificationsSuspended	= false;
-		protected ObserverBase	valueObserver;
+		protected T			   value;
+		protected T			   defaultValue;
+		protected String	   name;
+		protected boolean	   notificationsSuspended	= false;
+		protected ObserverBase valueObserver;
 		
 		public Property(final T initialValue, final String name)
 		{
@@ -75,7 +75,7 @@ public abstract class ObservableBase
 		}
 	}
 	
-	protected Vector<ObserverBase> observers = new Vector<ObserverBase>();
+	private Vector<ObserverBase> observers = new Vector<ObserverBase>();
 	
 	public void addObserver(ObserverBase o)
 	{
