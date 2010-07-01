@@ -14,10 +14,10 @@ import javax.swing.*;
 @SuppressWarnings("serial")
 public class EditCaptionDialog extends JDialog implements ActionListener
 {
-	protected static EditCaptionDialog	dialog;
-	protected static JLabel				captionTextLabel;
-	protected static JTextArea			captionTextArea;
-	protected static String				value;
+	private static EditCaptionDialog	dialog;
+	private static JLabel				captionTextLabel;
+	private static JTextArea			captionTextArea;
+	private static String				value;
 	
 	public static String showDialog(Component frameComp, Component locationComp, String defaultText)
 	{

@@ -21,7 +21,7 @@ public class ImageBundle extends ResourceBundle
 		this("");
 	}
 	
-	protected ImageBundle(String suffix)
+	private ImageBundle(String suffix)
 	{
 		fileSuffix = suffix;
 	}

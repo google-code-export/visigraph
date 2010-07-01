@@ -21,7 +21,7 @@ public class CursorBundle extends ResourceBundle
 		this("");
 	}
 	
-	protected CursorBundle(String suffix)
+	private CursorBundle(String suffix)
 	{
 		fileSuffix = suffix;
 	}

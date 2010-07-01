@@ -38,7 +38,7 @@ public class GlobalSettings
 	public static final Color					 defaultSelectedEdgeHandleDisplayColor		= Color.blue;
 	public static final Color					 defaultSelectedEdgeLabelDisplayColor		= Color.blue;
 	
-	public static final double					 defaultDirectedEdgeArrowRatio				= 7.0;
+	public static final double					 defaultDirectedEdgeArrowRatio				= 4.0;
 	
 	public static final Color					 defaultCaptionTextDisplayColor				= Color.black;
 	public static final Color					 defaultSelectedCaptionTextDisplayColor		= new Color(0, 0, 150);
@@ -69,7 +69,7 @@ public class GlobalSettings
 	public static final String					 defaultEdgePrefix							= "e";
 	public static final boolean					 defaultEdgeIsSelected						= false;
 	public static final double					 defaultEdgeThickness						= 2.0;
-	public static final double					 defaultEdgeHandleRadiusRatio				= 2.0;
+	public static final double					 defaultEdgeHandleRadiusRatio				= 1.5;
 	public static final double					 defaultEdgeHandleClickMargin				= 2.5;
 	
 	public static final Point2D					 defaultVertexLocation						= new Point2D.Double(0.0, 0.0);

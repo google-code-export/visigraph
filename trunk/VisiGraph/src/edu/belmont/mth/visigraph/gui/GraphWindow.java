@@ -18,7 +18,7 @@ import edu.belmont.mth.visigraph.settings.*;
 @SuppressWarnings("serial")
 public class GraphWindow extends JInternalFrame
 {
-	protected GraphDisplayController gdc;
+	private GraphDisplayController gdc;
 	private File file;
 	
 	public GraphWindow(Graph g)
@@ -26,8 +26,8 @@ public class GraphWindow extends JInternalFrame
 		super("", true, true, true, true);
 		this.file = null;
 		this.setSize(GlobalSettings.defaultGraphWindowSize);
-		this.add(gdc = new GraphDisplayController(g));
-		this.addInternalFrameListener(new InternalFrameListener() { public void internalFrameActivated(InternalFrameEvent arg0) { gdc.zoomFit(); } public void internalFrameClosed(InternalFrameEvent e) { } public void internalFrameClosing(InternalFrameEvent e) { } public void internalFrameDeactivated(InternalFrameEvent e) { } public void internalFrameDeiconified(InternalFrameEvent e) { } public void internalFrameIconified(InternalFrameEvent e) { } public void internalFrameOpened(InternalFrameEvent e) { }});
+		this.add(setGdc(new GraphDisplayController(g)));
+		this.addInternalFrameListener(new InternalFrameListener() { public void internalFrameActivated(InternalFrameEvent arg0) { getGdc().zoomFit(); } public void internalFrameClosed(InternalFrameEvent e) { } public void internalFrameClosing(InternalFrameEvent e) { } public void internalFrameDeactivated(InternalFrameEvent e) { } public void internalFrameDeiconified(InternalFrameEvent e) { } public void internalFrameIconified(InternalFrameEvent e) { } public void internalFrameOpened(InternalFrameEvent e) { }});
 		this.updateTitle();
 		this.setVisible(true);
 		this.requestFocus();
@@ -36,7 +36,7 @@ public class GraphWindow extends JInternalFrame
 	
 	public void updateTitle()
 	{
-		this.setTitle(GlobalSettings.applicationName + " - " + gdc.getGraph().name.get());
+		this.setTitle(GlobalSettings.applicationName + " - " + getGdc().getGraph().name.get());
 	}
 	
 	public File getFile()
@@ -47,5 +47,18 @@ public class GraphWindow extends JInternalFrame
 	public void setFile(File file)
 	{
 		this.file = file;
+	}
+
+
+	public GraphDisplayController setGdc(GraphDisplayController gdc)
+	{
+		this.gdc = gdc;
+		return gdc;
+	}
+
+
+	public GraphDisplayController getGdc()
+	{
+		return gdc;
 	}
 }

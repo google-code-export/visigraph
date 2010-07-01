@@ -12,10 +12,10 @@ import edu.belmont.mth.visigraph.views.*;
  */
 public class ObservableList<T> extends ObservableBase implements List<T>
 {	
-	protected String name;
-	protected ArrayList<T> list;
-	protected boolean notificationsSuspended;
-	protected ObserverBase elementObserver;
+	private String name;
+	private ArrayList<T> list;
+	private boolean notificationsSuspended;
+	private ObserverBase elementObserver;
 	
  	public ObservableList(String name)
 	{

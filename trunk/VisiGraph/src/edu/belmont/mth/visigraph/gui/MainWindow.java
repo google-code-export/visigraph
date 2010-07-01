@@ -20,25 +20,25 @@ import edu.belmont.mth.visigraph.settings.GlobalSettings;
 @SuppressWarnings("serial")
 public class MainWindow extends JFrame
 {
-	protected final JMenuBar	 menuBar;
-	protected final JMenu		 fileMenu;
-	protected final JMenuItem	  newGraphMenuItem;
-	protected final JMenuItem	  duplicateGraphMenuItem;
-	protected final JMenuItem	  openGraphMenuItem;
-	protected final JMenuItem	  saveGraphMenuItem;
-	protected final JMenuItem	  saveAsGraphMenuItem;
-	protected final JMenuItem	  exitGraphMenuItem;
-	protected final JMenu		 windowsMenu;
-	protected final JMenuItem	  cascadeMenuItem;
-	protected final JMenuItem	  showSideBySideMenuItem;
-	protected final JMenuItem	  showStackedMenuItem;
-	protected final JMenuItem	  tileWindowsMenuItem;
-	protected final JMenu		 helpMenu;
-	protected final JMenuItem	  helpContentsMenuItem;
-	protected final JMenuItem	  aboutVisiGraphMenuItem;
-	protected final MainWindow   thisFrame;
-	protected final JDesktopPane desktopPane;
-	protected final JFileChooser fileChooser;
+	private final JMenuBar	 menuBar;
+	private final JMenu		 fileMenu;
+	private final JMenuItem	  newGraphMenuItem;
+	private final JMenuItem	  duplicateGraphMenuItem;
+	private final JMenuItem	  openGraphMenuItem;
+	private final JMenuItem	  saveGraphMenuItem;
+	private final JMenuItem	  saveAsGraphMenuItem;
+	private final JMenuItem	  exitGraphMenuItem;
+	private final JMenu		 windowsMenu;
+	private final JMenuItem	  cascadeMenuItem;
+	private final JMenuItem	  showSideBySideMenuItem;
+	private final JMenuItem	  showStackedMenuItem;
+	private final JMenuItem	  tileWindowsMenuItem;
+	private final JMenu		 helpMenu;
+	private final JMenuItem	  helpContentsMenuItem;
+	private final JMenuItem	  aboutVisiGraphMenuItem;
+	private final MainWindow   thisFrame;
+	private final JDesktopPane desktopPane;
+	private final JFileChooser fileChooser;
 	
 	public MainWindow()
 	{
@@ -91,7 +91,7 @@ public class MainWindow extends JFrame
 				
 				if(selectedFrame instanceof GraphWindow)
 				{
-					Graph graph = ((GraphWindow)selectedFrame).gdc.getGraph();
+					Graph graph = ((GraphWindow)selectedFrame).getGdc().getGraph();
 					
 					GraphWindow graphWindow = new GraphWindow(new Graph(graph.toString()));
 					desktopPane.add(graphWindow);
@@ -138,6 +138,7 @@ public class MainWindow extends JFrame
 							if (newGraph != null)
 							{
 								GraphWindow graphWindow = new GraphWindow(newGraph);
+								graphWindow.setFile(selectedFile);
 								desktopPane.add(graphWindow);
 								try
 								{
@@ -372,7 +373,7 @@ public class MainWindow extends JFrame
 	{
 		JInternalFrame selectedFrame = desktopPane.getSelectedFrame();
 		GraphWindow graphWindow = ((GraphWindow)selectedFrame);
-		Graph graph = graphWindow.gdc.getGraph();
+		Graph graph = graphWindow.getGdc().getGraph();
 		
 		graph.name.set(file.getName().substring(0, file.getName().length() - 4));
     	graphWindow.updateTitle();

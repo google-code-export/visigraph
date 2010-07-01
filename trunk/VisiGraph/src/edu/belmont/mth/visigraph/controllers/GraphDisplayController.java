@@ -25,39 +25,39 @@ import edu.belmont.mth.visigraph.views.*;
 @SuppressWarnings("serial")
 public class GraphDisplayController extends JPanel implements ClipboardOwner
 {
-	protected GraphDisplayController thisGdc;
+	private GraphDisplayController    thisGdc;
 	
-	protected Graph				   graph;
-	protected GraphDisplaySettings 	settings;
-	protected Palette			   	palette;
+	private Graph				        graph;
+	private GraphDisplaySettings 	     settings;
+	private Palette			   	     palette;
 	
-	protected JPanel			   toolToolBarPanel;
-	protected ToolToolBar		    toolToolBar;
-	protected JPanel			   nonToolToolbarPanel;
-	protected ArrangeToolBar	    arrangeToolBar;
-	protected ViewToolBar		    viewToolBar;
-	protected ZoomToolBar		    zoomToolBar;
-	protected FunctionToolBar	    functionToolBar;								 
-	protected JPanel			   viewportPanel;
-	protected JComponent		    viewport;
-	protected ViewportPopupMenu	    viewportPopupMenu;
-	protected JPanel			   statusBar;
-	protected Map<FunctionBase, JLabel>	selectedFunctionLabels;
+	private JPanel			        toolToolBarPanel;
+	private ToolToolBar		         toolToolBar;
+	private JPanel			        nonToolToolbarPanel;
+	private ArrangeToolBar	         arrangeToolBar;
+	private ViewToolBar		         viewToolBar;
+	private ZoomToolBar		         zoomToolBar;
+	private FunctionToolBar	         functionToolBar;								 
+	private JPanel			        viewportPanel;
+	private JComponent		         viewport;
+	private ViewportPopupMenu	         viewportPopupMenu;
+	private JPanel			        statusBar;
+	private Map<FunctionBase, JLabel>	selectedFunctionLabels;
 	
-	protected Tool					tool;
-	protected int					paintColor;
-	protected boolean				isMouseDownOnCanvas;
-	protected boolean				isMouseDownOnPaintToolButton;
-	protected boolean				pointerToolClickedObject;
-	protected boolean				cutToolClickedObject;
-	protected boolean				paintToolClickedObject;
-	protected boolean				isMouseOverViewport;
-	protected Point					currentMousePoint;
-	protected Point					pastMousePoint;
-	protected Vertex				fromVertex;
-	protected AffineTransform		transform;
-	protected Set<FunctionBase>	    functionsToBeRun;
-	protected ResourceBundle		imageIcons;
+	private Tool					    tool;
+	private int					    paintColor;
+	private boolean				    isMouseDownOnCanvas;
+	private boolean				    isMouseDownOnPaintToolButton;
+	private boolean				    pointerToolClickedObject;
+	private boolean				    cutToolClickedObject;
+	private boolean				    paintToolClickedObject;
+	private boolean				    isMouseOverViewport;
+	private Point					    currentMousePoint;
+	private Point					    pastMousePoint;
+	private Vertex				    fromVertex;
+	private AffineTransform		    transform;
+	private Set<FunctionBase>	        functionsToBeRun;
+	private ResourceBundle		    imageIcons;
 	
 	public GraphDisplayController(Graph graph)
 	{
@@ -981,16 +981,16 @@ public class GraphDisplayController extends JPanel implements ClipboardOwner
 		POINTER_TOOL, VERTEX_TOOL, EDGE_TOOL, CAPTION_TOOL, CUT_TOOL, PAINT_TOOL
 	}
 	
-	protected class ToolToolBar extends JToolBar
+	private class ToolToolBar extends JToolBar
 	{
-		protected JButton pointerToolButton;
-		protected JButton vertexToolButton;
-		protected JButton edgeToolButton;
-		protected JButton captionToolButton;
-		protected JButton cutToolButton;
-		protected JButton paintToolButton;
-		protected JPopupMenu paintMenu;
-		protected Timer	paintMenuTimer;
+		private JButton pointerToolButton;
+		private JButton vertexToolButton;
+		private JButton edgeToolButton;
+		private JButton captionToolButton;
+		private JButton cutToolButton;
+		private JButton paintToolButton;
+		private JPopupMenu paintMenu;
+		private Timer	paintMenuTimer;
 		
 		public ToolToolBar()
 		{
@@ -1006,6 +1006,7 @@ public class GraphDisplayController extends JPanel implements ClipboardOwner
 					graph.deselectAll();
 				}
 			});
+			pointerToolButton.setToolTipText("Select / Move");
 			pointerToolButton.setSelected(true);
 			this.add(pointerToolButton);
 			
@@ -1018,6 +1019,7 @@ public class GraphDisplayController extends JPanel implements ClipboardOwner
 					graph.deselectAll();
 				}
 			});
+			vertexToolButton.setToolTipText("Add vertices");
 			this.add(vertexToolButton);
 			
 			edgeToolButton = new JButton((ImageIcon) imageIcons.getObject("edge_tool_icon"));
@@ -1029,6 +1031,7 @@ public class GraphDisplayController extends JPanel implements ClipboardOwner
 					graph.deselectAll();
 				}
 			});
+			edgeToolButton.setToolTipText("Add edges");
 			this.add(edgeToolButton);
 			
 			captionToolButton = new JButton((ImageIcon) imageIcons.getObject("caption_tool_icon"));
@@ -1040,6 +1043,7 @@ public class GraphDisplayController extends JPanel implements ClipboardOwner
 					graph.deselectAll();
 				}
 			});
+			captionToolButton.setToolTipText("Add captions");
 			this.add(captionToolButton);
 			
 			cutToolButton = new JButton((ImageIcon) imageIcons.getObject("cut_tool_icon"));
@@ -1051,6 +1055,7 @@ public class GraphDisplayController extends JPanel implements ClipboardOwner
 					graph.deselectAll();
 				}
 			});
+			cutToolButton.setToolTipText("Remove elements");
 			this.add(cutToolButton);
 			
 			paintToolButton = new JButton((ImageIcon) imageIcons.getObject("paint_tool_icon"));
@@ -1088,6 +1093,7 @@ public class GraphDisplayController extends JPanel implements ClipboardOwner
 						paintMenu.show(paintToolButton, 0, paintToolButton.getHeight());
 				}
 			});
+			paintToolButton.setToolTipText("Paint elements (hold for palette)");
 			this.add(paintToolButton);
 			
 			setTool(Tool.POINTER_TOOL);
@@ -1156,25 +1162,24 @@ public class GraphDisplayController extends JPanel implements ClipboardOwner
 		}
 	}
 	
-	protected class ArrangeToolBar extends JToolBar
+	private class ArrangeToolBar extends JToolBar
 	{
-		protected JButton arrangeCircleButton;
-		protected JButton arrangeGridButton;
-		protected JButton arrangeTreeButton;
-		protected JButton arrangeWebButton;
-		protected JButton alignVerticallyButton;
-		protected JButton alignHorizontallyButton;
-		protected JButton distributeHorizontallyButton;
-		protected JButton distributeVerticallyButton;
-		protected JButton rotateLeft90Button;
-		protected JButton rotateRight90Button;
-		protected JButton flipHorizontallyButton;
-		protected JButton flipVerticallyButton;	
+		private JButton arrangeCircleButton;
+		private JButton arrangeGridButton;
+		private JButton arrangeTreeButton;
+		private JButton arrangeWebButton;
+		private JButton alignVerticallyButton;
+		private JButton alignHorizontallyButton;
+		private JButton distributeHorizontallyButton;
+		private JButton distributeVerticallyButton;
+		private JButton rotateLeft90Button;
+		private JButton rotateRight90Button;
+		private JButton flipHorizontallyButton;
+		private JButton flipVerticallyButton;	
 		
 		public ArrangeToolBar()
 		{
 			arrangeCircleButton = new JButton((ImageIcon) imageIcons.getObject("arrange_circle_icon"));
-			this.add(arrangeCircleButton);
 			arrangeCircleButton.addActionListener(new ActionListener()
 			{
 				public void actionPerformed(ActionEvent e)
@@ -1191,9 +1196,10 @@ public class GraphDisplayController extends JPanel implements ClipboardOwner
 					zoomFit();
 				}
 			});
+			arrangeCircleButton.setToolTipText("Arrange as a circle");
+			this.add(arrangeCircleButton);
 			
 			arrangeGridButton = new JButton((ImageIcon) imageIcons.getObject("arrange_grid_icon"));
-			this.add(arrangeGridButton);
 			arrangeGridButton.addActionListener(new ActionListener()
 			{
 				public void actionPerformed(ActionEvent e)
@@ -1213,9 +1219,10 @@ public class GraphDisplayController extends JPanel implements ClipboardOwner
 					zoomFit();
 				}
 			});
+			arrangeGridButton.setToolTipText("Arrange as a grid");
+			this.add(arrangeGridButton);
 			
 			arrangeTreeButton = new JButton((ImageIcon) imageIcons.getObject("arrange_tree_icon"));
-			this.add(arrangeTreeButton);
 			arrangeTreeButton.addActionListener(new ActionListener()
 			{
 				public void actionPerformed(ActionEvent e)
@@ -1284,9 +1291,10 @@ public class GraphDisplayController extends JPanel implements ClipboardOwner
 					zoomFit();
 				}
 			});
+			arrangeTreeButton.setToolTipText("Arrange as a tree (select roots)");
+			this.add(arrangeTreeButton);
 			
 			arrangeWebButton = new JButton((ImageIcon) imageIcons.getObject("arrange_web_icon"));
-			this.add(arrangeWebButton);
 			arrangeWebButton.addActionListener(new ActionListener()
 			{
 				public void actionPerformed(ActionEvent e)
@@ -1357,11 +1365,12 @@ public class GraphDisplayController extends JPanel implements ClipboardOwner
 					} ).start();	
 				}
 			});
+			arrangeWebButton.setToolTipText("Auto-arrange");
+			this.add(arrangeWebButton);
 			
 			this.add(new JToolBar.Separator());
 			
 			alignHorizontallyButton = new JButton((ImageIcon) imageIcons.getObject("align_horizontally_icon"));
-			this.add(alignHorizontallyButton);
 			alignHorizontallyButton.addActionListener(new ActionListener()
 			{
 				public void actionPerformed(ActionEvent e)
@@ -1382,9 +1391,10 @@ public class GraphDisplayController extends JPanel implements ClipboardOwner
 							graph.vertexes.get(i).y.set(centerY);
 				}
 			});
+			alignHorizontallyButton.setToolTipText("Align horizontally");
+			this.add(alignHorizontallyButton);
 			
 			alignVerticallyButton = new JButton((ImageIcon) imageIcons.getObject("align_vertically_icon"));
-			this.add(alignVerticallyButton);
 			alignVerticallyButton.addActionListener(new ActionListener()
 			{
 				public void actionPerformed(ActionEvent e)
@@ -1405,9 +1415,10 @@ public class GraphDisplayController extends JPanel implements ClipboardOwner
 							graph.vertexes.get(i).x.set(centerX);
 				}
 			});
+			alignVerticallyButton.setToolTipText("Align vertically");
+			this.add(alignVerticallyButton);
 			
 			distributeHorizontallyButton = new JButton((ImageIcon) imageIcons.getObject("distribute_horizontally_icon"));
-			this.add(distributeHorizontallyButton);
 			distributeHorizontallyButton.addActionListener(new ActionListener()
 			{
 				public void actionPerformed(ActionEvent e)
@@ -1426,9 +1437,10 @@ public class GraphDisplayController extends JPanel implements ClipboardOwner
 						vertex.x.set(currentX += spacing);
 				}
 			});
+			distributeHorizontallyButton.setToolTipText("Distribute horizontally");
+			this.add(distributeHorizontallyButton);
 			
 			distributeVerticallyButton = new JButton((ImageIcon) imageIcons.getObject("distribute_vertically_icon"));
-			this.add(distributeVerticallyButton);
 			distributeVerticallyButton.addActionListener(new ActionListener()
 			{
 				public void actionPerformed(ActionEvent e)
@@ -1447,16 +1459,17 @@ public class GraphDisplayController extends JPanel implements ClipboardOwner
 						vertex.y.set(currentY += spacing);
 				}
 			});
+			distributeVerticallyButton.setToolTipText("Distribute vertically");
+			this.add(distributeVerticallyButton);
 			
 			this.add(new JToolBar.Separator());
 			
 			rotateLeft90Button = new JButton((ImageIcon) imageIcons.getObject("rotate_left_90_icon"));
-			this.add(rotateLeft90Button);
 			rotateLeft90Button.addActionListener(new ActionListener()
 			{
 				public void actionPerformed(ActionEvent e)
 				{
-					int selectedVertexCount = 0;
+					int selectedElementCount = 0;
 					Point2D.Double centroid = new Point2D.Double();
 					
 					for(Vertex vertex : graph.vertexes)
@@ -1464,11 +1477,23 @@ public class GraphDisplayController extends JPanel implements ClipboardOwner
 						{
 							centroid.x += vertex.x.get();
 							centroid.y += vertex.y.get();
-							++selectedVertexCount;
+							++selectedElementCount;
 						}
 					
-					centroid.x /= (double)selectedVertexCount;
-					centroid.y /= (double)selectedVertexCount;
+					for(Edge edge : graph.edges)
+						if(edge.isSelected.get())
+						{
+							centroid.x += edge.handleX.get();
+							centroid.y += edge.handleY.get();
+							++selectedElementCount;
+						}
+					
+					centroid.x /= (double)selectedElementCount;
+					centroid.y /= (double)selectedElementCount;
+					
+					for(Edge edge : graph.edges)
+						if(edge.isSelected.get())
+							edge.suspendNotifications(true);
 					
 					for(Vertex vertex : graph.vertexes)
 						if(vertex.isSelected.get())
@@ -1477,16 +1502,26 @@ public class GraphDisplayController extends JPanel implements ClipboardOwner
 							vertex.x.set(centroid.x - (centroid.y - vertex.y.get()));
 							vertex.y.set(centroid.y + (centroid.x - oldVertexX));
 						}
+					
+					for(Edge edge : graph.edges)
+						if(edge.isSelected.get())
+						{
+							double oldEdgeHandleX = edge.handleX.get();
+							edge.handleX.set(centroid.x - (centroid.y - edge.handleY.get()));
+							edge.handleY.set(centroid.y + (centroid.x - oldEdgeHandleX));
+							edge.suspendNotifications(false);
+						}
 				}
 			});
+			rotateLeft90Button.setToolTipText("Rotate 90° counter-clockwise");
+			this.add(rotateLeft90Button);
 			
 			rotateRight90Button = new JButton((ImageIcon) imageIcons.getObject("rotate_right_90_icon"));
-			this.add(rotateRight90Button);
 			rotateRight90Button.addActionListener(new ActionListener()
 			{
 				public void actionPerformed(ActionEvent e)
 				{
-					int selectedVertexCount = 0;
+					int selectedElementCount = 0;
 					Point2D.Double centroid = new Point2D.Double();
 					
 					for(Vertex vertex : graph.vertexes)
@@ -1494,11 +1529,23 @@ public class GraphDisplayController extends JPanel implements ClipboardOwner
 						{
 							centroid.x += vertex.x.get();
 							centroid.y += vertex.y.get();
-							++selectedVertexCount;
+							++selectedElementCount;
 						}
 					
-					centroid.x /= (double)selectedVertexCount;
-					centroid.y /= (double)selectedVertexCount;
+					for(Edge edge : graph.edges)
+						if(edge.isSelected.get())
+						{
+							centroid.x += edge.handleX.get();
+							centroid.y += edge.handleY.get();
+							++selectedElementCount;
+						}
+					
+					centroid.x /= (double)selectedElementCount;
+					centroid.y /= (double)selectedElementCount;
+					
+					for(Edge edge : graph.edges)
+						if(edge.isSelected.get())
+							edge.suspendNotifications(true);
 					
 					for(Vertex vertex : graph.vertexes)
 						if(vertex.isSelected.get())
@@ -1507,67 +1554,115 @@ public class GraphDisplayController extends JPanel implements ClipboardOwner
 							vertex.x.set(centroid.x + (centroid.y - vertex.y.get()));
 							vertex.y.set(centroid.y - (centroid.x - oldVertexX));
 						}
+					
+					for(Edge edge : graph.edges)
+						if(edge.isSelected.get())
+						{
+							double oldEdgeHandleX = edge.handleX.get();
+							edge.handleX.set(centroid.x + (centroid.y - edge.handleY.get()));
+							edge.handleY.set(centroid.y - (centroid.x - oldEdgeHandleX));
+							edge.suspendNotifications(false);
+						}
 				}
 			});
+			rotateRight90Button.setToolTipText("Rotate 90° clockwise");
+			this.add(rotateRight90Button);
 			
 			flipHorizontallyButton = new JButton((ImageIcon) imageIcons.getObject("flip_horizontally_icon"));
-			this.add(flipHorizontallyButton);
 			flipHorizontallyButton.addActionListener(new ActionListener()
 			{
 				public void actionPerformed(ActionEvent e)
 				{
-					int selectedVertexCount = 0;
+					int selectedElementCount = 0;
 					double centerX = 0.0;
 					
 					for(Vertex vertex : graph.vertexes)
 						if(vertex.isSelected.get())
 						{
 							centerX += vertex.x.get();
-							++selectedVertexCount;
+							++selectedElementCount;
 						}
 					
-					centerX /= (double)selectedVertexCount;
+					for(Edge edge : graph.edges)
+						if(edge.isSelected.get())
+						{
+							centerX += edge.handleX.get();
+							++selectedElementCount;
+						}
+					
+					centerX /= (double)selectedElementCount;
+					
+					for(Edge edge : graph.edges)
+						if(edge.isSelected.get())
+							edge.suspendNotifications(true);
 					
 					for(Vertex vertex : graph.vertexes)
 						if(vertex.isSelected.get())
 							vertex.x.set(2.0 * centerX - vertex.x.get());
+					
+					for(Edge edge : graph.edges)
+						if(edge.isSelected.get())
+						{
+							edge.handleX.set(2.0 * centerX - edge.handleX.get());
+							edge.suspendNotifications(false);
+						}
 				}
 			});
+			flipHorizontallyButton.setToolTipText("Flip horizontally");
+			this.add(flipHorizontallyButton);
 			
 			flipVerticallyButton = new JButton((ImageIcon) imageIcons.getObject("flip_vertically_icon"));
-			this.add(flipVerticallyButton);
 			flipVerticallyButton.addActionListener(new ActionListener()
 			{
 				public void actionPerformed(ActionEvent e)
 				{
-					int selectedVertexCount = 0;
+					int selectedElementCount = 0;
 					double centerY = 0.0;
 					
 					for(Vertex vertex : graph.vertexes)
 						if(vertex.isSelected.get())
 						{
 							centerY += vertex.y.get();
-							++selectedVertexCount;
+							++selectedElementCount;
 						}
 					
-					centerY /= (double)selectedVertexCount;
+					for(Edge edge : graph.edges)
+						if(edge.isSelected.get())
+						{
+							centerY += edge.handleY.get();
+							++selectedElementCount;
+						}
+					
+					centerY /= (double)selectedElementCount;
+					
+					for(Edge edge : graph.edges)
+						if(edge.isSelected.get())
+							edge.suspendNotifications(true);
 					
 					for(Vertex vertex : graph.vertexes)
 						if(vertex.isSelected.get())
 							vertex.y.set(2.0 * centerY - vertex.y.get());
+					
+					for(Edge edge : graph.edges)
+						if(edge.isSelected.get())
+						{
+							edge.handleY.set(2.0 * centerY - edge.handleY.get());
+							edge.suspendNotifications(false);
+						}
 				}
 			});
+			flipVerticallyButton.setToolTipText("Flip vertically");
+			this.add(flipVerticallyButton);
 		}
 	}
 	
-	protected class ViewToolBar extends JToolBar
+	private class ViewToolBar extends JToolBar
 	{
-		protected JButton showVertexLabelsButton;
-		protected JButton showVertexWeightsButton;
-		protected JButton showEdgeHandlesButton;
-		protected JButton showEdgeLabelsButton;
-		protected JButton showEdgeWeightsButton;
-		protected JButton showCrossingsButton;
+		private JButton showVertexLabelsButton;
+		private JButton showVertexWeightsButton;
+		private JButton showEdgeHandlesButton;
+		private JButton showEdgeLabelsButton;
+		private JButton showEdgeWeightsButton;
 		
 		public ViewToolBar()
 		{
@@ -1579,6 +1674,7 @@ public class GraphDisplayController extends JPanel implements ClipboardOwner
 					settings.showVertexLabels.set(!settings.showVertexLabels.get());
 				}
 			});
+			showVertexLabelsButton.setToolTipText("Show vertex labels");
 			this.add(showVertexLabelsButton);
 			
 			showVertexWeightsButton = new JButton((ImageIcon) imageIcons.getObject("show_vertex_weights_icon"));
@@ -1589,6 +1685,7 @@ public class GraphDisplayController extends JPanel implements ClipboardOwner
 					settings.showVertexWeights.set(!settings.showVertexWeights.get());
 				}
 			});
+			showVertexWeightsButton.setToolTipText("Show vertex weights");
 			this.add(showVertexWeightsButton);
 			
 			showEdgeHandlesButton = new JButton((ImageIcon) imageIcons.getObject("show_edge_handles_icon"));
@@ -1599,6 +1696,7 @@ public class GraphDisplayController extends JPanel implements ClipboardOwner
 					settings.showEdgeHandles.set(!settings.showEdgeHandles.get());
 				}
 			});
+			showEdgeHandlesButton.setToolTipText("Show edge handles");
 			this.add(showEdgeHandlesButton);
 			
 			showEdgeLabelsButton = new JButton((ImageIcon) imageIcons.getObject("show_edge_labels_icon"));
@@ -1609,6 +1707,7 @@ public class GraphDisplayController extends JPanel implements ClipboardOwner
 					settings.showEdgeLabels.set(!settings.showEdgeLabels.get());
 				}
 			});
+			showEdgeLabelsButton.setToolTipText("Show edge labels");
 			this.add(showEdgeLabelsButton);
 			
 			showEdgeWeightsButton = new JButton((ImageIcon) imageIcons.getObject("show_edge_weights_icon"));
@@ -1619,6 +1718,7 @@ public class GraphDisplayController extends JPanel implements ClipboardOwner
 					settings.showEdgeWeights.set(!settings.showEdgeWeights.get());
 				}
 			});
+			showEdgeWeightsButton.setToolTipText("Show edge weights");
 			this.add(showEdgeWeightsButton);
 			
 			this.refresh();
@@ -1643,12 +1743,12 @@ public class GraphDisplayController extends JPanel implements ClipboardOwner
 		}
 	}
 	
-	protected class ZoomToolBar extends JToolBar
+	private class ZoomToolBar extends JToolBar
 	{
-		protected JButton zoomGraphButton;
-		protected JButton zoomOneToOneButton;
-		protected JButton zoomInButton;
-		protected JButton zoomOutButton;
+		private JButton zoomGraphButton;
+		private JButton zoomOneToOneButton;
+		private JButton zoomInButton;
+		private JButton zoomOutButton;
 		
 		public ZoomToolBar()
 		{
@@ -1660,6 +1760,7 @@ public class GraphDisplayController extends JPanel implements ClipboardOwner
 					zoomFit();
 				}
 			});
+			zoomGraphButton.setToolTipText("Zoom to fit graph");
 			this.add(zoomGraphButton);
 			
 			zoomOneToOneButton = new JButton((ImageIcon) imageIcons.getObject("zoom_one_to_one_icon"));
@@ -1670,6 +1771,7 @@ public class GraphDisplayController extends JPanel implements ClipboardOwner
 					zoomOneToOne();
 				}
 			});
+			zoomOneToOneButton.setToolTipText("Zoom 1:1");
 			this.add(zoomOneToOneButton);
 			
 			zoomInButton = new JButton((ImageIcon) imageIcons.getObject("zoom_in_icon"));
@@ -1689,6 +1791,7 @@ public class GraphDisplayController extends JPanel implements ClipboardOwner
 					zoomCenter(zoomCenter, GlobalSettings.zoomInFactor);
 				}
 			});
+			zoomInButton.setToolTipText("Zoom in");
 			this.add(zoomInButton);
 			
 			zoomOutButton = new JButton((ImageIcon) imageIcons.getObject("zoom_out_icon"));
@@ -1708,19 +1811,20 @@ public class GraphDisplayController extends JPanel implements ClipboardOwner
 					zoomCenter(zoomCenter, GlobalSettings.zoomOutFactor);
 				}
 			});
+			zoomOutButton.setToolTipText("Zoom out");
 			this.add(zoomOutButton);
 		}
 	}
 	
-	protected class FunctionToolBar extends JToolBar
+	private class FunctionToolBar extends JToolBar
 	{
-		protected JButton								  oneTimeFunctionsButton;
-		protected JPopupMenu							  oneTimeFunctionsMenu;
-		protected Map<JMenuItem, FunctionBase>		   oneTimeFunctionMenuItems;
+		private JButton								  oneTimeFunctionsButton;
+		private JPopupMenu							  oneTimeFunctionsMenu;
+		private Map<JMenuItem, FunctionBase>		   oneTimeFunctionMenuItems;
 		
-		protected JButton								  dynamicFunctionsButton;
-		protected JPopupMenu							  dynamicFunctionsMenu;
-		protected Map<JCheckBoxMenuItem, FunctionBase> dynamicFunctionMenuItems;
+		private JButton								  dynamicFunctionsButton;
+		private JPopupMenu							  dynamicFunctionsMenu;
+		private Map<JCheckBoxMenuItem, FunctionBase> dynamicFunctionMenuItems;
 		
 		public FunctionToolBar()
 		{
@@ -1732,6 +1836,7 @@ public class GraphDisplayController extends JPanel implements ClipboardOwner
 					oneTimeFunctionsMenu.show(oneTimeFunctionsButton, 0, oneTimeFunctionsButton.getHeight());
 				}
 			});
+			oneTimeFunctionsButton.setToolTipText("Evaluate once");
 			this.add(oneTimeFunctionsButton);
 			
 			dynamicFunctionsButton = new JButton((ImageIcon) imageIcons.getObject("dynamic_functions_icon"));
@@ -1742,6 +1847,7 @@ public class GraphDisplayController extends JPanel implements ClipboardOwner
 					dynamicFunctionsMenu.show(dynamicFunctionsButton, 0, dynamicFunctionsButton.getHeight());
 				}
 			});
+			dynamicFunctionsButton.setToolTipText("Evaluate dynamically");
 			this.add(dynamicFunctionsButton);
 			
 			oneTimeFunctionsMenu = new JPopupMenu();
@@ -1813,26 +1919,25 @@ public class GraphDisplayController extends JPanel implements ClipboardOwner
 		}
 	}
 	
-	protected class ViewportPopupMenu extends JPopupMenu
+	private class ViewportPopupMenu extends JPopupMenu
 	{
-		protected JMenuItem selectAll;
-		protected JMenuItem selectAllVerticesItem;
-		protected JMenuItem selectAllEdgesItem;
-		protected JMenuItem	cutMenuItem;
-		protected JMenuItem	copyMenuItem;
-		protected JMenuItem	pasteMenuItem;
-		protected JMenuItem propertiesItem;
-		protected JMenuItem  vertexItem;
-		protected JMenuItem   vertexLabelItem;
-		protected JMenuItem   vertexRadiusItem;
-		protected JMenuItem   vertexColorItem;
-		protected JMenuItem   vertexWeightItem;
-		protected JMenuItem  edgeItem;
-		protected JMenuItem   edgeWeightItem;
-		protected JMenuItem   edgeColorItem;
-		protected JMenuItem   edgeLabelItem;
-		protected JMenuItem   edgeThicknessItem;
-		protected JMenuItem   edgeHandleRadiusItem;
+		private JMenuItem selectAll;
+		private JMenuItem selectAllVerticesItem;
+		private JMenuItem selectAllEdgesItem;
+		private JMenuItem	cutMenuItem;
+		private JMenuItem	copyMenuItem;
+		private JMenuItem	pasteMenuItem;
+		private JMenuItem propertiesItem;
+		private JMenuItem  vertexItem;
+		private JMenuItem   vertexLabelItem;
+		private JMenuItem   vertexRadiusItem;
+		private JMenuItem   vertexColorItem;
+		private JMenuItem   vertexWeightItem;
+		private JMenuItem  edgeItem;
+		private JMenuItem   edgeWeightItem;
+		private JMenuItem   edgeColorItem;
+		private JMenuItem   edgeLabelItem;
+		private JMenuItem   edgeThicknessItem;
 		
 		public ViewportPopupMenu()
 		{

@@ -67,7 +67,7 @@ public class Main
 	 * @throws Error
 	 *             If an {@link GraphGeneratorBase} in the {@link GlobalSettings}'s registry implements inconsistent rules.
 	 */
-	protected static void ValidateGraphGenerators() throws Error
+	private static void ValidateGraphGenerators() throws Error
 	{
 		for (GraphGeneratorBase generator : GlobalSettings.allGraphGenerators)
 		{

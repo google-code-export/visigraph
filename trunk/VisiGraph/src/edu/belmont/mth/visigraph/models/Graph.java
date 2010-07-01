@@ -24,10 +24,10 @@ public class Graph extends ObservableBase
 	public final boolean				 areMultipleEdgesAllowed;
 	public final boolean				 areDirectedEdgesAllowed;
 	public final boolean				 areCyclesAllowed;
-	protected boolean					 notificationsSuspended;
-	protected ObserverBase				 vertexListObserver;
-	protected ObserverBase				 edgeListObserver;
-	protected ObserverBase				 captionListObserver;
+	private boolean					 	 notificationsSuspended;
+	private ObserverBase				 vertexListObserver;
+	private ObserverBase				 edgeListObserver;
+	private ObserverBase				 captionListObserver;
 	
 	public Graph()
 	{
@@ -241,7 +241,7 @@ public class Graph extends ObservableBase
 			}
 	}
 	
-	protected void fixEdges()
+	private void fixEdges()
 	{
 		suspendNotifications(true);
 		
