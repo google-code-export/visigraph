@@ -236,26 +236,6 @@ public class Edge extends ObservableBase
 		return (Point2D) center.clone();
 	}
 	
-	public Vector<Point2D> getCrossings(Edge e)
-	{
-		// Note: we do not count crossings between adjacent (coincident) edges as they are unnecessary
-		if (isAdjacent(e))
-		{
-			return new Vector<Point2D>();
-		}
-		else if (isLinear())
-		{
-			if (e.isLinear())
-				return GeometryUtilities.getCrossings(getLine(), e.getLine());
-			else
-				return GeometryUtilities.getCrossings(getLine(), e.getArc(), e.getCenter());
-		}
-		else if (e.isLinear())
-			return GeometryUtilities.getCrossings(e.getLine(), getArc(), getCenter());
-		else
-			return GeometryUtilities.getCrossings(getArc(), getCenter(), e.getArc(), e.getCenter());
-	}
-	
 	public Point2D getHandlePoint2D()
 	{
 		return new Point2D.Double(handleX.get(), handleY.get());

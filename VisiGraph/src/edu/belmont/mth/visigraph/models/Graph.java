@@ -258,17 +258,6 @@ public class Graph extends ObservableBase
 			notifyObservers("edges\tremove\t" + originalSize + "\t" + edges.size());
 	}
 	
-	public Vector<Point2D> getCrossings()
-	{
-		Vector<Point2D> ret = new Vector<Point2D>();
-		
-		for (int i = 0; i < edges.size(); ++i)
-			for (int j = i + 1; j < edges.size(); ++j)
-				ret.addAll(edges.get(i).getCrossings(edges.get(j)));
-		
-		return ret;
-	}
-	
 	public Set<Edge> getEdges(Vertex v)
 	{
 		HashSet<Edge> edgeSet = new HashSet<Edge>();
