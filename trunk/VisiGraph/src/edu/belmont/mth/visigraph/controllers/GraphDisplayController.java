@@ -7,6 +7,11 @@ import java.awt.*;
 import java.awt.datatransfer.*;
 import java.awt.event.*;
 import java.awt.geom.*;
+import java.awt.image.*;
+import java.awt.print.PageFormat;
+import java.awt.print.Printable;
+import java.awt.print.PrinterException;
+import java.awt.print.PrinterJob;
 import java.util.*;
 import java.util.Map.*;
 import javax.swing.*;
@@ -17,10 +22,7 @@ import edu.belmont.mth.visigraph.models.*;
 import edu.belmont.mth.visigraph.models.functions.*;
 import edu.belmont.mth.visigraph.settings.*;
 import edu.belmont.mth.visigraph.views.*;
-import edu.belmont.mth.visigraph.views.display.CaptionDisplayView;
-import edu.belmont.mth.visigraph.views.display.EdgeDisplayView;
-import edu.belmont.mth.visigraph.views.display.GraphDisplayView;
-import edu.belmont.mth.visigraph.views.display.VertexDisplayView;
+import edu.belmont.mth.visigraph.views.display.*;
 
 /**
  * @author Cameron Behar
@@ -164,7 +166,27 @@ public class GraphDisplayController extends JPanel implements ClipboardOwner
 	    Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
 	    clipboard.setContents( stringSelection, thisGdc );
 	}
-		
+	
+	public RenderedImage getImage()
+	{
+	    int width = viewport.getWidth();
+	    int height = viewport.getHeight();
+
+	    // Create a buffered image in which to draw
+	    BufferedImage bufferedImage = new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB);
+
+	    // Create a graphics contents on the buffered image
+	    Graphics g = bufferedImage.createGraphics();
+
+	    // Draw graphics
+	    viewport.paint(g);
+
+	    // Graphics context no longer needed so dispose it
+	    g.dispose();
+
+	    return bufferedImage;
+	}
+	
 	public Graph getGraph()
 	{
 		return graph;
@@ -490,6 +512,12 @@ public class GraphDisplayController extends JPanel implements ClipboardOwner
 				ex.printStackTrace();
 			}
 		}	
+	}
+	
+	public void printGraph() throws PrinterException
+	{
+		ViewportPrinter pv = new ViewportPrinter();
+		pv.print();
 	}
 	
 	public void setTool(Tool tool)
@@ -2172,6 +2200,35 @@ public class GraphDisplayController extends JPanel implements ClipboardOwner
 				}
 			});
 			edgeItem.add(edgeThicknessItem);
+		}
+	}
+
+	private class ViewportPrinter implements Printable
+	{
+		public void print() throws PrinterException
+		{
+			PrinterJob printJob = PrinterJob.getPrinterJob();
+			printJob.setPrintable(this);
+			
+			if (printJob.printDialog())
+				printJob.print();
+		}
+		
+		public int print(Graphics g, PageFormat pageFormat, int pageIndex)
+		{
+			if (pageIndex > 0)
+				return (NO_SUCH_PAGE);
+			else
+			{
+				Graphics2D g2d = (Graphics2D) g;
+				g2d.translate(pageFormat.getImageableX(), pageFormat.getImageableY());
+				
+				RepaintManager.currentManager(viewport).setDoubleBufferingEnabled(false);
+				viewport.paint(g2d);
+				RepaintManager.currentManager(viewport).setDoubleBufferingEnabled(true);
+				
+				return (PAGE_EXISTS);
+			}
 		}
 	}
 }
