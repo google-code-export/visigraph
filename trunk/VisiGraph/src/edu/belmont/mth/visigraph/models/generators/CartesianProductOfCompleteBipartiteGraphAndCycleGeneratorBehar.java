@@ -4,6 +4,7 @@
 package edu.belmont.mth.visigraph.models.generators;
 
 import edu.belmont.mth.visigraph.models.*;
+import edu.belmont.mth.visigraph.utilities.RegexUtilities;
 
 /**
  * @author Cameron Behar
@@ -85,6 +86,26 @@ public class CartesianProductOfCompleteBipartiteGraphAndCycleGeneratorBehar exte
 	public String getParametersDescription()
 	{
 		return "[order of NW-SE axes] [order of NE-SW axes] [order of cycle]";
+	}
+	
+	public void validateParameters(String args)
+	{
+		if(args.trim().isEmpty())
+			throw new IllegalArgumentException();
+		
+		String[] params = args.split("\\s+");
+		
+		if(params.length != 3)
+			throw new IllegalArgumentException();
+		
+		if(!RegexUtilities.isPositiveInteger(params[0]))
+			throw new IllegalArgumentException();
+		
+		if(!RegexUtilities.isPositiveInteger(params[1]))
+			throw new IllegalArgumentException();
+		
+		if(!RegexUtilities.isPositiveInteger(params[2]))
+			throw new IllegalArgumentException();
 	}
 	
 	public BooleanRule areLoopsAllowed()

@@ -236,7 +236,11 @@ public class NewGraphDialog extends JDialog implements ActionListener
 	public void actionPerformed(ActionEvent e)
 	{
 		if ("Ok".equals(e.getActionCommand()))
-			value = ((GraphGeneratorBase)functionComboBox.getSelectedObjects()[0]).generate(functionParametersField.getText(), allowLoopsCheckBox.isSelected(), allowDirectedEdgesCheckBox.isSelected(), allowMultipleEdgesCheckBox.isSelected(), allowCyclesCheckBox.isSelected());
+		{
+			GraphGeneratorBase generator = (GraphGeneratorBase)functionComboBox.getSelectedObjects()[0];
+			generator.validateParameters(functionParametersField.getText());
+			value = generator.generate(functionParametersField.getText(), allowLoopsCheckBox.isSelected(), allowDirectedEdgesCheckBox.isSelected(), allowMultipleEdgesCheckBox.isSelected(), allowCyclesCheckBox.isSelected());
+		}
 		
 		NewGraphDialog.dialog.setVisible(false);
 	}

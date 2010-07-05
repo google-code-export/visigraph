@@ -5,6 +5,7 @@ package edu.belmont.mth.visigraph.models.generators;
 
 import edu.belmont.mth.visigraph.models.*;
 import edu.belmont.mth.visigraph.settings.GlobalSettings;
+import edu.belmont.mth.visigraph.utilities.RegexUtilities;
 
 /**
  * @author Cameron Behar
@@ -38,6 +39,20 @@ public class CycleGraphGenerator extends GraphGeneratorBase
 	public String getParametersDescription()
 	{
 		return "[order]";
+	}
+	
+	public void validateParameters(String args)
+	{
+		if(args.trim().isEmpty())
+			throw new IllegalArgumentException();
+		
+		String[] params = args.split("\\s+");
+		
+		if(params.length != 1)
+			throw new IllegalArgumentException();
+		
+		if(!RegexUtilities.isPositiveInteger(params[0]))
+			throw new IllegalArgumentException();
 	}
 	
 	public BooleanRule areLoopsAllowed()
