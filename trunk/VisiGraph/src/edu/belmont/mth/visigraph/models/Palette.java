@@ -21,7 +21,6 @@ public class Palette extends ObservableBase
 	public final Property<Color>	graphSelectionBoxLine;
 	
 	public final Property<Color>	vertexLine;
-	public final Property<Color>	vertexLabel;
 	
 	public final Property<Color>	draggingHandleEdgeLine;
 	public final Property<Color>	draggingEdgeLine;
@@ -49,7 +48,6 @@ public class Palette extends ObservableBase
 		graphSelectionBoxLine  = new Property<Color>(GlobalSettings.defaultGraphSelectionBoxLineDisplayColor, "graphSelectionBoxLine");
 		
 		vertexLine             = new Property<Color>(GlobalSettings.defaultVertexLineDisplayColor, "vertexLine");
-		vertexLabel            = new Property<Color>(GlobalSettings.defaultVertexLabelDisplayColor, "vertexLabel");
 		
 		draggingHandleEdgeLine = new Property<Color>(GlobalSettings.defaultDraggingHandleEdgeLineDisplayColor, "draggingHandleEdgeLine");
 		draggingEdgeLine       = new Property<Color>(GlobalSettings.defaultDraggingEdgeLineDisplayColor, "draggingEdgeLine");
@@ -86,7 +84,6 @@ public class Palette extends ObservableBase
 		graphSelectionBoxLine = new Property<Color>(p.graphSelectionBoxLine.  get(), "graphSelectionBoxLine" );
 		
 		vertexLine            = new Property<Color>(p.vertexLine.             get(), "vertexLine"            );
-		vertexLabel           = new Property<Color>(p.vertexLabel.            get(), "vertexLabel"           );
 		
 		draggingHandleEdgeLine = new Property<Color>(p.draggingHandleEdgeLine.get(), "draggingHandleEdgeLine");
 		draggingEdgeLine       = new Property<Color>(p.draggingEdgeLine.      get(), "draggingEdgeLine"      );
@@ -160,7 +157,6 @@ public class Palette extends ObservableBase
 		members.put("graphSelectionBoxFill",  graphSelectionBoxFill );
 		members.put("graphSelectionBoxLine",  graphSelectionBoxLine );
 		members.put("vertexLine",             vertexLine            );
-		members.put("vertexLabel",            vertexLabel           );
 		members.put("draggingHandleEdgeLine", draggingHandleEdgeLine);
 		members.put("draggingEdgeLine",       draggingEdgeLine      );
 		members.put("uncoloredEdgeHandle",    uncoloredEdgeHandle   );

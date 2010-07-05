@@ -218,4 +218,9 @@ public class GeometryUtilities
 	{
 		return (y1 - y0) / (x1 - x0);
 	}
+	
+	public static double slope(Line2D line)
+	{
+		return (line.getY2() - line.getY1()) / (line.getX2() - line.getX1());
+	}
 }

@@ -1,7 +1,7 @@
 /**
  * VertexDisplayView.java
  */
-package edu.belmont.mth.visigraph.views;
+package edu.belmont.mth.visigraph.views.display;
 
 import java.awt.*;
 import java.awt.geom.*;
@@ -14,7 +14,7 @@ import edu.belmont.mth.visigraph.settings.*;
  */
 public class VertexDisplayView
 {	
-	public static void paint(Graphics2D g2D, Palette p, GraphDisplaySettings s, Vertex v)
+	public static void paint(Graphics2D g2D, Palette p, GraphSettings s, Vertex v)
 	{
 		// Draw vertex center
 		Ellipse2D.Double center = new Ellipse2D.Double(v.x.get() - v.radius.get(), v.y.get() - v.radius.get(), v.radius.get() * 2, v.radius.get() * 2);
@@ -27,7 +27,6 @@ public class VertexDisplayView
 		g2D.draw(outline);
 		
 		// Compute label offset
-		g2D.setPaint(p.vertexLabel.get());
 		double offset = v.radius.get() / Math.sqrt(2.0) + 1;
 		
 		// Draw label

@@ -23,7 +23,6 @@ public class GlobalSettings
 	public static final Color					 defaultGraphSelectionBoxLineDisplayColor	= new Color(150, 150, 255, 200);
 	
 	public static final Color					 defaultVertexLineDisplayColor				= Color.black;
-	public static final Color					 defaultVertexLabelDisplayColor				= Color.black;
 	
 	public static final Color					 defaultDraggingHandleEdgeLineDisplayColor	= Color.lightGray;
 	public static final Color					 defaultDraggingEdgeLineDisplayColor		= Color.lightGray;

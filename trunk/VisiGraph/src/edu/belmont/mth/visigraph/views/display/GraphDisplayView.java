@@ -1,7 +1,7 @@
 /**
  * GraphDisplayView.java
  */
-package edu.belmont.mth.visigraph.views;
+package edu.belmont.mth.visigraph.views.display;
 
 import java.awt.*;
 import java.awt.geom.*;
@@ -14,7 +14,7 @@ import edu.belmont.mth.visigraph.settings.*;
  */
 public class GraphDisplayView
 {
-	public static void paint(Graphics2D g2D, Graph graph, Palette p, GraphDisplaySettings s)
+	public static void paint(Graphics2D g2D, Graph graph, Palette p, GraphSettings s)
 	{
 		// Draw all the edges first
 		for(Edge edge : graph.edges)

@@ -11,7 +11,8 @@ import java.util.*;
 import javax.swing.*;
 import javax.swing.filechooser.*;
 import edu.belmont.mth.visigraph.models.*;
-import edu.belmont.mth.visigraph.settings.GlobalSettings;
+import edu.belmont.mth.visigraph.settings.*;
+import edu.belmont.mth.visigraph.views.svg.*;
 
 /**
  * @author Cameron Behar
@@ -20,22 +21,22 @@ import edu.belmont.mth.visigraph.settings.GlobalSettings;
 @SuppressWarnings("serial")
 public class MainWindow extends JFrame
 {
-	private final JMenuBar	 menuBar;
-	private final JMenu		 fileMenu;
-	private final JMenuItem	  newGraphMenuItem;
-	private final JMenuItem	  duplicateGraphMenuItem;
-	private final JMenuItem	  openGraphMenuItem;
-	private final JMenuItem	  saveGraphMenuItem;
-	private final JMenuItem	  saveAsGraphMenuItem;
-	private final JMenuItem	  exitGraphMenuItem;
-	private final JMenu		 windowsMenu;
-	private final JMenuItem	  cascadeMenuItem;
-	private final JMenuItem	  showSideBySideMenuItem;
-	private final JMenuItem	  showStackedMenuItem;
-	private final JMenuItem	  tileWindowsMenuItem;
-	private final JMenu		 helpMenu;
-	private final JMenuItem	  helpContentsMenuItem;
-	private final JMenuItem	  aboutVisiGraphMenuItem;
+	private final JMenuBar	   menuBar;
+	private final JMenu		   fileMenu;
+	private final JMenuItem	    newGraphMenuItem;
+	private final JMenuItem	    duplicateGraphMenuItem;
+	private final JMenuItem	    openGraphMenuItem;
+	private final JMenuItem	    saveGraphMenuItem;
+	private final JMenuItem	    saveAsGraphMenuItem;
+	private final JMenuItem	    exitGraphMenuItem;
+	private final JMenu		   windowsMenu;
+	private final JMenuItem	    cascadeMenuItem;
+	private final JMenuItem	    showSideBySideMenuItem;
+	private final JMenuItem	    showStackedMenuItem;
+	private final JMenuItem	    tileWindowsMenuItem;
+	private final JMenu		   helpMenu;
+	private final JMenuItem	    helpContentsMenuItem;
+	private final JMenuItem	    aboutVisiGraphMenuItem;
 	private final MainWindow   thisFrame;
 	private final JDesktopPane desktopPane;
 	private final JFileChooser fileChooser;
@@ -115,6 +116,8 @@ public class MainWindow extends JFrame
 			@Override
 			public void actionPerformed(ActionEvent arg0)
 			{
+				fileChooser.resetChoosableFileFilters();
+				fileChooser.setAcceptAllFileFilterUsed(false);
 				fileChooser.setFileFilter(new FileNameExtensionFilter("VisiGraph Graph File", "vsg"));
 				fileChooser.setMultiSelectionEnabled(false);
 
@@ -327,29 +330,53 @@ public class MainWindow extends JFrame
 		
 		if(selectedFrame instanceof GraphWindow)
 		{
-			fileChooser.setFileFilter(new FileNameExtensionFilter("VisiGraph Graph File", "vsg"));
+			fileChooser.resetChoosableFileFilters();
+			fileChooser.setAcceptAllFileFilterUsed(false);
+			fileChooser.addChoosableFileFilter(new FileNameExtensionFilter("Scalable Vector Graphics File", "svg"));
+			fileChooser.addChoosableFileFilter(new FileNameExtensionFilter("VisiGraph Graph File", "vsg"));
 			fileChooser.setMultiSelectionEnabled(false);
-
+			
 			boolean success = false;
 			
 			while(!success)
 			{ 
 				if(fileChooser.showSaveDialog(thisFrame) == JFileChooser.APPROVE_OPTION)
 				{
-		            try
+					if(fileChooser.getFileFilter().getDescription().equals("VisiGraph Graph File"))
 					{
-		            	File selectedFile = fileChooser.getSelectedFile();
-		            	
-		            	if(!selectedFile.getName().endsWith(".vsg"))
-		            		selectedFile = new File(selectedFile.getAbsolutePath() + ".vsg");
-		            	
-		            	saveFile(selectedFile);
-						
-						success = true;
+			            try
+						{
+			            	File selectedFile = fileChooser.getSelectedFile();
+			            	
+			            	if(!selectedFile.getName().endsWith(".vsg"))
+			            		selectedFile = new File(selectedFile.getAbsolutePath() + ".vsg");
+			            	
+			            	saveFile(selectedFile);
+							
+							success = true;
+						}
+						catch (IOException e)
+						{
+							success = false;
+						}
 					}
-					catch (IOException e)
+					else if(fileChooser.getFileFilter().getDescription().equals("Scalable Vector Graphics File"))
 					{
-						success = false;
+						try
+						{
+			            	File selectedFile = fileChooser.getSelectedFile();
+			            	
+			            	if(!selectedFile.getName().endsWith(".svg"))
+			            		selectedFile = new File(selectedFile.getAbsolutePath() + ".svg");
+			            	
+			            	saveFile(selectedFile);
+							
+							success = true;
+						}
+						catch (IOException e)
+						{
+							success = false;
+						}
 					}
 				}
 				else
@@ -374,15 +401,26 @@ public class MainWindow extends JFrame
 		JInternalFrame selectedFrame = desktopPane.getSelectedFrame();
 		GraphWindow graphWindow = ((GraphWindow)selectedFrame);
 		Graph graph = graphWindow.getGdc().getGraph();
+		Palette palette = graphWindow.getGdc().getPalette();
+		GraphSettings settings = graphWindow.getGdc().getSettings();
 		
-		graph.name.set(file.getName().substring(0, file.getName().length() - 4));
-    	graphWindow.updateTitle();
-    	
-		FileWriter fw = new FileWriter(file);
-		fw.write(graph.toString());
-		fw.close();
-		
-		graphWindow.setFile(file);
+		if(file.getName().endsWith(".vsg"))
+		{
+			graph.name.set(file.getName().substring(0, file.getName().length() - 4));
+	    	graphWindow.updateTitle();
+	    	
+			FileWriter fw = new FileWriter(file);
+			fw.write(graph.toString());
+			fw.close();
+			
+			graphWindow.setFile(file);
+		}
+		else if (file.getName().endsWith(".svg"))
+		{
+			FileWriter fw = new FileWriter(file);
+			fw.write(GraphSvgView.format(graph, palette, settings));
+			fw.close();
+		}
 	}
 }
 
