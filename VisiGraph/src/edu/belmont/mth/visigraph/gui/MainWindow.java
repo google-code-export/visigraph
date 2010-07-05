@@ -5,9 +5,12 @@ package edu.belmont.mth.visigraph.gui;
 
 import java.awt.*;
 import java.awt.event.*;
+import java.awt.print.PrinterException;
 import java.beans.*;
 import java.io.*;
 import java.util.*;
+
+import javax.imageio.ImageIO;
 import javax.swing.*;
 import javax.swing.filechooser.*;
 import edu.belmont.mth.visigraph.models.*;
@@ -28,6 +31,7 @@ public class MainWindow extends JFrame
 	private final JMenuItem	    openGraphMenuItem;
 	private final JMenuItem	    saveGraphMenuItem;
 	private final JMenuItem	    saveAsGraphMenuItem;
+	private final JMenuItem	    printGraphMenuItem;
 	private final JMenuItem	    exitGraphMenuItem;
 	private final JMenu		   windowsMenu;
 	private final JMenuItem	    cascadeMenuItem;
@@ -189,6 +193,25 @@ public class MainWindow extends JFrame
 		
 		fileMenu.addSeparator();
 		
+		printGraphMenuItem = new JMenuItem("Print...");
+		printGraphMenuItem.addActionListener(new ActionListener()
+		{
+			@Override
+			public void actionPerformed(ActionEvent arg0)
+			{
+				JInternalFrame selectedFrame = desktopPane.getSelectedFrame();
+				if(selectedFrame != null)
+				{
+					GraphWindow graphWindow = ((GraphWindow)selectedFrame);					
+					try { graphWindow.getGdc().printGraph(); }
+					catch (PrinterException e) { e.printStackTrace(); }
+				}
+			}
+		});
+		fileMenu.add(printGraphMenuItem);
+		
+		fileMenu.addSeparator();
+		
 		exitGraphMenuItem = new JMenuItem("Exit");
 		exitGraphMenuItem.addActionListener(new ActionListener()
 		{
@@ -332,6 +355,7 @@ public class MainWindow extends JFrame
 		{
 			fileChooser.resetChoosableFileFilters();
 			fileChooser.setAcceptAllFileFilterUsed(false);
+			fileChooser.addChoosableFileFilter(new FileNameExtensionFilter("Portable Network Graphics File", "png"));
 			fileChooser.addChoosableFileFilter(new FileNameExtensionFilter("Scalable Vector Graphics File", "svg"));
 			fileChooser.addChoosableFileFilter(new FileNameExtensionFilter("VisiGraph Graph File", "vsg"));
 			fileChooser.setMultiSelectionEnabled(false);
@@ -342,41 +366,24 @@ public class MainWindow extends JFrame
 			{ 
 				if(fileChooser.showSaveDialog(thisFrame) == JFileChooser.APPROVE_OPTION)
 				{
-					if(fileChooser.getFileFilter().getDescription().equals("VisiGraph Graph File"))
+		            try
 					{
-			            try
-						{
-			            	File selectedFile = fileChooser.getSelectedFile();
-			            	
-			            	if(!selectedFile.getName().endsWith(".vsg"))
-			            		selectedFile = new File(selectedFile.getAbsolutePath() + ".vsg");
-			            	
-			            	saveFile(selectedFile);
-							
-							success = true;
-						}
-						catch (IOException e)
-						{
-							success = false;
-						}
+		            	File selectedFile = fileChooser.getSelectedFile();
+		            	
+		            	if(fileChooser.getFileFilter().getDescription().equals("VisiGraph Graph File") && !selectedFile.getName().endsWith(".vsg"))
+		            		selectedFile = new File(selectedFile.getAbsolutePath() + ".vsg");
+		            	else if(fileChooser.getFileFilter().getDescription().equals("Scalable Vector Graphics File") && !selectedFile.getName().endsWith(".svg"))
+		            		selectedFile = new File(selectedFile.getAbsolutePath() + ".svg");
+		            	else if(fileChooser.getFileFilter().getDescription().equals("Portable Network Graphics File") && !selectedFile.getName().endsWith(".png"))
+		            		selectedFile = new File(selectedFile.getAbsolutePath() + ".png");
+		            	
+		            	saveFile(selectedFile);
+						
+						success = true;
 					}
-					else if(fileChooser.getFileFilter().getDescription().equals("Scalable Vector Graphics File"))
+					catch (IOException e)
 					{
-						try
-						{
-			            	File selectedFile = fileChooser.getSelectedFile();
-			            	
-			            	if(!selectedFile.getName().endsWith(".svg"))
-			            		selectedFile = new File(selectedFile.getAbsolutePath() + ".svg");
-			            	
-			            	saveFile(selectedFile);
-							
-							success = true;
-						}
-						catch (IOException e)
-						{
-							success = false;
-						}
+						success = false;
 					}
 				}
 				else
@@ -420,6 +427,10 @@ public class MainWindow extends JFrame
 			FileWriter fw = new FileWriter(file);
 			fw.write(GraphSvgView.format(graph, palette, settings));
 			fw.close();
+		}
+		else if (file.getName().endsWith(".png"))
+		{
+			ImageIO.write(graphWindow.getGdc().getImage(), "png", file);
 		}
 	}
 }
