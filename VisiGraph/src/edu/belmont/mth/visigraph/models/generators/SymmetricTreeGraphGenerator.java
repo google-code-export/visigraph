@@ -50,6 +50,11 @@ public class SymmetricTreeGraphGenerator extends GraphGeneratorBase
 		return "Symmetric tree";
 	}	
 
+	public String getParametersDescription()
+	{
+		return "[recursions] [fan-out]";
+	}
+	
 	public BooleanRule areLoopsAllowed()
 	{
 		return BooleanRule.ForcedFalse;

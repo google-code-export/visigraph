@@ -82,6 +82,11 @@ public class CartesianProductOfCompleteBipartiteGraphAndCycleGeneratorBehar exte
 		return "Cartesian product of a complete bipartite graph and cycle (Behar)";
 	}
 
+	public String getParametersDescription()
+	{
+		return "[order of NW-SE axes] [order of NE-SW axes] [order of cycle]";
+	}
+	
 	public BooleanRule areLoopsAllowed()
 	{
 		return BooleanRule.DefaultFalse;

@@ -21,6 +21,8 @@ public abstract class GraphGeneratorBase
 	
 	public abstract BooleanRule areParametersAllowed();
 	
+	public abstract String      getParametersDescription();
+	
 	public abstract String      getDescription();
 	
 	public          Graph       generate(String args, boolean areLoopsAllowed, boolean areDirectedEdgesAllowed, boolean areMultipleEdgesAllowed, boolean areCyclesAllowed)

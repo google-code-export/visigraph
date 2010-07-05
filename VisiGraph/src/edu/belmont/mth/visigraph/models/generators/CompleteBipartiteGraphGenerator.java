@@ -38,6 +38,11 @@ public class CompleteBipartiteGraphGenerator extends GraphGeneratorBase
 		return "Complete bipartite graph";
 	}
 
+	public String getParametersDescription()
+	{
+		return "[order of set A] [order of set B]";
+	}
+	
 	public BooleanRule areLoopsAllowed()
 	{
 		return BooleanRule.DefaultFalse;

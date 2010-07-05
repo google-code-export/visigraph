@@ -70,6 +70,11 @@ public class CartesianProductOfCompleteBipartiteGraphAndCycleGeneratorScott exte
 		return "Cartesian product of a complete bipartite graph and cycle (Scott)";
 	}
 
+	public String getParametersDescription()
+	{
+		return "[order of slant axes] [order of horizontal axes] [order of cycle]";
+	}
+	
 	public BooleanRule areLoopsAllowed()
 	{
 		return BooleanRule.DefaultFalse;
