@@ -16,6 +16,11 @@ public class RegexUtilities
 	
 	public static boolean isInteger(String s)
 	{
-		return s.matches("[+-]?\\d+");
+		return s.matches("-?\\d+");
+	}
+	
+	public static boolean isPositiveInteger(String s)
+	{
+		return s.matches("\\d+");
 	}
 }

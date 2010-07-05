@@ -23,6 +23,8 @@ public abstract class GraphGeneratorBase
 	
 	public abstract String      getParametersDescription();
 	
+	public abstract void        validateParameters(String args);
+	
 	public abstract String      getDescription();
 	
 	public          Graph       generate(String args, boolean areLoopsAllowed, boolean areDirectedEdgesAllowed, boolean areMultipleEdgesAllowed, boolean areCyclesAllowed)
