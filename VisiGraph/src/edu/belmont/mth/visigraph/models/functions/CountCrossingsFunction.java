@@ -31,21 +31,31 @@ public class CountCrossingsFunction extends FunctionBase
 			edges.addAll(g.edges);
 		}
 		
-		Vector<Point2D> crossings = new Vector<Point2D>();
+		int crossingsCount = 0;
+		Vector<CrossingMarker> crossingMarkers = new Vector<CrossingMarker>();
 		
 		for (int i = 0; i < edges.size(); ++i)
 			for (int j = i + 1; j < edges.size(); ++j)
-				crossings.addAll(getCrossings(edges.get(i), edges.get(j)));
+			{
+				Vector<Point2D> crossings = getCrossings(edges.get(i), edges.get(j));
+				crossingsCount += crossings.size();
+				if(crossings.size() > 0)
+					crossingMarkers.add(new CrossingMarker(crossings, (edges.get(i).thickness.get() + edges.get(j).thickness.get()) / 2.0));
+			}
 		
 		if(g2D != null)
 		{
 			g2D.setColor(GlobalSettings.defaultCrossingDisplayColor);
 		
-			for(Point2D crossing : crossings)
-				g2D.fill(new Ellipse2D.Double(crossing.getX() - GlobalSettings.defaultCrossingRadius, crossing.getY() - GlobalSettings.defaultCrossingRadius, 2.0 * GlobalSettings.defaultCrossingRadius, 2.0 * GlobalSettings.defaultCrossingRadius));
+			for(CrossingMarker crossing : crossingMarkers)
+			{
+				double markerRadii = crossing.getThickness() * GlobalSettings.defaultCrossingRadiusRatio;
+				for(Point2D location : crossing.getLocations())
+					g2D.fill(new Ellipse2D.Double(location.getX() - markerRadii, location.getY() - markerRadii, 2.0 * markerRadii, 2.0 * markerRadii));
+			}
 		}
 		
-		return crossings.size();
+		return crossingsCount;
 	}
 
 	public String getDescription()
@@ -71,5 +81,37 @@ public class CountCrossingsFunction extends FunctionBase
 			return GeometryUtilities.getCrossings(e1.getLine(), e0.getArc(), e0.getCenter());
 		else
 			return GeometryUtilities.getCrossings(e0.getArc(), e0.getCenter(), e1.getArc(), e1.getCenter());
+	}
+
+	private class CrossingMarker
+	{
+		private Vector<Point2D> locations;
+		private double          thickness;
+		
+		public CrossingMarker(Vector<Point2D> locations, double thickness)
+		{
+			setLocations(locations);
+			setThickness(thickness);
+		}
+		
+		public Vector<Point2D> getLocations()
+		{
+			return locations;
+		}
+		
+		public void setLocations(Vector<Point2D> locations)
+		{
+			this.locations = locations;
+		}
+		
+		public double getThickness()
+		{
+			return thickness;
+		}
+		
+		public void setThickness(double radius)
+		{
+			this.thickness = radius;
+		}
 	}
 }
