@@ -35,6 +35,11 @@ public class CycleGraphGenerator extends GraphGeneratorBase
 		return "Cycle graph";
 	}
 
+	public String getParametersDescription()
+	{
+		return "[order]";
+	}
+	
 	public BooleanRule areLoopsAllowed()
 	{
 		return BooleanRule.DefaultFalse;

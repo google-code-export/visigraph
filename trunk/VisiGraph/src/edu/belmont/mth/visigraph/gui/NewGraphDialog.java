@@ -263,6 +263,7 @@ public class NewGraphDialog extends JDialog implements ActionListener
 			allowCyclesCheckBox.setEnabled(!function.areCyclesAllowed().isForced());
 			
 			functionParametersField.setText("");
+			functionParametersField.setToolTipText(function.getParametersDescription());
 			functionParametersField.requestFocus();
 		}
 	}

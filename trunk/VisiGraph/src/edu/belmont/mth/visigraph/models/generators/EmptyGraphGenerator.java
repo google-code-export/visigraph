@@ -36,6 +36,11 @@ public class EmptyGraphGenerator extends GraphGeneratorBase
 		return "Empty graph";
 	}
 	
+	public String getParametersDescription()
+	{
+		return "[order]";
+	}
+	
 	public BooleanRule areLoopsAllowed()
 	{
 		return BooleanRule.DefaultFalse;

@@ -36,6 +36,11 @@ public class CompleteGraphGenerator extends GraphGeneratorBase
 		return "Complete graph";
 	}
 
+	public String getParametersDescription()
+	{
+		return "[order]";
+	}
+	
 	public BooleanRule areLoopsAllowed()
 	{
 		return BooleanRule.DefaultFalse;
