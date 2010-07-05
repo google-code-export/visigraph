@@ -27,15 +27,12 @@ public class GlobalSettings
 	public static final Color					 defaultDraggingHandleEdgeLineDisplayColor	= Color.lightGray;
 	public static final Color					 defaultDraggingEdgeLineDisplayColor		= Color.lightGray;
 	public static final Color					 defaultUncoloredEdgeHandleDisplayColor		= Color.lightGray;
-	public static final Color					 defaultEdgeLabelDisplayColor				= Color.black;
 	
 	public static final Color					 defaultSelectedVertexFillDisplayColor		= new Color(150, 150, 200);
 	public static final Color					 defaultSelectedVertexLineDisplayColor		= Color.blue;
-	public static final Color					 defaultSelectedvertexLabelDisplayColor		= Color.black;
 	
 	public static final Color					 defaultSelectedEdgeLineDisplayColor		= Color.blue;
 	public static final Color					 defaultSelectedEdgeHandleDisplayColor		= Color.blue;
-	public static final Color					 defaultSelectedEdgeLabelDisplayColor		= Color.blue;
 	
 	public static final double					 defaultDirectedEdgeArrowRatio				= 4.0;
 	

@@ -25,15 +25,12 @@ public class Palette extends ObservableBase
 	public final Property<Color>	draggingHandleEdgeLine;
 	public final Property<Color>	draggingEdgeLine;
 	public final Property<Color>	uncoloredEdgeHandle;
-	public final Property<Color>	edgeLabel;
 	
 	public final Property<Color>	selectedVertexFill;
 	public final Property<Color>	selectedVertexLine;
-	public final Property<Color>	selectedVertexLabel;
 	
 	public final Property<Color>	selectedEdgeLine;
 	public final Property<Color>	selectedEdgeHandle;
-	public final Property<Color>	selectedEdgeLabel;
 	
 	public final Property<Color>	captionText;
 	public final Property<Color>	selectedCaptionText;
@@ -52,15 +49,12 @@ public class Palette extends ObservableBase
 		draggingHandleEdgeLine = new Property<Color>(GlobalSettings.defaultDraggingHandleEdgeLineDisplayColor, "draggingHandleEdgeLine");
 		draggingEdgeLine       = new Property<Color>(GlobalSettings.defaultDraggingEdgeLineDisplayColor, "draggingEdgeLine");
 		uncoloredEdgeHandle    = new Property<Color>(GlobalSettings.defaultUncoloredEdgeHandleDisplayColor, "uncoloredEdgeHandle");
-		edgeLabel              = new Property<Color>(GlobalSettings.defaultEdgeLabelDisplayColor, "edgeLabel");
 		
 		selectedVertexFill     = new Property<Color>(GlobalSettings.defaultSelectedVertexFillDisplayColor, "selectedVertexFill");
 		selectedVertexLine     = new Property<Color>(GlobalSettings.defaultSelectedVertexLineDisplayColor, "selectedVertexLine");
-		selectedVertexLabel    = new Property<Color>(GlobalSettings.defaultSelectedvertexLabelDisplayColor, "selectedVertexLabel");
-		
+
 		selectedEdgeLine       = new Property<Color>(GlobalSettings.defaultSelectedEdgeLineDisplayColor, "selectedEdgeLine");
 		selectedEdgeHandle     = new Property<Color>(GlobalSettings.defaultSelectedEdgeHandleDisplayColor, "selectedEdgeHandle");
-		selectedEdgeLabel      = new Property<Color>(GlobalSettings.defaultSelectedEdgeLabelDisplayColor, "selectedEdgeLabel");
 		
 		captionText            = new Property<Color>(GlobalSettings.defaultCaptionTextDisplayColor, "captionText");
 		selectedCaptionText    = new Property<Color>(GlobalSettings.defaultSelectedCaptionTextDisplayColor, "selectedCaptionText");
@@ -78,25 +72,22 @@ public class Palette extends ObservableBase
 	
 	public         Palette(Palette p)
 	{
-		graphBackground       = new Property<Color>(p.graphBackground.        get(), "graphBackground"       );
-		graphText             = new Property<Color>(p.graphText.              get(), "graphText"             );
-		graphSelectionBoxFill = new Property<Color>(p.graphSelectionBoxFill.  get(), "graphSelectionBoxFill" );
-		graphSelectionBoxLine = new Property<Color>(p.graphSelectionBoxLine.  get(), "graphSelectionBoxLine" );
+		graphBackground        = new Property<Color>(p.graphBackground.       get(), "graphBackground"       );
+		graphText              = new Property<Color>(p.graphText.             get(), "graphText"             );
+		graphSelectionBoxFill  = new Property<Color>(p.graphSelectionBoxFill. get(), "graphSelectionBoxFill" );
+		graphSelectionBoxLine  = new Property<Color>(p.graphSelectionBoxLine. get(), "graphSelectionBoxLine" );
 		
-		vertexLine            = new Property<Color>(p.vertexLine.             get(), "vertexLine"            );
+		vertexLine             = new Property<Color>(p.vertexLine.            get(), "vertexLine"            );
 		
 		draggingHandleEdgeLine = new Property<Color>(p.draggingHandleEdgeLine.get(), "draggingHandleEdgeLine");
 		draggingEdgeLine       = new Property<Color>(p.draggingEdgeLine.      get(), "draggingEdgeLine"      );
 		uncoloredEdgeHandle    = new Property<Color>(p.uncoloredEdgeHandle.   get(), "uncoloredEdgeHandle"   );
-		edgeLabel              = new Property<Color>(p.edgeLabel.             get(), "edgeLabel"             );
 		
 		selectedVertexFill     = new Property<Color>(p.selectedVertexFill.    get(), "selectedVertexFill"    );
 		selectedVertexLine     = new Property<Color>(p.selectedVertexLine.    get(), "selectedVertexLine"    );
-		selectedVertexLabel    = new Property<Color>(p.selectedVertexLabel.   get(), "selectedVertexLabel"   );
 		
 		selectedEdgeLine       = new Property<Color>(p.selectedEdgeLine.      get(), "selectedEdgeLine"      );
 		selectedEdgeHandle     = new Property<Color>(p.selectedEdgeHandle.    get(), "selectedEdgeHandle"    );
-		selectedEdgeLabel      = new Property<Color>(p.selectedEdgeLabel.     get(), "selectedEdgeLabel"     );
 		
 		captionText            = new Property<Color>(p.captionText.           get(), "captionText"           );
 		selectedCaptionText    = new Property<Color>(p.selectedCaptionText.   get(), "selectedCaptionText"   );
@@ -160,13 +151,10 @@ public class Palette extends ObservableBase
 		members.put("draggingHandleEdgeLine", draggingHandleEdgeLine);
 		members.put("draggingEdgeLine",       draggingEdgeLine      );
 		members.put("uncoloredEdgeHandle",    uncoloredEdgeHandle   );
-		members.put("edgeLabel",              edgeLabel             );
 		members.put("selectedVertexFill",     selectedVertexFill    );
 		members.put("selectedVertexLine",     selectedVertexLine    );
-		members.put("selectedVertexLabel",    selectedVertexLabel   );
 		members.put("selectedEdgeLine",       selectedEdgeLine      );
 		members.put("selectedEdgeHandle",     selectedEdgeHandle    );
-		members.put("selectedEdgeLabel",      selectedEdgeLabel     );
 		members.put("captionText",            captionText           );
 		members.put("selectedCaptionText",    selectedCaptionText   );
 		members.put("elementColors",          elementColors         );

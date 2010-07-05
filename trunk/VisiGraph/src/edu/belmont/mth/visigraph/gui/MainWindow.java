@@ -44,7 +44,7 @@ public class MainWindow extends JFrame
 	public MainWindow()
 	{
 		super(GlobalSettings.applicationName);
-		thisFrame = this;
+		this.thisFrame = this;
 		this.setSize(GlobalSettings.defaultMainWindowSize);
 		this.setLocation(450, 200);
 		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
