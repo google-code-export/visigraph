@@ -1,7 +1,7 @@
 /**
  * EdgeDisplayView.java
  */
-package edu.belmont.mth.visigraph.views;
+package edu.belmont.mth.visigraph.views.display;
 
 import java.awt.*;
 import java.awt.geom.*;
@@ -15,7 +15,7 @@ import edu.belmont.mth.visigraph.utilities.*;
  */
 public class EdgeDisplayView
 {	
-	public static void paintEdge(Graphics2D g2D, Palette p, GraphDisplaySettings s, Edge e)
+	public static void paintEdge(Graphics2D g2D, Palette p, GraphSettings s, Edge e)
 	{
 		// Decide where we should draw the handle and/or arrow head
 		Point2D apparentHandleLocation = e.isLinear() ? GeometryUtilities.midpoint(e.from, e.to) : e.getHandlePoint2D();
@@ -39,7 +39,7 @@ public class EdgeDisplayView
 		// Draw handle
 		if(s.showEdgeHandles.get())
 			g2D.fill(new Ellipse2D.Double(apparentHandleLocation.getX() - handleRadius, apparentHandleLocation.getY() - handleRadius, handleRadius * 2.0, handleRadius * 2.0));
-		
+
 		// Draw arrow head for directed edges
 		if(e.isDirected)
 		{
@@ -62,7 +62,6 @@ public class EdgeDisplayView
 				tangentAngle += Math.PI / 2;
 			}
 			
-			// 
 			for(int i = 0; i < 3; ++i)
 			{
 				double theta = tangentAngle + i * 2.0 * Math.PI / 3.0;

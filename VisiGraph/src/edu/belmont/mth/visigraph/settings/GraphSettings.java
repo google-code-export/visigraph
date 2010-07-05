@@ -12,7 +12,7 @@ import edu.belmont.mth.visigraph.utilities.JsonUtilities;
  * @author Cameron Behar
  *
  */
-public class GraphDisplaySettings extends ObservableBase
+public class GraphSettings extends ObservableBase
 {	
 	public final Property<Boolean> showEdgeHandles;
 	public final Property<Boolean> showEdgeWeights;
@@ -23,7 +23,7 @@ public class GraphDisplaySettings extends ObservableBase
 	public final Property<Boolean> showCaptionHandles;
 	public final Property<Boolean> showCaptionEditors;
 	
-	public GraphDisplaySettings()
+	public GraphSettings()
 	{
 		showEdgeHandles    = new Property<Boolean>(GlobalSettings.defaultShowEdgeHandles,    "showEdgeHandles");
 		showEdgeWeights    = new Property<Boolean>(GlobalSettings.defaultShowEdgeWeights,    "showEdgeWeights");
@@ -35,16 +35,16 @@ public class GraphDisplaySettings extends ObservableBase
 		showCaptionEditors = new Property<Boolean>(GlobalSettings.defaultShowCaptionEdits,   "showCaptionEdits");
 	}
 	
-	public GraphDisplaySettings(GraphDisplaySettings graphDisplaySettings)
+	public GraphSettings(GraphSettings graphSettings)
 	{
-		showEdgeHandles    = new Property<Boolean>(graphDisplaySettings.showEdgeHandles.get(), "showEdgeHandles");
-		showEdgeWeights    = new Property<Boolean>(graphDisplaySettings.showEdgeWeights.get(), "showEdgeWeights");
-		showEdgeLabels     = new Property<Boolean>(graphDisplaySettings.showEdgeLabels.get(), "showEdgeLabels");
-		showVertexWeights  = new Property<Boolean>(graphDisplaySettings.showVertexWeights.get(), "showVertexWeights");
-		showVertexLabels   = new Property<Boolean>(graphDisplaySettings.showVertexLabels.get(), "showVertexLabels");
-		showCaptions       = new Property<Boolean>(graphDisplaySettings.showCaptions.get(), "showCaptions");
-		showCaptionHandles = new Property<Boolean>(graphDisplaySettings.showCaptionHandles.get(), "showCaptionHandles");
-		showCaptionEditors = new Property<Boolean>(graphDisplaySettings.showCaptionEditors.get(), "showCaptionEdits");
+		showEdgeHandles    = new Property<Boolean>(graphSettings.showEdgeHandles.get(),    "showEdgeHandles");
+		showEdgeWeights    = new Property<Boolean>(graphSettings.showEdgeWeights.get(),    "showEdgeWeights");
+		showEdgeLabels     = new Property<Boolean>(graphSettings.showEdgeLabels.get(),     "showEdgeLabels");
+		showVertexWeights  = new Property<Boolean>(graphSettings.showVertexWeights.get(),  "showVertexWeights");
+		showVertexLabels   = new Property<Boolean>(graphSettings.showVertexLabels.get(),   "showVertexLabels");
+		showCaptions       = new Property<Boolean>(graphSettings.showCaptions.get(),       "showCaptions");
+		showCaptionHandles = new Property<Boolean>(graphSettings.showCaptionHandles.get(), "showCaptionHandles");
+		showCaptionEditors = new Property<Boolean>(graphSettings.showCaptionEditors.get(), "showCaptionEdits");
 	}
 
 	public String toString()

@@ -17,6 +17,10 @@ import edu.belmont.mth.visigraph.models.*;
 import edu.belmont.mth.visigraph.models.functions.*;
 import edu.belmont.mth.visigraph.settings.*;
 import edu.belmont.mth.visigraph.views.*;
+import edu.belmont.mth.visigraph.views.display.CaptionDisplayView;
+import edu.belmont.mth.visigraph.views.display.EdgeDisplayView;
+import edu.belmont.mth.visigraph.views.display.GraphDisplayView;
+import edu.belmont.mth.visigraph.views.display.VertexDisplayView;
 
 /**
  * @author Cameron Behar
@@ -25,39 +29,39 @@ import edu.belmont.mth.visigraph.views.*;
 @SuppressWarnings("serial")
 public class GraphDisplayController extends JPanel implements ClipboardOwner
 {
-	private GraphDisplayController    thisGdc;
+	private GraphDisplayController   thisGdc;
 	
-	private Graph				        graph;
-	private GraphDisplaySettings 	     settings;
-	private Palette			   	     palette;
+	private Graph				     graph;
+	private GraphSettings 	  settings;
+	private Palette			   	      palette;
 	
-	private JPanel			        toolToolBarPanel;
-	private ToolToolBar		         toolToolBar;
-	private JPanel			        nonToolToolbarPanel;
-	private ArrangeToolBar	         arrangeToolBar;
-	private ViewToolBar		         viewToolBar;
-	private ZoomToolBar		         zoomToolBar;
-	private FunctionToolBar	         functionToolBar;								 
-	private JPanel			        viewportPanel;
-	private JComponent		         viewport;
-	private ViewportPopupMenu	         viewportPopupMenu;
-	private JPanel			        statusBar;
-	private Map<FunctionBase, JLabel>	selectedFunctionLabels;
+	private JPanel			         toolToolBarPanel;
+	private ToolToolBar		          toolToolBar;
+	private JPanel			         nonToolToolbarPanel;
+	private ArrangeToolBar	          arrangeToolBar;
+	private ViewToolBar		          viewToolBar;
+	private ZoomToolBar		          zoomToolBar;
+	private FunctionToolBar	          functionToolBar;								 
+	private JPanel			         viewportPanel;
+	private JComponent		          viewport;
+	private ViewportPopupMenu	      viewportPopupMenu;
+	private JPanel			          statusBar;
+	private Map<FunctionBase, JLabel> selectedFunctionLabels;
 	
-	private Tool					    tool;
-	private int					    paintColor;
-	private boolean				    isMouseDownOnCanvas;
-	private boolean				    isMouseDownOnPaintToolButton;
-	private boolean				    pointerToolClickedObject;
-	private boolean				    cutToolClickedObject;
-	private boolean				    paintToolClickedObject;
-	private boolean				    isMouseOverViewport;
-	private Point					    currentMousePoint;
-	private Point					    pastMousePoint;
-	private Vertex				    fromVertex;
-	private AffineTransform		    transform;
-	private Set<FunctionBase>	        functionsToBeRun;
-	private ResourceBundle		    imageIcons;
+	private Tool					  tool;
+	private int					      paintColor;
+	private boolean				      isMouseDownOnCanvas;
+	private boolean				      isMouseDownOnPaintToolButton;
+	private boolean				      pointerToolClickedObject;
+	private boolean				      cutToolClickedObject;
+	private boolean				      paintToolClickedObject;
+	private boolean				      isMouseOverViewport;
+	private Point					  currentMousePoint;
+	private Point					  pastMousePoint;
+	private Vertex				      fromVertex;
+	private AffineTransform		      transform;
+	private Set<FunctionBase>	      functionsToBeRun;
+	private ResourceBundle		      imageIcons;
 	
 	public GraphDisplayController(Graph graph)
 	{
@@ -87,7 +91,7 @@ public class GraphDisplayController extends JPanel implements ClipboardOwner
 		});
 		
 		// Add/bind display settings
-		settings = new GraphDisplaySettings();
+		settings = new GraphSettings();
 		settings.addObserver(new ObserverBase()
 		{
 			@Override
@@ -164,6 +168,16 @@ public class GraphDisplayController extends JPanel implements ClipboardOwner
 	public Graph getGraph()
 	{
 		return graph;
+	}
+	
+	public Palette getPalette()
+	{
+		return palette;
+	}
+	
+	public GraphSettings getSettings()
+	{
+		return settings;
 	}
 	
 	public Rectangle getSelectionRectangle()
@@ -1510,6 +1524,7 @@ public class GraphDisplayController extends JPanel implements ClipboardOwner
 							edge.handleX.set(centroid.x - (centroid.y - edge.handleY.get()));
 							edge.handleY.set(centroid.y + (centroid.x - oldEdgeHandleX));
 							edge.suspendNotifications(false);
+							edge.refresh();
 						}
 				}
 			});
@@ -1562,6 +1577,7 @@ public class GraphDisplayController extends JPanel implements ClipboardOwner
 							edge.handleX.set(centroid.x + (centroid.y - edge.handleY.get()));
 							edge.handleY.set(centroid.y - (centroid.x - oldEdgeHandleX));
 							edge.suspendNotifications(false);
+							edge.refresh();
 						}
 				}
 			});
@@ -1605,6 +1621,7 @@ public class GraphDisplayController extends JPanel implements ClipboardOwner
 						{
 							edge.handleX.set(2.0 * centerX - edge.handleX.get());
 							edge.suspendNotifications(false);
+							edge.refresh();
 						}
 				}
 			});
@@ -1648,6 +1665,7 @@ public class GraphDisplayController extends JPanel implements ClipboardOwner
 						{
 							edge.handleY.set(2.0 * centerY - edge.handleY.get());
 							edge.suspendNotifications(false);
+							edge.refresh();
 						}
 				}
 			});

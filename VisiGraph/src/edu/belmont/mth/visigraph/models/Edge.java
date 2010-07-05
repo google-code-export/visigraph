@@ -44,7 +44,30 @@ public class Edge extends ObservableBase
 																
 																if(propertyChanged == from.x || propertyChanged == from.y || propertyChanged == to.x || propertyChanged == to.y)
 																{
-																	isLinear = true;
+																	if(!isLinear)
+																	{
+																		Point2D midpoint = midpoint(line.x1, line.y1, line.x2, line.y2);
+																		
+																		double distance = line.getP1().distance(line.getP2());
+																		double lineAngle = angle(line.y2 - line.y1, line.x2 - line.x1);
+																		
+																		double handleAngle = angle(handleY.get() - midpoint.getY(), handleX.get() - midpoint.getX()) - lineAngle;
+																		double handleRadiusRatio = midpoint.distance(handleX.get(), handleY.get()) / distance; 
+																		
+																		Point2D newMidpoint = midpoint(from.x.get(), from.y.get(), to.x.get(), to.y.get());
+																		
+																		double newDistance = distance(from, to);
+																		double newLineAngle   = angle(to.y.get() - from.y.get(), to.x.get() - from.x.get());
+																		
+																		double newHandleAngle = handleAngle + newLineAngle;
+																		double newHandleRadius = handleRadiusRatio * newDistance;
+																		
+																		suspendNotifications(true);
+																		handleX.set(newMidpoint.getX() + newHandleRadius * Math.cos(newHandleAngle));
+																		handleY.set(newMidpoint.getY() + newHandleRadius * Math.sin(newHandleAngle));
+																		suspendNotifications(false);
+																	}
+																	
 																	fixHandle();
 																}
 															}
@@ -191,7 +214,6 @@ public class Edge extends ObservableBase
 			// Reset a loop handle
 			handleX.set(from.x.get() + GlobalSettings.defaultLoopDiameter);
 			handleY.set(from.y.get());
-			refresh();
 		}
 		else if(isLinear)
 		{
@@ -199,8 +221,9 @@ public class Edge extends ObservableBase
 			Point2D midpoint = midpoint(from.x.get(), from.y.get(), to.x.get(), to.y.get());
 			handleX.set(midpoint.getX());
 			handleY.set(midpoint.getY());
-			refresh();
 		}
+		
+		refresh();
 	}
 	
 	public Arc2D getArc()
@@ -256,7 +279,7 @@ public class Edge extends ObservableBase
 	
 	public void refresh()
 	{
-		if (handleX != null && handleY != null)
+		if (!notificationsSuspended && handleX != null && handleY != null)
 		{
 			// Determine linearity
 			line = new Line2D.Double(from.x.get(), from.y.get(), to.x.get(), to.y.get());
@@ -266,7 +289,6 @@ public class Edge extends ObservableBase
 			
 			if (!isLinear)
 			{
-				// Fix arc
 				updateCenter();
 				updateArc();
 			}
@@ -287,9 +309,9 @@ public class Edge extends ObservableBase
 		arc.setFrameFromCenter(center, new Point2D.Double(center.x - radius, center.y - radius));
 		
 		// We need to calculate these angles so that we know in which order to pass the from and to points because the sector will always be drawn counter-clockwise
-		double fromAngle = angle(-(from.y.get() - center.y), from.x.get() - center.x);
+		double fromAngle   = angle(-(from.y.get()  - center.y), from.x.get()  - center.x);
 		double handleAngle = angle(-(handleY.get() - center.y), handleX.get() - center.x);
-		double toAngle = angle(-(to.y.get() - center.y), to.x.get() - center.x);
+		double toAngle     = angle(-(to.y.get()    - center.y), to.x.get()    - center.x);
 		
 		if (angleBetween(fromAngle, handleAngle) < angleBetween(fromAngle, toAngle))
 			arc.setAngles(from.getPoint2D(), to.getPoint2D());

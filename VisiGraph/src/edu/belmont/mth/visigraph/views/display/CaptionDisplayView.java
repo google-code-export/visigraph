@@ -1,7 +1,7 @@
 /**
  * CaptionDisplayView.java
  */
-package edu.belmont.mth.visigraph.views;
+package edu.belmont.mth.visigraph.views.display;
 
 import java.awt.*;
 import java.awt.geom.*;
@@ -15,7 +15,7 @@ import edu.belmont.mth.visigraph.settings.*;
  */
 public class CaptionDisplayView
 {	
-	public static void paint(Graphics2D g2D, Palette p, GraphDisplaySettings s, Caption c)
+	public static void paint(Graphics2D g2D, Palette p, GraphSettings s, Caption c)
 	{
 		// Load the default image bundle used for the handle and editor images
 		ResourceBundle images = ResourceBundle.getBundle("edu.belmont.mth.visigraph.resources.ImageBundle");

@@ -75,7 +75,7 @@ public abstract class ObservableBase
 		}
 	}
 	
-	private Vector<ObserverBase> observers = new Vector<ObserverBase>();
+	private Set<ObserverBase> observers = new HashSet<ObserverBase>();
 	
 	public void addObserver(ObserverBase o)
 	{

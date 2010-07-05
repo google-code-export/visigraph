@@ -3,7 +3,6 @@
  */
 package edu.belmont.mth.visigraph.models.generators;
 
-import java.util.Vector;
 import edu.belmont.mth.visigraph.models.Edge;
 import edu.belmont.mth.visigraph.models.Graph;
 import edu.belmont.mth.visigraph.models.Vertex;
@@ -21,57 +20,29 @@ public class SymmetricTreeGraphGenerator extends GraphGeneratorBase
 		String[] parts = args.split("\\s+");
 		int levelCount = Integer.parseInt(parts[0]);
 		int fanOut = Integer.parseInt(parts[1]);
-		Vector<Vector<Vertex>> levels = new Vector<Vector<Vertex>>();
-		 
-		Vertex root = new Vertex(ret.nextVertexId());
-		ret.vertexes.add(root);
 		
-		Vector<Vertex> roots = new Vector<Vertex>();
-		roots.add(root);
-		levels.add(roots);
-		
-		for(int i = 1; i < levelCount; ++i)
-		{
-			Vector<Vertex> level = new Vector<Vertex>();
-			
-			for(Vertex parent : levels.lastElement())
-			{
-				for(int j = 0; j < fanOut; ++j)
-				{
-					Vertex child = new Vertex(ret.nextVertexId());
-					ret.vertexes.add(child);
-					ret.edges.add(new Edge(false, parent, child));
-					level.add(child);
-				}
-			}
-			
-			levels.add(level);
-		}
-		
-		// Now for layout!
-		
-		double y = 0.0;
-		double largestWidth = 0;
-		for (Vector<Vertex> level : levels)
-			largestWidth = Math.max(largestWidth, level.size() * 150.0);
-		
-		for (int row = 0; row < levels.size(); ++row)
-		{
-			Vector<Vertex> level = levels.get(row);
-			y += 150;
-			double colSpace = largestWidth / (level.size());
-			
-			for (int col = 0; col < level.size(); ++col)
-			{
-				Vertex vertex = level.get(col);
-				double x = (col + .5) * colSpace - largestWidth / 2.0;
-				
-				vertex.x.set(x);
-				vertex.y.set(y);
-			}
-		}
+		buildTree(ret, levelCount, fanOut, 0.0, 0.0);
 		
 		return ret;
+	}
+	
+	public Vertex buildTree(Graph g, int level, int fanOut, double x, double y)
+	{
+		Vertex root = new Vertex(g.nextVertexId(), x, y);
+		g.vertexes.add(root);
+		
+		if(level > 0)
+		{
+			double radiansPerBranch = (2 * Math.PI) / fanOut; 
+			
+			for(int i = 0; i < fanOut; ++i)
+			{
+				Vertex branch = buildTree(g, level - 1, fanOut, x + 100.0 * Math.pow(level, 1.3) * Math.cos(radiansPerBranch * i), y + 100.0 * Math.pow(level, 1.3) * Math.sin(radiansPerBranch * i));
+				g.edges.add(new Edge(false, root, branch));
+			}
+		}
+		
+		return root;
 	}
 
 	public String getDescription()
