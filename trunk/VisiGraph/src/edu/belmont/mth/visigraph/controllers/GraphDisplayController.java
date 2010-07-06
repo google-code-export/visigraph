@@ -1174,7 +1174,7 @@ public class GraphDisplayController extends JPanel implements ClipboardOwner
 				{
 					try
 					{
-						paintColor = Integer.parseInt(((JMenuItem) arg0.getSource()).getText());				
+						paintColor = paintMenu.getComponentIndex((Component) arg0.getSource()) - 1;				
 					}
 					catch (NumberFormatException e)
 					{
@@ -1197,7 +1197,8 @@ public class GraphDisplayController extends JPanel implements ClipboardOwner
 			
 			for (int i = 0; i < palette.getElementColorCount(); ++i)
 			{
-				JCheckBoxMenuItem brushMenuItem = new JCheckBoxMenuItem(i + "");
+				JCheckBoxMenuItem brushMenuItem = new JCheckBoxMenuItem("(" + i + ")  \u2588\u2588\u2588\u2588\u2588\u2588");
+				brushMenuItem.setForeground(palette.getElementColor(i));
 				brushMenuItem.addActionListener(paintMenuItemActionListener);
 				paintMenu.add(brushMenuItem);
 			}
