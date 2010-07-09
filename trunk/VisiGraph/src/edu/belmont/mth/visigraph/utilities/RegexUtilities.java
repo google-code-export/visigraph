@@ -11,7 +11,7 @@ public class RegexUtilities
 {	
 	public static boolean isNumeric(String s)
 	{
-		return s.matches("[+-]?(?:\\d+\\.?\\d*|\\d*\\.?\\d+)(?:[eE][+\\-\\x20]?\\d+)?");
+		return s.matches("-?(?:\\d+\\.?\\d*|\\d*\\.?\\d+)(?:[eE][+\\-\\x20]?\\d+)?");
 	}
 	
 	public static boolean isInteger(String s)

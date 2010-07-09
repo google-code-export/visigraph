@@ -40,6 +40,7 @@ public class MainWindow extends JFrame
 	private final JMenuItem	    tileWindowsMenuItem;
 	private final JMenu		   helpMenu;
 	private final JMenuItem	    helpContentsMenuItem;
+	private final JMenuItem	    preferencesMenuItem;
 	private final JMenuItem	    aboutVisiGraphMenuItem;
 	private final MainWindow   thisFrame;
 	private final JDesktopPane desktopPane;
@@ -336,6 +337,19 @@ public class MainWindow extends JFrame
 		
 		helpContentsMenuItem = new JMenuItem("Help contents...");
 		helpMenu.add(helpContentsMenuItem);
+		
+		helpMenu.addSeparator();
+		
+		preferencesMenuItem = new JMenuItem("Preferences...");
+		preferencesMenuItem.addActionListener(new ActionListener()
+		{
+			@Override
+			public void actionPerformed(ActionEvent arg0)
+			{
+				PreferencesDialog.showDialog(thisFrame, thisFrame);
+			}
+		});
+		helpMenu.add(preferencesMenuItem);
 		
 		helpMenu.addSeparator();
 		
