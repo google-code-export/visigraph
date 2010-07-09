@@ -88,9 +88,9 @@ public class GlobalSettings
 	public static final double					 zoomOutFactor								= 0.8;
 	public static final double					 maximumZoomFactor							= 2.0;
 	
-	public static final double					 zoomGraphPadding							= 20;
+	public static final double					 zoomGraphPadding							= 20.0;
 	
-	public static final double					 arrowKeyIncrement							= 50;
+	public static final double					 arrowKeyIncrement							= 50.0;
 	public static final double					 scrollIncrementZoom						= 0.1;
 	
 	public static final Dimension				 defaultMainWindowSize						= new Dimension(1000, 700);
