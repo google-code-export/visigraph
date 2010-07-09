@@ -33,10 +33,10 @@ public class PreferencesDialog extends JDialog implements ActionListener
 	private static JCheckBox           defaultEdgeIsSelectedCheckBox;
 	private static JTextField 		   defaultCaptionTextTextField;
 	private static JCheckBox           defaultCaptionIsSelectedCheckBox;
-	private static JCheckBox           defaultShowEdgeHandlesCheckBox;
-	private static JCheckBox           defaultShowEdgeWeightsCheckBox;
 	private static JCheckBox           defaultShowVertexWeightsCheckBox;
 	private static JCheckBox           defaultShowVertexLabelsCheckBox;
+	private static JCheckBox           defaultShowEdgeHandlesCheckBox;
+	private static JCheckBox           defaultShowEdgeWeightsCheckBox;
 	private static JCheckBox           defaultShowCaptionsCheckBox;
 	private static JCheckBox           defaultShowCaptionHandlesCheckBox;
 	private static JCheckBox           defaultShowCaptionEditorsCheckBox;
@@ -50,45 +50,41 @@ public class PreferencesDialog extends JDialog implements ActionListener
 	private static ColorPicker 		   draggingEdgeColorPicker;
 	private static ColorPicker 		   uncoloredEdgeHandleColorPicker;
 	private static ColorPicker 		   selectedEdgeColorPicker;
-	private static ColorPicker 		   selectedEdgeHandleColorPicker;
+	private static ColorPicker 	   	   selectedEdgeHandleColorPicker;
 	private static ColorPicker 		   captionTextColorPicker;
 	private static ColorPicker 		   selectedCaptionTextColorPicker;
 	private static ColorPicker 		   uncoloredElementColorPicker;
 	private static Stack<ColorPicker>  elementColorColorPickers;
-	
 	private static ValidatingTextField vertexClickMarginTextField;
 	private static ValidatingTextField edgeHandleClickMarginTextField;
 	private static ValidatingTextField captionHandleClickMarginTextField;
 	private static ValidatingTextField captionEditorClickMarginTextField;
-	
 	private static ValidatingTextField zoomInFactorTextField;
 	private static ValidatingTextField zoomOutFactorTextField;
 	private static ValidatingTextField maximumZoomFactorTextField;
 	private static ValidatingTextField zoomGraphPaddingTextField;
 	private static ValidatingTextField scrollIncrementZoomTextField;
-	
-	private static JCheckBox           useAntiAliasingCheckBox;
-	private static JCheckBox           usePureStrokeCheckBox;
-	private static JCheckBox           useBicubicInterpolationCheckBox;
-	
 	private static ValidatingTextField arrangeCircleRadiusMultiplierTextField;
 	private static ValidatingTextField arrangeGridSpacingTextField;
 	private static ValidatingTextField autoArrangeAttractiveForceTextField;
 	private static ValidatingTextField autoArrangeRepulsiveForceTextField;
 	private static ValidatingTextField autoArrangeDecelerationFactorTextField;
-	
+	private static JCheckBox           useAntiAliasingCheckBox;
+	private static JCheckBox           usePureStrokeCheckBox;
+	private static JCheckBox           useBicubicInterpolationCheckBox;
 	private static ValidatingTextField mainWindowSizeTextField;
 	private static ValidatingTextField graphWindowSizeTextField;
 	private static ValidatingTextField cascadeWindowOffsetTextField;
-	
 	private static JTextField 		   defaultGraphNameTextField;
 	private static ValidatingTextField directedEdgeArrowRatioTextField;
 	private static ValidatingTextField arrowKeyIncrementTextField;
 	private static ValidatingTextField edgeSnapMarginRatioTextField;
 	private static ValidatingTextField areCloseDistanceTextField;
 	private static ValidatingTextField paintToolMenuDelayTextField;
+	private static JButton			   resetToDefaultsButton;
 	
-	private final int[] columnWidths = new int[] { 120, 120, 260 };
+	private final int[] columnWidths = new int[] { 125, 165, 160 };
+	private final Insets fieldMargin = new Insets(2, 2, 2, 7);
 	
 	public static String showDialog(Component frameComp, Component locationComp)
 	{
@@ -155,132 +151,164 @@ public class PreferencesDialog extends JDialog implements ActionListener
 	
 	private JScrollPane initializeDefaultsPanel()
 	{
-		JPanel panel = new JPanel(new GridBagLayout());
+		JPanel panel = new JPanel();
 		panel.setBackground(Color.white);
+		
+		Header vertexDefaultsHeader = new Header("Vertex properties:");
+		FieldLabel defaultVertexWeightLabel = new FieldLabel("Weight:"); defaultVertexWeightTextField = new ValidatingTextField(8, "-?(?:\\d+\\.?\\d*|\\d*\\.?\\d+)(?:[eE][+\\-\\x20]?\\d+)?");	defaultVertexWeightTextField.setMargin(fieldMargin); defaultVertexWeightTextField.setMaximumSize(new Dimension(70, 100));
+		FieldLabel defaultVertexColorLabel  = new FieldLabel("Color:");  defaultVertexColorTextField  = new ValidatingTextField(8, "-1|\\d+");													defaultVertexColorTextField .setMargin(fieldMargin); defaultVertexColorTextField .setMaximumSize(new Dimension(70, 100));
+		FieldLabel defaultVertexPrefixLabel = new FieldLabel("Prefix:"); defaultVertexPrefixTextField = new JTextField(8);																		defaultVertexPrefixTextField.setMargin(fieldMargin); defaultVertexPrefixTextField.setMaximumSize(new Dimension(70, 100));
+		FieldLabel defaultVertexRadiusLabel = new FieldLabel("Radius:"); defaultVertexRadiusTextField = new ValidatingTextField(8, "(?:\\d+\\.?\\d*|\\d*\\.?\\d+)(?:[eE][+\\-\\x20]?\\d+)?");	defaultVertexRadiusTextField.setMargin(fieldMargin); defaultVertexRadiusTextField.setMaximumSize(new Dimension(70, 100));
+		FieldLabel defaultVertexIsSelectedLabel = new FieldLabel("Is selected:");
+		defaultVertexIsSelectedCheckBox = new JCheckBox();
+		defaultVertexIsSelectedCheckBox.setBackground(panel.getBackground());
+		defaultVertexIsSelectedCheckBox.setMinimumSize(new Dimension(32, 26));
+		
+		Header edgeDefaultsHeader = new Header("Edge properties:");
+		FieldLabel defaultEdgeWeightLabel    = new FieldLabel("Weight:");        defaultEdgeWeightTextField    = new ValidatingTextField(8, "-?(?:\\d+\\.?\\d*|\\d*\\.?\\d+)(?:[eE][+\\-\\x20]?\\d+)?"); defaultEdgeWeightTextField   .setMargin(fieldMargin); defaultEdgeWeightTextField   .setMaximumSize(new Dimension(70, 100));
+		FieldLabel defaultEdgeColorLabel     = new FieldLabel("Color:");         defaultEdgeColorTextField     = new ValidatingTextField(8, "-1|\\d+");													 defaultEdgeColorTextField    .setMargin(fieldMargin); defaultEdgeColorTextField    .setMaximumSize(new Dimension(70, 100));
+		FieldLabel defaultEdgePrefixLabel    = new FieldLabel("Prefix:");        defaultEdgePrefixTextField    = new JTextField(8);																		 defaultEdgePrefixTextField   .setMargin(fieldMargin); defaultEdgePrefixTextField   .setMaximumSize(new Dimension(70, 100));
+		FieldLabel defaultEdgeThicknessLabel = new FieldLabel("Thickness:");     defaultEdgeThicknessTextField = new ValidatingTextField(8, "(?:\\d+\\.?\\d*|\\d*\\.?\\d+)(?:[eE][+\\-\\x20]?\\d+)?");	 defaultEdgeThicknessTextField.setMargin(fieldMargin); defaultEdgeThicknessTextField.setMaximumSize(new Dimension(70, 100));
+		FieldLabel defaultEdgeHandleRadiusRatioLabel = new FieldLabel("Edge handle radius ratio:"); defaultEdgeHandleRadiusRatioTextField = new ValidatingTextField(8, "(?:\\d+\\.?\\d*|\\d*\\.?\\d+)(?:[eE][+\\-\\x20]?\\d+)?"); defaultEdgeHandleRadiusRatioTextField.setMargin(fieldMargin); defaultEdgeHandleRadiusRatioTextField.setMaximumSize(new Dimension(70, 100));
+		FieldLabel defaultLoopDiameterLabel  = new FieldLabel("Loop diameter:"); defaultLoopDiameterTextField  = new ValidatingTextField(8, "-?(?:\\d+\\.?\\d*|\\d*\\.?\\d+)(?:[eE][+\\-\\x20]?\\d+)?"); defaultLoopDiameterTextField .setMargin(fieldMargin); defaultLoopDiameterTextField .setMaximumSize(new Dimension(70, 100));
+		FieldLabel defaultEdgeIsSelectedLabel = new FieldLabel("Is selected:");
+		defaultEdgeIsSelectedCheckBox     = new JCheckBox();
+		defaultEdgeIsSelectedCheckBox.setBackground(panel.getBackground());
+		defaultEdgeIsSelectedCheckBox.setMinimumSize(new Dimension(32, 26));
+		
+		Header captionDefaultsHeader = new Header("Caption properties:");
+		FieldLabel defaultCaptionTextLabel = new FieldLabel("Text:"); defaultCaptionTextTextField = new JTextField(20); defaultCaptionTextTextField.setMargin(fieldMargin); defaultCaptionTextTextField.setMaximumSize(new Dimension(175, defaultVertexWeightTextField.getPreferredSize().height));
+		FieldLabel defaultCaptionIsSelectedLabel = new FieldLabel("Is selected:");
+		defaultCaptionIsSelectedCheckBox = new JCheckBox();
+		defaultCaptionIsSelectedCheckBox.setBackground(panel.getBackground());
+		defaultCaptionIsSelectedCheckBox.setMinimumSize(new Dimension(32, 26));
+
+		Header viewportDefaultsHeader = new Header("Viewport settings:");
+		FieldLabel defaultShowVertexWeightsLabel = new FieldLabel("Show vertex weights:");
+		defaultShowVertexWeightsCheckBox = new JCheckBox();
+		defaultShowVertexWeightsCheckBox.setBackground(panel.getBackground());
+		defaultShowVertexWeightsCheckBox.setMinimumSize(new Dimension(32, 26));
+		FieldLabel defaultShowVertexLabelsLabel = new FieldLabel("Show vertex labels:");
+		defaultShowVertexLabelsCheckBox = new JCheckBox();
+		defaultShowVertexLabelsCheckBox.setBackground(panel.getBackground());
+		defaultShowVertexLabelsCheckBox.setMinimumSize(new Dimension(32, 26));
+		FieldLabel defaultShowEdgeHandlesLabel = new FieldLabel("Show edge handles:");
+		defaultShowEdgeHandlesCheckBox = new JCheckBox();
+		defaultShowEdgeHandlesCheckBox.setBackground(panel.getBackground());
+		defaultShowEdgeHandlesCheckBox.setMinimumSize(new Dimension(32, 26));
+		FieldLabel defaultShowEdgeWeightsLabel = new FieldLabel("Show edge weights:");
+		defaultShowEdgeWeightsCheckBox = new JCheckBox();
+		defaultShowEdgeWeightsCheckBox.setBackground(panel.getBackground());
+		defaultShowEdgeWeightsCheckBox.setMinimumSize(new Dimension(32, 26));
+		FieldLabel defaultShowCaptionsLabel = new FieldLabel("Show captions:");
+		defaultShowCaptionsCheckBox = new JCheckBox();
+		defaultShowCaptionsCheckBox.setBackground(panel.getBackground());
+		defaultShowCaptionsCheckBox.setMinimumSize(new Dimension(32, 26));
+		FieldLabel defaultShowCaptionHandlesLabel = new FieldLabel("Show caption handles:");
+		defaultShowCaptionHandlesCheckBox = new JCheckBox();
+		defaultShowCaptionHandlesCheckBox.setBackground(panel.getBackground());
+		defaultShowCaptionHandlesCheckBox.setMinimumSize(new Dimension(32, 26));
+		FieldLabel defaultShowCaptionEditorsLabel = new FieldLabel("Show caption editors:");
+		defaultShowCaptionEditorsCheckBox = new JCheckBox();
+		defaultShowCaptionEditorsCheckBox.setBackground(panel.getBackground());
+		defaultShowCaptionEditorsCheckBox.setMinimumSize(new Dimension(32, 26));
+		
+		Component col0Padding = Box.createRigidArea(new Dimension(columnWidths[0], 7));
+		Component col1Padding = Box.createRigidArea(new Dimension(columnWidths[1], 7));
+		Component col2Padding = Box.createRigidArea(new Dimension(columnWidths[2], 7));
+		
+		GroupLayout layout = new GroupLayout(panel);
+		panel.setLayout(layout);
+		
+		layout.setAutoCreateGaps(true);
+		layout.setAutoCreateContainerGaps(true);
+
+		layout.setHorizontalGroup(
+			layout.createSequentialGroup()
+				.addGroup(layout.createParallelGroup(GroupLayout.Alignment.LEADING)
+					.addComponent(vertexDefaultsHeader)
+					.addComponent(edgeDefaultsHeader)
+					.addComponent(captionDefaultsHeader)
+					.addComponent(viewportDefaultsHeader)
+					.addComponent(col0Padding))
+				.addGroup(layout.createParallelGroup(GroupLayout.Alignment.LEADING)
+					.addComponent(defaultVertexWeightLabel)
+					.addComponent(defaultVertexColorLabel)
+					.addComponent(defaultVertexPrefixLabel)
+					.addComponent(defaultVertexRadiusLabel)
+					.addComponent(defaultVertexIsSelectedLabel)
+					.addComponent(defaultEdgeWeightLabel)
+					.addComponent(defaultEdgeColorLabel)
+					.addComponent(defaultEdgePrefixLabel)
+					.addComponent(defaultEdgeThicknessLabel)
+					.addComponent(defaultEdgeHandleRadiusRatioLabel)
+					.addComponent(defaultLoopDiameterLabel)
+					.addComponent(defaultEdgeIsSelectedLabel)
+					.addComponent(defaultCaptionTextLabel)
+					.addComponent(defaultCaptionIsSelectedLabel)
+					.addComponent(defaultShowEdgeHandlesLabel)
+					.addComponent(defaultShowEdgeWeightsLabel)
+					.addComponent(defaultShowVertexWeightsLabel)
+					.addComponent(defaultShowVertexLabelsLabel)
+					.addComponent(defaultShowCaptionsLabel)
+					.addComponent(defaultShowCaptionHandlesLabel)
+					.addComponent(defaultShowCaptionEditorsLabel)
+					.addComponent(col1Padding))
+				.addGroup(layout.createParallelGroup(GroupLayout.Alignment.LEADING)
+					.addComponent(defaultVertexWeightTextField)
+					.addComponent(defaultVertexColorTextField)
+					.addComponent(defaultVertexPrefixTextField)
+					.addComponent(defaultVertexRadiusTextField)
+					.addComponent(defaultVertexIsSelectedCheckBox)
+					.addComponent(defaultEdgeWeightTextField)
+					.addComponent(defaultEdgeColorTextField)
+					.addComponent(defaultEdgePrefixTextField)
+					.addComponent(defaultEdgeThicknessTextField)
+					.addComponent(defaultEdgeHandleRadiusRatioTextField)
+					.addComponent(defaultLoopDiameterTextField)
+					.addComponent(defaultEdgeIsSelectedCheckBox)
+					.addComponent(defaultCaptionTextTextField)
+					.addComponent(defaultCaptionIsSelectedCheckBox)
+					.addComponent(defaultShowEdgeHandlesCheckBox)
+					.addComponent(defaultShowEdgeWeightsCheckBox)
+					.addComponent(defaultShowVertexWeightsCheckBox)
+					.addComponent(defaultShowVertexLabelsCheckBox)
+					.addComponent(defaultShowCaptionsCheckBox)
+					.addComponent(defaultShowCaptionHandlesCheckBox)
+					.addComponent(defaultShowCaptionEditorsCheckBox)
+					.addComponent(col2Padding)));
+		
+		layout.setVerticalGroup(
+			layout.createSequentialGroup()
+			 	.addComponent(vertexDefaultsHeader)
+				.addGroup(layout.createParallelGroup(GroupLayout.Alignment.CENTER).addComponent(defaultVertexWeightLabel).addComponent(defaultVertexWeightTextField))
+				.addGroup(layout.createParallelGroup(GroupLayout.Alignment.CENTER).addComponent(defaultVertexColorLabel).addComponent(defaultVertexColorTextField))
+				.addGroup(layout.createParallelGroup(GroupLayout.Alignment.CENTER).addComponent(defaultVertexPrefixLabel).addComponent(defaultVertexPrefixTextField))
+				.addGroup(layout.createParallelGroup(GroupLayout.Alignment.CENTER).addComponent(defaultVertexRadiusLabel).addComponent(defaultVertexRadiusTextField))
+				.addGroup(layout.createParallelGroup(GroupLayout.Alignment.CENTER).addComponent(defaultVertexIsSelectedLabel).addComponent(defaultVertexIsSelectedCheckBox))
+			 	.addComponent(edgeDefaultsHeader)
+			 	.addGroup(layout.createParallelGroup(GroupLayout.Alignment.CENTER).addComponent(defaultEdgeWeightLabel).addComponent(defaultEdgeWeightTextField))
+				.addGroup(layout.createParallelGroup(GroupLayout.Alignment.CENTER).addComponent(defaultEdgeColorLabel).addComponent(defaultEdgeColorTextField))
+				.addGroup(layout.createParallelGroup(GroupLayout.Alignment.CENTER).addComponent(defaultEdgePrefixLabel).addComponent(defaultEdgePrefixTextField))
+				.addGroup(layout.createParallelGroup(GroupLayout.Alignment.CENTER).addComponent(defaultEdgeThicknessLabel).addComponent(defaultEdgeThicknessTextField))
+				.addGroup(layout.createParallelGroup(GroupLayout.Alignment.CENTER).addComponent(defaultEdgeHandleRadiusRatioLabel).addComponent(defaultEdgeHandleRadiusRatioTextField))
+				.addGroup(layout.createParallelGroup(GroupLayout.Alignment.CENTER).addComponent(defaultLoopDiameterLabel).addComponent(defaultLoopDiameterTextField))
+				.addGroup(layout.createParallelGroup(GroupLayout.Alignment.CENTER).addComponent(defaultEdgeIsSelectedLabel).addComponent(defaultEdgeIsSelectedCheckBox))
+				.addComponent(captionDefaultsHeader)
+				.addGroup(layout.createParallelGroup(GroupLayout.Alignment.CENTER).addComponent(defaultCaptionTextLabel).addComponent(defaultCaptionTextTextField))
+				.addGroup(layout.createParallelGroup(GroupLayout.Alignment.CENTER).addComponent(defaultCaptionIsSelectedLabel).addComponent(defaultCaptionIsSelectedCheckBox))
+				.addComponent(viewportDefaultsHeader)
+				.addGroup(layout.createParallelGroup(GroupLayout.Alignment.CENTER).addComponent(defaultShowEdgeHandlesLabel).addComponent(defaultShowEdgeHandlesCheckBox))
+				.addGroup(layout.createParallelGroup(GroupLayout.Alignment.CENTER).addComponent(defaultShowEdgeWeightsLabel).addComponent(defaultShowEdgeWeightsCheckBox))
+				.addGroup(layout.createParallelGroup(GroupLayout.Alignment.CENTER).addComponent(defaultShowVertexWeightsLabel).addComponent(defaultShowVertexWeightsCheckBox))
+				.addGroup(layout.createParallelGroup(GroupLayout.Alignment.CENTER).addComponent(defaultShowVertexLabelsLabel).addComponent(defaultShowVertexLabelsCheckBox))
+				.addGroup(layout.createParallelGroup(GroupLayout.Alignment.CENTER).addComponent(defaultShowCaptionsLabel).addComponent(defaultShowCaptionsCheckBox))
+				.addGroup(layout.createParallelGroup(GroupLayout.Alignment.CENTER).addComponent(defaultShowCaptionHandlesLabel).addComponent(defaultShowCaptionHandlesCheckBox))
+				.addGroup(layout.createParallelGroup(GroupLayout.Alignment.CENTER).addComponent(defaultShowCaptionEditorsLabel).addComponent(defaultShowCaptionEditorsCheckBox))
+				.addGroup(layout.createParallelGroup(GroupLayout.Alignment.CENTER).addComponent(col0Padding).addComponent(col1Padding).addComponent(col2Padding)));
 		
 		JScrollPane scrollPane = new JScrollPane(panel, JScrollPane.VERTICAL_SCROLLBAR_ALWAYS, JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
 		scrollPane.setBorder(null);
-		
-		Component col0 = new JPanel(); col0.setPreferredSize(new Dimension(columnWidths[0], 8)); col0.setSize(col0.getPreferredSize()); col0.setMaximumSize(col0.getPreferredSize()); col0.setMinimumSize(col0.getPreferredSize());
-		col0.setBackground(Color.red); panel.add(col0, new GridBagConstraints(0, 0, 1, 1, 1, 1, GridBagConstraints.BASELINE_LEADING, GridBagConstraints.NONE, new Insets(0, 0, 0, 0), 0, 0));
-		Component col1 = new JPanel(); col1.setPreferredSize(new Dimension(columnWidths[1], 8)); col1.setSize(col1.getPreferredSize()); col1.setMaximumSize(col1.getPreferredSize()); col1.setMinimumSize(col0.getPreferredSize());
-		col1.setBackground(Color.blue); panel.add(col1, new GridBagConstraints(1, 0, 1, 1, 1, 1, GridBagConstraints.BASELINE_LEADING, GridBagConstraints.NONE, new Insets(0, 0, 0, 0), 0, 0));
-		Component col2 = new JPanel(); col2.setPreferredSize(new Dimension(columnWidths[2], 8)); col2.setSize(col2.getPreferredSize()); col2.setMaximumSize(col2.getPreferredSize()); col2.setMinimumSize(col0.getPreferredSize());
-		col2.setBackground(Color.red); panel.add(col2, new GridBagConstraints(2, 0, 1, 1, 1, 1, GridBagConstraints.BASELINE_LEADING, GridBagConstraints.NONE, new Insets(0, 0, 0, 0), 0, 0));
-		
-		panel.add(new Header("Default vertex properties:"), new GridBagConstraints(0, 1, 2, 1, 1, 1, GridBagConstraints.BASELINE_LEADING, GridBagConstraints.NONE, new Insets(10, 20, 10, 10), 0, 0));
-		
-		defaultVertexWeightTextField = new ValidatingTextField(8, "-?(?:\\d+\\.?\\d*|\\d*\\.?\\d+)(?:[eE][+\\-\\x20]?\\d+)?");
-		panel.add(new JLabel("Weight: "),       new GridBagConstraints(1, 2, 1, 1, 1, 1, GridBagConstraints.BASELINE_LEADING, GridBagConstraints.NONE, new Insets(2, 2, 2, 7), 0, 0));
-		panel.add(defaultVertexWeightTextField, new GridBagConstraints(2, 2, 1, 1, 1, 1, GridBagConstraints.BASELINE_LEADING, GridBagConstraints.NONE, new Insets(2, 2, 2, 7), 0, 0));
-		
-		defaultVertexColorTextField = new ValidatingTextField(8, "-1|\\d+");
-		panel.add(new JLabel("Color: "),       new GridBagConstraints(1, 3, 1, 1, 1, 1, GridBagConstraints.BASELINE_LEADING, GridBagConstraints.NONE, new Insets(2, 2, 2, 7), 0, 0));
-		panel.add(defaultVertexColorTextField, new GridBagConstraints(2, 3, 1, 1, 1, 1, GridBagConstraints.BASELINE_LEADING, GridBagConstraints.NONE, new Insets(2, 2, 2, 7), 0, 0));
-		
-		defaultVertexPrefixTextField = new JTextField(8);
-		panel.add(new JLabel("Prefix: "),       new GridBagConstraints(1, 4, 1, 1, 1, 1, GridBagConstraints.BASELINE_LEADING, GridBagConstraints.NONE, new Insets(2, 2, 2, 7), 0, 0));
-		panel.add(defaultVertexPrefixTextField, new GridBagConstraints(2, 4, 1, 1, 1, 1, GridBagConstraints.BASELINE_LEADING, GridBagConstraints.NONE, new Insets(2, 2, 2, 7), 0, 0));
-		
-		defaultVertexRadiusTextField = new ValidatingTextField(8, "(?:\\d+\\.?\\d*|\\d*\\.?\\d+)(?:[eE][+\\-\\x20]?\\d+)?");
-		panel.add(new JLabel("Radius: "),       new GridBagConstraints(1, 5, 1, 1, 1, 1, GridBagConstraints.BASELINE_LEADING, GridBagConstraints.NONE, new Insets(2, 2, 2, 7), 0, 0));
-		panel.add(defaultVertexRadiusTextField, new GridBagConstraints(2, 5, 1, 1, 1, 1, GridBagConstraints.BASELINE_LEADING, GridBagConstraints.NONE, new Insets(2, 2, 2, 7), 0, 0));
-		
-		defaultVertexIsSelectedCheckBox = new JCheckBox();
-		defaultVertexIsSelectedCheckBox.setBackground(panel.getBackground());
-		defaultVertexIsSelectedCheckBox.setPreferredSize(new Dimension(32, defaultVertexIsSelectedCheckBox.getPreferredSize().height));
-		panel.add(new JLabel("Is selected: "),     new GridBagConstraints(1, 6, 1, 1, 1, 1, GridBagConstraints.BASELINE_LEADING, GridBagConstraints.NONE, new Insets(2, 2, 2, 7), 0, 0));
-		panel.add(defaultVertexIsSelectedCheckBox, new GridBagConstraints(2, 6, 1, 1, 1, 1, GridBagConstraints.BASELINE_LEADING, GridBagConstraints.NONE, new Insets(0, 0, 0, 0), 0, 0));
-
-		panel.add(new Header("Default edge properties:"), new GridBagConstraints(0, 7, 2, 1, 1, 1, GridBagConstraints.BASELINE_LEADING, GridBagConstraints.NONE, new Insets(10, 20, 10, 10), 0, 0));
-		
-		defaultEdgeWeightTextField = new ValidatingTextField(8, "-?(?:\\d+\\.?\\d*|\\d*\\.?\\d+)(?:[eE][+\\-\\x20]?\\d+)?");
-		panel.add(new JLabel("Weight: "),     new GridBagConstraints(1, 8, 1, 1, 1, 1, GridBagConstraints.BASELINE_LEADING, GridBagConstraints.NONE, new Insets(2, 2, 2, 7), 0, 0));
-		panel.add(defaultEdgeWeightTextField, new GridBagConstraints(2, 8, 1, 1, 1, 1, GridBagConstraints.BASELINE_LEADING, GridBagConstraints.NONE, new Insets(2, 2, 2, 7), 0, 0));
-		
-		defaultEdgeColorTextField = new ValidatingTextField(8, "-1|\\d+");
-		panel.add(new JLabel("Color: "),     new GridBagConstraints(1, 9, 1, 1, 1, 1, GridBagConstraints.BASELINE_LEADING, GridBagConstraints.NONE, new Insets(2, 2, 2, 7), 0, 0));
-		panel.add(defaultEdgeColorTextField, new GridBagConstraints(2, 9, 1, 1, 1, 1, GridBagConstraints.BASELINE_LEADING, GridBagConstraints.NONE, new Insets(2, 2, 2, 7), 0, 0));
-		
-		defaultEdgePrefixTextField = new JTextField(8);
-		panel.add(new JLabel("Prefix: "),     new GridBagConstraints(1, 10, 1, 1, 1, 1, GridBagConstraints.BASELINE_LEADING, GridBagConstraints.NONE, new Insets(2, 2, 2, 7), 0, 0));
-		panel.add(defaultEdgePrefixTextField, new GridBagConstraints(2, 10, 1, 1, 1, 1, GridBagConstraints.BASELINE_LEADING, GridBagConstraints.NONE, new Insets(2, 2, 2, 7), 0, 0));
-		
-		defaultEdgeThicknessTextField = new ValidatingTextField(8, "(?:\\d+\\.?\\d*|\\d*\\.?\\d+)(?:[eE][+\\-\\x20]?\\d+)?");
-		panel.add(new JLabel("Thickness: "),     new GridBagConstraints(1, 11, 1, 1, 1, 1, GridBagConstraints.BASELINE_LEADING, GridBagConstraints.NONE, new Insets(2, 2, 2, 7), 0, 0));
-		panel.add(defaultEdgeThicknessTextField, new GridBagConstraints(2, 11, 1, 1, 1, 1, GridBagConstraints.BASELINE_LEADING, GridBagConstraints.NONE, new Insets(2, 2, 2, 7), 0, 0));
-		
-		defaultEdgeHandleRadiusRatioTextField = new ValidatingTextField(8, "(?:\\d+\\.?\\d*|\\d*\\.?\\d+)(?:[eE][+\\-\\x20]?\\d+)?");
-		panel.add(new JLabel("Handle radius ratio: "),   new GridBagConstraints(1, 12, 1, 1, 1, 1, GridBagConstraints.BASELINE_LEADING, GridBagConstraints.NONE, new Insets(2, 2, 2, 7), 0, 0));
-		panel.add(defaultEdgeHandleRadiusRatioTextField, new GridBagConstraints(2, 12, 1, 1, 1, 1, GridBagConstraints.BASELINE_LEADING, GridBagConstraints.NONE, new Insets(2, 2, 2, 7), 0, 0));
-		
-		defaultLoopDiameterTextField = new ValidatingTextField(8, "-?(?:\\d+\\.?\\d*|\\d*\\.?\\d+)(?:[eE][+\\-\\x20]?\\d+)?");
-		panel.add(new JLabel("Loop diameter: "), new GridBagConstraints(1, 13, 1, 1, 1, 1, GridBagConstraints.BASELINE_LEADING, GridBagConstraints.NONE, new Insets(2, 2, 2, 7), 0, 0));
-		panel.add(defaultLoopDiameterTextField,  new GridBagConstraints(2, 13, 1, 1, 1, 1, GridBagConstraints.BASELINE_LEADING, GridBagConstraints.NONE, new Insets(2, 2, 2, 7), 0, 0));
-		
-		defaultEdgeIsSelectedCheckBox = new JCheckBox();
-		defaultEdgeIsSelectedCheckBox.setBackground(panel.getBackground());
-		defaultEdgeIsSelectedCheckBox.setPreferredSize(new Dimension(32, defaultEdgeIsSelectedCheckBox.getPreferredSize().height));
-		panel.add(new JLabel("Is selected: "),   new GridBagConstraints(1, 14, 1, 1, 1, 1, GridBagConstraints.BASELINE_LEADING, GridBagConstraints.NONE, new Insets(2, 2, 2, 7), 0, 0));
-		panel.add(defaultEdgeIsSelectedCheckBox, new GridBagConstraints(2, 14, 1, 1, 1, 1, GridBagConstraints.BASELINE_LEADING, GridBagConstraints.NONE, new Insets(0, 0, 0, 0), 0, 0));
-		
-		panel.add(new Header("Default caption properties:"), new GridBagConstraints(0, 15, 2, 1, 1, 1, GridBagConstraints.BASELINE_LEADING, GridBagConstraints.NONE, new Insets(10, 20, 10, 10), 0, 0));
-		
-		defaultCaptionTextTextField = new JTextField(20);
-		panel.add(new JLabel("Text: "),        new GridBagConstraints(1, 16, 1, 1, 1, 1, GridBagConstraints.BASELINE_LEADING, GridBagConstraints.NONE, new Insets(2, 2, 2, 7), 0, 0));
-		panel.add(defaultCaptionTextTextField, new GridBagConstraints(2, 16, 1, 1, 1, 1, GridBagConstraints.BASELINE_LEADING, GridBagConstraints.NONE, new Insets(2, 2, 2, 7), 0, 0));
-		
-		defaultCaptionIsSelectedCheckBox = new JCheckBox();
-		defaultCaptionIsSelectedCheckBox.setBackground(panel.getBackground());
-		defaultCaptionIsSelectedCheckBox.setPreferredSize(new Dimension(32, defaultCaptionIsSelectedCheckBox.getPreferredSize().height));
-		panel.add(new JLabel("Is selected: "),      new GridBagConstraints(1, 17, 1, 1, 1, 1, GridBagConstraints.BASELINE_LEADING, GridBagConstraints.NONE, new Insets(2, 2, 2, 7), 0, 0));
-		panel.add(defaultCaptionIsSelectedCheckBox, new GridBagConstraints(2, 17, 1, 1, 1, 1, GridBagConstraints.BASELINE_LEADING, GridBagConstraints.NONE, new Insets(0, 0, 0, 0), 0, 0));
-		
-		panel.add(new Header("Default viewport settings:"), new GridBagConstraints(0, 18, 2, 1, 1, 1, GridBagConstraints.BASELINE_LEADING, GridBagConstraints.NONE, new Insets(10, 20, 10, 10), 0, 0));
-		
-		defaultShowEdgeHandlesCheckBox = new JCheckBox();
-		defaultShowEdgeHandlesCheckBox.setBackground(panel.getBackground());
-		defaultShowEdgeHandlesCheckBox.setPreferredSize(new Dimension(32, defaultCaptionIsSelectedCheckBox.getPreferredSize().height));
-		panel.add(new JLabel("Show edge handles: "), new GridBagConstraints(1, 19, 1, 1, 1, 1, GridBagConstraints.BASELINE_LEADING, GridBagConstraints.NONE, new Insets(2, 2, 2, 7), 0, 0));
-		panel.add(defaultShowEdgeHandlesCheckBox,    new GridBagConstraints(2, 19, 1, 1, 1, 1, GridBagConstraints.BASELINE_LEADING, GridBagConstraints.NONE, new Insets(0, 0, 0, 0), 0, 0));
-
-		defaultShowEdgeWeightsCheckBox = new JCheckBox();
-		defaultShowEdgeWeightsCheckBox.setBackground(panel.getBackground());
-		defaultShowEdgeWeightsCheckBox.setPreferredSize(new Dimension(32, defaultCaptionIsSelectedCheckBox.getPreferredSize().height));
-		panel.add(new JLabel("Show edge weights: "), new GridBagConstraints(1, 20, 1, 1, 1, 1, GridBagConstraints.BASELINE_LEADING, GridBagConstraints.NONE, new Insets(2, 2, 2, 7), 0, 0));
-		panel.add(defaultShowEdgeWeightsCheckBox,    new GridBagConstraints(2, 20, 1, 1, 1, 1, GridBagConstraints.BASELINE_LEADING, GridBagConstraints.NONE, new Insets(0, 0, 0, 0), 0, 0));
-		
-		defaultShowVertexWeightsCheckBox = new JCheckBox();
-		defaultShowVertexWeightsCheckBox.setBackground(panel.getBackground());
-		defaultShowVertexWeightsCheckBox.setPreferredSize(new Dimension(32, defaultCaptionIsSelectedCheckBox.getPreferredSize().height));
-		panel.add(new JLabel("Show vertex weights: "), new GridBagConstraints(1, 21, 1, 1, 1, 1, GridBagConstraints.BASELINE_LEADING, GridBagConstraints.NONE, new Insets(2, 2, 2, 7), 0, 0));
-		panel.add(defaultShowVertexWeightsCheckBox,    new GridBagConstraints(2, 21, 1, 1, 1, 1, GridBagConstraints.BASELINE_LEADING, GridBagConstraints.NONE, new Insets(0, 0, 0, 0), 0, 0));
-		
-		defaultShowVertexLabelsCheckBox = new JCheckBox();
-		defaultShowVertexLabelsCheckBox.setBackground(panel.getBackground());
-		defaultShowVertexLabelsCheckBox.setPreferredSize(new Dimension(32, defaultCaptionIsSelectedCheckBox.getPreferredSize().height));
-		panel.add(new JLabel("Show vertex labels: "), new GridBagConstraints(1, 22, 1, 1, 1, 1, GridBagConstraints.BASELINE_LEADING, GridBagConstraints.NONE, new Insets(2, 2, 2, 7), 0, 0));
-		panel.add(defaultShowVertexLabelsCheckBox,    new GridBagConstraints(2, 22, 1, 1, 1, 1, GridBagConstraints.BASELINE_LEADING, GridBagConstraints.NONE, new Insets(0, 0, 0, 0), 0, 0));
-		
-		defaultShowCaptionsCheckBox = new JCheckBox();
-		defaultShowCaptionsCheckBox.setBackground(panel.getBackground());
-		defaultShowCaptionsCheckBox.setPreferredSize(new Dimension(32, defaultCaptionIsSelectedCheckBox.getPreferredSize().height));
-		panel.add(new JLabel("Show captions: "), new GridBagConstraints(1, 23, 1, 1, 1, 1, GridBagConstraints.BASELINE_LEADING, GridBagConstraints.NONE, new Insets(2, 2, 2, 7), 0, 0));
-		panel.add(defaultShowCaptionsCheckBox,   new GridBagConstraints(2, 23, 1, 1, 1, 1, GridBagConstraints.BASELINE_LEADING, GridBagConstraints.NONE, new Insets(0, 0, 0, 0), 0, 0));
-		
-		defaultShowCaptionHandlesCheckBox = new JCheckBox();
-		defaultShowCaptionHandlesCheckBox.setBackground(panel.getBackground());
-		defaultShowCaptionHandlesCheckBox.setPreferredSize(new Dimension(32, defaultCaptionIsSelectedCheckBox.getPreferredSize().height));
-		panel.add(new JLabel("Show caption handles: "), new GridBagConstraints(1, 24, 1, 1, 1, 1, GridBagConstraints.BASELINE_LEADING, GridBagConstraints.NONE, new Insets(2, 2, 2, 7), 0, 0));
-		panel.add(defaultShowCaptionHandlesCheckBox,    new GridBagConstraints(2, 24, 1, 1, 1, 1, GridBagConstraints.BASELINE_LEADING, GridBagConstraints.NONE, new Insets(0, 0, 0, 0), 0, 0));
-		
-		defaultShowCaptionEditorsCheckBox = new JCheckBox();
-		defaultShowCaptionEditorsCheckBox.setBackground(panel.getBackground());
-		defaultShowCaptionEditorsCheckBox.setPreferredSize(new Dimension(32, defaultCaptionIsSelectedCheckBox.getPreferredSize().height));
-		panel.add(new JLabel("Show caption editors: "), new GridBagConstraints(1, 25, 1, 1, 1, 1, GridBagConstraints.BASELINE_LEADING, GridBagConstraints.NONE, new Insets(2, 2, 2, 7), 0, 0));
-		panel.add(defaultShowCaptionEditorsCheckBox,    new GridBagConstraints(2, 25, 1, 1, 1, 1, GridBagConstraints.BASELINE_LEADING, GridBagConstraints.NONE, new Insets(0, 0, 0, 0), 0, 0));
-		
-		panel.add(Box.createRigidArea(new Dimension(1, 13)), new GridBagConstraints(2, 26, 1, 1, 1, 1, GridBagConstraints.BASELINE_LEADING, GridBagConstraints.NONE, new Insets(2, 2, 2, 7), 0, 0));
 		
 		return scrollPane;
 	}
@@ -290,90 +318,36 @@ public class PreferencesDialog extends JDialog implements ActionListener
 		JPanel panel = new JPanel(new GridBagLayout());
 		panel.setBackground(Color.white);
 		
-		JScrollPane scrollPane = new JScrollPane(panel, JScrollPane.VERTICAL_SCROLLBAR_ALWAYS, JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
-		scrollPane.setBorder(null);
+		Header graphColorsHeader = new Header("Graph colors:");
+		FieldLabel graphBackgroundLabel  = new FieldLabel("Background:");         graphBackgroundColorPicker  = new ColorPicker();
+		FieldLabel selectionBoxFillLabel = new FieldLabel("Selection box fill:"); selectionBoxFillColorPicker = new ColorPicker();
+		FieldLabel selectionBoxLineLabel = new FieldLabel("Selection box line:"); selectionBoxLineColorPicker = new ColorPicker();
 		
-		Component col0 = new JPanel(); col0.setPreferredSize(new Dimension(columnWidths[0], 8)); col0.setSize(col0.getPreferredSize()); col0.setMaximumSize(col0.getPreferredSize()); col0.setMinimumSize(col0.getPreferredSize());
-		col0.setBackground(Color.red); panel.add(col0, new GridBagConstraints(0, 0, 1, 1, 1, 1, GridBagConstraints.BASELINE_LEADING, GridBagConstraints.NONE, new Insets(0, 0, 0, 0), 0, 0));
-		Component col1 = new JPanel(); col1.setPreferredSize(new Dimension(columnWidths[1], 8)); col1.setSize(col1.getPreferredSize()); col1.setMaximumSize(col1.getPreferredSize()); col1.setMinimumSize(col0.getPreferredSize());
-		col1.setBackground(Color.blue); panel.add(col1, new GridBagConstraints(1, 0, 1, 1, 1, 1, GridBagConstraints.BASELINE_LEADING, GridBagConstraints.NONE, new Insets(0, 0, 0, 0), 0, 0));
-		Component col2 = new JPanel(); col2.setPreferredSize(new Dimension(columnWidths[2], 8)); col2.setSize(col2.getPreferredSize()); col2.setMaximumSize(col2.getPreferredSize()); col2.setMinimumSize(col0.getPreferredSize());
-		col2.setBackground(Color.red); panel.add(col2, new GridBagConstraints(2, 0, 1, 1, 1, 1, GridBagConstraints.BASELINE_LEADING, GridBagConstraints.NONE, new Insets(0, 0, 0, 0), 0, 0));
-		
-		panel.add(new Header("Graph colors:"), new GridBagConstraints(0, 1, 2, 1, 1, 1, GridBagConstraints.BASELINE_LEADING, GridBagConstraints.NONE, new Insets(10, 20, 10, 10), 0, 0));
-		
-		graphBackgroundColorPicker = new ColorPicker();
-		panel.add(new JLabel("Graph background: "), new GridBagConstraints(1, 2, 1, 1, 1, 1, GridBagConstraints.BASELINE_LEADING, GridBagConstraints.NONE, new Insets(2, 2, 2, 7), 0, 0));
-		panel.add(graphBackgroundColorPicker,       new GridBagConstraints(2, 2, 1, 1, 1, 1, GridBagConstraints.BASELINE_LEADING, GridBagConstraints.NONE, new Insets(2, 2, 2, 7), 0, 0));
-		
-		selectionBoxFillColorPicker = new ColorPicker();
-		panel.add(new JLabel("Selection box fill: "), new GridBagConstraints(1, 3, 1, 1, 1, 1, GridBagConstraints.BASELINE_LEADING, GridBagConstraints.NONE, new Insets(2, 2, 2, 7), 0, 0));
-		panel.add(selectionBoxFillColorPicker,        new GridBagConstraints(2, 3, 1, 1, 1, 1, GridBagConstraints.BASELINE_LEADING, GridBagConstraints.NONE, new Insets(2, 2, 2, 7), 0, 0));
-		
-		selectionBoxLineColorPicker = new ColorPicker();
-		panel.add(new JLabel("Selection box line: "), new GridBagConstraints(1, 4, 1, 1, 1, 1, GridBagConstraints.BASELINE_LEADING, GridBagConstraints.NONE, new Insets(2, 2, 2, 7), 0, 0));
-		panel.add(selectionBoxLineColorPicker,        new GridBagConstraints(2, 4, 1, 1, 1, 1, GridBagConstraints.BASELINE_LEADING, GridBagConstraints.NONE, new Insets(2, 2, 2, 7), 0, 0));
-		
-		panel.add(new Header("Vertex colors:"), new GridBagConstraints(0, 5, 2, 1, 1, 1, GridBagConstraints.BASELINE_LEADING, GridBagConstraints.NONE, new Insets(10, 20, 10, 10), 0, 0));
-		
-		vertexLineColorPicker = new ColorPicker();
-		panel.add(new JLabel("Vertex line: "), new GridBagConstraints(1, 6, 1, 1, 1, 1, GridBagConstraints.BASELINE_LEADING, GridBagConstraints.NONE, new Insets(2, 2, 2, 7), 0, 0));
-		panel.add(vertexLineColorPicker,       new GridBagConstraints(2, 6, 1, 1, 1, 1, GridBagConstraints.BASELINE_LEADING, GridBagConstraints.NONE, new Insets(2, 2, 2, 7), 0, 0));
-		
-		selectedVertexFillColorPicker = new ColorPicker();
-		panel.add(new JLabel("Selected vertex fill: "), new GridBagConstraints(1, 7, 1, 1, 1, 1, GridBagConstraints.BASELINE_LEADING, GridBagConstraints.NONE, new Insets(2, 2, 2, 7), 0, 0));
-		panel.add(selectedVertexFillColorPicker,        new GridBagConstraints(2, 7, 1, 1, 1, 1, GridBagConstraints.BASELINE_LEADING, GridBagConstraints.NONE, new Insets(2, 2, 2, 7), 0, 0));
-		
-		selectedVertexLineColorPicker = new ColorPicker();
-		panel.add(new JLabel("Selected vertex line: "), new GridBagConstraints(1, 8, 1, 1, 1, 1, GridBagConstraints.BASELINE_LEADING, GridBagConstraints.NONE, new Insets(2, 2, 2, 7), 0, 0));
-		panel.add(selectedVertexLineColorPicker,        new GridBagConstraints(2, 8, 1, 1, 1, 1, GridBagConstraints.BASELINE_LEADING, GridBagConstraints.NONE, new Insets(2, 2, 2, 7), 0, 0));
-		
-		panel.add(new Header("Edge colors:"), new GridBagConstraints(0, 9, 2, 1, 1, 1, GridBagConstraints.BASELINE_LEADING, GridBagConstraints.NONE, new Insets(10, 20, 10, 10), 0, 0));
-		
-		draggingHandleEdgeColorPicker = new ColorPicker();
-		panel.add(new JLabel("Dragging handle edge: "), new GridBagConstraints(1, 10, 1, 1, 1, 1, GridBagConstraints.BASELINE_LEADING, GridBagConstraints.NONE, new Insets(2, 2, 2, 7), 0, 0));
-		panel.add(draggingHandleEdgeColorPicker,        new GridBagConstraints(2, 10, 1, 1, 1, 1, GridBagConstraints.BASELINE_LEADING, GridBagConstraints.NONE, new Insets(2, 2, 2, 7), 0, 0));
-		
-		draggingEdgeColorPicker = new ColorPicker();
-		panel.add(new JLabel("Dragging edge: "), new GridBagConstraints(1, 11, 1, 1, 1, 1, GridBagConstraints.BASELINE_LEADING, GridBagConstraints.NONE, new Insets(2, 2, 2, 7), 0, 0));
-		panel.add(draggingEdgeColorPicker,       new GridBagConstraints(2, 11, 1, 1, 1, 1, GridBagConstraints.BASELINE_LEADING, GridBagConstraints.NONE, new Insets(2, 2, 2, 7), 0, 0));
-		
-		uncoloredEdgeHandleColorPicker = new ColorPicker();
-		panel.add(new JLabel("Uncolored edge handle: "), new GridBagConstraints(1, 12, 1, 1, 1, 1, GridBagConstraints.BASELINE_LEADING, GridBagConstraints.NONE, new Insets(2, 2, 2, 7), 0, 0));
-		panel.add(uncoloredEdgeHandleColorPicker,        new GridBagConstraints(2, 12, 1, 1, 1, 1, GridBagConstraints.BASELINE_LEADING, GridBagConstraints.NONE, new Insets(2, 2, 2, 7), 0, 0));
-		
-		selectedEdgeColorPicker = new ColorPicker();
-		panel.add(new JLabel("Selected edge: "), new GridBagConstraints(1, 13, 1, 1, 1, 1, GridBagConstraints.BASELINE_LEADING, GridBagConstraints.NONE, new Insets(2, 2, 2, 7), 0, 0));
-		panel.add(selectedEdgeColorPicker,       new GridBagConstraints(2, 13, 1, 1, 1, 1, GridBagConstraints.BASELINE_LEADING, GridBagConstraints.NONE, new Insets(2, 2, 2, 7), 0, 0));
-		
-		selectedEdgeHandleColorPicker = new ColorPicker();
-		panel.add(new JLabel("Selected edge handle: "), new GridBagConstraints(1, 14, 1, 1, 1, 1, GridBagConstraints.BASELINE_LEADING, GridBagConstraints.NONE, new Insets(2, 2, 2, 7), 0, 0));
-		panel.add(selectedEdgeHandleColorPicker,        new GridBagConstraints(2, 14, 1, 1, 1, 1, GridBagConstraints.BASELINE_LEADING, GridBagConstraints.NONE, new Insets(2, 2, 2, 7), 0, 0));
-		
-		panel.add(new Header("Caption colors:"), new GridBagConstraints(0, 15, 2, 1, 1, 1, GridBagConstraints.BASELINE_LEADING, GridBagConstraints.NONE, new Insets(10, 20, 10, 10), 0, 0));
-		
-		captionTextColorPicker = new ColorPicker();
-		panel.add(new JLabel("Caption text: "), new GridBagConstraints(1, 16, 1, 1, 1, 1, GridBagConstraints.BASELINE_LEADING, GridBagConstraints.NONE, new Insets(2, 2, 2, 7), 0, 0));
-		panel.add(captionTextColorPicker,       new GridBagConstraints(2, 16, 1, 1, 1, 1, GridBagConstraints.BASELINE_LEADING, GridBagConstraints.NONE, new Insets(2, 2, 2, 7), 0, 0));
-		
-		selectedCaptionTextColorPicker = new ColorPicker();
-		panel.add(new JLabel("Selected caption text: "), new GridBagConstraints(1, 17, 1, 1, 1, 1, GridBagConstraints.BASELINE_LEADING, GridBagConstraints.NONE, new Insets(2, 2, 2, 7), 0, 0));
-		panel.add(selectedCaptionTextColorPicker,        new GridBagConstraints(2, 17, 1, 1, 1, 1, GridBagConstraints.BASELINE_LEADING, GridBagConstraints.NONE, new Insets(2, 2, 2, 7), 0, 0));
-		
-		panel.add(new Header("Shared colors:"), new GridBagConstraints(0, 18, 2, 1, 1, 1, GridBagConstraints.BASELINE_LEADING, GridBagConstraints.NONE, new Insets(10, 20, 10, 10), 0, 0));
-		
-		uncoloredElementColorPicker = new ColorPicker();
-		panel.add(new JLabel("Uncolored element: "), new GridBagConstraints(1, 19, 1, 1, 1, 1, GridBagConstraints.BASELINE_LEADING, GridBagConstraints.NONE, new Insets(2, 2, 2, 7), 0, 0));
-		panel.add(uncoloredElementColorPicker,       new GridBagConstraints(2, 19, 1, 1, 1, 1, GridBagConstraints.BASELINE_LEADING, GridBagConstraints.NONE, new Insets(2, 2, 2, 7), 0, 0));
-		
-		panel.add(new JLabel("Element colors: "), new GridBagConstraints(1, 20, 1, 1, 1, 1, GridBagConstraints.BASELINE_LEADING, GridBagConstraints.NONE, new Insets(2, 2, 2, 7), 0, 0));
+		Header vertexColorsHeader = new Header("Vertex colors:");
+		FieldLabel vertexLineLabel         = new FieldLabel("Line:");          vertexLineColorPicker         = new ColorPicker();
+		FieldLabel selectedVertexFillLabel = new FieldLabel("Selected fill:"); selectedVertexFillColorPicker = new ColorPicker();
+		FieldLabel selectedVertexLineLabel = new FieldLabel("Selected line:"); selectedVertexLineColorPicker = new ColorPicker();
+			
+		Header edgeColorsHeader = new Header("Edge colors:");
+		FieldLabel draggingHandleEdgeLabel  = new FieldLabel("Dragging handle:");  draggingHandleEdgeColorPicker  = new ColorPicker();
+		FieldLabel draggingEdgeLabel        = new FieldLabel("Dragging:");         draggingEdgeColorPicker        = new ColorPicker();
+		FieldLabel uncoloredEdgeHandleLabel = new FieldLabel("Uncolored handle:"); uncoloredEdgeHandleColorPicker = new ColorPicker();
+		FieldLabel selectedEdgeLabel        = new FieldLabel("Selected:");         selectedEdgeColorPicker        = new ColorPicker();
+		FieldLabel selectedEdgeHandleLabel  = new FieldLabel("Selected handle:");  selectedEdgeHandleColorPicker  = new ColorPicker();
+			
+		Header captionColorsHeader = new Header("Caption colors:");
+		FieldLabel captionTextLabel         = new FieldLabel("Caption text:");  captionTextColorPicker         = new ColorPicker();
+		FieldLabel selectedCaptionTextLabel = new FieldLabel("Selected text:"); selectedCaptionTextColorPicker = new ColorPicker();
+			
+		Header sharedColorsHeader = new Header("Shared colors:");
+		FieldLabel uncoloredElementLabel = new FieldLabel("Uncolored element:"); uncoloredElementColorPicker = new ColorPicker();
+		FieldLabel elementColorsLabel    = new FieldLabel("Colored elements:");
 		
 		elementColorColorPickers = new Stack<ColorPicker>();
 		
-		//final JPanel elementColorsPanel = new JPanel(new VerticalFlowLayout(VerticalFlowLayout.CENTER, 0, 4));
 		final JPanel elementColorsPanel = new JPanel(new LayoutManager()
 		{
-			int hgap = 0, vgap = 4;
+			int hgap = 0, vgap = 6;
 			
 			@Override
 			public void addLayoutComponent(String arg0, Component arg1)
@@ -505,7 +479,7 @@ public class PreferencesDialog extends JDialog implements ActionListener
 			}
 		} );
 		elementColorsPanel.setBackground(panel.getBackground());
-		elementColorsPanel.setBorder(null);
+		elementColorsPanel.setBorder(BorderFactory.createEmptyBorder(-6, 0, 0, 0));
 		
 		JButton addButton = new JButton("Add");
 		addButton.setPreferredSize(new Dimension(80, 28));
@@ -543,18 +517,95 @@ public class PreferencesDialog extends JDialog implements ActionListener
 		
 		JPanel buttonPanel = new JPanel();
 		buttonPanel.setLayout(new BoxLayout(buttonPanel, BoxLayout.LINE_AXIS));
-		buttonPanel.setBorder(BorderFactory.createEmptyBorder(-2, 9, 9, 13));
+		buttonPanel.setBorder(BorderFactory.createEmptyBorder(2, 9, 0, 13));
 		buttonPanel.setBackground(panel.getBackground());
 		buttonPanel.add(Box.createHorizontalGlue());
 		buttonPanel.add(addButton);
 		buttonPanel.add(Box.createRigidArea(new Dimension(10, 0)));
 		buttonPanel.add(removeButton);
 		
-		panel.add(elementColorsPanel, new GridBagConstraints(2, 20, 1, 1, 1, 1, GridBagConstraints.BASELINE_LEADING, GridBagConstraints.NONE, new Insets(-2, 2, 2, 7), 0, 0));
+		Component col0Padding = Box.createRigidArea(new Dimension(columnWidths[0], 7));
+		Component col1Padding = Box.createRigidArea(new Dimension(columnWidths[1], 7));
+		Component col2Padding = Box.createRigidArea(new Dimension(columnWidths[2], 7));
 		
-		panel.add(buttonPanel, new GridBagConstraints(2, 21, 1, 1, 1, 1, GridBagConstraints.BASELINE_TRAILING, GridBagConstraints.NONE, new Insets(2, 2, 2, 7), 0, 0));
+		GroupLayout layout = new GroupLayout(panel);
+		panel.setLayout(layout);
 		
-		panel.add(Box.createRigidArea(new Dimension(1, 13)), new GridBagConstraints(2, 22, 1, 1, 1, 1, GridBagConstraints.BASELINE_LEADING, GridBagConstraints.NONE, new Insets(2, 2, 2, 7), 0, 0));
+		layout.setAutoCreateGaps(true);
+		layout.setAutoCreateContainerGaps(true);
+
+		layout.setHorizontalGroup(
+			layout.createSequentialGroup()
+				.addGroup(layout.createParallelGroup(GroupLayout.Alignment.LEADING)
+					.addComponent(graphColorsHeader)
+					.addComponent(vertexColorsHeader)
+					.addComponent(edgeColorsHeader)
+					.addComponent(captionColorsHeader)
+					.addComponent(sharedColorsHeader)
+					.addComponent(col0Padding))
+				.addGroup(layout.createParallelGroup(GroupLayout.Alignment.LEADING)
+					.addComponent(graphBackgroundLabel)
+					.addComponent(selectionBoxFillLabel)
+					.addComponent(selectionBoxLineLabel)
+					.addComponent(vertexLineLabel)
+					.addComponent(selectedVertexFillLabel)
+					.addComponent(selectedVertexLineLabel)
+					.addComponent(draggingHandleEdgeLabel)
+					.addComponent(draggingEdgeLabel)
+					.addComponent(uncoloredEdgeHandleLabel)
+					.addComponent(selectedEdgeLabel)
+					.addComponent(selectedEdgeHandleLabel)
+					.addComponent(captionTextLabel)
+					.addComponent(selectedCaptionTextLabel)
+					.addComponent(uncoloredElementLabel)
+					.addComponent(elementColorsLabel)
+					.addComponent(col1Padding))
+				.addGroup(layout.createParallelGroup(GroupLayout.Alignment.LEADING)
+					.addComponent(graphBackgroundColorPicker)
+					.addComponent(selectionBoxFillColorPicker)
+					.addComponent(selectionBoxLineColorPicker)
+					.addComponent(vertexLineColorPicker)
+					.addComponent(selectedVertexFillColorPicker)
+					.addComponent(selectedVertexLineColorPicker)
+					.addComponent(draggingHandleEdgeColorPicker)
+					.addComponent(draggingEdgeColorPicker)
+					.addComponent(uncoloredEdgeHandleColorPicker)
+					.addComponent(selectedEdgeColorPicker)
+					.addComponent(selectedEdgeHandleColorPicker)
+					.addComponent(captionTextColorPicker)
+					.addComponent(selectedCaptionTextColorPicker)
+					.addComponent(uncoloredElementColorPicker)
+					.addComponent(elementColorsPanel)
+					.addComponent(buttonPanel)
+					.addComponent(col2Padding)));
+		
+		layout.setVerticalGroup(
+			layout.createSequentialGroup()
+			 	.addComponent(graphColorsHeader)
+				.addGroup(layout.createParallelGroup(GroupLayout.Alignment.CENTER).addComponent(graphBackgroundLabel).addComponent(graphBackgroundColorPicker))
+				.addGroup(layout.createParallelGroup(GroupLayout.Alignment.CENTER).addComponent(selectionBoxFillLabel).addComponent(selectionBoxFillColorPicker))
+				.addGroup(layout.createParallelGroup(GroupLayout.Alignment.CENTER).addComponent(selectionBoxLineLabel).addComponent(selectionBoxLineColorPicker))
+				.addComponent(vertexColorsHeader)
+				.addGroup(layout.createParallelGroup(GroupLayout.Alignment.CENTER).addComponent(vertexLineLabel).addComponent(vertexLineColorPicker))
+				.addGroup(layout.createParallelGroup(GroupLayout.Alignment.CENTER).addComponent(selectedVertexFillLabel).addComponent(selectedVertexFillColorPicker))
+				.addGroup(layout.createParallelGroup(GroupLayout.Alignment.CENTER).addComponent(selectedVertexLineLabel).addComponent(selectedVertexLineColorPicker))
+				.addComponent(edgeColorsHeader)
+				.addGroup(layout.createParallelGroup(GroupLayout.Alignment.CENTER).addComponent(draggingHandleEdgeLabel).addComponent(draggingHandleEdgeColorPicker))
+				.addGroup(layout.createParallelGroup(GroupLayout.Alignment.CENTER).addComponent(draggingEdgeLabel).addComponent(draggingEdgeColorPicker))
+				.addGroup(layout.createParallelGroup(GroupLayout.Alignment.CENTER).addComponent(uncoloredEdgeHandleLabel).addComponent(uncoloredEdgeHandleColorPicker))
+				.addGroup(layout.createParallelGroup(GroupLayout.Alignment.CENTER).addComponent(selectedEdgeLabel).addComponent(selectedEdgeColorPicker))
+				.addGroup(layout.createParallelGroup(GroupLayout.Alignment.CENTER).addComponent(selectedEdgeHandleLabel).addComponent(selectedEdgeHandleColorPicker))
+				.addComponent(captionColorsHeader)
+				.addGroup(layout.createParallelGroup(GroupLayout.Alignment.CENTER).addComponent(captionTextLabel).addComponent(captionTextColorPicker))
+				.addGroup(layout.createParallelGroup(GroupLayout.Alignment.CENTER).addComponent(selectedCaptionTextLabel).addComponent(selectedCaptionTextColorPicker))
+				.addComponent(sharedColorsHeader)
+				.addGroup(layout.createParallelGroup(GroupLayout.Alignment.CENTER).addComponent(uncoloredElementLabel).addComponent(uncoloredElementColorPicker))
+				.addGroup(layout.createParallelGroup(GroupLayout.Alignment.LEADING).addComponent(elementColorsLabel).addComponent(elementColorsPanel))
+				.addGroup(layout.createParallelGroup(GroupLayout.Alignment.CENTER).addComponent(buttonPanel))
+				.addGroup(layout.createParallelGroup(GroupLayout.Alignment.CENTER).addComponent(col0Padding).addComponent(col1Padding).addComponent(col2Padding)));
+		
+		JScrollPane scrollPane = new JScrollPane(panel, JScrollPane.VERTICAL_SCROLLBAR_ALWAYS, JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+		scrollPane.setBorder(null);
 		
 		return scrollPane;
 	}
@@ -564,139 +615,179 @@ public class PreferencesDialog extends JDialog implements ActionListener
 		JPanel panel = new JPanel(new GridBagLayout());
 		panel.setBackground(Color.white);
 		
-		JScrollPane scrollPane = new JScrollPane(panel, JScrollPane.VERTICAL_SCROLLBAR_ALWAYS, JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
-		scrollPane.setBorder(null);
+		Header clickingBehaviorHeader = new Header("Clicking behavior:");
+		FieldLabel vertexClickMarginLabel        = new FieldLabel("Vertex click margin:");         vertexClickMarginTextField        = new ValidatingTextField(8, "(?:\\d+\\.?\\d*|\\d*\\.?\\d+)(?:[eE][+\\-\\x20]?\\d+)?"); vertexClickMarginTextField       .setMargin(fieldMargin); vertexClickMarginTextField       .setMaximumSize(new Dimension(70, 100));
+		FieldLabel edgeHandleClickMarginLabel    = new FieldLabel("Edge handle click margin:");    edgeHandleClickMarginTextField    = new ValidatingTextField(8, "(?:\\d+\\.?\\d*|\\d*\\.?\\d+)(?:[eE][+\\-\\x20]?\\d+)?"); edgeHandleClickMarginTextField   .setMargin(fieldMargin); edgeHandleClickMarginTextField   .setMaximumSize(new Dimension(70, 100));
+		FieldLabel captionHandleClickMarginLabel = new FieldLabel("Caption handle click margin:"); captionHandleClickMarginTextField = new ValidatingTextField(8, "(?:\\d+\\.?\\d*|\\d*\\.?\\d+)(?:[eE][+\\-\\x20]?\\d+)?"); captionHandleClickMarginTextField.setMargin(fieldMargin); captionHandleClickMarginTextField.setMaximumSize(new Dimension(70, 100));
+		FieldLabel captionEditorClickMarginLabel = new FieldLabel("Caption editor click margin:"); captionEditorClickMarginTextField = new ValidatingTextField(8, "(?:\\d+\\.?\\d*|\\d*\\.?\\d+)(?:[eE][+\\-\\x20]?\\d+)?"); captionEditorClickMarginTextField.setMargin(fieldMargin); captionEditorClickMarginTextField.setMaximumSize(new Dimension(70, 100));
+			
+		Header zoomingBehaviorHeader = new Header("Zooming behavior:");
+		FieldLabel zoomInFactorLabel        = new FieldLabel("Zoom in factor:");        zoomInFactorTextField        = new ValidatingTextField(8, "(?:\\d+\\.?\\d*|\\d*\\.?\\d+)(?:[eE][+\\-\\x20]?\\d+)?"); zoomInFactorTextField       .setMargin(fieldMargin); zoomInFactorTextField       .setMaximumSize(new Dimension(70, 100));
+		FieldLabel zoomOutFactorLabel       = new FieldLabel("Zoom out factor:");       zoomOutFactorTextField       = new ValidatingTextField(8, "(?:\\d+\\.?\\d*|\\d*\\.?\\d+)(?:[eE][+\\-\\x20]?\\d+)?"); zoomOutFactorTextField      .setMargin(fieldMargin); zoomOutFactorTextField      .setMaximumSize(new Dimension(70, 100));
+		FieldLabel maximumZoomFactorLabel   = new FieldLabel("Maximum zoom factor:");   maximumZoomFactorTextField   = new ValidatingTextField(8, "(?:\\d+\\.?\\d*|\\d*\\.?\\d+)(?:[eE][+\\-\\x20]?\\d+)?"); maximumZoomFactorTextField  .setMargin(fieldMargin); maximumZoomFactorTextField  .setMaximumSize(new Dimension(70, 100));
+		FieldLabel zoomGraphPaddingLabel    = new FieldLabel("Zoom fit padding:");      zoomGraphPaddingTextField    = new ValidatingTextField(8, "(?:\\d+\\.?\\d*|\\d*\\.?\\d+)(?:[eE][+\\-\\x20]?\\d+)?"); zoomGraphPaddingTextField   .setMargin(fieldMargin); zoomGraphPaddingTextField   .setMaximumSize(new Dimension(70, 100));
+		FieldLabel scrollZoomIncrementLabel = new FieldLabel("Scroll zoom increment:"); scrollIncrementZoomTextField = new ValidatingTextField(8, "(?:\\d+\\.?\\d*|\\d*\\.?\\d+)(?:[eE][+\\-\\x20]?\\d+)?"); scrollIncrementZoomTextField.setMargin(fieldMargin); scrollIncrementZoomTextField.setMaximumSize(new Dimension(70, 100));
 		
-		Component col0 = new JPanel(); col0.setPreferredSize(new Dimension(columnWidths[0], 8)); col0.setSize(col0.getPreferredSize()); col0.setMaximumSize(col0.getPreferredSize()); col0.setMinimumSize(col0.getPreferredSize());
-		col0.setBackground(Color.red); panel.add(col0, new GridBagConstraints(0, 0, 1, 1, 1, 1, GridBagConstraints.BASELINE_LEADING, GridBagConstraints.NONE, new Insets(0, 0, 0, 0), 0, 0));
-		Component col1 = new JPanel(); col1.setPreferredSize(new Dimension(columnWidths[1], 8)); col1.setSize(col1.getPreferredSize()); col1.setMaximumSize(col1.getPreferredSize()); col1.setMinimumSize(col0.getPreferredSize());
-		col1.setBackground(Color.blue); panel.add(col1, new GridBagConstraints(1, 0, 1, 1, 1, 1, GridBagConstraints.BASELINE_LEADING, GridBagConstraints.NONE, new Insets(0, 0, 0, 0), 0, 0));
-		Component col2 = new JPanel(); col2.setPreferredSize(new Dimension(columnWidths[2], 8)); col2.setSize(col2.getPreferredSize()); col2.setMaximumSize(col2.getPreferredSize()); col2.setMinimumSize(col0.getPreferredSize());
-		col2.setBackground(Color.red); panel.add(col2, new GridBagConstraints(2, 0, 1, 1, 1, 1, GridBagConstraints.BASELINE_LEADING, GridBagConstraints.NONE, new Insets(0, 0, 0, 0), 0, 0));
-		
-		panel.add(new Header("Clicking:"), new GridBagConstraints(0, 1, 1, 1, 1, 1, GridBagConstraints.BASELINE_LEADING, GridBagConstraints.NONE, new Insets(10, 20, 10, 10), 0, 0));
-		
-		vertexClickMarginTextField = new ValidatingTextField(8, "-1|\\d+");
-		panel.add(new JLabel("Vertex click margin: "), new GridBagConstraints(1, 2, 1, 1, 1, 1, GridBagConstraints.BASELINE_LEADING, GridBagConstraints.NONE, new Insets(2, 2, 2, 7), 0, 0));
-		panel.add(vertexClickMarginTextField,          new GridBagConstraints(2, 2, 1, 1, 1, 1, GridBagConstraints.BASELINE_LEADING, GridBagConstraints.NONE, new Insets(2, 2, 2, 7), 0, 0));
-		
-		edgeHandleClickMarginTextField = new ValidatingTextField(8, "-1|\\d+");
-		panel.add(new JLabel("Edge handle click margin: "), new GridBagConstraints(1, 3, 1, 1, 1, 1, GridBagConstraints.BASELINE_LEADING, GridBagConstraints.NONE, new Insets(2, 2, 2, 7), 0, 0));
-		panel.add(edgeHandleClickMarginTextField,           new GridBagConstraints(2, 3, 1, 1, 1, 1, GridBagConstraints.BASELINE_LEADING, GridBagConstraints.NONE, new Insets(2, 2, 2, 7), 0, 0));
-		
-		captionHandleClickMarginTextField = new ValidatingTextField(8, "-1|\\d+");
-		panel.add(new JLabel("Caption handle click margin: "), new GridBagConstraints(1, 4, 1, 1, 1, 1, GridBagConstraints.BASELINE_LEADING, GridBagConstraints.NONE, new Insets(2, 2, 2, 7), 0, 0));
-		panel.add(captionHandleClickMarginTextField,           new GridBagConstraints(2, 4, 1, 1, 1, 1, GridBagConstraints.BASELINE_LEADING, GridBagConstraints.NONE, new Insets(2, 2, 2, 7), 0, 0));
-		
-		captionEditorClickMarginTextField = new ValidatingTextField(8, "-1|\\d+");
-		panel.add(new JLabel("Caption editor click margin: "), new GridBagConstraints(1, 5, 1, 1, 1, 1, GridBagConstraints.BASELINE_LEADING, GridBagConstraints.NONE, new Insets(2, 2, 2, 7), 0, 0));
-		panel.add(captionEditorClickMarginTextField,           new GridBagConstraints(2, 5, 1, 1, 1, 1, GridBagConstraints.BASELINE_LEADING, GridBagConstraints.NONE, new Insets(2, 2, 2, 7), 0, 0));
-		
-		panel.add(new Header("Zooming:"), new GridBagConstraints(0, 6, 1, 1, 1, 1, GridBagConstraints.BASELINE_LEADING, GridBagConstraints.NONE, new Insets(10, 20, 10, 10), 0, 0));
-		
-		zoomInFactorTextField = new ValidatingTextField(8, "-1|\\d+");
-		panel.add(new JLabel("Zoom in factor: "), new GridBagConstraints(1, 7, 1, 1, 1, 1, GridBagConstraints.BASELINE_LEADING, GridBagConstraints.NONE, new Insets(2, 2, 2, 7), 0, 0));
-		panel.add(zoomInFactorTextField,          new GridBagConstraints(2, 7, 1, 1, 1, 1, GridBagConstraints.BASELINE_LEADING, GridBagConstraints.NONE, new Insets(2, 2, 2, 7), 0, 0));
-		
-		zoomOutFactorTextField = new ValidatingTextField(8, "-1|\\d+");
-		panel.add(new JLabel("Zoom out factor: "), new GridBagConstraints(1, 8, 1, 1, 1, 1, GridBagConstraints.BASELINE_LEADING, GridBagConstraints.NONE, new Insets(2, 2, 2, 7), 0, 0));
-		panel.add(zoomOutFactorTextField,          new GridBagConstraints(2, 8, 1, 1, 1, 1, GridBagConstraints.BASELINE_LEADING, GridBagConstraints.NONE, new Insets(2, 2, 2, 7), 0, 0));
-		
-		maximumZoomFactorTextField = new ValidatingTextField(8, "-1|\\d+");
-		panel.add(new JLabel("Maximum zoom factor: "), new GridBagConstraints(1, 9, 1, 1, 1, 1, GridBagConstraints.BASELINE_LEADING, GridBagConstraints.NONE, new Insets(2, 2, 2, 7), 0, 0));
-		panel.add(maximumZoomFactorTextField,          new GridBagConstraints(2, 9, 1, 1, 1, 1, GridBagConstraints.BASELINE_LEADING, GridBagConstraints.NONE, new Insets(2, 2, 2, 7), 0, 0));
-		
-		zoomGraphPaddingTextField = new ValidatingTextField(8, "-1|\\d+");
-		panel.add(new JLabel("Zoom graph padding: "), new GridBagConstraints(1, 10, 1, 1, 1, 1, GridBagConstraints.BASELINE_LEADING, GridBagConstraints.NONE, new Insets(2, 2, 2, 7), 0, 0));
-		panel.add(zoomGraphPaddingTextField,          new GridBagConstraints(2, 10, 1, 1, 1, 1, GridBagConstraints.BASELINE_LEADING, GridBagConstraints.NONE, new Insets(2, 2, 2, 7), 0, 0));
-		
-		scrollIncrementZoomTextField = new ValidatingTextField(8, "-1|\\d+");
-		panel.add(new JLabel("Scroll zoom increment: "), new GridBagConstraints(1, 11, 1, 1, 1, 1, GridBagConstraints.BASELINE_LEADING, GridBagConstraints.NONE, new Insets(2, 2, 2, 7), 0, 0));
-		panel.add(scrollIncrementZoomTextField,          new GridBagConstraints(2, 11, 1, 1, 1, 1, GridBagConstraints.BASELINE_LEADING, GridBagConstraints.NONE, new Insets(2, 2, 2, 7), 0, 0));
-		
-		panel.add(new Header("Rendering:"), new GridBagConstraints(0, 12, 1, 1, 1, 1, GridBagConstraints.BASELINE_LEADING, GridBagConstraints.NONE, new Insets(10, 20, 10, 10), 0, 0));
-		
+		Header arrangingBehaviorHeader = new Header("Arranging behavior:");
+		FieldLabel arrangeCircleRadiusMultiplierLabel = new FieldLabel("Arrange circle radius multiplier:"); arrangeCircleRadiusMultiplierTextField = new ValidatingTextField(8, "(?:\\d+\\.?\\d*|\\d*\\.?\\d+)(?:[eE][+\\-\\x20]?\\d+)?"); arrangeCircleRadiusMultiplierTextField.setMargin(fieldMargin); arrangeCircleRadiusMultiplierTextField.setMaximumSize(new Dimension(70, 100));
+		FieldLabel arrangeGridSpacingLabel            = new FieldLabel("Arrange grid spacing:");             arrangeGridSpacingTextField            = new ValidatingTextField(8, "(?:\\d+\\.?\\d*|\\d*\\.?\\d+)(?:[eE][+\\-\\x20]?\\d+)?"); arrangeGridSpacingTextField           .setMargin(fieldMargin); arrangeGridSpacingTextField           .setMaximumSize(new Dimension(70, 100));
+		FieldLabel autoArrangeAttractiveForceLabel    = new FieldLabel("Auto-arrange attractive force:");    autoArrangeAttractiveForceTextField    = new ValidatingTextField(8, "(?:\\d+\\.?\\d*|\\d*\\.?\\d+)(?:[eE][+\\-\\x20]?\\d+)?"); autoArrangeAttractiveForceTextField   .setMargin(fieldMargin); autoArrangeAttractiveForceTextField   .setMaximumSize(new Dimension(70, 100));
+		FieldLabel autoArrangeRepulsiveForceLabel     = new FieldLabel("Auto-arrange repulsive force:");     autoArrangeRepulsiveForceTextField     = new ValidatingTextField(8, "-(?:\\d+\\.?\\d*|\\d*\\.?\\d+)(?:[eE][+\\-\\x20]?\\d+)?"); autoArrangeRepulsiveForceTextField    .setMargin(fieldMargin); autoArrangeRepulsiveForceTextField    .setMaximumSize(new Dimension(70, 100));
+		FieldLabel autoArrangeDecelerationFactorLabel = new FieldLabel("Auto-arrange deceleration factor:"); autoArrangeDecelerationFactorTextField = new ValidatingTextField(8, "(?:\\d+\\.?\\d*|\\d*\\.?\\d+)(?:[eE][+\\-\\x20]?\\d+)?"); autoArrangeDecelerationFactorTextField.setMargin(fieldMargin); autoArrangeDecelerationFactorTextField.setMaximumSize(new Dimension(70, 100));
+			
+		Header renderingSettingsHeader = new Header("Rendering settings:");
+		FieldLabel useAntiAliasingLabel = new FieldLabel("Use anti-aliasing:");
 		useAntiAliasingCheckBox = new JCheckBox();
 		useAntiAliasingCheckBox.setBackground(panel.getBackground());
-		useAntiAliasingCheckBox.setPreferredSize(new Dimension(32, useAntiAliasingCheckBox.getPreferredSize().height));
-		panel.add(new JLabel("Use anti-aliasing: "), new GridBagConstraints(1, 13, 1, 1, 1, 1, GridBagConstraints.BASELINE_LEADING, GridBagConstraints.NONE, new Insets(2, 2, 2, 7), 0, 0));
-		panel.add(useAntiAliasingCheckBox,           new GridBagConstraints(2, 13, 1, 1, 1, 1, GridBagConstraints.BASELINE_LEADING, GridBagConstraints.NONE, new Insets(0, 0, 0, 0), 0, 0));
-		
+		useAntiAliasingCheckBox.setMinimumSize(new Dimension(32, 26));
+		FieldLabel usePureStrokeLabel = new FieldLabel("Use pure stroke:");
 		usePureStrokeCheckBox = new JCheckBox();
 		usePureStrokeCheckBox.setBackground(panel.getBackground());
-		usePureStrokeCheckBox.setPreferredSize(new Dimension(32, usePureStrokeCheckBox.getPreferredSize().height));
-		panel.add(new JLabel("Use pure stroke: "), new GridBagConstraints(1, 14, 1, 1, 1, 1, GridBagConstraints.BASELINE_LEADING, GridBagConstraints.NONE, new Insets(2, 2, 2, 7), 0, 0));
-		panel.add(usePureStrokeCheckBox,           new GridBagConstraints(2, 14, 1, 1, 1, 1, GridBagConstraints.BASELINE_LEADING, GridBagConstraints.NONE, new Insets(0, 0, 0, 0), 0, 0));
-		
+		usePureStrokeCheckBox.setMinimumSize(new Dimension(32, 26));
+		FieldLabel useBicubicInterpolationLabel = new FieldLabel("Use bicubic interpolation:");
 		useBicubicInterpolationCheckBox = new JCheckBox();
 		useBicubicInterpolationCheckBox.setBackground(panel.getBackground());
-		useBicubicInterpolationCheckBox.setPreferredSize(new Dimension(32, useBicubicInterpolationCheckBox.getPreferredSize().height));
-		panel.add(new JLabel("Use bicubic interpolation: "), new GridBagConstraints(1, 15, 1, 1, 1, 1, GridBagConstraints.BASELINE_LEADING, GridBagConstraints.NONE, new Insets(2, 2, 2, 7), 0, 0));
-		panel.add(useBicubicInterpolationCheckBox,           new GridBagConstraints(2, 15, 1, 1, 1, 1, GridBagConstraints.BASELINE_LEADING, GridBagConstraints.NONE, new Insets(0, 0, 0, 0), 0, 0));
+		useBicubicInterpolationCheckBox.setMinimumSize(new Dimension(32, 26));
 		
-		panel.add(new Header("Arranging:"), new GridBagConstraints(0, 16, 1, 1, 1, 1, GridBagConstraints.BASELINE_LEADING, GridBagConstraints.NONE, new Insets(10, 20, 10, 10), 0, 0));
+		Header windowSettingsHeader = new Header("Window settings:");
+		FieldLabel mainWindowSizeLabel      = new FieldLabel("Main window size:");      mainWindowSizeTextField      = new ValidatingTextField(16, "\\d+\\s*,\\s*\\d+"); mainWindowSizeTextField     .setMargin(fieldMargin); mainWindowSizeTextField     .setMaximumSize(new Dimension(140, 100));
+		FieldLabel graphWindowSizeLabel     = new FieldLabel("Graph window size:");     graphWindowSizeTextField     = new ValidatingTextField(16, "\\d+\\s*,\\s*\\d+"); graphWindowSizeTextField    .setMargin(fieldMargin); graphWindowSizeTextField    .setMaximumSize(new Dimension(140, 100));
+		FieldLabel cascadeWindowOffsetLabel = new FieldLabel("Cascade window offset:"); cascadeWindowOffsetTextField = new ValidatingTextField(8, "\\d+");  cascadeWindowOffsetTextField.setMargin(fieldMargin); cascadeWindowOffsetTextField.setMaximumSize(new Dimension(70, 100));
+			
+		Header otherHeader = new Header("Other:");
+		FieldLabel defaultGraphNameLabel       = new FieldLabel("Default graph name:");        defaultGraphNameTextField       = new JTextField(20);             defaultGraphNameTextField      .setMargin(fieldMargin); defaultGraphNameTextField      .setMaximumSize(new Dimension(175, 100));
+		FieldLabel directedEdgeArrowRatioLabel = new FieldLabel("Directed edge arrow ratio:"); directedEdgeArrowRatioTextField = new ValidatingTextField(8, "(?:\\d+\\.?\\d*|\\d*\\.?\\d+)(?:[eE][+\\-\\x20]?\\d+)?"); directedEdgeArrowRatioTextField.setMargin(fieldMargin); directedEdgeArrowRatioTextField.setMaximumSize(new Dimension(70, 100));
+		FieldLabel arrowKeyIncrementLabel      = new FieldLabel("Arrow key increment:");       arrowKeyIncrementTextField      = new ValidatingTextField(8, "(?:\\d+\\.?\\d*|\\d*\\.?\\d+)(?:[eE][+\\-\\x20]?\\d+)?"); arrowKeyIncrementTextField     .setMargin(fieldMargin); arrowKeyIncrementTextField     .setMaximumSize(new Dimension(70, 100));
+		FieldLabel edgeSnapMarginRatioLabel    = new FieldLabel("Edge snap margin:");          edgeSnapMarginRatioTextField    = new ValidatingTextField(8, "(?:\\d+\\.?\\d*|\\d*\\.?\\d+)(?:[eE][+\\-\\x20]?\\d+)?"); edgeSnapMarginRatioTextField   .setMargin(fieldMargin); edgeSnapMarginRatioTextField   .setMaximumSize(new Dimension(70, 100));
+		FieldLabel areCloseDistanceLabel       = new FieldLabel("Are close distance:");        areCloseDistanceTextField       = new ValidatingTextField(8, "(?:\\d+\\.?\\d*|\\d*\\.?\\d+)(?:[eE][+\\-\\x20]?\\d+)?"); areCloseDistanceTextField      .setMargin(fieldMargin); areCloseDistanceTextField      .setMaximumSize(new Dimension(70, 100));
+		FieldLabel paintToolMenuDelayLabel     = new FieldLabel("Paint tool menu delay:");     paintToolMenuDelayTextField     = new ValidatingTextField(8, "\\d+"); paintToolMenuDelayTextField    .setMargin(fieldMargin); paintToolMenuDelayTextField    .setMaximumSize(new Dimension(70, 100));
 		
-		arrangeCircleRadiusMultiplierTextField = new ValidatingTextField(8, "-1|\\d+");
-		panel.add(new JLabel("Arrange circle radius multiplier: "), new GridBagConstraints(1, 17, 1, 1, 1, 1, GridBagConstraints.BASELINE_LEADING, GridBagConstraints.NONE, new Insets(2, 2, 2, 7), 0, 0));
-		panel.add(arrangeCircleRadiusMultiplierTextField,           new GridBagConstraints(2, 17, 1, 1, 1, 1, GridBagConstraints.BASELINE_LEADING, GridBagConstraints.NONE, new Insets(2, 2, 2, 7), 0, 0));
+		resetToDefaultsButton = new JButton("Reset to defaults");
+		resetToDefaultsButton.setMinimumSize(new Dimension(100, 28));
 		
-		arrangeGridSpacingTextField = new ValidatingTextField(8, "-1|\\d+");
-		panel.add(new JLabel("Arrange grid spacing: "), new GridBagConstraints(1, 18, 1, 1, 1, 1, GridBagConstraints.BASELINE_LEADING, GridBagConstraints.NONE, new Insets(2, 2, 2, 7), 0, 0));
-		panel.add(arrangeGridSpacingTextField,          new GridBagConstraints(2, 18, 1, 1, 1, 1, GridBagConstraints.BASELINE_LEADING, GridBagConstraints.NONE, new Insets(2, 2, 2, 7), 0, 0));
+		JPanel buttonPanel = new JPanel();
+		buttonPanel.setLayout(new BoxLayout(buttonPanel, BoxLayout.LINE_AXIS));
+		buttonPanel.setBorder(BorderFactory.createEmptyBorder(9, 0, 0, 13));
+		buttonPanel.setBackground(panel.getBackground());
+		buttonPanel.add(resetToDefaultsButton);
 		
-		autoArrangeAttractiveForceTextField = new ValidatingTextField(8, "-1|\\d+");
-		panel.add(new JLabel("Auto-arrange attractive force: "), new GridBagConstraints(1, 19, 1, 1, 1, 1, GridBagConstraints.BASELINE_LEADING, GridBagConstraints.NONE, new Insets(2, 2, 2, 7), 0, 0));
-		panel.add(autoArrangeAttractiveForceTextField,           new GridBagConstraints(2, 19, 1, 1, 1, 1, GridBagConstraints.BASELINE_LEADING, GridBagConstraints.NONE, new Insets(2, 2, 2, 7), 0, 0));
+		Component col0Padding = Box.createRigidArea(new Dimension(columnWidths[0], 7));
+		Component col1Padding = Box.createRigidArea(new Dimension(columnWidths[1], 7));
+		Component col2Padding = Box.createRigidArea(new Dimension(columnWidths[2], 7));
 		
-		autoArrangeRepulsiveForceTextField = new ValidatingTextField(8, "-1|\\d+");
-		panel.add(new JLabel("Auto-arrange repulsive force: "), new GridBagConstraints(1, 20, 1, 1, 1, 1, GridBagConstraints.BASELINE_LEADING, GridBagConstraints.NONE, new Insets(2, 2, 2, 7), 0, 0));
-		panel.add(autoArrangeRepulsiveForceTextField,           new GridBagConstraints(2, 20, 1, 1, 1, 1, GridBagConstraints.BASELINE_LEADING, GridBagConstraints.NONE, new Insets(2, 2, 2, 7), 0, 0));
+		GroupLayout layout = new GroupLayout(panel);
+		panel.setLayout(layout);
 		
-		autoArrangeDecelerationFactorTextField = new ValidatingTextField(8, "-1|\\d+");
-		panel.add(new JLabel("Auto-arrange deceleration factor: "), new GridBagConstraints(1, 21, 1, 1, 1, 1, GridBagConstraints.BASELINE_LEADING, GridBagConstraints.NONE, new Insets(2, 2, 2, 7), 0, 0));
-		panel.add(autoArrangeDecelerationFactorTextField,           new GridBagConstraints(2, 21, 1, 1, 1, 1, GridBagConstraints.BASELINE_LEADING, GridBagConstraints.NONE, new Insets(2, 2, 2, 7), 0, 0));
+		layout.setAutoCreateGaps(true);
+		layout.setAutoCreateContainerGaps(true);
+
+		layout.setHorizontalGroup(
+			layout.createSequentialGroup()
+				.addGroup(layout.createParallelGroup(GroupLayout.Alignment.LEADING)
+					.addComponent(clickingBehaviorHeader)
+					.addComponent(zoomingBehaviorHeader)
+					.addComponent(arrangingBehaviorHeader)
+					.addComponent(renderingSettingsHeader)
+					.addComponent(windowSettingsHeader)
+					.addComponent(otherHeader)
+					.addComponent(col0Padding))
+				.addGroup(layout.createParallelGroup(GroupLayout.Alignment.LEADING)
+					.addComponent(vertexClickMarginLabel)
+					.addComponent(edgeHandleClickMarginLabel)
+					.addComponent(captionHandleClickMarginLabel)
+					.addComponent(captionEditorClickMarginLabel)
+					.addComponent(zoomInFactorLabel)
+					.addComponent(zoomOutFactorLabel)
+					.addComponent(maximumZoomFactorLabel)
+					.addComponent(zoomGraphPaddingLabel)
+					.addComponent(scrollZoomIncrementLabel)
+					.addComponent(arrangeCircleRadiusMultiplierLabel)
+					.addComponent(arrangeGridSpacingLabel)
+					.addComponent(autoArrangeAttractiveForceLabel)
+					.addComponent(autoArrangeRepulsiveForceLabel)
+					.addComponent(autoArrangeDecelerationFactorLabel)
+					.addComponent(useAntiAliasingLabel)
+					.addComponent(usePureStrokeLabel)
+					.addComponent(useBicubicInterpolationLabel)
+					.addComponent(mainWindowSizeLabel)
+					.addComponent(graphWindowSizeLabel)
+					.addComponent(cascadeWindowOffsetLabel)
+					.addComponent(defaultGraphNameLabel)
+					.addComponent(directedEdgeArrowRatioLabel)
+					.addComponent(arrowKeyIncrementLabel)
+					.addComponent(edgeSnapMarginRatioLabel)
+					.addComponent(areCloseDistanceLabel)
+					.addComponent(paintToolMenuDelayLabel)
+					.addComponent(col1Padding))
+				.addGroup(layout.createParallelGroup(GroupLayout.Alignment.LEADING)
+					.addComponent(vertexClickMarginTextField)
+					.addComponent(edgeHandleClickMarginTextField)
+					.addComponent(captionHandleClickMarginTextField)
+					.addComponent(captionEditorClickMarginTextField)
+					.addComponent(zoomInFactorTextField)
+					.addComponent(zoomOutFactorTextField)
+					.addComponent(maximumZoomFactorTextField)
+					.addComponent(zoomGraphPaddingTextField)
+					.addComponent(scrollIncrementZoomTextField)
+					.addComponent(arrangeCircleRadiusMultiplierTextField)
+					.addComponent(arrangeGridSpacingTextField)
+					.addComponent(autoArrangeAttractiveForceTextField)
+					.addComponent(autoArrangeRepulsiveForceTextField)
+					.addComponent(autoArrangeDecelerationFactorTextField)
+					.addComponent(useAntiAliasingCheckBox)
+					.addComponent(usePureStrokeCheckBox)
+					.addComponent(useBicubicInterpolationCheckBox)
+					.addComponent(mainWindowSizeTextField)
+					.addComponent(graphWindowSizeTextField)
+					.addComponent(cascadeWindowOffsetTextField)
+					.addComponent(defaultGraphNameTextField)
+					.addComponent(directedEdgeArrowRatioTextField)
+					.addComponent(arrowKeyIncrementTextField)
+					.addComponent(edgeSnapMarginRatioTextField)
+					.addComponent(areCloseDistanceTextField)
+					.addComponent(paintToolMenuDelayTextField)
+					.addComponent(buttonPanel)
+					.addComponent(col2Padding)));
 		
-		panel.add(new Header("Windows:"), new GridBagConstraints(0, 22, 1, 1, 1, 1, GridBagConstraints.BASELINE_LEADING, GridBagConstraints.NONE, new Insets(10, 20, 10, 10), 0, 0));
+		layout.setVerticalGroup(
+			layout.createSequentialGroup()
+			 	.addComponent(clickingBehaviorHeader)
+				.addGroup(layout.createParallelGroup(GroupLayout.Alignment.CENTER).addComponent(vertexClickMarginLabel).addComponent(vertexClickMarginTextField))
+				.addGroup(layout.createParallelGroup(GroupLayout.Alignment.CENTER).addComponent(edgeHandleClickMarginLabel).addComponent(edgeHandleClickMarginTextField))
+				.addGroup(layout.createParallelGroup(GroupLayout.Alignment.CENTER).addComponent(captionHandleClickMarginLabel).addComponent(captionHandleClickMarginTextField))
+				.addGroup(layout.createParallelGroup(GroupLayout.Alignment.CENTER).addComponent(captionEditorClickMarginLabel).addComponent(captionEditorClickMarginTextField))
+				.addComponent(zoomingBehaviorHeader)
+				.addGroup(layout.createParallelGroup(GroupLayout.Alignment.CENTER).addComponent(zoomInFactorLabel).addComponent(zoomInFactorTextField))
+				.addGroup(layout.createParallelGroup(GroupLayout.Alignment.CENTER).addComponent(zoomOutFactorLabel).addComponent(zoomOutFactorTextField))
+				.addGroup(layout.createParallelGroup(GroupLayout.Alignment.CENTER).addComponent(maximumZoomFactorLabel).addComponent(maximumZoomFactorTextField))
+				.addGroup(layout.createParallelGroup(GroupLayout.Alignment.CENTER).addComponent(zoomGraphPaddingLabel).addComponent(zoomGraphPaddingTextField))
+				.addGroup(layout.createParallelGroup(GroupLayout.Alignment.CENTER).addComponent(scrollZoomIncrementLabel).addComponent(scrollIncrementZoomTextField))
+				.addComponent(arrangingBehaviorHeader)
+				.addGroup(layout.createParallelGroup(GroupLayout.Alignment.CENTER).addComponent(arrangeCircleRadiusMultiplierLabel).addComponent(arrangeCircleRadiusMultiplierTextField))
+				.addGroup(layout.createParallelGroup(GroupLayout.Alignment.CENTER).addComponent(arrangeGridSpacingLabel).addComponent(arrangeGridSpacingTextField))
+				.addGroup(layout.createParallelGroup(GroupLayout.Alignment.CENTER).addComponent(autoArrangeAttractiveForceLabel).addComponent(autoArrangeAttractiveForceTextField))
+				.addGroup(layout.createParallelGroup(GroupLayout.Alignment.CENTER).addComponent(autoArrangeRepulsiveForceLabel).addComponent(autoArrangeRepulsiveForceTextField))
+				.addGroup(layout.createParallelGroup(GroupLayout.Alignment.CENTER).addComponent(autoArrangeDecelerationFactorLabel).addComponent(autoArrangeDecelerationFactorTextField))
+				.addComponent(renderingSettingsHeader)
+				.addGroup(layout.createParallelGroup(GroupLayout.Alignment.CENTER).addComponent(useAntiAliasingLabel).addComponent(useAntiAliasingCheckBox))
+				.addGroup(layout.createParallelGroup(GroupLayout.Alignment.CENTER).addComponent(usePureStrokeLabel).addComponent(usePureStrokeCheckBox))
+				.addGroup(layout.createParallelGroup(GroupLayout.Alignment.CENTER).addComponent(useBicubicInterpolationLabel).addComponent(useBicubicInterpolationCheckBox))
+				.addComponent(windowSettingsHeader)
+				.addGroup(layout.createParallelGroup(GroupLayout.Alignment.CENTER).addComponent(mainWindowSizeLabel).addComponent(mainWindowSizeTextField))
+				.addGroup(layout.createParallelGroup(GroupLayout.Alignment.CENTER).addComponent(graphWindowSizeLabel).addComponent(graphWindowSizeTextField))
+				.addGroup(layout.createParallelGroup(GroupLayout.Alignment.CENTER).addComponent(cascadeWindowOffsetLabel).addComponent(cascadeWindowOffsetTextField))
+				.addComponent(otherHeader)
+				.addGroup(layout.createParallelGroup(GroupLayout.Alignment.CENTER).addComponent(defaultGraphNameLabel).addComponent(defaultGraphNameTextField))
+				.addGroup(layout.createParallelGroup(GroupLayout.Alignment.CENTER).addComponent(directedEdgeArrowRatioLabel).addComponent(directedEdgeArrowRatioTextField))
+				.addGroup(layout.createParallelGroup(GroupLayout.Alignment.CENTER).addComponent(arrowKeyIncrementLabel).addComponent(arrowKeyIncrementTextField))
+				.addGroup(layout.createParallelGroup(GroupLayout.Alignment.CENTER).addComponent(edgeSnapMarginRatioLabel).addComponent(edgeSnapMarginRatioTextField))
+				.addGroup(layout.createParallelGroup(GroupLayout.Alignment.CENTER).addComponent(areCloseDistanceLabel).addComponent(areCloseDistanceTextField))
+				.addGroup(layout.createParallelGroup(GroupLayout.Alignment.CENTER).addComponent(paintToolMenuDelayLabel).addComponent(paintToolMenuDelayTextField))
+				.addComponent(buttonPanel)
+				.addGroup(layout.createParallelGroup(GroupLayout.Alignment.CENTER).addComponent(col0Padding).addComponent(col1Padding).addComponent(col2Padding)));
 		
-		mainWindowSizeTextField = new ValidatingTextField(16, "-1|\\d+");
-		panel.add(new JLabel("Main window size: "), new GridBagConstraints(1, 23, 1, 1, 1, 1, GridBagConstraints.BASELINE_LEADING, GridBagConstraints.NONE, new Insets(2, 2, 2, 7), 0, 0));
-		panel.add(mainWindowSizeTextField,          new GridBagConstraints(2, 23, 1, 1, 1, 1, GridBagConstraints.BASELINE_LEADING, GridBagConstraints.NONE, new Insets(2, 2, 2, 7), 0, 0));
-		
-		graphWindowSizeTextField = new ValidatingTextField(16, "-1|\\d+");
-		panel.add(new JLabel("Graph window size: "), new GridBagConstraints(1, 24, 1, 1, 1, 1, GridBagConstraints.BASELINE_LEADING, GridBagConstraints.NONE, new Insets(2, 2, 2, 7), 0, 0));
-		panel.add(graphWindowSizeTextField,          new GridBagConstraints(2, 24, 1, 1, 1, 1, GridBagConstraints.BASELINE_LEADING, GridBagConstraints.NONE, new Insets(2, 2, 2, 7), 0, 0));
-		
-		cascadeWindowOffsetTextField = new ValidatingTextField(8, "-1|\\d+");
-		panel.add(new JLabel("Cascade window offset: "), new GridBagConstraints(1, 25, 1, 1, 1, 1, GridBagConstraints.BASELINE_LEADING, GridBagConstraints.NONE, new Insets(2, 2, 2, 7), 0, 0));
-		panel.add(cascadeWindowOffsetTextField,          new GridBagConstraints(2, 25, 1, 1, 1, 1, GridBagConstraints.BASELINE_LEADING, GridBagConstraints.NONE, new Insets(2, 2, 2, 7), 0, 0));
-		
-		panel.add(new Header("Other:"), new GridBagConstraints(0, 26, 1, 1, 1, 1, GridBagConstraints.BASELINE_LEADING, GridBagConstraints.NONE, new Insets(10, 20, 10, 10), 0, 0));
-		
-		defaultGraphNameTextField = new JTextField(20);
-		panel.add(new JLabel("Default graph name: "), new GridBagConstraints(1, 27, 1, 1, 1, 1, GridBagConstraints.BASELINE_LEADING, GridBagConstraints.NONE, new Insets(2, 2, 2, 7), 0, 0));
-		panel.add(defaultGraphNameTextField,          new GridBagConstraints(2, 27, 1, 1, 1, 1, GridBagConstraints.BASELINE_LEADING, GridBagConstraints.NONE, new Insets(2, 2, 2, 7), 0, 0));
-		
-		directedEdgeArrowRatioTextField = new ValidatingTextField(8, "-1|\\d+");
-		panel.add(new JLabel("Directed edge arrow ratio: "), new GridBagConstraints(1, 28, 1, 1, 1, 1, GridBagConstraints.BASELINE_LEADING, GridBagConstraints.NONE, new Insets(2, 2, 2, 7), 0, 0));
-		panel.add(directedEdgeArrowRatioTextField,           new GridBagConstraints(2, 28, 1, 1, 1, 1, GridBagConstraints.BASELINE_LEADING, GridBagConstraints.NONE, new Insets(2, 2, 2, 7), 0, 0));
-		
-		arrowKeyIncrementTextField = new ValidatingTextField(8, "-1|\\d+");
-		panel.add(new JLabel("Arrow key increment: "), new GridBagConstraints(1, 29, 1, 1, 1, 1, GridBagConstraints.BASELINE_LEADING, GridBagConstraints.NONE, new Insets(2, 2, 2, 7), 0, 0));
-		panel.add(arrowKeyIncrementTextField,          new GridBagConstraints(2, 29, 1, 1, 1, 1, GridBagConstraints.BASELINE_LEADING, GridBagConstraints.NONE, new Insets(2, 2, 2, 7), 0, 0));
-		
-		edgeSnapMarginRatioTextField = new ValidatingTextField(8, "-1|\\d+");
-		panel.add(new JLabel("Edge snap margin ratio: "), new GridBagConstraints(1, 30, 1, 1, 1, 1, GridBagConstraints.BASELINE_LEADING, GridBagConstraints.NONE, new Insets(2, 2, 2, 7), 0, 0));
-		panel.add(edgeSnapMarginRatioTextField,           new GridBagConstraints(2, 30, 1, 1, 1, 1, GridBagConstraints.BASELINE_LEADING, GridBagConstraints.NONE, new Insets(2, 2, 2, 7), 0, 0));
-		
-		areCloseDistanceTextField = new ValidatingTextField(8, "-1|\\d+");
-		panel.add(new JLabel("Are close distance: "), new GridBagConstraints(1, 31, 1, 1, 1, 1, GridBagConstraints.BASELINE_LEADING, GridBagConstraints.NONE, new Insets(2, 2, 2, 7), 0, 0));
-		panel.add(areCloseDistanceTextField,          new GridBagConstraints(2, 31, 1, 1, 1, 1, GridBagConstraints.BASELINE_LEADING, GridBagConstraints.NONE, new Insets(2, 2, 2, 7), 0, 0));
-		
-		paintToolMenuDelayTextField = new ValidatingTextField(8, "-1|\\d+");
-		panel.add(new JLabel("Paint tool menu delay: "), new GridBagConstraints(1, 32, 1, 1, 1, 1, GridBagConstraints.BASELINE_LEADING, GridBagConstraints.NONE, new Insets(2, 2, 2, 7), 0, 0));
-		panel.add(paintToolMenuDelayTextField,           new GridBagConstraints(2, 32, 1, 1, 1, 1, GridBagConstraints.BASELINE_LEADING, GridBagConstraints.NONE, new Insets(2, 2, 2, 7), 0, 0));
-		
-		panel.add(Box.createRigidArea(new Dimension(1, 13)), new GridBagConstraints(0, 33, 1, 1, 1, 1, GridBagConstraints.BASELINE_LEADING, GridBagConstraints.NONE, new Insets(2, 2, 2, 7), 0, 0));
+		JScrollPane scrollPane = new JScrollPane(panel, JScrollPane.VERTICAL_SCROLLBAR_ALWAYS, JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+		scrollPane.setBorder(null);
 		
 		return scrollPane;
 	}
@@ -708,6 +799,7 @@ public class PreferencesDialog extends JDialog implements ActionListener
 		
 		PreferencesDialog.dialog.setVisible(false);
 	}
+	
 
 	private class Header extends JLabel
 	{
@@ -715,6 +807,17 @@ public class PreferencesDialog extends JDialog implements ActionListener
 		{
 			Font font = super.getFont();
 			super.setFont(new Font(font.getFontName(), Font.BOLD, font.getSize()));
+			super.setMinimumSize(new Dimension(100, 32));
+			super.setBorder(BorderFactory.createEmptyBorder(0, 9, 0, 0));
+			super.setText(label);
+		}
+	}
+	
+	private class FieldLabel extends JLabel
+	{
+		public FieldLabel(String label)
+		{
+			super.setMinimumSize(new Dimension(super.getMinimumSize().width, 20));
 			super.setText(label);
 		}
 	}
