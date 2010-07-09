@@ -8,8 +8,7 @@ import java.awt.geom.*;
 import java.util.*;
 
 import edu.belmont.mth.visigraph.models.*;
-import edu.belmont.mth.visigraph.settings.GlobalSettings;
-import edu.belmont.mth.visigraph.utilities.GeometryUtilities;
+import edu.belmont.mth.visigraph.utilities.*;
 
 /**
  * @author Cameron Behar
@@ -45,11 +44,11 @@ public class CountCrossingsFunction extends FunctionBase
 		
 		if(g2D != null)
 		{
-			g2D.setColor(GlobalSettings.defaultCrossingDisplayColor);
+			g2D.setColor(Color.red);
 		
 			for(CrossingMarker crossing : crossingMarkers)
 			{
-				double markerRadii = crossing.getThickness() * GlobalSettings.defaultCrossingRadiusRatio;
+				double markerRadii = crossing.getThickness() * 1.5;
 				for(Point2D location : crossing.getLocations())
 					g2D.fill(new Ellipse2D.Double(location.getX() - markerRadii, location.getY() - markerRadii, 2.0 * markerRadii, 2.0 * markerRadii));
 			}

@@ -16,7 +16,6 @@ import edu.belmont.mth.visigraph.views.*;
 public class Palette extends ObservableBase
 {
 	public final Property<Color>	graphBackground;
-	public final Property<Color>	graphText;
 	public final Property<Color>	graphSelectionBoxFill;
 	public final Property<Color>	graphSelectionBoxLine;
 	
@@ -40,7 +39,6 @@ public class Palette extends ObservableBase
 	public         Palette()
 	{
 		graphBackground        = new Property<Color>(GlobalSettings.defaultGraphBackgroundDisplayColor, "graphBackground");
-		graphText              = new Property<Color>(GlobalSettings.defaultGraphTextDisplayColor, "graphText");
 		graphSelectionBoxFill  = new Property<Color>(GlobalSettings.defaultGraphSelectionBoxFillDisplayColor, "graphSelectionBoxFill");
 		graphSelectionBoxLine  = new Property<Color>(GlobalSettings.defaultGraphSelectionBoxLineDisplayColor, "graphSelectionBoxLine");
 		
@@ -73,7 +71,6 @@ public class Palette extends ObservableBase
 	public         Palette(Palette p)
 	{
 		graphBackground        = new Property<Color>(p.graphBackground.       get(), "graphBackground"       );
-		graphText              = new Property<Color>(p.graphText.             get(), "graphText"             );
 		graphSelectionBoxFill  = new Property<Color>(p.graphSelectionBoxFill. get(), "graphSelectionBoxFill" );
 		graphSelectionBoxLine  = new Property<Color>(p.graphSelectionBoxLine. get(), "graphSelectionBoxLine" );
 		
@@ -144,7 +141,6 @@ public class Palette extends ObservableBase
 		HashMap<String, Object> members = new HashMap<String, Object>();
 		
 		members.put("graphBackground",        graphBackground       );
-		members.put("graphText",              graphText             );
 		members.put("graphSelectionBoxFill",  graphSelectionBoxFill );
 		members.put("graphSelectionBoxLine",  graphSelectionBoxLine );
 		members.put("vertexLine",             vertexLine            );

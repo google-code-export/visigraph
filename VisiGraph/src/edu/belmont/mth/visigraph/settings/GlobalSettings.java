@@ -4,7 +4,6 @@
 package edu.belmont.mth.visigraph.settings;
 
 import java.awt.*;
-import java.awt.geom.*;
 import edu.belmont.mth.visigraph.models.functions.*;
 import edu.belmont.mth.visigraph.models.generators.*;
 
@@ -18,7 +17,6 @@ public class GlobalSettings
 	public static final String					 applicationName							= "VisiGraph";
 	
 	public static final Color					 defaultGraphBackgroundDisplayColor			= new Color(250, 250, 250);
-	public static final Color					 defaultGraphTextDisplayColor				= Color.black;
 	public static final Color					 defaultGraphSelectionBoxFillDisplayColor	= new Color(150, 150, 255, 100);
 	public static final Color					 defaultGraphSelectionBoxLineDisplayColor	= new Color(150, 150, 255, 200);
 	
@@ -39,14 +37,10 @@ public class GlobalSettings
 	public static final Color					 defaultCaptionTextDisplayColor				= Color.black;
 	public static final Color					 defaultSelectedCaptionTextDisplayColor		= new Color(0, 0, 150);
 	
-	public static final Color					 defaultCrossingDisplayColor				= Color.red;
-	public static final double					 defaultCrossingRadiusRatio					= 1.5;
-	
 	// Initialized with black, gray, and 6 colors--past 6 hues with no saturation or brightness difference, some of the colors become difficult to distinguish.
 	public static final Color[]					 defaultElementDisplayColors				= new Color[] { new Color(193, 193, 193), new Color(185, 122, 27), Color.getHSBColor(0, .95f, .95f), Color.getHSBColor(1/6f, .95f, .95f), Color.getHSBColor(2/6f, .95f, .95f), Color.getHSBColor(3/6f, .95f, .95f), Color.getHSBColor(4/6f, .95f, .95f), Color.getHSBColor(5/6f, .95f, .95f) };
 	public static final Color					 defaultElementDisplayColor					= Color.black;
 	
-	public static final boolean					 defaultShowCrossings						= false;
 	public static final boolean					 defaultShowEdgeHandles						= true;
 	public static final boolean					 defaultShowEdgeWeights						= false;
 	public static final boolean					 defaultShowEdgeLabels						= false;
@@ -68,7 +62,6 @@ public class GlobalSettings
 	public static final double					 defaultEdgeHandleRadiusRatio				= 1.5;
 	public static final double					 defaultEdgeHandleClickMargin				= 2.5;
 	
-	public static final Point2D					 defaultVertexLocation						= new Point2D.Double(0.0, 0.0);
 	public static final double					 defaultVertexWeight						= 1.0;
 	public static final int						 defaultVertexColor							= -1;
 	public static final String					 defaultVertexPrefix						= "v";
@@ -81,7 +74,6 @@ public class GlobalSettings
 	public static final double					 defaultCaptionHandleClickMargin			= 2.5;
 	public static final double					 defaultCaptionEditorClickMargin			= 2.5;
 	
-	public static final double					 snapGridSize								= 50.0;
 	public static final double					 edgeSnapToLineMarginRatio					= 0.05;
 	public static final double					 areCloseDistance							= 0.01;
 	

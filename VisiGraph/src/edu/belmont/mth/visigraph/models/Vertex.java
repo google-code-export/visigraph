@@ -25,7 +25,7 @@ public class Vertex extends ObservableBase
 	
 	public Vertex(int id)
 	{
-		this(id, GlobalSettings.defaultVertexLocation.getX(), GlobalSettings.defaultVertexLocation.getY());
+		this(id, 0.0, 0.0);
 	}
 	
 	public Vertex(int id, double x, double y)
