@@ -14,7 +14,7 @@ import javax.swing.event.*;
 @SuppressWarnings("serial")
 public class ValidatingTextField extends JTextField
 {	
-	public final String validatingExpression;
+	public String validatingExpression;
 	
 	private final Color successColor;
 	private final Color failColor;
@@ -54,5 +54,11 @@ public class ValidatingTextField extends JTextField
 	public String getValidatingExpression()
 	{
 		return validatingExpression;
+	}
+	
+	public void setValidatingExpression(String validatingExpression)
+	{
+		this.validatingExpression = validatingExpression;
+		validate();
 	}
 }
