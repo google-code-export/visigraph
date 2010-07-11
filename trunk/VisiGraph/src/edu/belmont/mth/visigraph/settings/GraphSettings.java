@@ -47,6 +47,7 @@ public class GraphSettings extends ObservableBase
 		showCaptionEditors = new Property<Boolean>(graphSettings.showCaptionEditors.get(), "showCaptionEdits");
 	}
 
+	@Override
 	public String toString()
 	{
 		HashMap<String, Object> members = new HashMap<String, Object>();

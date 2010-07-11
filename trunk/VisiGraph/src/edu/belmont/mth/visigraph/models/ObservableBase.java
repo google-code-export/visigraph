@@ -21,6 +21,7 @@ public abstract class ObservableBase
 			this.name = name;
 			valueObserver = new ObserverBase()
 			{
+				@Override
 				public void hasChanged(Object source)
 				{
 					notifyObservers(source);

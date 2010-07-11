@@ -12,6 +12,7 @@ import edu.belmont.mth.visigraph.models.*;
  */
 public class CountVertexesFunction extends FunctionBase
 {
+	@Override
 	public Object evaluate(Graphics2D g2D, Graph g)
 	{
 		int selectedVertexCount = 0;
@@ -23,6 +24,7 @@ public class CountVertexesFunction extends FunctionBase
 		return (selectedVertexCount > 0 ? selectedVertexCount : g.vertexes.size());
 	}
 
+	@Override
 	public String getDescription()
 	{
 		return "Count vertices";

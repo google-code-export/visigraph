@@ -49,6 +49,7 @@ public class Caption extends ObservableBase
 		this(JsonUtilities.parseObject(json));
 	}
 
+	@Override
 	public String toString()
 	{
 		HashMap<String, Object> members = new HashMap<String, Object>();

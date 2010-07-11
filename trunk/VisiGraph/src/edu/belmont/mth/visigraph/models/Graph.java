@@ -46,6 +46,7 @@ public class Graph extends ObservableBase
 		this.notificationsSuspended = false;
 		this.vertexListObserver     = new ObserverBase()
 		{
+			@Override
 			public void hasChanged(Object source)
 			{
 				if (edges != null)
@@ -56,6 +57,7 @@ public class Graph extends ObservableBase
 		};
 		this.edgeListObserver       = new ObserverBase()
 		{
+			@Override
 			public void hasChanged(Object source)
 			{
 				if (!notificationsSuspended)
@@ -64,6 +66,7 @@ public class Graph extends ObservableBase
 		};
 		this.captionListObserver    = new ObserverBase()
 		{
+			@Override
 			public void hasChanged(Object source)
 			{
 				if (!notificationsSuspended)
@@ -96,6 +99,7 @@ public class Graph extends ObservableBase
 		this.notificationsSuspended = false;
 		this.vertexListObserver     = new ObserverBase()
 		{
+			@Override
 			public void hasChanged(Object source)
 			{
 				if (edges != null)
@@ -106,6 +110,7 @@ public class Graph extends ObservableBase
 		};
 		this.edgeListObserver       = new ObserverBase()
 		{
+			@Override
 			public void hasChanged(Object source)
 			{
 				if (!notificationsSuspended)
@@ -114,6 +119,7 @@ public class Graph extends ObservableBase
 		};
 		this.captionListObserver    = new ObserverBase()
 		{
+			@Override
 			public void hasChanged(Object source)
 			{
 				if (!notificationsSuspended)
@@ -331,6 +337,7 @@ public class Graph extends ObservableBase
 		return ret;
 	}
 	
+	@Override
 	public String toString()
 	{
 		HashMap<String, Object> members = new HashMap<String, Object>();

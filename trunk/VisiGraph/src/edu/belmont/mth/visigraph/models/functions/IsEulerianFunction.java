@@ -12,6 +12,7 @@ import edu.belmont.mth.visigraph.models.*;
  */
 public class IsEulerianFunction extends FunctionBase
 {
+	@Override
 	public Object evaluate(Graphics2D g2D, Graph g)
 	{
 		for(Vertex vertex : g.vertexes)
@@ -21,6 +22,7 @@ public class IsEulerianFunction extends FunctionBase
 		return (new IsConnectedFunction()).evaluate(g2D, g);
 	}
 
+	@Override
 	public String getDescription()
 	{
 		return "Is Eulerian";

@@ -82,6 +82,7 @@ public class Vertex extends ObservableBase
 		return new Point2D.Double(x.get(), y.get());
 	}
 
+	@Override
 	public String toString()
 	{
 		HashMap<String, Object> members = new HashMap<String, Object>();

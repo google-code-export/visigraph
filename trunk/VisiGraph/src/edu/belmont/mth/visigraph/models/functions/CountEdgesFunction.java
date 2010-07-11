@@ -12,6 +12,7 @@ import edu.belmont.mth.visigraph.models.*;
  */
 public class CountEdgesFunction extends FunctionBase
 {
+	@Override
 	public Object evaluate(Graphics2D g2D, Graph g)
 	{
 		int selectedEdgeCount = 0;
@@ -23,6 +24,7 @@ public class CountEdgesFunction extends FunctionBase
 		return (selectedEdgeCount > 0 ? selectedEdgeCount : g.edges.size());
 	}
 
+	@Override
 	public String getDescription()
 	{
 		return "Count edges";
