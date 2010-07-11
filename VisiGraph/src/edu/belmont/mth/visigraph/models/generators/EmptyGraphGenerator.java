@@ -6,7 +6,6 @@ package edu.belmont.mth.visigraph.models.generators;
 import java.awt.geom.*;
 import edu.belmont.mth.visigraph.models.*;
 import edu.belmont.mth.visigraph.settings.*;
-import edu.belmont.mth.visigraph.utilities.*;
 
 /**
  * @author Cameron Behar
@@ -42,15 +41,9 @@ public class EmptyGraphGenerator extends GraphGeneratorBase
 		return "[order (optional)]";
 	}
 	
-	public void validateParameters(String args)
+	public String getParametersValidatingExpression()
 	{
-		String[] params = args.split("\\s+");
-		
-		if(params.length > 1)
-			throw new IllegalArgumentException();
-		
-		if(params.length > 0 && (!params[0].trim().isEmpty() && !RegexUtilities.isPositiveInteger(params[0])))
-			throw new IllegalArgumentException();
+		return "^\\s*(\\d+)?\\s*$";
 	}
 	
 	public BooleanRule areLoopsAllowed()

@@ -23,7 +23,7 @@ public abstract class GraphGeneratorBase
 	
 	public abstract String      getParametersDescription();
 	
-	public abstract void        validateParameters(String args);
+	public abstract String		getParametersValidatingExpression();
 	
 	public abstract String      getDescription();
 	

@@ -5,7 +5,6 @@ package edu.belmont.mth.visigraph.models.generators;
 
 import edu.belmont.mth.visigraph.models.*;
 import edu.belmont.mth.visigraph.settings.*;
-import edu.belmont.mth.visigraph.utilities.*;
 
 /**
  * @author Cameron Behar
@@ -44,21 +43,9 @@ public class CompleteBipartiteGraphGenerator extends GraphGeneratorBase
 		return "[order of set A] [order of set B]";
 	}
 	
-	public void validateParameters(String args)
+	public String getParametersValidatingExpression()
 	{
-		if(args.trim().isEmpty())
-			throw new IllegalArgumentException();
-		
-		String[] params = args.split("\\s+");
-		
-		if(params.length != 2)
-			throw new IllegalArgumentException();
-		
-		if(!RegexUtilities.isPositiveInteger(params[0]))
-			throw new IllegalArgumentException();
-		
-		if(!RegexUtilities.isPositiveInteger(params[1]))
-			throw new IllegalArgumentException();
+		return "^\\s*(\\d+),?\\s*(\\d+)\\s*$";
 	}
 	
 	public BooleanRule areLoopsAllowed()

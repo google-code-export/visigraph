@@ -20,11 +20,13 @@ public class NewGraphDialog extends JDialog implements ActionListener
 	private static NewGraphDialog		dialog;
 	private static JComboBox			functionComboBox;
 	private static JLabel				functionParametersLabel;
-	private static JTextField			functionParametersField;
+	private static ValidatingTextField	generatorParametersField;
 	private static JCheckBox			allowLoopsCheckBox;
 	private static JCheckBox			allowDirectedEdgesCheckBox;
 	private static JCheckBox			allowMultipleEdgesCheckBox;
 	private static JCheckBox			allowCyclesCheckBox;
+	private static JButton				okButton;
+	private static JButton				cancelButton;
 	private static Graph				value;
 	
 	public static Graph showDialog(Component frameComp, Component locationComp)
@@ -58,7 +60,7 @@ public class NewGraphDialog extends JDialog implements ActionListener
 		{
 			public void itemStateChanged(ItemEvent arg0)
 			{
-				functionChanged(arg0.getItem());
+				generatorChanged(arg0.getItem());
 			}
 		});
 		gridBagConstraints.fill = GridBagConstraints.HORIZONTAL;
@@ -75,12 +77,12 @@ public class NewGraphDialog extends JDialog implements ActionListener
 		functionParametersLabel.setHorizontalAlignment(SwingConstants.RIGHT);
 		inputPanel.add(functionParametersLabel, gridBagConstraints);
 		
-		functionParametersField = new JTextField();
+		generatorParametersField = new ValidatingTextField(10, ".*");
 		gridBagConstraints.fill = GridBagConstraints.HORIZONTAL;
 		gridBagConstraints.gridx = 1;
 		gridBagConstraints.gridy = 2;
 		gridBagConstraints.gridwidth = 2;
-		inputPanel.add(functionParametersField, gridBagConstraints);
+		inputPanel.add(generatorParametersField, gridBagConstraints);
 		
 		allowLoopsCheckBox = new JCheckBox("Allow loops");
 		gridBagConstraints.fill = GridBagConstraints.HORIZONTAL;
@@ -190,13 +192,13 @@ public class NewGraphDialog extends JDialog implements ActionListener
 		inputPanel.add(allowCyclesCheckBox, gridBagConstraints);
 		
 		//Create and initialize the buttons
-		final JButton okButton = new JButton("Ok");
+		okButton = new JButton("Ok");
 		okButton.setPreferredSize(new Dimension(80, 28));
 		okButton.setActionCommand("Ok");
 		okButton.addActionListener(this);
 		getRootPane().setDefaultButton(okButton);
 		
-		JButton cancelButton = new JButton("Cancel");
+		cancelButton = new JButton("Cancel");
 		cancelButton.setPreferredSize(new Dimension(80, 28));
 		cancelButton.addActionListener(this);
 		
@@ -229,7 +231,7 @@ public class NewGraphDialog extends JDialog implements ActionListener
 		this.pack();
 		this.setResizable(false);
 		setLocationRelativeTo(locationComp);
-		functionChanged(functionComboBox.getSelectedObjects()[0]);
+		generatorChanged(functionComboBox.getSelectedObjects()[0]);
 		value = null;
 	}
 	
@@ -237,38 +239,41 @@ public class NewGraphDialog extends JDialog implements ActionListener
 	{
 		if ("Ok".equals(e.getActionCommand()))
 		{
+			if(!generatorParametersField.isValid())
+				return;
+			
 			GraphGeneratorBase generator = (GraphGeneratorBase)functionComboBox.getSelectedObjects()[0];
-			generator.validateParameters(functionParametersField.getText());
-			value = generator.generate(functionParametersField.getText(), allowLoopsCheckBox.isSelected(), allowDirectedEdgesCheckBox.isSelected(), allowMultipleEdgesCheckBox.isSelected(), allowCyclesCheckBox.isSelected());
+			value = generator.generate(generatorParametersField.getText(), allowLoopsCheckBox.isSelected(), allowDirectedEdgesCheckBox.isSelected(), allowMultipleEdgesCheckBox.isSelected(), allowCyclesCheckBox.isSelected());
 		}
 		
 		NewGraphDialog.dialog.setVisible(false);
 	}
 	
-	private void functionChanged(Object item)
+	private void generatorChanged(Object item)
 	{
 		if (item instanceof GraphGeneratorBase)
 		{
-			GraphGeneratorBase function = (GraphGeneratorBase) item;
+			GraphGeneratorBase generator = (GraphGeneratorBase) item;
 			
-			functionParametersLabel.setEnabled(function.areParametersAllowed().isTrue());
-			functionParametersField.setEnabled(function.areParametersAllowed().isTrue());
+			functionParametersLabel.setEnabled(generator.areParametersAllowed().isTrue());
+			generatorParametersField.setEnabled(generator.areParametersAllowed().isTrue());
 			
-			allowLoopsCheckBox.setSelected(function.areLoopsAllowed().isTrue());
-			allowLoopsCheckBox.setEnabled(!function.areLoopsAllowed().isForced());
+			allowLoopsCheckBox.setSelected(generator.areLoopsAllowed().isTrue());
+			allowLoopsCheckBox.setEnabled(!generator.areLoopsAllowed().isForced());
 			
-			allowDirectedEdgesCheckBox.setSelected(function.areDirectedEdgesAllowed().isTrue());
-			allowDirectedEdgesCheckBox.setEnabled(!function.areDirectedEdgesAllowed().isForced());
+			allowDirectedEdgesCheckBox.setSelected(generator.areDirectedEdgesAllowed().isTrue());
+			allowDirectedEdgesCheckBox.setEnabled(!generator.areDirectedEdgesAllowed().isForced());
 			
-			allowMultipleEdgesCheckBox.setSelected(function.areMultipleEdgesAllowed().isTrue());
-			allowMultipleEdgesCheckBox.setEnabled(!function.areMultipleEdgesAllowed().isForced());
+			allowMultipleEdgesCheckBox.setSelected(generator.areMultipleEdgesAllowed().isTrue());
+			allowMultipleEdgesCheckBox.setEnabled(!generator.areMultipleEdgesAllowed().isForced());
 			
-			allowCyclesCheckBox.setSelected(function.areCyclesAllowed().isTrue());
-			allowCyclesCheckBox.setEnabled(!function.areCyclesAllowed().isForced());
+			allowCyclesCheckBox.setSelected(generator.areCyclesAllowed().isTrue());
+			allowCyclesCheckBox.setEnabled(!generator.areCyclesAllowed().isForced());
 			
-			functionParametersField.setText("");
-			functionParametersField.setToolTipText(function.getParametersDescription());
-			functionParametersField.requestFocus();
+			generatorParametersField.setText("");
+			generatorParametersField.setValidatingExpression(generator.getParametersValidatingExpression());
+			generatorParametersField.setToolTipText(generator.getParametersDescription());
+			generatorParametersField.requestFocus();
 		}
 	}
 }
