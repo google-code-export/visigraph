@@ -1,7 +1,7 @@
 /**
  * MainWindow.java
  */
-package edu.belmont.mth.visigraph.gui;
+package edu.belmont.mth.visigraph.gui.windows;
 
 import java.awt.*;
 import java.awt.event.*;
@@ -11,6 +11,9 @@ import java.io.*;
 import java.util.*;
 import javax.swing.*;
 import javax.swing.filechooser.*;
+
+import edu.belmont.mth.visigraph.gui.dialogs.NewGraphDialog;
+import edu.belmont.mth.visigraph.gui.dialogs.PreferencesDialog;
 import edu.belmont.mth.visigraph.models.*;
 import edu.belmont.mth.visigraph.settings.*;
 

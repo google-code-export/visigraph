@@ -1,7 +1,7 @@
 /**
  * GraphWindow.java
  */
-package edu.belmont.mth.visigraph.gui;
+package edu.belmont.mth.visigraph.gui.windows;
 
 import java.io.*;
 import java.awt.*;

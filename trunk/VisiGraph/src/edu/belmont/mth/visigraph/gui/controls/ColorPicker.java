@@ -1,7 +1,7 @@
 /**
  * ColorPicker.java
  */
-package edu.belmont.mth.visigraph.gui;
+package edu.belmont.mth.visigraph.gui.controls;
 
 import java.awt.*;
 import java.awt.event.*;

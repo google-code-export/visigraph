@@ -1,9 +1,11 @@
 /**
  * NewGraphDialog.java
  */
-package edu.belmont.mth.visigraph.gui;
+package edu.belmont.mth.visigraph.gui.dialogs;
 
 import javax.swing.*;
+
+import edu.belmont.mth.visigraph.gui.controls.ValidatingTextField;
 import edu.belmont.mth.visigraph.models.*;
 import edu.belmont.mth.visigraph.models.generators.*;
 import edu.belmont.mth.visigraph.settings.*;

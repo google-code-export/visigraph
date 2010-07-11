@@ -1,7 +1,7 @@
 /**
  * PreferencesDialog.java
  */
-package edu.belmont.mth.visigraph.gui;
+package edu.belmont.mth.visigraph.gui.dialogs;
 
 import java.io.*;
 import java.awt.*;
@@ -9,6 +9,8 @@ import javax.swing.*;
 import java.awt.event.*;
 import javax.swing.border.*;
 
+import edu.belmont.mth.visigraph.gui.controls.ColorPicker;
+import edu.belmont.mth.visigraph.gui.controls.ValidatingTextField;
 import edu.belmont.mth.visigraph.settings.UserSettings;
 
 /**
