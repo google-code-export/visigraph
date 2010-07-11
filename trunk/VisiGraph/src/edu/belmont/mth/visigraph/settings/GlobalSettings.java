@@ -39,8 +39,8 @@ public class GlobalSettings
 	public static final Color					 defaultSelectedCaptionTextDisplayColor		= new Color(0, 0, 150);
 	
 	// Initialized with black, gray, and 6 colors--past 6 hues with no saturation or brightness difference, some of the colors become difficult to distinguish.
-	public static final Color[]					 defaultElementColors						= new Color[] { new Color(193, 193, 193), new Color(185, 122, 27), Color.getHSBColor(0, .95f, .95f), Color.getHSBColor(1/6f, .95f, .95f), Color.getHSBColor(2/6f, .95f, .95f), Color.getHSBColor(3/6f, .95f, .95f), Color.getHSBColor(4/6f, .95f, .95f), Color.getHSBColor(5/6f, .95f, .95f) };
-	public static final Color					 defaultUncoloredElementFill				= Color.black;
+	public static final Color[]					 defaultElementColors						= new Color[] { Color.black, new Color(185, 122, 27), Color.getHSBColor(0, .95f, .95f), Color.getHSBColor(1/6f, .95f, .95f), Color.getHSBColor(2/6f, .95f, .95f), Color.getHSBColor(3/6f, .95f, .95f), Color.getHSBColor(4/6f, .95f, .95f), Color.getHSBColor(5/6f, .95f, .95f) };
+	public static final Color					 defaultUncoloredElementFill				= new Color(193, 193, 193);
 	
 	public static final boolean					 defaultShowEdgeHandles						= true;
 	public static final boolean					 defaultShowEdgeWeights						= false;
@@ -59,7 +59,7 @@ public class GlobalSettings
 	public static final int						 defaultEdgeColor							= -1;
 	public static final String					 defaultEdgePrefix							= "e";
 	public static final boolean					 defaultEdgeIsSelected						= false;
-	public static final double					 defaultEdgeThickness						= 2.0;
+	public static final double					 defaultEdgeThickness						= 1.0;
 	public static final double					 defaultEdgeHandleRadiusRatio				= 1.5;
 	public static final double					 defaultEdgeHandleClickMargin				= 2.5;
 	

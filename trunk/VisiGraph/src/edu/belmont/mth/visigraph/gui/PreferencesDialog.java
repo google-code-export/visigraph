@@ -85,7 +85,6 @@ public class PreferencesDialog extends JDialog implements ActionListener
 	private static ValidatingTextField edgeSnapMarginRatioTextField;
 	private static ValidatingTextField areCloseDistanceTextField;
 	private static ValidatingTextField paintToolMenuDelayTextField;
-	private static JButton			   resetToDefaultsButton;
 	private static UserSettings		   userSettings = UserSettings.instance;
 	
 	
@@ -666,15 +665,6 @@ public class PreferencesDialog extends JDialog implements ActionListener
 		FieldLabel areCloseDistanceLabel       = new FieldLabel("Are close distance:");        areCloseDistanceTextField       = new ValidatingTextField(8, "(?:\\d+\\.?\\d*|\\d*\\.?\\d+)(?:[eE][+\\-\\x20]?\\d+)?"); areCloseDistanceTextField      .setMargin(fieldMargin); areCloseDistanceTextField      .setMaximumSize(new Dimension(70, 100));
 		FieldLabel paintToolMenuDelayLabel     = new FieldLabel("Paint tool menu delay:");     paintToolMenuDelayTextField     = new ValidatingTextField(8, "\\d+"); paintToolMenuDelayTextField    .setMargin(fieldMargin); paintToolMenuDelayTextField    .setMaximumSize(new Dimension(70, 100));
 		
-		resetToDefaultsButton = new JButton("Reset to defaults");
-		resetToDefaultsButton.setMinimumSize(new Dimension(100, 28));
-		
-		JPanel buttonPanel = new JPanel();
-		buttonPanel.setLayout(new BoxLayout(buttonPanel, BoxLayout.LINE_AXIS));
-		buttonPanel.setBorder(BorderFactory.createEmptyBorder(9, 0, 0, 13));
-		buttonPanel.setBackground(panel.getBackground());
-		buttonPanel.add(resetToDefaultsButton);
-		
 		Component col0Padding = Box.createRigidArea(new Dimension(columnWidths[0], 7));
 		Component col1Padding = Box.createRigidArea(new Dimension(columnWidths[1], 7));
 		Component col2Padding = Box.createRigidArea(new Dimension(columnWidths[2], 7));
@@ -750,7 +740,6 @@ public class PreferencesDialog extends JDialog implements ActionListener
 					.addComponent(edgeSnapMarginRatioTextField)
 					.addComponent(areCloseDistanceTextField)
 					.addComponent(paintToolMenuDelayTextField)
-					.addComponent(buttonPanel)
 					.addComponent(col2Padding)));
 		
 		layout.setVerticalGroup(
@@ -787,7 +776,6 @@ public class PreferencesDialog extends JDialog implements ActionListener
 				.addGroup(layout.createParallelGroup(GroupLayout.Alignment.CENTER).addComponent(edgeSnapMarginRatioLabel).addComponent(edgeSnapMarginRatioTextField))
 				.addGroup(layout.createParallelGroup(GroupLayout.Alignment.CENTER).addComponent(areCloseDistanceLabel).addComponent(areCloseDistanceTextField))
 				.addGroup(layout.createParallelGroup(GroupLayout.Alignment.CENTER).addComponent(paintToolMenuDelayLabel).addComponent(paintToolMenuDelayTextField))
-				.addComponent(buttonPanel)
 				.addGroup(layout.createParallelGroup(GroupLayout.Alignment.CENTER).addComponent(col0Padding).addComponent(col1Padding).addComponent(col2Padding)));
 		
 		JScrollPane scrollPane = new JScrollPane(panel, JScrollPane.VERTICAL_SCROLLBAR_ALWAYS, JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
