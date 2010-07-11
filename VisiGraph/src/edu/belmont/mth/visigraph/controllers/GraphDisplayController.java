@@ -1229,7 +1229,7 @@ public class GraphDisplayController extends JPanel implements ClipboardOwner
 			
 			for (int i = 0; i < userSettings.elementColors.size(); ++i)
 			{
-				JCheckBoxMenuItem brushMenuItem = new JCheckBoxMenuItem("(" + i + ")  \u2588\u2588\u2588\u2588\u2588\u2588");
+				JCheckBoxMenuItem brushMenuItem = new JCheckBoxMenuItem("\u2588\u2588\u2588\u2588\u2588\u2588  (" + i + ")");
 				brushMenuItem.setForeground(userSettings.getElementColor(i));
 				brushMenuItem.addActionListener(paintMenuItemActionListener);
 				paintMenu.add(brushMenuItem);
