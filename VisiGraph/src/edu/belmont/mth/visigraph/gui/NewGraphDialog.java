@@ -6,7 +6,7 @@ package edu.belmont.mth.visigraph.gui;
 import javax.swing.*;
 import edu.belmont.mth.visigraph.models.*;
 import edu.belmont.mth.visigraph.models.generators.*;
-import edu.belmont.mth.visigraph.settings.GlobalSettings;
+import edu.belmont.mth.visigraph.settings.*;
 import java.awt.*;
 import java.awt.event.*;
 

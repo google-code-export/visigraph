@@ -76,22 +76,22 @@ public class Edge extends ObservableBase
 	
 	public Edge(boolean isDirected, Vertex from, Vertex to)
 	{
-		this(isDirected, from, to, GlobalSettings.defaultEdgeWeight);
+		this(isDirected, from, to, UserSettings.instance.defaultEdgeWeight.get());
 	}
 	
 	public Edge(boolean isDirected, Vertex from, Vertex to, double weight)
 	{
-		this(isDirected, from, to, weight, GlobalSettings.defaultEdgeColor);
+		this(isDirected, from, to, weight, UserSettings.instance.defaultEdgeColor.get());
 	}
 	
 	public Edge(boolean isDirected, Vertex from, Vertex to, double weight, int color)
 	{
-		this(isDirected, from, to, weight, color, GlobalSettings.defaultEdgePrefix);
+		this(isDirected, from, to, weight, color, UserSettings.instance.defaultEdgePrefix.get());
 	}
 	
 	public Edge(boolean isDirected, Vertex from, Vertex to, double weight, int color, String label)
 	{
-		this(isDirected, from, to, weight, color, label, GlobalSettings.defaultEdgeIsSelected);
+		this(isDirected, from, to, weight, color, label, UserSettings.instance.defaultEdgeIsSelected.get());
 	}
 	
 	public Edge(boolean isDirected, Vertex from, Vertex to, double weight, int color, String label, boolean isSelected)
@@ -110,7 +110,7 @@ public class Edge extends ObservableBase
 		this.color = new Property<Integer>(color, "color");
 		this.label = new Property<String>(label, "label");
 		this.isSelected = new Property<Boolean>(isSelected, "isSelected");
-		this.thickness = new Property<Double>(GlobalSettings.defaultEdgeThickness, "thickness");
+		this.thickness = new Property<Double>(UserSettings.instance.defaultEdgeThickness.get(), "thickness");
 		
 		this.handleX = new Property<Double>(0.0, "handleX")
 		{
@@ -212,7 +212,7 @@ public class Edge extends ObservableBase
 		if(from == to)
 		{
 			// Reset a loop handle
-			handleX.set(from.x.get() + GlobalSettings.defaultLoopDiameter);
+			handleX.set(from.x.get() + UserSettings.instance.defaultLoopDiameter.get());
 			handleY.set(from.y.get());
 		}
 		else if(isLinear)
@@ -264,7 +264,7 @@ public class Edge extends ObservableBase
 			// Determine linearity
 			line = new Line2D.Double(from.x.get(), from.y.get(), to.x.get(), to.y.get());
 			double handleDistanceFromLine = line.ptLineDist(handleX.get(), handleY.get());
-			double snapToLineMargin = GlobalSettings.edgeSnapToLineMarginRatio * distance(from, to);
+			double snapToLineMargin = UserSettings.instance.edgeSnapMarginRatio.get() * distance(from, to);
 			isLinear = (handleDistanceFromLine <= snapToLineMargin);
 			
 			if (!isLinear)

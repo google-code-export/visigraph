@@ -12,7 +12,7 @@ import edu.belmont.mth.visigraph.models.*;
  */
 public class CountEdgesFunction extends FunctionBase
 {
-	public Object evaluate(Graphics2D g2D, Palette p, Graph g)
+	public Object evaluate(Graphics2D g2D, Graph g)
 	{
 		int selectedEdgeCount = 0;
 		

@@ -16,7 +16,7 @@ import edu.belmont.mth.visigraph.utilities.*;
  */
 public class CountCrossingsFunction extends FunctionBase
 {
-	public Object evaluate(Graphics2D g2D, Palette p, Graph g)
+	public Object evaluate(Graphics2D g2D, Graph g)
 	{
 		Vector<Edge> edges = new Vector<Edge>();
 		

@@ -20,12 +20,12 @@ public class Caption extends ObservableBase
 	
 	public Caption(double x, double y)
 	{
-		this(x, y, GlobalSettings.defaultCaptionText);
+		this(x, y, UserSettings.instance.defaultCaptionText.get());
 	}
 	
 	public Caption(double x, double y, String text)
 	{
-		this(x, y, text, GlobalSettings.defaultCaptionIsSelected);
+		this(x, y, text, UserSettings.instance.defaultCaptionIsSelected.get());
 	}
 	
 	public Caption(double x, double y, String text, boolean isSelected)

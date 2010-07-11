@@ -30,22 +30,22 @@ public class Vertex extends ObservableBase
 	
 	public Vertex(int id, double x, double y)
 	{
-		this(id, x, y, GlobalSettings.defaultVertexPrefix + id);
+		this(id, x, y, UserSettings.instance.defaultVertexPrefix.get() + id);
 	}
 	
 	public Vertex(int id, double x, double y, String label)
 	{
-		this(id, x, y, label, GlobalSettings.defaultVertexRadius);
+		this(id, x, y, label, UserSettings.instance.defaultVertexRadius.get());
 	}
 	
 	public Vertex(int id, double x, double y, String label, double radius)
 	{
-		this(id, x, y, label, radius, GlobalSettings.defaultVertexColor);
+		this(id, x, y, label, radius, UserSettings.instance.defaultVertexColor.get());
 	}
 	
 	public Vertex(int id, double x, double y, String label, double radius, int color)
 	{
-		this(id, x, y, label, radius, color, GlobalSettings.defaultVertexIsSelected);
+		this(id, x, y, label, radius, color, UserSettings.instance.defaultVertexIsSelected.get());
 	}
 	
 	public Vertex(int id, double x, double y, String label, double radius, int color, boolean isSelected)
@@ -57,7 +57,7 @@ public class Vertex extends ObservableBase
 		this.radius     = new Property<Double>(radius, "radius");
 		this.color      = new Property<Integer>(color, "color");
 		this.isSelected = new Property<Boolean>(isSelected, "isSelected");
-		this.weight     = new Property<Double>(GlobalSettings.defaultVertexWeight, "weight");
+		this.weight     = new Property<Double>(UserSettings.instance.defaultVertexWeight.get(), "weight");
 	}
 
 	public Vertex(Map<String, Object> members)

@@ -5,8 +5,8 @@ package edu.belmont.mth.visigraph.models.generators;
 
 import java.awt.geom.*;
 import edu.belmont.mth.visigraph.models.*;
-import edu.belmont.mth.visigraph.settings.GlobalSettings;
-import edu.belmont.mth.visigraph.utilities.RegexUtilities;
+import edu.belmont.mth.visigraph.settings.*;
+import edu.belmont.mth.visigraph.utilities.*;
 
 /**
  * @author Cameron Behar
@@ -23,11 +23,11 @@ public class EmptyGraphGenerator extends GraphGeneratorBase
 		
 		int rows = (int) Math.round(Math.sqrt(n));
 		int columns = (int) Math.ceil(n / (double) rows);
-		Point2D.Double location = new Point2D.Double((columns / 2.0) * -GlobalSettings.arrangeGridSpacing, (rows / 2.0) * -GlobalSettings.arrangeGridSpacing);
+		Point2D.Double location = new Point2D.Double((columns / 2.0) * -UserSettings.instance.arrangeGridSpacing.get(), (rows / 2.0) * -UserSettings.instance.arrangeGridSpacing.get());
 		
 		for (int row = 0; row < rows; ++row)
 			for(int col = 0; (row < rows - 1 && col < columns) || (row == rows - 1 && col < (n % columns == 0 ? columns : n % columns)); ++col)
-				ret.vertexes.add(new Vertex(ret.nextVertexId(), location.x + GlobalSettings.arrangeGridSpacing * col, location.y + GlobalSettings.arrangeGridSpacing * row));
+				ret.vertexes.add(new Vertex(ret.nextVertexId(), location.x + UserSettings.instance.arrangeGridSpacing.get() * col, location.y + UserSettings.instance.arrangeGridSpacing.get() * row));
 		
 		return ret;
 	}
