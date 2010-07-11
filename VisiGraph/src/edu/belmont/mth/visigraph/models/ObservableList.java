@@ -24,6 +24,7 @@ public class ObservableList<T> extends ObservableBase implements List<T>
 		notificationsSuspended = false;
 		elementObserver = new ObserverBase()
 		{
+			@Override
 			public void hasChanged(Object source)
 			{
 				if(!notificationsSuspended)

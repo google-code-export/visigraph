@@ -3,9 +3,7 @@
  */
 package edu.belmont.mth.visigraph.models.generators;
 
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
+import java.util.regex.*;
 import edu.belmont.mth.visigraph.models.*;
 
 /**
@@ -14,18 +12,15 @@ import edu.belmont.mth.visigraph.models.*;
  */
 public class SymmetricTreeGraphGenerator extends GraphGeneratorBase
 {
-	public Graph generate(String params, boolean areLoopsAllowed, boolean areDirectedEdgesAllowed, boolean areMultipleEdgesAllowed, boolean areCyclesAllowed)
+	@Override
+	public Graph generate(Graph graph, Matcher matcher)
 	{
-		Graph ret = super.generate(params, areLoopsAllowed, areDirectedEdgesAllowed, areMultipleEdgesAllowed, areCyclesAllowed);
-		
-		Pattern pattern = Pattern.compile(getParametersValidatingExpression());
-		Matcher matcher = pattern.matcher(params); matcher.find();
 		int levelCount = Integer.parseInt(matcher.group(1));
 		int fanOut = Integer.parseInt(matcher.group(2));
 		
-		buildTree(ret, levelCount, fanOut, 0.0, 0.0);
+		buildTree(graph, levelCount, fanOut, 0.0, 0.0);
 		
-		return ret;
+		return graph;
 	}
 	
 	public Vertex buildTree(Graph g, int level, int fanOut, double x, double y)
@@ -47,41 +42,49 @@ public class SymmetricTreeGraphGenerator extends GraphGeneratorBase
 		return root;
 	}
 
+	@Override
 	public String getDescription()
 	{
 		return "Symmetric tree";
 	}	
 
+	@Override
 	public String getParametersDescription()
 	{
 		return "[recursions] [fan-out]";
 	}
 	
+	@Override
 	public String getParametersValidatingExpression()
 	{
 		return "^\\s*(\\d+)\\s*(\\d+)\\s*$";
 	}
 	
+	@Override
 	public BooleanRule areLoopsAllowed()
 	{
 		return BooleanRule.ForcedFalse;
 	}
 	
+	@Override
 	public BooleanRule areDirectedEdgesAllowed()
 	{
 		return BooleanRule.ForcedFalse;
 	}
 
+	@Override
 	public BooleanRule areMultipleEdgesAllowed()
 	{
 		return BooleanRule.ForcedFalse;
 	}
 	
+	@Override
 	public BooleanRule areCyclesAllowed()
 	{
 		return BooleanRule.ForcedFalse;
 	}
 
+	@Override
 	public BooleanRule areParametersAllowed()
 	{
 		return BooleanRule.ForcedTrue;

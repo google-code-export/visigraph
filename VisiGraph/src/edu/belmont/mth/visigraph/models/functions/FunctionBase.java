@@ -16,11 +16,13 @@ public abstract class FunctionBase implements Comparable<FunctionBase>
 	
 	public abstract String getDescription();
 	
+	@Override
 	public String toString()
 	{
 		return getDescription();
 	}
 	
+	@Override
 	public int compareTo(FunctionBase f)
 	{
 		return getDescription().compareTo(f.getDescription());

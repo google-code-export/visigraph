@@ -13,6 +13,7 @@ import edu.belmont.mth.visigraph.models.*;
  */
 public class IsConnectedFunction extends FunctionBase
 {
+	@Override
 	public Object evaluate(Graphics2D g2D, Graph g)
 	{
 		if(g.vertexes.size() < 1)
@@ -35,6 +36,7 @@ public class IsConnectedFunction extends FunctionBase
 				coverRecursively(neighbor, g, covered);
 	}
 	
+	@Override
 	public String getDescription()
 	{
 		return "Is connected";

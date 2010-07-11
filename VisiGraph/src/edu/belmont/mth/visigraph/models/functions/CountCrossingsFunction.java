@@ -16,6 +16,7 @@ import edu.belmont.mth.visigraph.utilities.*;
  */
 public class CountCrossingsFunction extends FunctionBase
 {
+	@Override
 	public Object evaluate(Graphics2D g2D, Graph g)
 	{
 		Vector<Edge> edges = new Vector<Edge>();
@@ -57,6 +58,7 @@ public class CountCrossingsFunction extends FunctionBase
 		return crossingsCount;
 	}
 
+	@Override
 	public String getDescription()
 	{
 		return "Count crossings";

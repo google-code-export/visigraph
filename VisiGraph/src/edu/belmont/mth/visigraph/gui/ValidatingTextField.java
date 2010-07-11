@@ -41,11 +41,13 @@ public class ValidatingTextField extends JTextField
 		validate();
 	}
 	
+	@Override
 	public void validate()
 	{
 		setBackground(isValid( ) ? successColor : failColor);
 	}
 	
+	@Override
 	public boolean isValid()
 	{
 		return (validatingExpression == null ? true : getText().matches(validatingExpression));

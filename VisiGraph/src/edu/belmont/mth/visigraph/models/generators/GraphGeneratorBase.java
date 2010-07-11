@@ -3,7 +3,8 @@
  */
 package edu.belmont.mth.visigraph.models.generators;
 
-import edu.belmont.mth.visigraph.models.Graph;
+import java.util.regex.*;
+import edu.belmont.mth.visigraph.models.*;
 
 /**
  * @author Cameron Behar
@@ -11,27 +12,33 @@ import edu.belmont.mth.visigraph.models.Graph;
  */
 public abstract class GraphGeneratorBase
 {	
-	public abstract BooleanRule areLoopsAllowed();
+	public    abstract BooleanRule areLoopsAllowed();
 	
-	public abstract BooleanRule areMultipleEdgesAllowed();
+	public    abstract BooleanRule areMultipleEdgesAllowed();
 	
-	public abstract BooleanRule areDirectedEdgesAllowed();
+	public    abstract BooleanRule areDirectedEdgesAllowed();
 	
-	public abstract BooleanRule areCyclesAllowed();
+	public    abstract BooleanRule areCyclesAllowed();
 	
-	public abstract BooleanRule areParametersAllowed();
+	public    abstract BooleanRule areParametersAllowed();
 	
-	public abstract String      getParametersDescription();
+	public    abstract String      getParametersDescription();
 	
-	public abstract String		getParametersValidatingExpression();
+	public    abstract String	   getParametersValidatingExpression();
 	
-	public abstract String      getDescription();
+	public    abstract String      getDescription();
 	
-	public          Graph       generate(String params, boolean areLoopsAllowed, boolean areDirectedEdgesAllowed, boolean areMultipleEdgesAllowed, boolean areCyclesAllowed)
+	protected abstract Graph       generate(Graph graph, Matcher matcher);
+	
+	public    final    Graph       generate(String params, boolean areLoopsAllowed, boolean areDirectedEdgesAllowed, boolean areMultipleEdgesAllowed, boolean areCyclesAllowed)
 	{
-		return new Graph("Untitled " + getDescription(), areLoopsAllowed, areDirectedEdgesAllowed, areMultipleEdgesAllowed, areCyclesAllowed);
+		Graph graph = new Graph("Untitled " + getDescription(), areLoopsAllowed, areDirectedEdgesAllowed, areMultipleEdgesAllowed, areCyclesAllowed);
+		Pattern pattern = Pattern.compile(getParametersValidatingExpression());
+		Matcher matcher = pattern.matcher(params); matcher.find();
+		return generate(graph, matcher);
 	}
 	
+	@Override
 	public          String      toString()
 	{
 		return getDescription();

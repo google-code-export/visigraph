@@ -329,6 +329,7 @@ public class Edge extends ObservableBase
 		}
 	}
 
+	@Override
 	public String toString()
 	{
 		HashMap<String, Object> members = new HashMap<String, Object>();

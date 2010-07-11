@@ -154,6 +154,7 @@ public class UserSettings extends ObservableBase
 		this.elementColors.addAll(Arrays.asList(GlobalSettings.defaultElementColors));
 		this.elementColors.addObserver(new ObserverBase()
 		{
+			@Override
 			public void hasChanged(Object source)
 			{
 				notifyObservers(source);
@@ -241,6 +242,7 @@ public class UserSettings extends ObservableBase
 				elementColors.add((Color) color);
 	}
 	
+	@Override
 	public String toString ( )
 	{
 		HashMap<String, Object> members = new HashMap<String, Object>();
