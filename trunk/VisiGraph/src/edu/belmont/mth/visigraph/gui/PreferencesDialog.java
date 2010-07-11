@@ -63,6 +63,7 @@ public class PreferencesDialog extends JDialog implements ActionListener
 	private static ValidatingTextField edgeHandleClickMarginTextField;
 	private static ValidatingTextField captionHandleClickMarginTextField;
 	private static ValidatingTextField captionEditorClickMarginTextField;
+	private static ValidatingTextField panDecelerationFactorTextField;
 	private static ValidatingTextField zoomInFactorTextField;
 	private static ValidatingTextField zoomOutFactorTextField;
 	private static ValidatingTextField maximumZoomFactorTextField;
@@ -619,11 +620,12 @@ public class PreferencesDialog extends JDialog implements ActionListener
 		panel.setBackground(Color.white);
 		
 		Header clickingBehaviorHeader = new Header("Clicking behavior:");
-		FieldLabel vertexClickMarginLabel        = new FieldLabel("Vertex click margin:");         vertexClickMarginTextField        = new ValidatingTextField(8, "(?:\\d+\\.?\\d*|\\d*\\.?\\d+)(?:[eE][+\\-\\x20]?\\d+)?"); vertexClickMarginTextField       .setMargin(fieldMargin); vertexClickMarginTextField       .setMaximumSize(new Dimension(70, 100));
-		FieldLabel edgeHandleClickMarginLabel    = new FieldLabel("Edge handle click margin:");    edgeHandleClickMarginTextField    = new ValidatingTextField(8, "(?:\\d+\\.?\\d*|\\d*\\.?\\d+)(?:[eE][+\\-\\x20]?\\d+)?"); edgeHandleClickMarginTextField   .setMargin(fieldMargin); edgeHandleClickMarginTextField   .setMaximumSize(new Dimension(70, 100));
-		FieldLabel captionHandleClickMarginLabel = new FieldLabel("Caption handle click margin:"); captionHandleClickMarginTextField = new ValidatingTextField(8, "(?:\\d+\\.?\\d*|\\d*\\.?\\d+)(?:[eE][+\\-\\x20]?\\d+)?"); captionHandleClickMarginTextField.setMargin(fieldMargin); captionHandleClickMarginTextField.setMaximumSize(new Dimension(70, 100));
-		FieldLabel captionEditorClickMarginLabel = new FieldLabel("Caption editor click margin:"); captionEditorClickMarginTextField = new ValidatingTextField(8, "(?:\\d+\\.?\\d*|\\d*\\.?\\d+)(?:[eE][+\\-\\x20]?\\d+)?"); captionEditorClickMarginTextField.setMargin(fieldMargin); captionEditorClickMarginTextField.setMaximumSize(new Dimension(70, 100));
-			
+		FieldLabel vertexClickMarginLabel        = new FieldLabel("Vertex click margin:");         vertexClickMarginTextField        = new ValidatingTextField(8, "(?:\\d+\\.?\\d*|\\d*\\.?\\d+)(?:[eE][+\\-\\x20]?\\d+)?");  vertexClickMarginTextField       .setMargin(fieldMargin); vertexClickMarginTextField       .setMaximumSize(new Dimension(70, 100));
+		FieldLabel edgeHandleClickMarginLabel    = new FieldLabel("Edge handle click margin:");    edgeHandleClickMarginTextField    = new ValidatingTextField(8, "(?:\\d+\\.?\\d*|\\d*\\.?\\d+)(?:[eE][+\\-\\x20]?\\d+)?");  edgeHandleClickMarginTextField   .setMargin(fieldMargin); edgeHandleClickMarginTextField   .setMaximumSize(new Dimension(70, 100));
+		FieldLabel captionHandleClickMarginLabel = new FieldLabel("Caption handle click margin:"); captionHandleClickMarginTextField = new ValidatingTextField(8, "(?:\\d+\\.?\\d*|\\d*\\.?\\d+)(?:[eE][+\\-\\x20]?\\d+)?");  captionHandleClickMarginTextField.setMargin(fieldMargin); captionHandleClickMarginTextField.setMaximumSize(new Dimension(70, 100));
+		FieldLabel captionEditorClickMarginLabel = new FieldLabel("Caption editor click margin:"); captionEditorClickMarginTextField = new ValidatingTextField(8, "(?:\\d+\\.?\\d*|\\d*\\.?\\d+)(?:[eE][+\\-\\x20]?\\d+)?");  captionEditorClickMarginTextField.setMargin(fieldMargin); captionEditorClickMarginTextField.setMaximumSize(new Dimension(70, 100));
+		FieldLabel panDecelerationFactorLabel    = new FieldLabel("Pan deceleration factor:");     panDecelerationFactorTextField    = new ValidatingTextField(8, "-(?:\\d+\\.?\\d*|\\d*\\.?\\d+)(?:[eE][+\\-\\x20]?\\d+)?"); panDecelerationFactorTextField   .setMargin(fieldMargin); panDecelerationFactorTextField   .setMaximumSize(new Dimension(70, 100));
+		
 		Header zoomingBehaviorHeader = new Header("Zooming behavior:");
 		FieldLabel zoomInFactorLabel        = new FieldLabel("Zoom in factor:");        zoomInFactorTextField        = new ValidatingTextField(8, "(?:\\d+\\.?\\d*|\\d*\\.?\\d+)(?:[eE][+\\-\\x20]?\\d+)?"); zoomInFactorTextField       .setMargin(fieldMargin); zoomInFactorTextField       .setMaximumSize(new Dimension(70, 100));
 		FieldLabel zoomOutFactorLabel       = new FieldLabel("Zoom out factor:");       zoomOutFactorTextField       = new ValidatingTextField(8, "(?:\\d+\\.?\\d*|\\d*\\.?\\d+)(?:[eE][+\\-\\x20]?\\d+)?"); zoomOutFactorTextField      .setMargin(fieldMargin); zoomOutFactorTextField      .setMaximumSize(new Dimension(70, 100));
@@ -690,6 +692,7 @@ public class PreferencesDialog extends JDialog implements ActionListener
 					.addComponent(edgeHandleClickMarginLabel)
 					.addComponent(captionHandleClickMarginLabel)
 					.addComponent(captionEditorClickMarginLabel)
+					.addComponent(panDecelerationFactorLabel)
 					.addComponent(zoomInFactorLabel)
 					.addComponent(zoomOutFactorLabel)
 					.addComponent(maximumZoomFactorLabel)
@@ -718,6 +721,7 @@ public class PreferencesDialog extends JDialog implements ActionListener
 					.addComponent(edgeHandleClickMarginTextField)
 					.addComponent(captionHandleClickMarginTextField)
 					.addComponent(captionEditorClickMarginTextField)
+					.addComponent(panDecelerationFactorTextField)
 					.addComponent(zoomInFactorTextField)
 					.addComponent(zoomOutFactorTextField)
 					.addComponent(maximumZoomFactorTextField)
@@ -749,6 +753,7 @@ public class PreferencesDialog extends JDialog implements ActionListener
 				.addGroup(layout.createParallelGroup(GroupLayout.Alignment.CENTER).addComponent(edgeHandleClickMarginLabel).addComponent(edgeHandleClickMarginTextField))
 				.addGroup(layout.createParallelGroup(GroupLayout.Alignment.CENTER).addComponent(captionHandleClickMarginLabel).addComponent(captionHandleClickMarginTextField))
 				.addGroup(layout.createParallelGroup(GroupLayout.Alignment.CENTER).addComponent(captionEditorClickMarginLabel).addComponent(captionEditorClickMarginTextField))
+				.addGroup(layout.createParallelGroup(GroupLayout.Alignment.CENTER).addComponent(panDecelerationFactorLabel).addComponent(panDecelerationFactorTextField))
 				.addComponent(zoomingBehaviorHeader)
 				.addGroup(layout.createParallelGroup(GroupLayout.Alignment.CENTER).addComponent(zoomInFactorLabel).addComponent(zoomInFactorTextField))
 				.addGroup(layout.createParallelGroup(GroupLayout.Alignment.CENTER).addComponent(zoomOutFactorLabel).addComponent(zoomOutFactorTextField))
@@ -816,7 +821,8 @@ public class PreferencesDialog extends JDialog implements ActionListener
 				vertexClickMarginTextField				.isValid( ) && 
 				edgeHandleClickMarginTextField			.isValid( ) && 
 				captionHandleClickMarginTextField		.isValid( ) && 
-				captionEditorClickMarginTextField		.isValid( ) && 
+				captionEditorClickMarginTextField		.isValid( ) &&
+				panDecelerationFactorTextField			.isValid( ) &&
 				zoomInFactorTextField					.isValid( ) && 
 				zoomOutFactorTextField					.isValid( ) && 
 				maximumZoomFactorTextField				.isValid( ) && 
@@ -878,6 +884,7 @@ public class PreferencesDialog extends JDialog implements ActionListener
 		edgeHandleClickMarginTextField			.setText( userSettings.edgeHandleClickMargin.get( ).toString( ) );
 		captionHandleClickMarginTextField		.setText( userSettings.captionHandleClickMargin.get( ).toString( ) );
 		captionEditorClickMarginTextField		.setText( userSettings.captionEditorClickMargin.get( ).toString( ) );
+		panDecelerationFactorTextField			.setText( userSettings.panDecelerationFactor.get( ).toString( ) );
 		zoomInFactorTextField					.setText( userSettings.zoomInFactor.get( ).toString( ) );
 		zoomOutFactorTextField					.setText( userSettings.zoomOutFactor.get( ).toString( ) );
 		maximumZoomFactorTextField				.setText( userSettings.maximumZoomFactor.get( ).toString( ) );
@@ -950,6 +957,7 @@ public class PreferencesDialog extends JDialog implements ActionListener
 		userSettings.edgeHandleClickMargin			.set( new Double ( edgeHandleClickMarginTextField.getText( ) ) );
 		userSettings.captionHandleClickMargin		.set( new Double ( captionHandleClickMarginTextField.getText( ) ) );
 		userSettings.captionEditorClickMargin		.set( new Double ( captionEditorClickMarginTextField.getText( ) ) );
+		userSettings.panDecelerationFactor			.set( new Double ( panDecelerationFactorTextField.getText( ) ) );
 		userSettings.zoomInFactor					.set( new Double ( zoomInFactorTextField.getText( ) ) );
 		userSettings.zoomOutFactor					.set( new Double ( zoomOutFactorTextField.getText( ) ) );
 		userSettings.maximumZoomFactor				.set( new Double ( maximumZoomFactorTextField.getText( ) ) );

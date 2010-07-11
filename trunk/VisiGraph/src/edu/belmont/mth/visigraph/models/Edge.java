@@ -152,22 +152,22 @@ public class Edge extends ObservableBase
 	{
 		notificationsSuspended = true;
 		
-		this.isDirected = new Boolean(members.get("isDirected").toString());
+		this.isDirected = (Boolean)members.get("isDirected");
 		
-		this.from = vertexes.get(new Integer(members.get("from.id").toString()));
+		this.from = vertexes.get((Integer)members.get("from.id"));
 		this.from.addObserver(vertexObserver);
 		
-		this.to = vertexes.get(new Integer(members.get("to.id").toString()));
+		this.to = vertexes.get((Integer)members.get("to.id"));
 		this.to.addObserver(vertexObserver);
 		
-		this.weight = new Property<Double>(new Double(members.get("weight").toString()), "weight");
-		this.color = new Property<Integer>(new Integer(members.get("color").toString()), "color");
-		this.label = new Property<String>(members.get("label").toString(), "label");
-		this.isSelected = new Property<Boolean>(new Boolean(members.get("isSelected").toString()), "isSelected");
-		this.thickness = new Property<Double>(new Double(members.get("thickness").toString()), "thickness");
+		this.weight = new Property<Double>((Double)members.get("weight"), "weight");
+		this.color = new Property<Integer>((Integer)members.get("color"), "color");
+		this.label = new Property<String>((String)members.get("label"), "label");
+		this.isSelected = new Property<Boolean>((Boolean)members.get("isSelected"), "isSelected");
+		this.thickness = new Property<Double>((Double)members.get("thickness"), "thickness");
 		
-		this.isLinear = members.containsKey("isLinear") ? new Boolean(members.get("isLinear").toString()) : false;
-		this.handleX = new Property<Double>(this.isLinear ? 0.0 : new Double(members.get("handleX").toString()), "handleX")
+		this.isLinear = members.containsKey("isLinear") ? (Boolean)members.get("isLinear") : false;
+		this.handleX = new Property<Double>(this.isLinear ? 0.0 : (Double)members.get("handleX"), "handleX")
 		{
 			@Override
 			public void set(final Double value)
@@ -179,7 +179,7 @@ public class Edge extends ObservableBase
 				}
 			}
 		};
-		this.handleY = new Property<Double>(this.isLinear ? 0.0 : new Double(members.get("handleY").toString()), "handleY")
+		this.handleY = new Property<Double>(this.isLinear ? 0.0 : (Double)members.get("handleY"), "handleY")
 		{
 			@Override
 			public void set(final Double value)
