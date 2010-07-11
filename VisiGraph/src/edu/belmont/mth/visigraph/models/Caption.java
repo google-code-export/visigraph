@@ -38,10 +38,10 @@ public class Caption extends ObservableBase
 
 	public Caption(Map<String, Object> members)
 	{
-		this.x = new Property<Double>(new Double(members.get("x").toString()), "x");
-		this.y = new Property<Double>(new Double(members.get("y").toString()), "y");
-		this.text = new Property<String>(members.get("text").toString(), "text");
-		this.isSelected = new Property<Boolean>(new Boolean(members.get("isSelected").toString()), "isSelected");
+		this.x = new Property<Double>((Double)members.get("x"), "x");
+		this.y = new Property<Double>((Double)members.get("y"), "y");
+		this.text = new Property<String>((String)members.get("text"), "text");
+		this.isSelected = new Property<Boolean>((Boolean)members.get("isSelected"), "isSelected");
 	}
 	
 	public Caption(String json)

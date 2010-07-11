@@ -3,12 +3,13 @@
  */
 package edu.belmont.mth.visigraph.utilities;
 
-import java.awt.Color;
-import java.io.IOException;
-import java.io.Reader;
-import java.io.StringReader;
+import java.io.*;
+import java.awt.*;
 import java.util.*;
+import java.util.List;
 import java.util.Map.*;
+import java.util.regex.*;
+
 import edu.belmont.mth.visigraph.models.ObservableBase.*;
 
 /**
@@ -187,7 +188,7 @@ public class JsonUtilities
 		else if(o instanceof Boolean)
 			return o.toString();
 		else if(o instanceof Color)
-			return new Integer(((Color)o).getRGB()).toString();
+			return formatColor((Color)o);
 		else if(o instanceof Iterable<?>)
 			return formatArray((Iterable<?>)o);
 		else if(o == null)
@@ -209,12 +210,11 @@ public class JsonUtilities
 		else if (json.equalsIgnoreCase("null"))
 			return null;
 		else if (json.matches("^[+-]?\\d+$"))
-		{
-			Long value = new Long(json);
-			return (value.longValue() == value.intValue() ? value : new Integer(value.intValue()));
-		}
+			return new Integer(json);
 		else if (json.matches("^[+-]?(\\d+\\.?\\d*|\\d*\\.?\\d+)([eE][+\\-\\x20]?\\d+)?$"))
 			return new Double(json);
+		else if(json.matches("^\\#([0-9a-fA-F]{2})([0-9a-fA-F]{2})([0-9a-fA-F]{2})([0-9a-fA-F]{2})$"))
+			return parseColor(json);
 		else 
 			throw new IllegalArgumentException("Illegal value");
 	}
@@ -276,6 +276,32 @@ public class JsonUtilities
 		}
 	}
 
+	private static String formatColor(Color color)
+	{
+		String rHex = "0" + Integer.toHexString(color.getRed());
+		String gHex = "0" + Integer.toHexString(color.getGreen());
+		String bHex = "0" + Integer.toHexString(color.getBlue());
+		String aHex = "0" + Integer.toHexString(color.getAlpha());
+		return "#" + rHex.substring(rHex.length() - 2) + 
+					 gHex.substring(gHex.length() - 2) + 
+					 bHex.substring(bHex.length() - 2) + 
+					 aHex.substring(aHex.length() - 2);
+	}
+	
+	private static Color parseColor(String json)
+	{
+		Pattern pattern = Pattern.compile("^\\#([0-9a-fA-F]{2})([0-9a-fA-F]{2})([0-9a-fA-F]{2})([0-9a-fA-F]{2})$");
+		Matcher matcher = pattern.matcher(json);
+		matcher.find();
+
+		Integer r = Integer.parseInt(matcher.group(1), 16);
+		Integer g = Integer.parseInt(matcher.group(2), 16);
+		Integer b = Integer.parseInt(matcher.group(3), 16);
+		Integer a = Integer.parseInt(matcher.group(4), 16);
+		
+		return new Color(r.intValue(), g.intValue(), b.intValue(), a.intValue());
+	}
+	
 	private static class JsonScanner
 	{
 		private int		character;
@@ -468,7 +494,7 @@ public class JsonUtilities
 			 */
 
 			StringBuffer sb = new StringBuffer();
-			while (c >= ' ' && ",:]}/\\\"[{;=#".indexOf(c) < 0)
+			while (c >= ' ' && ",:]}/\\\"[{;=".indexOf(c) < 0)
 			{
 				sb.append(c);
 				c = nextChar();

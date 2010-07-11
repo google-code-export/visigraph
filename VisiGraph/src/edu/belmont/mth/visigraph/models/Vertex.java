@@ -62,14 +62,14 @@ public class Vertex extends ObservableBase
 
 	public Vertex(Map<String, Object> members)
 	{
-		this.id         = new Property<Integer>(new Integer(members.get("id").toString()), "id");
-		this.x          = new Property<Double>(new Double(members.get("x").toString()), "x");
-		this.y          = new Property<Double>(new Double(members.get("y").toString()), "y");
+		this.id         = new Property<Integer>((Integer)members.get("id"), "id");
+		this.x          = new Property<Double>((Double)members.get("x"), "x");
+		this.y          = new Property<Double>((Double)members.get("y"), "y");
 		this.label      = new Property<String>(members.get("label").toString(), "label");
-		this.radius     = new Property<Double>(new Double(members.get("radius").toString()), "radius");
-		this.color      = new Property<Integer>(new Integer(members.get("color").toString()), "color");
-		this.isSelected = new Property<Boolean>(new Boolean(members.get("isSelected").toString()), "isSelected");
-		this.weight     = new Property<Double>(new Double(members.get("weight").toString()), "weight");
+		this.radius     = new Property<Double>((Double)members.get("radius"), "radius");
+		this.color      = new Property<Integer>((Integer)members.get("color"), "color");
+		this.isSelected = new Property<Boolean>((Boolean)members.get("isSelected"), "isSelected");
+		this.weight     = new Property<Double>((Double)members.get("weight"), "weight");
 	}
 	
 	public Vertex(String json)

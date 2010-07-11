@@ -56,6 +56,7 @@ public class GraphDisplayController extends JPanel implements ClipboardOwner
 	private boolean				      isMouseOverViewport;
 	private Point					  currentMousePoint;
 	private Point					  pastMousePoint;
+	private Point					  pastPanPoint;
 	private Vertex				      fromVertex;
 	private AffineTransform		      transform;
 	private Set<FunctionBase>	      functionsToBeRun;
@@ -266,12 +267,16 @@ public class GraphDisplayController extends JPanel implements ClipboardOwner
 			}
 		};
 		viewport.addMouseListener(new MouseAdapter()
-		{		
+		{
 			@Override
 			public void mousePressed(MouseEvent event)
 			{
 				try { viewportMousePressed(event); }
 				catch (NoninvertibleTransformException e) { }
+				
+				if (event.getClickCount() > 1)
+					try { viewportMouseDoubleClicked(event); }
+					catch (NoninvertibleTransformException e) { }
 			}
 			
 			@Override
@@ -336,6 +341,7 @@ public class GraphDisplayController extends JPanel implements ClipboardOwner
 		isMouseDownOnCanvas = false;
 		currentMousePoint = new Point(0, 0);
 		pastMousePoint = new Point(0, 0);
+		pastPanPoint = new Point(0, 0);
 		viewportPanel.add(viewport, BorderLayout.CENTER);
 		viewportPopupMenu = new ViewportPopupMenu();
 		
@@ -851,7 +857,42 @@ public class GraphDisplayController extends JPanel implements ClipboardOwner
 		repaint();
 	}
 	
-	private void viewportMouseReleased(MouseEvent event) throws NoninvertibleTransformException
+	private void viewportMouseDoubleClicked(MouseEvent event) throws NoninvertibleTransformException
+	{
+		if (!viewport.hasFocus())
+			viewport.requestFocus();
+		
+		transform.inverseTransform(event.getPoint(), pastPanPoint);
+		
+		new Timer(50, new ActionListener()
+		{
+			public void actionPerformed(ActionEvent arg0)
+			{
+				Timer timer = (Timer)arg0.getSource(); 
+				
+				try
+				{
+					Point2D focusPoint = new Point2D.Double();
+					transform.inverseTransform(new Point(viewport.getWidth() / 2, viewport.getHeight() / 2), focusPoint);
+					
+					double xDelta = pastMousePoint.x - focusPoint.getX();
+					double yDelta = pastMousePoint.y - focusPoint.getY();
+					
+					transform.translate(xDelta / userSettings.panDecelerationFactor.get(), yDelta / userSettings.panDecelerationFactor.get());
+					viewport.repaint();
+					
+					if(Math.pow(xDelta, 2) + Math.pow(yDelta, 2) < 1.0 / transform.getScaleX())
+						timer.stop();
+				}
+				catch (Exception ex)
+				{
+					timer.stop();
+				}
+			} 
+		} ).start();
+	}
+	
+ 	private void viewportMouseReleased(MouseEvent event) throws NoninvertibleTransformException
 	{
 		switch (tool)
 		{

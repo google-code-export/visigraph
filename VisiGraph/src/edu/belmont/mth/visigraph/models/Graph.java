@@ -86,12 +86,12 @@ public class Graph extends ObservableBase
 	{
 		Map<String, Object> members = JsonUtilities.parseObject(json);
 		
-		this.name = new Property<String>(members.get("name").toString(), "name");
+		this.name = new Property<String>((String)members.get("name"), "name");
 		
-		this.areLoopsAllowed         = new Boolean(members.get("areLoopsAllowed").toString());
-		this.areDirectedEdgesAllowed = new Boolean(members.get("areDirectedEdgesAllowed").toString());
-		this.areMultipleEdgesAllowed = new Boolean(members.get("areMultipleEdgesAllowed").toString());
-		this.areCyclesAllowed        = new Boolean(members.get("areCyclesAllowed").toString());
+		this.areLoopsAllowed         = (Boolean)members.get("areLoopsAllowed");
+		this.areDirectedEdgesAllowed = (Boolean)members.get("areDirectedEdgesAllowed");
+		this.areMultipleEdgesAllowed = (Boolean)members.get("areMultipleEdgesAllowed");
+		this.areCyclesAllowed        = (Boolean)members.get("areCyclesAllowed");
 		
 		this.notificationsSuspended = false;
 		this.vertexListObserver     = new ObserverBase()
