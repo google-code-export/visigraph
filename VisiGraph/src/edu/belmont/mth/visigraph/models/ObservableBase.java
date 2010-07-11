@@ -4,18 +4,17 @@
 package edu.belmont.mth.visigraph.models;
 
 import java.util.*;
-import edu.belmont.mth.visigraph.views.ObserverBase;
+import edu.belmont.mth.visigraph.views.*;
 
 public abstract class ObservableBase
 {
-	// Should really be protected, but inter-package access requires it be public (idk?)
 	public class Property<T>
 	{
-		protected T			   value;
-		protected T			   defaultValue;
-		protected String	   name;
-		protected boolean	   notificationsSuspended	= false;
-		protected ObserverBase valueObserver;
+		private T			 value;
+		private T			 defaultValue;
+		private String	     name;
+		private boolean	     notificationsSuspended	= false;
+		private ObserverBase valueObserver;
 		
 		public Property(final T initialValue, final String name)
 		{
@@ -53,8 +52,15 @@ public abstract class ObservableBase
 		
 		public void set(final T value)
 		{
-			if (this.value != value)
+			if (value instanceof Number)
 			{
+				Number num = (Number) value;
+				if (num.doubleValue() < -Integer.MIN_VALUE || num.doubleValue() > Integer.MAX_VALUE) return;
+				if (Double.isInfinite(num.doubleValue()) || Double.isNaN(num.doubleValue()))         return;
+			}
+			
+			if (this.value != value)
+			{				
 				suspendNotifications(true);
 				if (this.value instanceof ObservableBase)
 					((ObservableBase) this.value).deleteObserver(valueObserver);
