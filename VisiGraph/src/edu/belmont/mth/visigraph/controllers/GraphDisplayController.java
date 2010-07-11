@@ -14,6 +14,8 @@ import java.util.Map.*;
 import javax.swing.*;
 import javax.swing.Timer;
 import javax.swing.border.*;
+import javax.swing.event.EventListenerList;
+
 import edu.belmont.mth.visigraph.gui.*;
 import edu.belmont.mth.visigraph.models.*;
 import edu.belmont.mth.visigraph.models.functions.*;
@@ -61,12 +63,16 @@ public class GraphDisplayController extends JPanel implements ClipboardOwner
 	private AffineTransform		      transform;
 	private Set<FunctionBase>	      functionsToBeRun;
 	private ResourceBundle		      imageIcons;
+	private EventListenerList		  graphChangeListenerList;
 	private UserSettings			  userSettings = UserSettings.instance;
 	
 	public GraphDisplayController(Graph graph)
 	{
 		// Maintain instance
 		thisGdc = this;
+		
+		// Initialize the list of GraphChangeEvent listeners
+		graphChangeListenerList = new EventListenerList();
 		
 		// Add/bind graph
 		this.graph = graph;
@@ -88,7 +94,7 @@ public class GraphDisplayController extends JPanel implements ClipboardOwner
 				hasSettingChanged(source);
 			}
 		});
-		
+				
 		// Add/bind display settings
 		settings = new GraphSettings();
 		settings.addObserver(new ObserverBase()
@@ -105,6 +111,11 @@ public class GraphDisplayController extends JPanel implements ClipboardOwner
 		
 		// Initialize the viewport's affine transform
 		transform = new AffineTransform();
+	}
+	
+	public void addGraphChangeListener(GraphChangeEventListener listener)
+	{
+		graphChangeListenerList.add(GraphChangeEventListener.class, listener);
 	}
 	
 	public void cut()
@@ -164,6 +175,16 @@ public class GraphDisplayController extends JPanel implements ClipboardOwner
 	    clipboard.setContents( stringSelection, thisGdc );
 	}
 	
+	private void fireGraphChangeEvent(GraphChangeEvent evt)
+	{
+		Object[] listeners = graphChangeListenerList.getListenerList();
+		// Each listener occupies two elements - the first is the listener class
+		// and the second is the listener instance
+		for (int i = 0; i < listeners.length; i += 2)
+			if (listeners[i] == GraphChangeEventListener.class)
+				((GraphChangeEventListener) listeners[i + 1]).graphChangeEventOccurred(evt);
+	}
+	
 	public RenderedImage getImage()
 	{
 	    int width = viewport.getWidth();
@@ -207,6 +228,7 @@ public class GraphDisplayController extends JPanel implements ClipboardOwner
 	public void hasGraphChanged(Object source)
 	{
 		repaint();
+		fireGraphChangeEvent(new GraphChangeEvent(graph));
 	}
 	
 	public void hasSettingChanged(Object source)
@@ -515,6 +537,11 @@ public class GraphDisplayController extends JPanel implements ClipboardOwner
 	{
 		ViewportPrinter pv = new ViewportPrinter();
 		pv.print();
+	}
+	
+	public void removeGraphChangeListener(GraphChangeEventListener listener)
+	{
+		graphChangeListenerList.remove(GraphChangeEventListener.class, listener);
 	}
 	
 	public void setTool(Tool tool)
@@ -2263,6 +2290,19 @@ public class GraphDisplayController extends JPanel implements ClipboardOwner
 				return (PAGE_EXISTS);
 			}
 		}
+	}
+	
+	public class GraphChangeEvent extends EventObject
+	{
+		public GraphChangeEvent(Object source)
+		{
+			super(source);
+		}
+	}
+	
+	public interface GraphChangeEventListener extends EventListener
+	{
+		public void graphChangeEventOccurred(GraphChangeEvent evt);
 	}
 }
 
