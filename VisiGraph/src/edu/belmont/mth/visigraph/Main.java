@@ -7,7 +7,7 @@ import java.io.*;
 import java.util.Scanner;
 
 import javax.swing.*;
-import edu.belmont.mth.visigraph.gui.*;
+import edu.belmont.mth.visigraph.gui.windows.*;
 import edu.belmont.mth.visigraph.models.generators.*;
 import edu.belmont.mth.visigraph.settings.*;
 

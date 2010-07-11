@@ -14,9 +14,8 @@ import java.util.Map.*;
 import javax.swing.*;
 import javax.swing.Timer;
 import javax.swing.border.*;
-import javax.swing.event.EventListenerList;
-
-import edu.belmont.mth.visigraph.gui.*;
+import javax.swing.event.*;
+import edu.belmont.mth.visigraph.gui.dialogs.*;
 import edu.belmont.mth.visigraph.models.*;
 import edu.belmont.mth.visigraph.models.functions.*;
 import edu.belmont.mth.visigraph.settings.*;
