@@ -3,12 +3,12 @@
  */
 package edu.belmont.mth.visigraph.models;
 
-import java.awt.geom.Point2D;
+import java.awt.geom.*;
 import java.util.*;
 import java.util.Map.*;
-import edu.belmont.mth.visigraph.settings.GlobalSettings;
+import edu.belmont.mth.visigraph.settings.*;
 import edu.belmont.mth.visigraph.utilities.*;
-import edu.belmont.mth.visigraph.views.ObserverBase;
+import edu.belmont.mth.visigraph.views.*;
 
 /**
  * @author Cameron Behar
@@ -31,7 +31,7 @@ public class Graph extends ObservableBase
 	
 	public Graph()
 	{
-		this(GlobalSettings.defaultGraphName, true, true, true, true);
+		this(UserSettings.instance.defaultGraphName.get(), true, true, true, true);
 	}
 	
 	public Graph(String name, boolean areLoopsAllowed, boolean areDirectedEdgesAllowed, boolean areMultipleEdgesAllowed, boolean areCyclesAllowed)
@@ -217,8 +217,8 @@ public class Graph extends ObservableBase
 			{
 				vertex.x.set(vertex.x.get() + x);
 				vertex.y.set(vertex.y.get() + y);
-				//vertex.x.set(Math.round((vertex.x.get() + x) / GlobalSettings.snapGridSize) * GlobalSettings.snapGridSize);
-				//vertex.y.set(Math.round((vertex.y.get() + y) / GlobalSettings.snapGridSize) * GlobalSettings.snapGridSize);
+				//vertex.x.set(Math.round((vertex.x.get() + x) / userSettings.snapGridSize) * userSettings.snapGridSize);
+				//vertex.y.set(Math.round((vertex.y.get() + y) / userSettings.snapGridSize) * userSettings.snapGridSize);
 			}
 
 		// Now move the handles to where they should go
@@ -226,8 +226,8 @@ public class Graph extends ObservableBase
 		{
 			entry.getKey().handleX.set(entry.getValue().getX());
 			entry.getKey().handleY.set(entry.getValue().getY());
-			//entry.getKey().handleX.set(Math.round(entry.getValue().getX() / GlobalSettings.snapGridSize) * GlobalSettings.snapGridSize);
-			//entry.getKey().handleY.set(Math.round(entry.getValue().getY() / GlobalSettings.snapGridSize) * GlobalSettings.snapGridSize);
+			//entry.getKey().handleX.set(Math.round(entry.getValue().getX() / userSettings.snapGridSize) * userSettings.snapGridSize);
+			//entry.getKey().handleY.set(Math.round(entry.getValue().getY() / userSettings.snapGridSize) * userSettings.snapGridSize);
 		}
 		
 		// Move the captions
@@ -236,8 +236,8 @@ public class Graph extends ObservableBase
 			{
 				caption.x.set(caption.x.get() + x);
 				caption.y.set(caption.y.get() + y);
-				//caption.x.set(Math.round((caption.x.get() + x) / GlobalSettings.snapGridSize) * GlobalSettings.snapGridSize);
-				//caption.y.set(Math.round((caption.y.get() + y) / GlobalSettings.snapGridSize) * GlobalSettings.snapGridSize);
+				//caption.x.set(Math.round((caption.x.get() + x) / userSettings.snapGridSize) * userSettings.snapGridSize);
+				//caption.y.set(Math.round((caption.y.get() + y) / userSettings.snapGridSize) * userSettings.snapGridSize);
 			}
 	}
 	

@@ -12,7 +12,7 @@ import edu.belmont.mth.visigraph.models.*;
  */
 public abstract class FunctionBase implements Comparable<FunctionBase>
 {	
-	public abstract Object evaluate(Graphics2D g2D, Palette p, Graph g);
+	public abstract Object evaluate(Graphics2D g2D, Graph g);
 	
 	public abstract String getDescription();
 	

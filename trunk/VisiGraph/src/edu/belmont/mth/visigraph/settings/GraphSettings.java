@@ -32,7 +32,7 @@ public class GraphSettings extends ObservableBase
 		showVertexLabels   = new Property<Boolean>(GlobalSettings.defaultShowVertexLabels,   "showVertexLabels");
 		showCaptions       = new Property<Boolean>(GlobalSettings.defaultShowCaptions,       "showCaptions");
 		showCaptionHandles = new Property<Boolean>(GlobalSettings.defaultShowCaptionHandles, "showCaptionHandles");
-		showCaptionEditors = new Property<Boolean>(GlobalSettings.defaultShowCaptionEdits,   "showCaptionEdits");
+		showCaptionEditors = new Property<Boolean>(GlobalSettings.defaultShowCaptionEditors, "showCaptionEdits");
 	}
 	
 	public GraphSettings(GraphSettings graphSettings)

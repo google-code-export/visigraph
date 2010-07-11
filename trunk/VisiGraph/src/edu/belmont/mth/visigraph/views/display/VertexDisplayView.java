@@ -14,16 +14,16 @@ import edu.belmont.mth.visigraph.settings.*;
  */
 public class VertexDisplayView
 {	
-	public static void paint(Graphics2D g2D, Palette p, GraphSettings s, Vertex v)
+	public static void paint(Graphics2D g2D, GraphSettings s, Vertex v)
 	{
 		// Draw vertex center
 		Ellipse2D.Double center = new Ellipse2D.Double(v.x.get() - v.radius.get(), v.y.get() - v.radius.get(), v.radius.get() * 2, v.radius.get() * 2);
-		g2D.setPaint((v.isSelected.get() && v.color.get() < 0) ? p.selectedVertexFill.get() : p.getElementColor(v.color.get()));
+		g2D.setPaint((v.isSelected.get() && v.color.get() < 0) ? UserSettings.instance.selectedVertexFill.get() : UserSettings.instance.getElementColor(v.color.get()));
 		g2D.fill(center);
 		
 		// Draw vertex outline
 		Ellipse2D.Double outline = new Ellipse2D.Double(v.x.get() - v.radius.get(), v.y.get() - v.radius.get(), v.radius.get() * 2, v.radius.get() * 2);
-		g2D.setPaint(v.isSelected.get() ? p.selectedVertexLine.get() : p.vertexLine.get());
+		g2D.setPaint(v.isSelected.get() ? UserSettings.instance.selectedVertexLine.get() : UserSettings.instance.vertexLine.get());
 		g2D.draw(outline);
 		
 		// Compute label offset
@@ -40,7 +40,7 @@ public class VertexDisplayView
 
 	public static boolean wasClicked(Vertex vertex, Point point, double scale)
 	{
-		return (Point2D.distance(vertex.x.get(), vertex.y.get(), point.x, point.y) <= vertex.radius.get() + GlobalSettings.defaultVertexClickMargin / scale);
+		return (Point2D.distance(vertex.x.get(), vertex.y.get(), point.x, point.y) <= vertex.radius.get() + UserSettings.instance.vertexClickMargin.get() / scale);
 	}
 	
 	public static boolean wasSelected(Vertex vertex, Rectangle selection)

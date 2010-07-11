@@ -8,10 +8,7 @@ import java.awt.datatransfer.*;
 import java.awt.event.*;
 import java.awt.geom.*;
 import java.awt.image.*;
-import java.awt.print.PageFormat;
-import java.awt.print.Printable;
-import java.awt.print.PrinterException;
-import java.awt.print.PrinterJob;
+import java.awt.print.*;
 import java.util.*;
 import java.util.Map.*;
 import javax.swing.*;
@@ -34,8 +31,7 @@ public class GraphDisplayController extends JPanel implements ClipboardOwner
 	private GraphDisplayController   thisGdc;
 	
 	private Graph				     graph;
-	private GraphSettings 	  settings;
-	private Palette			   	      palette;
+	private GraphSettings 	  		 settings;
 	
 	private JPanel			         toolToolBarPanel;
 	private ToolToolBar		          toolToolBar;
@@ -64,6 +60,7 @@ public class GraphDisplayController extends JPanel implements ClipboardOwner
 	private AffineTransform		      transform;
 	private Set<FunctionBase>	      functionsToBeRun;
 	private ResourceBundle		      imageIcons;
+	private UserSettings			  userSettings = UserSettings.instance;
 	
 	public GraphDisplayController(Graph graph)
 	{
@@ -82,8 +79,7 @@ public class GraphDisplayController extends JPanel implements ClipboardOwner
 		});
 		
 		// Add/bind palette
-		palette = new Palette();
-		palette.addObserver(new ObserverBase()
+		userSettings.addObserver(new ObserverBase()
 		{
 			@Override
 			public void hasChanged(Object source)
@@ -192,11 +188,6 @@ public class GraphDisplayController extends JPanel implements ClipboardOwner
 		return graph;
 	}
 	
-	public Palette getPalette()
-	{
-		return palette;
-	}
-	
 	public GraphSettings getSettings()
 	{
 		return settings;
@@ -231,7 +222,7 @@ public class GraphDisplayController extends JPanel implements ClipboardOwner
 	public void initializeComponents()
 	{
 		setLayout(new BorderLayout());
-		setBackground(GlobalSettings.defaultGraphBackgroundDisplayColor);
+		setBackground(userSettings.graphBackground.get());
 		setOpaque(true);
 		
 		imageIcons = ResourceBundle.getBundle("edu.belmont.mth.visigraph.resources.ImageIconBundle");
@@ -322,7 +313,7 @@ public class GraphDisplayController extends JPanel implements ClipboardOwner
 		{
 			public void mouseWheelMoved(MouseWheelEvent e)
 			{
-				zoomCenter(new Point2D.Double(currentMousePoint.x, currentMousePoint.y), 1 - e.getWheelRotation() * GlobalSettings.scrollIncrementZoom);
+				zoomCenter(new Point2D.Double(currentMousePoint.x, currentMousePoint.y), 1 - e.getWheelRotation() * userSettings.scrollIncrementZoom.get());
 			}
 		});
 		viewport.addKeyListener(new KeyListener()
@@ -363,22 +354,22 @@ public class GraphDisplayController extends JPanel implements ClipboardOwner
 	{
 		Rectangle selection = getSelectionRectangle();
 		
-		g2D.setColor(palette.graphSelectionBoxFill.get());
+		g2D.setColor(userSettings.selectionBoxFill.get());
 		g2D.fillRect(selection.x, selection.y, selection.width, selection.height);
 		
-		g2D.setColor(palette.graphSelectionBoxLine.get());
+		g2D.setColor(userSettings.selectionBoxLine.get());
 		g2D.drawRect(selection.x, selection.y, selection.width, selection.height);
 	}
 	
 	public void paintViewport(Graphics2D g2D)
 	{
-		if (GlobalSettings.drawAntiAliased)
+		if (userSettings.useAntiAliasing.get())
 			g2D.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 		
-		if (GlobalSettings.drawStrokePure)
+		if (userSettings.usePureStroke.get())
 			g2D.setRenderingHint(RenderingHints.KEY_STROKE_CONTROL, RenderingHints.VALUE_STROKE_PURE);
 		
-		if (GlobalSettings.drawBicubicInterpolation)
+		if (userSettings.useBicubicInterpolation.get())
 			g2D.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BICUBIC);
 		
 		// Apply any one-time functions
@@ -387,7 +378,7 @@ public class GraphDisplayController extends JPanel implements ClipboardOwner
 		functionsToBeRun.clear();
 		
 		for (FunctionBase function : run)
-			JOptionPane.showMessageDialog(viewport, function.getDescription() +": " + function.evaluate(g2D, palette, graph), GlobalSettings.applicationName, JOptionPane.OK_OPTION + JOptionPane.INFORMATION_MESSAGE);
+			JOptionPane.showMessageDialog(viewport, function.getDescription() +": " + function.evaluate(g2D, graph), GlobalSettings.applicationName, JOptionPane.OK_OPTION + JOptionPane.INFORMATION_MESSAGE);
 		
 		// Clear everything
 		super.paintComponent(g2D);
@@ -398,11 +389,11 @@ public class GraphDisplayController extends JPanel implements ClipboardOwner
 		g2D.setTransform(original);
 		
 		// Paint the graph
-		GraphDisplayView.paint(g2D, graph, palette, settings);
+		GraphDisplayView.paint(g2D, graph, settings);
 		
 		// Apply any selected functions
 		for (Entry<FunctionBase, JLabel> entry : selectedFunctionLabels.entrySet())
-			entry.getValue().setText(entry.getKey().getDescription() + ": " + entry.getKey().evaluate(g2D, palette, graph));
+			entry.getValue().setText(entry.getKey().getDescription() + ": " + entry.getKey().evaluate(g2D, graph));
 		
 		// Paint controller-specific stuff
 		if (isMouseDownOnCanvas)
@@ -415,7 +406,7 @@ public class GraphDisplayController extends JPanel implements ClipboardOwner
 						// For the edge tool we might need to paint the temporary drag-edge
 						if (fromVertex != null)
 						{
-							g2D.setColor(palette.draggingEdgeLine.get());
+							g2D.setColor(userSettings.draggingEdge.get());
 							g2D.drawLine(fromVertex.x.get().intValue(), fromVertex.y.get().intValue(), currentMousePoint.x, currentMousePoint.y);
 						}
 						
@@ -562,7 +553,7 @@ public class GraphDisplayController extends JPanel implements ClipboardOwner
 				}
 			case KeyEvent.VK_UP:
 				{
-					graph.moveSelected(0, -GlobalSettings.arrowKeyIncrement);
+					graph.moveSelected(0, -userSettings.arrowKeyIncrement.get());
 					for (Edge edge : graph.edges)
 						if (edge.isSelected.get())
 							edge.fixHandle();
@@ -571,7 +562,7 @@ public class GraphDisplayController extends JPanel implements ClipboardOwner
 				}
 			case KeyEvent.VK_RIGHT:
 				{
-					graph.moveSelected(GlobalSettings.arrowKeyIncrement, 0);
+					graph.moveSelected(userSettings.arrowKeyIncrement.get(), 0);
 					for (Edge edge : graph.edges)
 						if (edge.isSelected.get())
 							edge.fixHandle();
@@ -580,7 +571,7 @@ public class GraphDisplayController extends JPanel implements ClipboardOwner
 				}
 			case KeyEvent.VK_DOWN:
 				{
-					graph.moveSelected(0, GlobalSettings.arrowKeyIncrement);
+					graph.moveSelected(0, userSettings.arrowKeyIncrement.get());
 					for (Edge edge : graph.edges)
 						if (edge.isSelected.get())
 							edge.fixHandle();
@@ -589,7 +580,7 @@ public class GraphDisplayController extends JPanel implements ClipboardOwner
 				}
 			case KeyEvent.VK_LEFT:
 				{
-					graph.moveSelected(-GlobalSettings.arrowKeyIncrement, 0);
+					graph.moveSelected(-userSettings.arrowKeyIncrement.get(), 0);
 					for (Edge edge : graph.edges)
 						if (edge.isSelected.get())
 							edge.fixHandle();
@@ -785,7 +776,7 @@ public class GraphDisplayController extends JPanel implements ClipboardOwner
 						Caption caption = new Caption(currentMousePoint.x, currentMousePoint.y, "");
 						graph.captions.add(caption);
 						
-						String newText = EditCaptionDialog.showDialog(this, this, GlobalSettings.defaultCaptionText);
+						String newText = EditCaptionDialog.showDialog(this, this, userSettings.defaultCaptionText.get());
 						
 						if (newText == null)
 							graph.captions.remove(caption);
@@ -970,7 +961,7 @@ public class GraphDisplayController extends JPanel implements ClipboardOwner
 		transform.translate(center.x, center.y);
 		
 		transform.scale(factor, factor);
-		if (transform.getScaleX() > GlobalSettings.maximumZoomFactor)
+		if (transform.getScaleX() > userSettings.maximumZoomFactor.get())
 			zoomMax();
 		
 		transform.translate(-center.x, -center.y);
@@ -985,8 +976,8 @@ public class GraphDisplayController extends JPanel implements ClipboardOwner
 		transform.translate(viewport.getWidth() / 2.0, viewport.getHeight() / 2.0);
 		
 		// We need to fit it to the viewport. So we want to scale according to the lowest viewport-to-graph dimension ratio.
-		double widthRatio = (viewport.getWidth() - GlobalSettings.zoomGraphPadding) / rectangle.getWidth();
-		double heightRatio = (viewport.getHeight() - GlobalSettings.zoomGraphPadding) / rectangle.getHeight();
+		double widthRatio = (viewport.getWidth() - userSettings.zoomGraphPadding.get()) / rectangle.getWidth();
+		double heightRatio = (viewport.getHeight() - userSettings.zoomGraphPadding.get()) / rectangle.getHeight();
 		double minRatio = Math.min(widthRatio, heightRatio);
 		
 		if (minRatio < 1)
@@ -1014,7 +1005,7 @@ public class GraphDisplayController extends JPanel implements ClipboardOwner
 	
 	public void zoomMax()
 	{
-		transform.setTransform(GlobalSettings.maximumZoomFactor, transform.getShearY(), transform.getShearX(), GlobalSettings.maximumZoomFactor, transform.getTranslateX(), transform.getTranslateY());
+		transform.setTransform(userSettings.maximumZoomFactor.get(), transform.getShearY(), transform.getShearX(), userSettings.maximumZoomFactor.get(), transform.getTranslateX(), transform.getTranslateY());
 		viewport.repaint();
 	}
 	
@@ -1124,7 +1115,7 @@ public class GraphDisplayController extends JPanel implements ClipboardOwner
 					isMouseDownOnPaintToolButton = false;
 				}
 			});
-			paintMenuTimer = new Timer(GlobalSettings.paintToolButtonDelay, new ActionListener()
+			paintMenuTimer = new Timer(userSettings.paintToolMenuDelay.get(), new ActionListener()
 			{
 				@Override
 				public void actionPerformed(ActionEvent e)
@@ -1195,10 +1186,10 @@ public class GraphDisplayController extends JPanel implements ClipboardOwner
 			emptyBrushMenuItem.setSelected(true);
 			paintMenu.add(emptyBrushMenuItem);
 			
-			for (int i = 0; i < palette.getElementColorCount(); ++i)
+			for (int i = 0; i < userSettings.elementColors.size(); ++i)
 			{
 				JCheckBoxMenuItem brushMenuItem = new JCheckBoxMenuItem("(" + i + ")  \u2588\u2588\u2588\u2588\u2588\u2588");
-				brushMenuItem.setForeground(palette.getElementColor(i));
+				brushMenuItem.setForeground(userSettings.getElementColor(i));
 				brushMenuItem.addActionListener(paintMenuItemActionListener);
 				paintMenu.add(brushMenuItem);
 			}
@@ -1227,7 +1218,7 @@ public class GraphDisplayController extends JPanel implements ClipboardOwner
 			{
 				public void actionPerformed(ActionEvent e)
 				{
-					double radius = GlobalSettings.arrangeCircleRadiusMultiplier * graph.vertexes.size();
+					double radius = userSettings.arrangeCircleRadiusMultiplier.get() * graph.vertexes.size();
 					double degreesPerVertex = 2 * Math.PI / graph.vertexes.size();
 					
 					for (int i = 0; i < graph.vertexes.size(); ++i)
@@ -1250,13 +1241,13 @@ public class GraphDisplayController extends JPanel implements ClipboardOwner
 					int n = graph.vertexes.size();
 					int rows = (int) Math.round(Math.sqrt(n));
 					int columns = (int) Math.ceil(n / (double) rows);
-					Point2D.Double location = new Point2D.Double((columns / 2.0) * -GlobalSettings.arrangeGridSpacing, (rows / 2.0) * -GlobalSettings.arrangeGridSpacing);
+					Point2D.Double location = new Point2D.Double((columns / 2.0) * -userSettings.arrangeGridSpacing.get(), (rows / 2.0) * -userSettings.arrangeGridSpacing.get());
 					
 					for (int row = 0; row < rows; ++row)
 						for(int col = 0; (row < rows - 1 && col < columns) || (row == rows - 1 && col < (n % columns == 0 ? columns : n % columns)); ++col)
 						{
-							graph.vertexes.get(row * columns + col).x.set(location.x + GlobalSettings.arrangeGridSpacing * col);
-							graph.vertexes.get(row * columns + col).y.set(location.y + GlobalSettings.arrangeGridSpacing * row);
+							graph.vertexes.get(row * columns + col).x.set(location.x + userSettings.arrangeGridSpacing.get() * col);
+							graph.vertexes.get(row * columns + col).y.set(location.y + userSettings.arrangeGridSpacing.get() * row);
 						}
 					
 					zoomFit();
@@ -1351,7 +1342,7 @@ public class GraphDisplayController extends JPanel implements ClipboardOwner
 								timer.stop(); return; 
 							}
 							
-							timer.setDelay((int)(timer.getDelay() * GlobalSettings.applyForcesDecelerationFactor));
+							timer.setDelay((int)(timer.getDelay() * userSettings.autoArrangeDecelerationFactor.get()));
 							
 							HashMap<Vertex, Point2D.Double> forces = new HashMap<Vertex, Point2D.Double>();
 						
@@ -1369,8 +1360,8 @@ public class GraphDisplayController extends JPanel implements ClipboardOwner
 									double xDiff = v1.x.get() - v0.x.get();
 									double yDiff = v1.y.get() - v0.y.get();
 									double distanceSquared = (xDiff * xDiff + yDiff * yDiff);
-									double xForce = GlobalSettings.repulsiveForce * (xDiff / distanceSquared);
-									double yForce = GlobalSettings.repulsiveForce * (yDiff / distanceSquared);
+									double xForce = userSettings.autoArrangeRepulsiveForce.get() * (xDiff / distanceSquared);
+									double yForce = userSettings.autoArrangeRepulsiveForce.get() * (yDiff / distanceSquared);
 									
 									forces.get(v0).x += xForce;
 									forces.get(v0).y += yForce;
@@ -1387,8 +1378,8 @@ public class GraphDisplayController extends JPanel implements ClipboardOwner
 									double xDiff = edge.to.x.get() - edge.from.x.get();
 									double yDiff = edge.to.y.get() - edge.from.y.get();
 									double distanceSquared = (xDiff * xDiff + yDiff * yDiff);
-									double xForce = GlobalSettings.attractiveForce * xDiff * distanceSquared;
-									double yForce = GlobalSettings.attractiveForce * yDiff * distanceSquared;
+									double xForce = userSettings.autoArrangeAttractiveForce.get() * xDiff * distanceSquared;
+									double yForce = userSettings.autoArrangeAttractiveForce.get() * yDiff * distanceSquared;
 									
 									forces.get(edge.from).x += xForce;
 									forces.get(edge.from).y += yForce;
@@ -1835,7 +1826,7 @@ public class GraphDisplayController extends JPanel implements ClipboardOwner
 					catch (NoninvertibleTransformException e1)
 					{}
 					
-					zoomCenter(zoomCenter, GlobalSettings.zoomInFactor);
+					zoomCenter(zoomCenter, userSettings.zoomInFactor.get());
 				}
 			});
 			zoomInButton.setToolTipText("Zoom in");
@@ -1855,7 +1846,7 @@ public class GraphDisplayController extends JPanel implements ClipboardOwner
 					catch (NoninvertibleTransformException e1)
 					{}
 					
-					zoomCenter(zoomCenter, GlobalSettings.zoomOutFactor);
+					zoomCenter(zoomCenter, userSettings.zoomOutFactor.get());
 				}
 			});
 			zoomOutButton.setToolTipText("Zoom out");

@@ -43,7 +43,12 @@ public class ValidatingTextField extends JTextField
 	
 	public void validate()
 	{
-		setBackground(getText().matches(validatingExpression) ? successColor : failColor);
+		setBackground(isValid( ) ? successColor : failColor);
+	}
+	
+	public boolean isValid()
+	{
+		return (validatingExpression == null ? true : getText().matches(validatingExpression));
 	}
 	
 	public String getValidatingExpression()

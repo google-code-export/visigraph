@@ -45,12 +45,13 @@ public class MainWindow extends JFrame
 	private final MainWindow   thisFrame;
 	private final JDesktopPane desktopPane;
 	private final JFileChooser fileChooser;
+	private UserSettings userSettings = UserSettings.instance;
 	
 	public MainWindow()
 	{
 		super(GlobalSettings.applicationName);
 		this.thisFrame = this;
-		this.setSize(GlobalSettings.defaultMainWindowSize);
+		this.setSize(new Dimension(userSettings.mainWindowWidth.get(), userSettings.mainWindowHeight.get()));
 		this.setLocation(450, 200);
 		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		
@@ -240,8 +241,8 @@ public class MainWindow extends JFrame
 					try
 					{
 						frames[frames.length - i - 1].setMaximum(false);
-						frames[frames.length - i - 1].setLocation(i * GlobalSettings.cascadeWindowsOffset, i * GlobalSettings.cascadeWindowsOffset);
-						frames[frames.length - i - 1].setSize(GlobalSettings.defaultGraphWindowSize);
+						frames[frames.length - i - 1].setLocation(i * userSettings.cascadeWindowOffset.get(), i * userSettings.cascadeWindowOffset.get());
+						frames[frames.length - i - 1].setSize(new Dimension(userSettings.graphWindowWidth.get(), userSettings.graphWindowHeight.get()));
 					}
 					catch (PropertyVetoException e1) { }
 				}
@@ -422,7 +423,6 @@ public class MainWindow extends JFrame
 		JInternalFrame selectedFrame = desktopPane.getSelectedFrame();
 		GraphWindow graphWindow = ((GraphWindow)selectedFrame);
 		Graph graph = graphWindow.getGdc().getGraph();
-		Palette palette = graphWindow.getGdc().getPalette();
 		GraphSettings settings = graphWindow.getGdc().getSettings();
 		
 		if(file.getName().endsWith(".vsg"))
@@ -439,7 +439,7 @@ public class MainWindow extends JFrame
 		else if (file.getName().endsWith(".svg"))
 		{
 			FileWriter fw = new FileWriter(file);
-			fw.write(GraphSvgView.format(graph, palette, settings));
+			fw.write(GraphSvgView.format(graph, settings));
 			fw.close();
 		}
 		else if (file.getName().endsWith(".png"))

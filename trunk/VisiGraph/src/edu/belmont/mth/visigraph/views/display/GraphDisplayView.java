@@ -14,20 +14,20 @@ import edu.belmont.mth.visigraph.settings.*;
  */
 public class GraphDisplayView
 {
-	public static void paint(Graphics2D g2D, Graph graph, Palette p, GraphSettings s)
+	public static void paint(Graphics2D g2D, Graph graph, GraphSettings s)
 	{
 		// Draw all the edges first
 		for(Edge edge : graph.edges)
-			EdgeDisplayView.paintEdge(g2D, p, s, edge);
+			EdgeDisplayView.paintEdge(g2D, s, edge);
 		
 		// Then draw all the vertexes
 		for(Vertex vertex : graph.vertexes)
-			VertexDisplayView.paint(g2D, p, s, vertex);
+			VertexDisplayView.paint(g2D, s, vertex);
 		
 		// Then draw all the captions
 		if(s.showCaptions.get())
 			for(Caption caption : graph.captions)
-				CaptionDisplayView.paint(g2D, p, s, caption);
+				CaptionDisplayView.paint(g2D, s, caption);
 	}
 	
 	public static Rectangle2D getBounds(Graph graph)

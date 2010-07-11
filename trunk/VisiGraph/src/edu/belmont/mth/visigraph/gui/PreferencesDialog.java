@@ -3,11 +3,13 @@
  */
 package edu.belmont.mth.visigraph.gui;
 
+import java.io.*;
 import java.awt.*;
-import java.util.*;
 import javax.swing.*;
 import java.awt.event.*;
 import javax.swing.border.*;
+
+import edu.belmont.mth.visigraph.settings.UserSettings;
 
 /**
  * @author Cameron Behar
@@ -54,7 +56,9 @@ public class PreferencesDialog extends JDialog implements ActionListener
 	private static ColorPicker 		   captionTextColorPicker;
 	private static ColorPicker 		   selectedCaptionTextColorPicker;
 	private static ColorPicker 		   uncoloredElementColorPicker;
-	private static Stack<ColorPicker>  elementColorColorPickers;
+	private static JPanel              elementColorsPanel;
+	private static JButton			   addButton;
+	private static JButton			   removeButton;
 	private static ValidatingTextField vertexClickMarginTextField;
 	private static ValidatingTextField edgeHandleClickMarginTextField;
 	private static ValidatingTextField captionHandleClickMarginTextField;
@@ -82,6 +86,8 @@ public class PreferencesDialog extends JDialog implements ActionListener
 	private static ValidatingTextField areCloseDistanceTextField;
 	private static ValidatingTextField paintToolMenuDelayTextField;
 	private static JButton			   resetToDefaultsButton;
+	private static UserSettings		   userSettings = UserSettings.instance;
+	
 	
 	private final int[] columnWidths = new int[] { 125, 165, 160 };
 	private final Insets fieldMargin = new Insets(2, 2, 2, 7);
@@ -110,6 +116,8 @@ public class PreferencesDialog extends JDialog implements ActionListener
 		tabPanel.addTab(" Under the Hood ", initializeUnderTheHoodPanel());
 		
 		inputPanel.add(tabPanel, BorderLayout.CENTER);
+		
+		loadPreferences();
 		
 		//Create and initialize the buttons
 		final JButton okButton = new JButton("Ok");
@@ -343,9 +351,7 @@ public class PreferencesDialog extends JDialog implements ActionListener
 		FieldLabel uncoloredElementLabel = new FieldLabel("Uncolored element:"); uncoloredElementColorPicker = new ColorPicker();
 		FieldLabel elementColorsLabel    = new FieldLabel("Colored elements:");
 		
-		elementColorColorPickers = new Stack<ColorPicker>();
-		
-		final JPanel elementColorsPanel = new JPanel(new LayoutManager()
+		elementColorsPanel = new JPanel(new LayoutManager()
 		{
 			int hgap = 0, vgap = 6;
 			
@@ -481,10 +487,10 @@ public class PreferencesDialog extends JDialog implements ActionListener
 		elementColorsPanel.setBackground(panel.getBackground());
 		elementColorsPanel.setBorder(BorderFactory.createEmptyBorder(-6, 0, 0, 0));
 		
-		JButton addButton = new JButton("Add");
+		addButton = new JButton("Add");
 		addButton.setPreferredSize(new Dimension(80, 28));
 		
-		final JButton removeButton = new JButton("Remove");
+		removeButton = new JButton("Remove");
 		removeButton.setPreferredSize(new Dimension(80, 28));
 		removeButton.setEnabled(false);
 		
@@ -495,7 +501,6 @@ public class PreferencesDialog extends JDialog implements ActionListener
 			{
 				ColorPicker picker = new ColorPicker();
 				elementColorsPanel.add(picker);
-				elementColorColorPickers.push(picker);
 				removeButton.setEnabled(true);
 				elementColorsPanel.revalidate();
 			}
@@ -505,15 +510,14 @@ public class PreferencesDialog extends JDialog implements ActionListener
 			@Override
 			public void actionPerformed(ActionEvent arg0)
 			{
-				elementColorsPanel.remove(elementColorColorPickers.pop());
-				if(elementColorColorPickers.size() == 1) removeButton.setEnabled(false);
+				elementColorsPanel.remove(elementColorsPanel.getComponentCount() - 1);
+				if(elementColorsPanel.getComponentCount() == 1) removeButton.setEnabled(false);
 				elementColorsPanel.revalidate();
 			}
 		} );
 		
 		ColorPicker elementColorColorPicker = new ColorPicker();
 		elementColorsPanel.add(elementColorColorPicker);
-		elementColorColorPickers.push(elementColorColorPicker);
 		
 		JPanel buttonPanel = new JPanel();
 		buttonPanel.setLayout(new BoxLayout(buttonPanel, BoxLayout.LINE_AXIS));
@@ -794,13 +798,221 @@ public class PreferencesDialog extends JDialog implements ActionListener
 	
 	public void actionPerformed(ActionEvent e)
 	{
-		if ("Ok".equals(e.getActionCommand()))
-			value = "value";
-		
-		PreferencesDialog.dialog.setVisible(false);
+		if (e.getActionCommand().equals("Ok"))
+		{
+			if(!validatePreferences( ))
+			{
+				JOptionPane.showMessageDialog(this, "Unable to save preferences because one or more field values are invalid.", "Invalid values!", JOptionPane.ERROR_MESSAGE);
+			}
+			else
+			{
+				savePreferences( );
+				value = "value";
+				PreferencesDialog.dialog.setVisible(false);
+			}
+		}
+		else
+			PreferencesDialog.dialog.setVisible(false);
 	}
 	
+	public boolean validatePreferences()
+	{
+		return (defaultVertexWeightTextField			.isValid( ) && 
+				defaultVertexColorTextField				.isValid( ) && 
+				defaultVertexRadiusTextField			.isValid( ) && 
+				defaultEdgeWeightTextField				.isValid( ) && 
+				defaultEdgeColorTextField				.isValid( ) && 
+				defaultEdgeThicknessTextField			.isValid( ) && 
+				defaultEdgeHandleRadiusRatioTextField	.isValid( ) && 
+				defaultLoopDiameterTextField			.isValid( ) && 
+				vertexClickMarginTextField				.isValid( ) && 
+				edgeHandleClickMarginTextField			.isValid( ) && 
+				captionHandleClickMarginTextField		.isValid( ) && 
+				captionEditorClickMarginTextField		.isValid( ) && 
+				zoomInFactorTextField					.isValid( ) && 
+				zoomOutFactorTextField					.isValid( ) && 
+				maximumZoomFactorTextField				.isValid( ) && 
+				zoomGraphPaddingTextField				.isValid( ) && 
+				scrollIncrementZoomTextField			.isValid( ) && 
+				arrangeCircleRadiusMultiplierTextField	.isValid( ) && 
+				arrangeGridSpacingTextField				.isValid( ) && 
+				autoArrangeAttractiveForceTextField		.isValid( ) && 
+				autoArrangeRepulsiveForceTextField		.isValid( ) && 
+				autoArrangeDecelerationFactorTextField	.isValid( ) && 
+				mainWindowSizeTextField					.isValid( ) && 
+				graphWindowSizeTextField				.isValid( ) && 
+				cascadeWindowOffsetTextField			.isValid( ) && 
+				directedEdgeArrowRatioTextField			.isValid( ) && 
+				arrowKeyIncrementTextField				.isValid( ) && 
+				edgeSnapMarginRatioTextField			.isValid( ) && 
+				areCloseDistanceTextField				.isValid( ) && 
+				paintToolMenuDelayTextField				.isValid( ));
+	}
+	
+	public void loadPreferences()
+	{
+		defaultVertexWeightTextField			.setText( userSettings.defaultVertexWeight.get( ).toString( ) );
+		defaultVertexColorTextField				.setText( userSettings.defaultVertexColor.get( ).toString( ) );
+		defaultVertexPrefixTextField			.setText( userSettings.defaultVertexPrefix.get( ).toString( ) );
+		defaultVertexRadiusTextField			.setText( userSettings.defaultVertexRadius.get( ).toString( ) );
+		defaultVertexIsSelectedCheckBox			.setSelected( userSettings.defaultVertexIsSelected.get( ) );
+		defaultEdgeWeightTextField				.setText( userSettings.defaultEdgeWeight.get( ).toString( ) );
+		defaultEdgeColorTextField				.setText( userSettings.defaultEdgeColor.get( ).toString( ) );
+		defaultEdgePrefixTextField				.setText( userSettings.defaultEdgePrefix.get( ).toString( ) );
+		defaultEdgeThicknessTextField			.setText( userSettings.defaultEdgeThickness.get( ).toString( ) );
+		defaultEdgeHandleRadiusRatioTextField	.setText( userSettings.defaultEdgeHandleRadiusRatio.get( ).toString( ) );
+		defaultLoopDiameterTextField			.setText( userSettings.defaultLoopDiameter.get( ).toString( ) );
+		defaultEdgeIsSelectedCheckBox			.setSelected( userSettings.defaultEdgeIsSelected.get( ) );
+		defaultCaptionTextTextField				.setText( userSettings.defaultCaptionText.get( ) );
+		defaultCaptionIsSelectedCheckBox		.setSelected( userSettings.defaultCaptionIsSelected.get( ) );
+		defaultShowVertexWeightsCheckBox		.setSelected( userSettings.defaultShowVertexWeights.get( ) );
+		defaultShowVertexLabelsCheckBox			.setSelected( userSettings.defaultShowVertexLabels.get( ) );
+		defaultShowEdgeHandlesCheckBox			.setSelected( userSettings.defaultShowEdgeHandles.get( ) );
+		defaultShowEdgeWeightsCheckBox			.setSelected( userSettings.defaultShowEdgeWeights.get( ) );
+		defaultShowCaptionsCheckBox				.setSelected( userSettings.defaultShowCaptions.get( ) );
+		defaultShowCaptionHandlesCheckBox		.setSelected( userSettings.defaultShowCaptionHandles.get( ) );
+		defaultShowCaptionEditorsCheckBox		.setSelected( userSettings.defaultShowCaptionEditors.get( ) );
+		graphBackgroundColorPicker				.setColor( userSettings.graphBackground.get( ) );
+		selectionBoxFillColorPicker				.setColor( userSettings.selectionBoxFill.get( ) );
+		selectionBoxLineColorPicker				.setColor( userSettings.selectionBoxLine.get( ) );
+		vertexLineColorPicker					.setColor( userSettings.vertexLine.get( ) );
+		selectedVertexFillColorPicker			.setColor( userSettings.selectedVertexFill.get( ) );
+		selectedVertexLineColorPicker			.setColor( userSettings.selectedVertexLine.get( ) );
+		draggingHandleEdgeColorPicker			.setColor( userSettings.draggingHandleEdge.get( ) );
+		draggingEdgeColorPicker					.setColor( userSettings.draggingEdge.get( ) );
+		uncoloredEdgeHandleColorPicker			.setColor( userSettings.uncoloredEdgeHandle.get( ) );
+		selectedEdgeColorPicker					.setColor( userSettings.selectedEdge.get( ) );
+		selectedEdgeHandleColorPicker			.setColor( userSettings.selectedEdgeHandle.get( ) );
+		captionTextColorPicker					.setColor( userSettings.captionText.get( ) );
+		selectedCaptionTextColorPicker			.setColor( userSettings.selectedCaptionText.get( ) );
+		uncoloredElementColorPicker				.setColor( userSettings.uncoloredElementFill.get( ) );
+		vertexClickMarginTextField				.setText( userSettings.vertexClickMargin.get( ).toString( ) );
+		edgeHandleClickMarginTextField			.setText( userSettings.edgeHandleClickMargin.get( ).toString( ) );
+		captionHandleClickMarginTextField		.setText( userSettings.captionHandleClickMargin.get( ).toString( ) );
+		captionEditorClickMarginTextField		.setText( userSettings.captionEditorClickMargin.get( ).toString( ) );
+		zoomInFactorTextField					.setText( userSettings.zoomInFactor.get( ).toString( ) );
+		zoomOutFactorTextField					.setText( userSettings.zoomOutFactor.get( ).toString( ) );
+		maximumZoomFactorTextField				.setText( userSettings.maximumZoomFactor.get( ).toString( ) );
+		zoomGraphPaddingTextField				.setText( userSettings.zoomGraphPadding.get( ).toString( ) );
+		scrollIncrementZoomTextField			.setText( userSettings.scrollIncrementZoom.get( ).toString( ) );
+		arrangeCircleRadiusMultiplierTextField	.setText( userSettings.arrangeCircleRadiusMultiplier.get( ).toString( ) );
+		arrangeGridSpacingTextField				.setText( userSettings.arrangeGridSpacing.get( ).toString( ) );
+		autoArrangeAttractiveForceTextField		.setText( userSettings.autoArrangeAttractiveForce.get( ).toString( ) );
+		autoArrangeRepulsiveForceTextField		.setText( userSettings.autoArrangeRepulsiveForce.get( ).toString( ) );
+		autoArrangeDecelerationFactorTextField	.setText( userSettings.autoArrangeDecelerationFactor.get( ).toString( ) );
+		useAntiAliasingCheckBox					.setSelected( userSettings.useAntiAliasing.get( ) );
+		usePureStrokeCheckBox					.setSelected( userSettings.usePureStroke.get( ) );
+		useBicubicInterpolationCheckBox			.setSelected( userSettings.useBicubicInterpolation.get( ) );
+		mainWindowSizeTextField					.setText( userSettings.mainWindowWidth.get( ) + ", " + userSettings.mainWindowHeight.get( ) );
+		graphWindowSizeTextField				.setText( userSettings.graphWindowWidth.get( ) + ", " + userSettings.graphWindowWidth.get( ) );
+		cascadeWindowOffsetTextField			.setText( userSettings.cascadeWindowOffset.get( ).toString( ) );
+		defaultGraphNameTextField				.setText( userSettings.defaultGraphName.get( ) );
+		directedEdgeArrowRatioTextField			.setText( userSettings.directedEdgeArrowRatio.get( ).toString( ) );
+		arrowKeyIncrementTextField				.setText( userSettings.arrowKeyIncrement.get( ).toString( ) );
+		edgeSnapMarginRatioTextField			.setText( userSettings.edgeSnapMarginRatio.get( ).toString( ) );
+		areCloseDistanceTextField				.setText( userSettings.areCloseDistance.get( ).toString( ) );
+		paintToolMenuDelayTextField				.setText( userSettings.paintToolMenuDelay.get( ).toString( ) );
 
+		elementColorsPanel.removeAll();
+		for(Color color : userSettings.elementColors)
+			elementColorsPanel.add(new ColorPicker(color));
+		
+		if(elementColorsPanel.getComponentCount() > 1)
+			removeButton.setEnabled(true);
+	}
+	
+	public void savePreferences()
+	{
+		userSettings.defaultVertexWeight			.set( new Double ( defaultVertexWeightTextField.getText( ) ) );
+		userSettings.defaultVertexColor				.set( new Integer( defaultVertexColorTextField.getText( ) ) );
+		userSettings.defaultVertexPrefix			.set(              defaultVertexPrefixTextField.getText( )   );
+		userSettings.defaultVertexRadius			.set( new Double ( defaultVertexRadiusTextField.getText( ) ) );
+		userSettings.defaultVertexIsSelected		.set( defaultVertexIsSelectedCheckBox.isSelected( ) );
+		userSettings.defaultEdgeWeight				.set( new Double ( defaultEdgeWeightTextField.getText( ) ) );
+		userSettings.defaultEdgeColor				.set( new Integer( defaultEdgeColorTextField.getText( ) ) );
+		userSettings.defaultEdgePrefix				.set(              defaultEdgePrefixTextField.getText( )   );
+		userSettings.defaultEdgeThickness			.set( new Double ( defaultEdgeThicknessTextField.getText( ) ) );
+		userSettings.defaultEdgeHandleRadiusRatio	.set( new Double ( defaultEdgeHandleRadiusRatioTextField.getText( ) ) );
+		userSettings.defaultLoopDiameter			.set( new Double ( defaultLoopDiameterTextField.getText( ) ) );
+		userSettings.defaultEdgeIsSelected			.set( defaultEdgeIsSelectedCheckBox.isSelected( ) );
+		userSettings.defaultCaptionText				.set(              defaultCaptionTextTextField.getText( )   );
+		userSettings.defaultCaptionIsSelected		.set( defaultCaptionIsSelectedCheckBox.isSelected( ) );
+		userSettings.defaultShowVertexWeights		.set( defaultShowVertexWeightsCheckBox.isSelected( ) );
+		userSettings.defaultShowVertexLabels		.set( defaultShowVertexLabelsCheckBox.isSelected( ) );
+		userSettings.defaultShowEdgeHandles			.set( defaultShowEdgeHandlesCheckBox.isSelected( ) );
+		userSettings.defaultShowEdgeWeights			.set( defaultShowEdgeWeightsCheckBox.isSelected( ) );
+		userSettings.defaultShowCaptions			.set( defaultShowCaptionsCheckBox.isSelected( ) );
+		userSettings.defaultShowCaptionHandles		.set( defaultShowCaptionHandlesCheckBox.isSelected( ) );
+		userSettings.defaultShowCaptionEditors		.set( defaultShowCaptionEditorsCheckBox.isSelected( ) );
+		userSettings.graphBackground				.set( graphBackgroundColorPicker.getColor( ) );
+		userSettings.selectionBoxFill				.set( selectionBoxFillColorPicker.getColor( ) );
+		userSettings.selectionBoxLine				.set( selectionBoxLineColorPicker.getColor( ) );
+		userSettings.vertexLine						.set( vertexLineColorPicker.getColor( ) );
+		userSettings.selectedVertexFill				.set( selectedVertexFillColorPicker.getColor( ) );
+		userSettings.selectedVertexLine				.set( selectedVertexLineColorPicker.getColor( ) );
+		userSettings.draggingHandleEdge				.set( draggingHandleEdgeColorPicker.getColor( ) );
+		userSettings.draggingEdge					.set( draggingEdgeColorPicker.getColor( ) );
+		userSettings.uncoloredEdgeHandle			.set( uncoloredEdgeHandleColorPicker.getColor( ) );
+		userSettings.selectedEdge					.set( selectedEdgeColorPicker.getColor( ) );
+		userSettings.selectedEdgeHandle				.set( selectedEdgeHandleColorPicker.getColor( ) );
+		userSettings.captionText					.set( captionTextColorPicker.getColor( ) );
+		userSettings.selectedCaptionText			.set( selectedCaptionTextColorPicker.getColor( ) );
+		userSettings.uncoloredElementFill			.set( uncoloredElementColorPicker.getColor( ) );
+		userSettings.vertexClickMargin				.set( new Double ( vertexClickMarginTextField.getText( ) ) );
+		userSettings.edgeHandleClickMargin			.set( new Double ( edgeHandleClickMarginTextField.getText( ) ) );
+		userSettings.captionHandleClickMargin		.set( new Double ( captionHandleClickMarginTextField.getText( ) ) );
+		userSettings.captionEditorClickMargin		.set( new Double ( captionEditorClickMarginTextField.getText( ) ) );
+		userSettings.zoomInFactor					.set( new Double ( zoomInFactorTextField.getText( ) ) );
+		userSettings.zoomOutFactor					.set( new Double ( zoomOutFactorTextField.getText( ) ) );
+		userSettings.maximumZoomFactor				.set( new Double ( maximumZoomFactorTextField.getText( ) ) );
+		userSettings.zoomGraphPadding				.set( new Double ( zoomGraphPaddingTextField.getText( ) ) );
+		userSettings.scrollIncrementZoom			.set( new Double ( scrollIncrementZoomTextField.getText( ) ) );
+		userSettings.arrangeCircleRadiusMultiplier	.set( new Double ( arrangeCircleRadiusMultiplierTextField.getText( ) ) );
+		userSettings.arrangeGridSpacing				.set( new Double ( arrangeGridSpacingTextField.getText( ) ) );
+		userSettings.autoArrangeAttractiveForce		.set( new Double ( autoArrangeAttractiveForceTextField.getText( ) ) );
+		userSettings.autoArrangeRepulsiveForce		.set( new Double ( autoArrangeRepulsiveForceTextField.getText( ) ) );
+		userSettings.autoArrangeDecelerationFactor	.set( new Double ( autoArrangeDecelerationFactorTextField.getText( ) ) );
+		userSettings.useAntiAliasing				.set( useAntiAliasingCheckBox.isSelected( ) );
+		userSettings.usePureStroke					.set( usePureStrokeCheckBox.isSelected( ) );
+		userSettings.useBicubicInterpolation		.set( useBicubicInterpolationCheckBox.isSelected( ) );
+		
+		String[] dimensions = mainWindowSizeTextField.getText( ).split(",");
+		userSettings.mainWindowWidth				.set( new Integer( dimensions[0].trim() ) );
+		userSettings.mainWindowHeight				.set( new Integer( dimensions[1].trim() ) );
+		dimensions = graphWindowSizeTextField.getText( ).split(",");
+		userSettings.graphWindowWidth				.set( new Integer( dimensions[0].trim() ) );
+		userSettings.graphWindowHeight				.set( new Integer( dimensions[1].trim() ) );
+		
+		userSettings.cascadeWindowOffset			.set( new Integer( cascadeWindowOffsetTextField.getText( ) ) );
+		userSettings.defaultGraphName				.set(              defaultGraphNameTextField.getText( )   );
+		userSettings.directedEdgeArrowRatio			.set( new Double ( directedEdgeArrowRatioTextField.getText( ) ) );
+		userSettings.arrowKeyIncrement				.set( new Double ( arrowKeyIncrementTextField.getText( ) ) );
+		userSettings.edgeSnapMarginRatio			.set( new Double ( edgeSnapMarginRatioTextField.getText( ) ) );
+		userSettings.areCloseDistance				.set( new Double ( areCloseDistanceTextField.getText( ) ) );
+		userSettings.paintToolMenuDelay				.set( new Integer( paintToolMenuDelayTextField.getText( ) ) );
+		
+		userSettings.elementColors.clear();
+		for(Component component : elementColorsPanel.getComponents())
+			if(component instanceof ColorPicker)
+				userSettings.elementColors.add(((ColorPicker)component).getColor());
+		
+		File userSettingsFile = new File("UserSettings.json");
+		
+		try
+		{
+			if(!userSettingsFile.exists())
+				userSettingsFile.createNewFile();
+			
+			FileWriter fileWriter = new FileWriter(userSettingsFile);
+			fileWriter.write(userSettings.toString());
+			fileWriter.close();
+		}
+		catch (IOException exception)
+		{
+			System.out.println("Unable to save user settings to file \"" + userSettingsFile.getAbsolutePath() + "\".");
+		}
+	}
+	
 	private class Header extends JLabel
 	{
 		public Header(String label)

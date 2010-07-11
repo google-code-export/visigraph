@@ -3,6 +3,9 @@
  */
 package edu.belmont.mth.visigraph;
 
+import java.io.*;
+import java.util.Scanner;
+
 import javax.swing.*;
 import edu.belmont.mth.visigraph.gui.*;
 import edu.belmont.mth.visigraph.models.generators.*;
@@ -25,13 +28,15 @@ public class Main
 			System.out.println(e.toString());
 		}
 		
+		LoadPreferences();
+		
 		ValidateGraphGenerators();
 		
 		new MainWindow();
 	}
 	
 	/**
-	 * Validates each {@link GraphGeneratorBase} specified in {@link GlobalSettings} to ensure logical consistency among its rules.
+	 * Validates each {@link GraphGeneratorBase} specified in {@link userSettings} to ensure logical consistency among its rules.
 	 * <p/>
 	 * This method does not return a value, but instead throws an {@link Exception} if an {@link GraphGeneratorBase} implements inconsistent rules.
 	 * Because loops, multiple edges, and cycles are not mutually exclusive concepts, we must provide this sanity-check to ensure that no
@@ -65,7 +70,7 @@ public class Main
 	 * 
 	 * @author Cameron Behar
 	 * @throws Error
-	 *             If an {@link GraphGeneratorBase} in the {@link GlobalSettings}'s registry implements inconsistent rules.
+	 *             If an {@link GraphGeneratorBase} in the {@link userSettings}'s registry implements inconsistent rules.
 	 */
 	private static void ValidateGraphGenerators() throws Error
 	{
@@ -90,4 +95,38 @@ public class Main
 			}
 		}
 	}
+
+	private static void LoadPreferences()
+	{
+		File userSettingsFile = new File("UserSettings.json");
+		if(userSettingsFile.exists())
+		{
+			try
+			{
+				Scanner in = new Scanner(userSettingsFile);
+				
+				StringBuilder sb = new StringBuilder();
+				while(in.hasNextLine())
+					sb.append(in.nextLine());
+				
+				UserSettings.instance.fromString(sb.toString());
+				
+				in.close();
+			}
+			catch (IOException ex)
+			{
+				System.out.print("Unable to write user settings to file \"" + userSettingsFile.getAbsolutePath() + "\"");
+			}
+		}
+	}
 }
+
+
+
+
+
+
+
+
+
+

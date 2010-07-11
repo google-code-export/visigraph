@@ -13,7 +13,7 @@ import edu.belmont.mth.visigraph.models.*;
  */
 public class IsConnectedFunction extends FunctionBase
 {
-	public Object evaluate(Graphics2D g2D, Palette p, Graph g)
+	public Object evaluate(Graphics2D g2D, Graph g)
 	{
 		if(g.vertexes.size() < 1)
 			return false;

@@ -15,13 +15,13 @@ import edu.belmont.mth.visigraph.settings.*;
  */
 public class CaptionDisplayView
 {	
-	public static void paint(Graphics2D g2D, Palette p, GraphSettings s, Caption c)
+	public static void paint(Graphics2D g2D, GraphSettings s, Caption c)
 	{
 		// Load the default image bundle used for the handle and editor images
 		ResourceBundle images = ResourceBundle.getBundle("edu.belmont.mth.visigraph.resources.ImageBundle");
 		
 		// Draw each line in the text
-		g2D.setColor(c.isSelected.get() ? p.selectedCaptionText.get() : p.captionText.get());
+		g2D.setColor(c.isSelected.get() ? UserSettings.instance.selectedCaptionText.get() : UserSettings.instance.captionText.get());
 		String[] lines = c.text.get().split("\\n");
 		for(int i = 0; i < lines.length; ++i)
 			g2D.drawString(lines[i], c.x.get().floatValue(), c.y.get().floatValue() + i * 12);
@@ -44,10 +44,10 @@ public class CaptionDisplayView
 	public static boolean wasHandleClicked(Caption c, Point p, double scale)
 	{
 		Rectangle2D.Double handle = getHandleRectangle(c);
-		handle.x -= GlobalSettings.defaultCaptionHandleClickMargin / scale;
-		handle.y -= GlobalSettings.defaultCaptionHandleClickMargin / scale;
-		handle.width  += 2.0 * GlobalSettings.defaultCaptionHandleClickMargin / scale;
-		handle.height += 2.0 * GlobalSettings.defaultCaptionHandleClickMargin / scale;
+		handle.x -= UserSettings.instance.captionHandleClickMargin.get() / scale;
+		handle.y -= UserSettings.instance.captionHandleClickMargin.get() / scale;
+		handle.width  += 2.0 * UserSettings.instance.captionHandleClickMargin.get() / scale;
+		handle.height += 2.0 * UserSettings.instance.captionHandleClickMargin.get() / scale;
 		
 		return handle.contains(p);
 	}
@@ -60,10 +60,10 @@ public class CaptionDisplayView
 	public static boolean wasEditorClicked(Caption c, Point p, double scale)
 	{
 		Rectangle2D.Double editor = getEditorRectangle(c);
-		editor.x -= GlobalSettings.defaultCaptionEditorClickMargin / scale;
-		editor.y -= GlobalSettings.defaultCaptionEditorClickMargin / scale;
-		editor.width  += 2.0 * GlobalSettings.defaultCaptionEditorClickMargin / scale;
-		editor.height += 2.0 * GlobalSettings.defaultCaptionEditorClickMargin / scale;
+		editor.x -= UserSettings.instance.captionEditorClickMargin.get() / scale;
+		editor.y -= UserSettings.instance.captionEditorClickMargin.get() / scale;
+		editor.width  += 2.0 * UserSettings.instance.captionEditorClickMargin.get() / scale;
+		editor.height += 2.0 * UserSettings.instance.captionEditorClickMargin.get() / scale;
 		
 		return editor.contains(p);
 	}

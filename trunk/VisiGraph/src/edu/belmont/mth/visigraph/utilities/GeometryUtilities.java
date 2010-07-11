@@ -28,7 +28,7 @@ public class GeometryUtilities
 	
 	public static boolean areClose(Point2D point, Line2D line)
 	{
-		return line.ptSegDistSq(point) <= GlobalSettings.areCloseDistance;
+		return line.ptSegDistSq(point) <= UserSettings.instance.areCloseDistance.get();
 	}
 	
 	public static double determinant(double[][] A)

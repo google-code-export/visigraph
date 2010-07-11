@@ -4,7 +4,7 @@
 package edu.belmont.mth.visigraph.models.generators;
 
 import edu.belmont.mth.visigraph.models.*;
-import edu.belmont.mth.visigraph.settings.GlobalSettings;
+import edu.belmont.mth.visigraph.settings.*;
 import edu.belmont.mth.visigraph.utilities.RegexUtilities;
 
 /**
@@ -19,7 +19,7 @@ public class CycleGraphGenerator extends GraphGeneratorBase
 		
 		String[] params = args.split("\\s+");
 		int n = Integer.parseInt(params[0]);
-		double radius = GlobalSettings.arrangeCircleRadiusMultiplier * n;
+		double radius = UserSettings.instance.arrangeCircleRadiusMultiplier.get() * n;
 		double degreesPerVertex = 2 * Math.PI / n;
 		
 		for(int i = 0; i < n; ++i)

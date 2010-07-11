@@ -15,17 +15,17 @@ import edu.belmont.mth.visigraph.utilities.*;
  */
 public class EdgeDisplayView
 {	
-	public static void paintEdge(Graphics2D g2D, Palette p, GraphSettings s, Edge e)
+	public static void paintEdge(Graphics2D g2D, GraphSettings s, Edge e)
 	{
 		// Decide where we should draw the handle and/or arrow head
 		Point2D apparentHandleLocation = e.isLinear() ? GeometryUtilities.midpoint(e.from, e.to) : e.getHandlePoint2D();
-		double handleRadius = e.thickness.get() * GlobalSettings.defaultEdgeHandleRadiusRatio;
+		double handleRadius = e.thickness.get() * UserSettings.instance.defaultEdgeHandleRadiusRatio.get();
 		
 		Stroke oldStroke = g2D.getStroke();
 		
 		// Set the edge-specific stroke
 		g2D.setStroke(new BasicStroke(e.thickness.get().floatValue()));
-		g2D.setPaint(e.isSelected.get() ? p.selectedEdgeLine.get() : p.getElementColor(e.color.get()));
+		g2D.setPaint(e.isSelected.get() ? UserSettings.instance.selectedEdge.get() : UserSettings.instance.getElementColor(e.color.get()));
 
 		// Draw the edge
 		if (e.isLinear())
@@ -65,8 +65,8 @@ public class EdgeDisplayView
 			for(int i = 0; i < 3; ++i)
 			{
 				double theta = tangentAngle + i * 2.0 * Math.PI / 3.0;
-				arrowPoint[i] = new Point2D.Double(e.thickness.get() * GlobalSettings.defaultDirectedEdgeArrowRatio * Math.cos(theta) + apparentHandleLocation.getX(), 
-												   e.thickness.get() * GlobalSettings.defaultDirectedEdgeArrowRatio * Math.sin(theta) + apparentHandleLocation.getY());
+				arrowPoint[i] = new Point2D.Double(e.thickness.get() * UserSettings.instance.directedEdgeArrowRatio.get() * Math.cos(theta) + apparentHandleLocation.getX(), 
+												   e.thickness.get() * UserSettings.instance.directedEdgeArrowRatio.get() * Math.sin(theta) + apparentHandleLocation.getY());
 			}
 			
 			Path2D.Double path = new Path2D.Double();
@@ -88,7 +88,7 @@ public class EdgeDisplayView
 	
 	public static boolean wasClicked(Edge edge, Point point, double scale)
 	{
-		return (Point2D.distance(edge.handleX.get(), edge.handleY.get(), point.x, point.y) <= edge.thickness.get() * GlobalSettings.defaultEdgeHandleRadiusRatio + GlobalSettings.defaultEdgeHandleClickMargin / scale);
+		return (Point2D.distance(edge.handleX.get(), edge.handleY.get(), point.x, point.y) <= edge.thickness.get() * UserSettings.instance.defaultEdgeHandleRadiusRatio.get() + UserSettings.instance.edgeHandleClickMargin.get() / scale);
 	}
 	
 	public static boolean wasSelected(Edge edge, Rectangle selection)

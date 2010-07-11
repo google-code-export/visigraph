@@ -13,7 +13,7 @@ import edu.belmont.mth.visigraph.utilities.*;
  */
 public class CaptionSvgView
 {	
-	public static String format(Caption c, Palette p, GraphSettings s)
+	public static String format(Caption c, GraphSettings s)
 	{
 		StringBuilder sb = new StringBuilder();
 		
@@ -23,7 +23,7 @@ public class CaptionSvgView
 			sb.append("<text ");
 			sb.append("x=\"" + c.x.get() + "\" ");
 			sb.append("y=\"" + (c.y.get() + i * 12) + "\" ");
-			sb.append("fill=\"" + SvgUtilities.formatColor(c.isSelected.get() ? p.selectedCaptionText.get() : p.captionText.get()) + "\">" + SvgUtilities.formatString(lines[i]) + "</text>\r\n");
+			sb.append("fill=\"" + SvgUtilities.formatColor(c.isSelected.get() ? UserSettings.instance.selectedCaptionText.get() : UserSettings.instance.captionText.get()) + "\">" + SvgUtilities.formatString(lines[i]) + "</text>\r\n");
 		}
 		
 		return sb.toString();

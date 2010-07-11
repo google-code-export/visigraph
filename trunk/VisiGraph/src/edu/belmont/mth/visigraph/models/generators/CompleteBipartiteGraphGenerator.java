@@ -4,8 +4,8 @@
 package edu.belmont.mth.visigraph.models.generators;
 
 import edu.belmont.mth.visigraph.models.*;
-import edu.belmont.mth.visigraph.settings.GlobalSettings;
-import edu.belmont.mth.visigraph.utilities.RegexUtilities;
+import edu.belmont.mth.visigraph.settings.*;
+import edu.belmont.mth.visigraph.utilities.*;
 
 /**
  * @author Cameron Behar
@@ -22,10 +22,10 @@ public class CompleteBipartiteGraphGenerator extends GraphGeneratorBase
 		int s = Integer.parseInt(params[1]);
 		
 		for(int j = 0; j < r; ++j)
-			ret.vertexes.add(new Vertex(ret.nextVertexId(), (j - (r / 2)) * GlobalSettings.arrangeGridSpacing, -GlobalSettings.arrangeGridSpacing));
+			ret.vertexes.add(new Vertex(ret.nextVertexId(), (j - (r / 2)) * UserSettings.instance.arrangeGridSpacing.get(), -UserSettings.instance.arrangeGridSpacing.get()));
 		
 		for(int j = 0; j < s; ++j)
-			ret.vertexes.add(new Vertex(ret.nextVertexId(), (j - (s / 2)) * GlobalSettings.arrangeGridSpacing, GlobalSettings.arrangeGridSpacing));
+			ret.vertexes.add(new Vertex(ret.nextVertexId(), (j - (s / 2)) * UserSettings.instance.arrangeGridSpacing.get(), UserSettings.instance.arrangeGridSpacing.get()));
 		
 		for(int j = 0; j < r; ++j)
 			for(int k = 0; k < s; ++k)

@@ -12,7 +12,7 @@ import edu.belmont.mth.visigraph.settings.*;
  */
 public class GraphSvgView
 {	
-	public static String format(Graph g, Palette p, GraphSettings s)
+	public static String format(Graph g, GraphSettings s)
 	{
 		StringBuilder sb = new StringBuilder();
 		
@@ -21,13 +21,13 @@ public class GraphSvgView
 		sb.append("<svg width=\"100%\" height=\"100%\" version=\"1.1\" xmlns=\"http://www.w3.org/2000/svg\">\r\n");
 		
 		for(Edge edge : g.edges)
-			sb.append(EdgeSvgView.format(edge, p, s));
+			sb.append(EdgeSvgView.format(edge, s));
 		
 		for(Vertex vertex : g.vertexes)
-			sb.append(VertexSvgView.format(vertex, p, s));
+			sb.append(VertexSvgView.format(vertex, s));
 		
 		for(Caption caption : g.captions)
-			sb.append(CaptionSvgView.format(caption, p, s));
+			sb.append(CaptionSvgView.format(caption, s));
 		
 		sb.append("\n</svg>");
 		
