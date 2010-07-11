@@ -4,6 +4,9 @@
 package edu.belmont.mth.visigraph.models.generators;
 
 import java.awt.geom.*;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 import edu.belmont.mth.visigraph.models.*;
 import edu.belmont.mth.visigraph.settings.*;
 
@@ -13,12 +16,13 @@ import edu.belmont.mth.visigraph.settings.*;
  */
 public class EmptyGraphGenerator extends GraphGeneratorBase
 {
-	public Graph generate(String args, boolean areLoopsAllowed, boolean areDirectedEdgesAllowed, boolean areMultipleEdgesAllowed, boolean areCyclesAllowed)
+	public Graph generate(String params, boolean areLoopsAllowed, boolean areDirectedEdgesAllowed, boolean areMultipleEdgesAllowed, boolean areCyclesAllowed)
 	{
-		Graph ret = super.generate(args, areLoopsAllowed, areDirectedEdgesAllowed, areMultipleEdgesAllowed, areCyclesAllowed);
+		Graph ret = super.generate(params, areLoopsAllowed, areDirectedEdgesAllowed, areMultipleEdgesAllowed, areCyclesAllowed);
 		
-		String[] params = args.split("\\s+");
-		int n = (params[0].trim().length() > 0 ? Integer.parseInt(params[0]) : 0);
+		Pattern pattern = Pattern.compile(getParametersValidatingExpression());
+		Matcher matcher = pattern.matcher(params); matcher.find();
+		int n = (matcher.group(0).trim().length() > 0 ? Integer.parseInt(matcher.group(1)) : 0);
 		
 		int rows = (int) Math.round(Math.sqrt(n));
 		int columns = (int) Math.ceil(n / (double) rows);

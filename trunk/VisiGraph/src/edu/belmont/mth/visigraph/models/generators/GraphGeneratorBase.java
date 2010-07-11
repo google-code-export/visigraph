@@ -27,7 +27,7 @@ public abstract class GraphGeneratorBase
 	
 	public abstract String      getDescription();
 	
-	public          Graph       generate(String args, boolean areLoopsAllowed, boolean areDirectedEdgesAllowed, boolean areMultipleEdgesAllowed, boolean areCyclesAllowed)
+	public          Graph       generate(String params, boolean areLoopsAllowed, boolean areDirectedEdgesAllowed, boolean areMultipleEdgesAllowed, boolean areCyclesAllowed)
 	{
 		return new Graph("Untitled " + getDescription(), areLoopsAllowed, areDirectedEdgesAllowed, areMultipleEdgesAllowed, areCyclesAllowed);
 	}

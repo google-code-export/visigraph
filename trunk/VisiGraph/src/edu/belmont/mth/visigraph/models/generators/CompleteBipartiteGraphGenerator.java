@@ -3,6 +3,9 @@
  */
 package edu.belmont.mth.visigraph.models.generators;
 
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 import edu.belmont.mth.visigraph.models.*;
 import edu.belmont.mth.visigraph.settings.*;
 
@@ -12,13 +15,14 @@ import edu.belmont.mth.visigraph.settings.*;
  */
 public class CompleteBipartiteGraphGenerator extends GraphGeneratorBase
 {
-	public Graph generate(String args, boolean areLoopsAllowed, boolean areDirectedEdgesAllowed, boolean areMultipleEdgesAllowed, boolean areCyclesAllowed)
+	public Graph generate(String params, boolean areLoopsAllowed, boolean areDirectedEdgesAllowed, boolean areMultipleEdgesAllowed, boolean areCyclesAllowed)
 	{
-		Graph ret = super.generate(args, areLoopsAllowed, areDirectedEdgesAllowed, areMultipleEdgesAllowed, areCyclesAllowed);
+		Graph ret = super.generate(params, areLoopsAllowed, areDirectedEdgesAllowed, areMultipleEdgesAllowed, areCyclesAllowed);
 		
-		String[] params = args.split("\\s+");
-		int r = Integer.parseInt(params[0]);
-		int s = Integer.parseInt(params[1]);
+		Pattern pattern = Pattern.compile(getParametersValidatingExpression());
+		Matcher matcher = pattern.matcher(params); matcher.find();
+		int r = Integer.parseInt(matcher.group(1));
+		int s = Integer.parseInt(matcher.group(2));
 		
 		for(int j = 0; j < r; ++j)
 			ret.vertexes.add(new Vertex(ret.nextVertexId(), (j - (r / 2)) * UserSettings.instance.arrangeGridSpacing.get(), -UserSettings.instance.arrangeGridSpacing.get()));
@@ -45,7 +49,7 @@ public class CompleteBipartiteGraphGenerator extends GraphGeneratorBase
 	
 	public String getParametersValidatingExpression()
 	{
-		return "^\\s*(\\d+),?\\s*(\\d+)\\s*$";
+		return "^\\s*(\\d+)\\s+(\\d+)\\s*$";
 	}
 	
 	public BooleanRule areLoopsAllowed()

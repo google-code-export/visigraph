@@ -3,6 +3,9 @@
  */
 package edu.belmont.mth.visigraph.models.generators;
 
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 import edu.belmont.mth.visigraph.models.*;
 
 /**
@@ -11,13 +14,14 @@ import edu.belmont.mth.visigraph.models.*;
  */
 public class SymmetricTreeGraphGenerator extends GraphGeneratorBase
 {
-	public Graph generate(String args, boolean areLoopsAllowed, boolean areDirectedEdgesAllowed, boolean areMultipleEdgesAllowed, boolean areCyclesAllowed)
+	public Graph generate(String params, boolean areLoopsAllowed, boolean areDirectedEdgesAllowed, boolean areMultipleEdgesAllowed, boolean areCyclesAllowed)
 	{
-		Graph ret = super.generate(args, areLoopsAllowed, areDirectedEdgesAllowed, areMultipleEdgesAllowed, areCyclesAllowed);
+		Graph ret = super.generate(params, areLoopsAllowed, areDirectedEdgesAllowed, areMultipleEdgesAllowed, areCyclesAllowed);
 		
-		String[] parts = args.split("\\s+");
-		int levelCount = Integer.parseInt(parts[0]);
-		int fanOut = Integer.parseInt(parts[1]);
+		Pattern pattern = Pattern.compile(getParametersValidatingExpression());
+		Matcher matcher = pattern.matcher(params); matcher.find();
+		int levelCount = Integer.parseInt(matcher.group(1));
+		int fanOut = Integer.parseInt(matcher.group(2));
 		
 		buildTree(ret, levelCount, fanOut, 0.0, 0.0);
 		
@@ -55,7 +59,7 @@ public class SymmetricTreeGraphGenerator extends GraphGeneratorBase
 	
 	public String getParametersValidatingExpression()
 	{
-		return "^\\s*(\\d+),?\\s*(\\d+)\\s*$";
+		return "^\\s*(\\d+)\\s*(\\d+)\\s*$";
 	}
 	
 	public BooleanRule areLoopsAllowed()
