@@ -734,9 +734,12 @@ public class GraphDisplayController extends JPanel implements ClipboardOwner
 								if (!caption.isSelected.get() && !isShiftDown)
 									graph.deselectAll();
 								
-								String newText = EditCaptionDialog.showDialog(this, this, caption.text.get());
-								if (newText != null)
-									caption.text.set(newText);
+								EditCaptionDialog.Value newValue = EditCaptionDialog.showDialog(this, this, caption.text.get(), caption.size.get());
+								if (newValue != null)
+								{
+									caption.text.set(newValue.getText());
+									caption.size.set(newValue.getSize());
+								}
 								
 								pointerToolClickedObject = true;
 								break;
@@ -808,12 +811,14 @@ public class GraphDisplayController extends JPanel implements ClipboardOwner
 						Caption caption = new Caption(currentMousePoint.x, currentMousePoint.y, "");
 						graph.captions.add(caption);
 						
-						String newText = EditCaptionDialog.showDialog(this, this, userSettings.defaultCaptionText.get());
-						
-						if (newText == null)
-							graph.captions.remove(caption);
+						EditCaptionDialog.Value newValue = EditCaptionDialog.showDialog(this, this, userSettings.defaultCaptionText.get(), userSettings.defaultCaptionFontSize.get());
+						if (newValue != null)
+						{
+							caption.text.set(newValue.getText());
+							caption.size.set(newValue.getSize());
+						}
 						else
-							caption.text.set(newText);
+							graph.captions.remove(caption);
 					}
 					
 					break;

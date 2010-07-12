@@ -70,6 +70,7 @@ public class GlobalSettings
 	public static final double					 defaultVertexClickMargin					= 2.5;
 	
 	public static final String					 defaultCaptionText							= "";
+	public static final Integer					 defaultCaptionFontSize						= 11;
 	public static final boolean					 defaultCaptionIsSelected					= false;
 	public static final double					 defaultCaptionHandleClickMargin			= 2.5;
 	public static final double					 defaultCaptionEditorClickMargin			= 2.5;
