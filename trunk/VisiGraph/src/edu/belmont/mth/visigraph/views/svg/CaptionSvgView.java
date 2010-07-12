@@ -23,7 +23,7 @@ public class CaptionSvgView
 			sb.append("<text ");
 			sb.append("x=\"" + c.x.get() + "\" ");
 			sb.append("y=\"" + (c.y.get() + i * 12) + "\" ");
-			sb.append("fill=\"" + SvgUtilities.formatColor(c.isSelected.get() ? UserSettings.instance.selectedCaptionText.get() : UserSettings.instance.captionText.get()) + "\">" + SvgUtilities.formatString(lines[i]) + "</text>\r\n");
+			sb.append("fill=\"" + SvgUtilities.formatColor(c.isSelected.get() ? ColorUtilities.blend(UserSettings.instance.captionText.get(), UserSettings.instance.selectedCaptionText.get()) : UserSettings.instance.captionText.get()) + "\">" + SvgUtilities.formatString(lines[i]) + "</text>\r\n");
 		}
 		
 		return sb.toString();

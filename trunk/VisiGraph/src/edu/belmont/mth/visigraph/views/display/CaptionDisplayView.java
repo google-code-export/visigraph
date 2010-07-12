@@ -8,6 +8,7 @@ import java.awt.geom.*;
 import java.util.*;
 import edu.belmont.mth.visigraph.models.*;
 import edu.belmont.mth.visigraph.settings.*;
+import edu.belmont.mth.visigraph.utilities.ColorUtilities;
 
 /**
  * @author Cameron Behar
@@ -21,7 +22,7 @@ public class CaptionDisplayView
 		ResourceBundle images = ResourceBundle.getBundle("edu.belmont.mth.visigraph.resources.ImageBundle");
 		
 		// Draw each line in the text
-		g2D.setColor(c.isSelected.get() ? UserSettings.instance.selectedCaptionText.get() : UserSettings.instance.captionText.get());
+		g2D.setColor(c.isSelected.get() ? ColorUtilities.blend(UserSettings.instance.captionText.get(), UserSettings.instance.selectedCaptionText.get()) : UserSettings.instance.captionText.get());
 		String[] lines = c.text.get().split("\\n");
 		for(int i = 0; i < lines.length; ++i)
 			g2D.drawString(lines[i], c.x.get().floatValue(), c.y.get().floatValue() + i * 12);

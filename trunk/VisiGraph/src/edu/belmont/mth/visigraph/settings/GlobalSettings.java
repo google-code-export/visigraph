@@ -23,11 +23,10 @@ public class GlobalSettings
 	
 	public static final Color					 defaultVertexLine							= Color.black;
 	
-	public static final Color					 defaultDraggingHandleEdgeLine				= Color.lightGray;
 	public static final Color					 defaultDraggingEdgeLine					= Color.lightGray;
-	public static final Color					 defaultUncoloredEdgeHandleFill				= Color.lightGray;
+	public static final Color					 defaultEdgeHandleFill						= Color.lightGray;
 	
-	public static final Color					 defaultSelectedVertexFill					= new Color(150, 150, 200);
+	public static final Color					 defaultSelectedVertexFill					= new Color(0, 0, 255, 75);
 	public static final Color					 defaultSelectedVertexLine					= Color.blue;
 	
 	public static final Color					 defaultSelectedEdgeLine					= Color.blue;
@@ -36,7 +35,7 @@ public class GlobalSettings
 	public static final double					 defaultDirectedEdgeArrowRatio				= 4.0;
 	
 	public static final Color					 defaultCaptionTextDisplayColor				= Color.black;
-	public static final Color					 defaultSelectedCaptionTextDisplayColor		= new Color(0, 0, 150);
+	public static final Color					 defaultSelectedCaptionTextDisplayColor		= Color.blue;
 	
 	// Initialized with black, gray, and 6 colors--past 6 hues with no saturation or brightness difference, some of the colors become difficult to distinguish.
 	public static final Color[]					 defaultElementColors						= new Color[] { Color.black, new Color(185, 122, 27), Color.getHSBColor(0, .95f, .95f), Color.getHSBColor(1/6f, .95f, .95f), Color.getHSBColor(2/6f, .95f, .95f), Color.getHSBColor(3/6f, .95f, .95f), Color.getHSBColor(4/6f, .95f, .95f), Color.getHSBColor(5/6f, .95f, .95f) };

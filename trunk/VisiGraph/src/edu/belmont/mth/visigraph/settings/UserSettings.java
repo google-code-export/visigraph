@@ -44,9 +44,8 @@ public class UserSettings extends ObservableBase
 	public final Property<Color>   vertexLine;
 	public final Property<Color>   selectedVertexFill;
 	public final Property<Color>   selectedVertexLine;
-	public final Property<Color>   draggingHandleEdge;
 	public final Property<Color>   draggingEdge;
-	public final Property<Color>   uncoloredEdgeHandle;
+	public final Property<Color>   edgeHandle;
 	public final Property<Color>   selectedEdge;
 	public final Property<Color>   selectedEdgeHandle;
 	public final Property<Color>   captionText;
@@ -112,9 +111,8 @@ public class UserSettings extends ObservableBase
 		this.vertexLine						= new Property<Color>  (GlobalSettings.defaultVertexLine,						"vertexLine"					);
 		this.selectedVertexFill				= new Property<Color>  (GlobalSettings.defaultSelectedVertexFill,				"selectedVertexFill"			);
 		this.selectedVertexLine				= new Property<Color>  (GlobalSettings.defaultSelectedVertexLine,				"selectedVertexLine"			);
-		this.draggingHandleEdge				= new Property<Color>  (GlobalSettings.defaultDraggingHandleEdgeLine,			"draggingHandleEdge"			);
 		this.draggingEdge					= new Property<Color>  (GlobalSettings.defaultDraggingEdgeLine,					"draggingEdge"					);
-		this.uncoloredEdgeHandle			= new Property<Color>  (GlobalSettings.defaultUncoloredEdgeHandleFill,			"uncoloredEdgeHandle"			);
+		this.edgeHandle						= new Property<Color>  (GlobalSettings.defaultEdgeHandleFill,					"edgeHandle"					);
 		this.selectedEdge					= new Property<Color>  (GlobalSettings.defaultSelectedEdgeLine,					"selectedEdge"					);
 		this.selectedEdgeHandle				= new Property<Color>  (GlobalSettings.defaultSelectedEdgeHandleFill,			"selectedEdgeHandle"			);
 		this.captionText					= new Property<Color>  (GlobalSettings.defaultCaptionTextDisplayColor,			"captionText"					);
@@ -198,9 +196,8 @@ public class UserSettings extends ObservableBase
 		if(members.containsKey("vertexLine"))					vertexLine					 .set( (Color)   members.get( "vertexLine"		 				) );
 		if(members.containsKey("selectedVertexFill"))			selectedVertexFill			 .set( (Color)   members.get( "selectedVertexFill"				) );
 		if(members.containsKey("selectedVertexLine"))			selectedVertexLine			 .set( (Color)   members.get( "selectedVertexLine"				) );
-		if(members.containsKey("draggingHandleEdge"))			draggingHandleEdge			 .set( (Color)   members.get( "draggingHandleEdge"				) );
 		if(members.containsKey("draggingEdge"))					draggingEdge				 .set( (Color)   members.get( "draggingEdge"					) );
-		if(members.containsKey("uncoloredEdgeHandle"))			uncoloredEdgeHandle			 .set( (Color)   members.get( "uncoloredEdgeHandle"				) );
+		if(members.containsKey("edgeHandle"))					edgeHandle			 		 .set( (Color)   members.get( "edgeHandle"						) );
 		if(members.containsKey("selectedEdge"))					selectedEdge				 .set( (Color)   members.get( "selectedEdge"					) );
 		if(members.containsKey("selectedEdgeHandle"))			selectedEdgeHandle			 .set( (Color)   members.get( "selectedEdgeHandle"				) );
 		if(members.containsKey("captionText"))					captionText					 .set( (Color)   members.get( "captionText"						) );
@@ -274,9 +271,8 @@ public class UserSettings extends ObservableBase
 		members.put("vertexLine",					vertexLine						);
 		members.put("selectedVertexFill",			selectedVertexFill				);
 		members.put("selectedVertexLine",			selectedVertexLine				);
-		members.put("draggingHandleEdge",			draggingHandleEdge				);
 		members.put("draggingEdge",					draggingEdge					);
-		members.put("uncoloredEdgeHandle",			uncoloredEdgeHandle				);
+		members.put("edgeHandle",					edgeHandle						);
 		members.put("selectedEdge",					selectedEdge					);
 		members.put("selectedEdgeHandle",			selectedEdgeHandle				);
 		members.put("captionText",					captionText						);
