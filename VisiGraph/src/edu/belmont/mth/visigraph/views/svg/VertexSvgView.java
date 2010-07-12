@@ -21,9 +21,9 @@ public class VertexSvgView
 		sb.append("cx=\"" + v.x.get() + "\" ");
 		sb.append("cy=\"" + v.y.get() + "\" ");
 		sb.append("r=\"" + v.radius.get() + "\" ");
-		sb.append("stroke=\"" + SvgUtilities.formatColor(v.isSelected.get() ? UserSettings.instance.selectedVertexLine.get() : UserSettings.instance.vertexLine.get()) + "\" ");
+		sb.append("stroke=\"" + SvgUtilities.formatColor(v.isSelected.get() ? ColorUtilities.blend(UserSettings.instance.vertexLine.get(), UserSettings.instance.selectedVertexLine.get()) : UserSettings.instance.vertexLine.get()) + "\" ");
 		sb.append("stroke-width=\"1\" ");
-		sb.append("fill=\"" + SvgUtilities.formatColor((v.isSelected.get() && v.color.get() < 0) ? UserSettings.instance.selectedVertexFill.get() : UserSettings.instance.getElementColor(v.color.get())) + "\" />\r\n");
+		sb.append("fill=\"" + SvgUtilities.formatColor(v.isSelected.get() ? ColorUtilities.blend(UserSettings.instance.getElementColor(v.color.get()), UserSettings.instance.selectedVertexFill.get()) : UserSettings.instance.getElementColor(v.color.get())) + "\" />\r\n");
 		
 		double offset = v.radius.get() / Math.sqrt(2.0) + 1;
 		
@@ -32,7 +32,7 @@ public class VertexSvgView
 			sb.append("<text ");
 			sb.append("x=\"" + (v.x.get() + offset) + "\" ");
 			sb.append("y=\"" + (v.y.get() + offset + 10) + "\" ");
-			sb.append("fill=\"" + SvgUtilities.formatColor(v.isSelected.get() ? UserSettings.instance.selectedVertexLine.get() : UserSettings.instance.vertexLine.get()) + "\">" + SvgUtilities.formatString(v.label.get()) + "</text>\r\n");
+			sb.append("fill=\"" + SvgUtilities.formatColor(v.isSelected.get() ? ColorUtilities.blend(UserSettings.instance.vertexLine.get(), UserSettings.instance.selectedVertexLine.get()) : UserSettings.instance.vertexLine.get()) + "\">" + SvgUtilities.formatString(v.label.get()) + "</text>\r\n");
 		}
 		
 		if(s.showVertexWeights.get())
@@ -40,7 +40,7 @@ public class VertexSvgView
 			sb.append("<text ");
 			sb.append("x=\"" + (v.x.get() + v.radius.get() + 3f) + "\" ");
 			sb.append("y=\"" + v.y.get() + "\" ");
-			sb.append("fill=\"" + SvgUtilities.formatColor(v.isSelected.get() ? UserSettings.instance.selectedVertexLine.get() : UserSettings.instance.vertexLine.get()) + "\">" + SvgUtilities.formatString(v.weight.get().toString()) + "</text>\r\n");
+			sb.append("fill=\"" + SvgUtilities.formatColor(v.isSelected.get() ? ColorUtilities.blend(UserSettings.instance.vertexLine.get(), UserSettings.instance.selectedVertexLine.get()) : UserSettings.instance.vertexLine.get()) + "\">" + SvgUtilities.formatString(v.weight.get().toString()) + "</text>\r\n");
 		}
 		
 		return sb.toString();

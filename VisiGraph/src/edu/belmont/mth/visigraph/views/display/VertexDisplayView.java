@@ -7,6 +7,7 @@ import java.awt.*;
 import java.awt.geom.*;
 import edu.belmont.mth.visigraph.models.*;
 import edu.belmont.mth.visigraph.settings.*;
+import edu.belmont.mth.visigraph.utilities.*;
 
 /**
  * @author Cameron Behar
@@ -18,12 +19,12 @@ public class VertexDisplayView
 	{
 		// Draw vertex center
 		Ellipse2D.Double center = new Ellipse2D.Double(v.x.get() - v.radius.get(), v.y.get() - v.radius.get(), v.radius.get() * 2, v.radius.get() * 2);
-		g2D.setPaint((v.isSelected.get() && v.color.get() < 0) ? UserSettings.instance.selectedVertexFill.get() : UserSettings.instance.getElementColor(v.color.get()));
+		g2D.setColor(v.isSelected.get() ? ColorUtilities.blend(UserSettings.instance.getElementColor(v.color.get()), UserSettings.instance.selectedVertexFill.get()) : UserSettings.instance.getElementColor(v.color.get()));
 		g2D.fill(center);
 		
 		// Draw vertex outline
 		Ellipse2D.Double outline = new Ellipse2D.Double(v.x.get() - v.radius.get(), v.y.get() - v.radius.get(), v.radius.get() * 2, v.radius.get() * 2);
-		g2D.setPaint(v.isSelected.get() ? UserSettings.instance.selectedVertexLine.get() : UserSettings.instance.vertexLine.get());
+		g2D.setColor(v.isSelected.get() ? ColorUtilities.blend(UserSettings.instance.vertexLine.get(), UserSettings.instance.selectedVertexLine.get()) : UserSettings.instance.vertexLine.get());
 		g2D.draw(outline);
 		
 		// Compute label offset

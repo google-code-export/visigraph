@@ -50,9 +50,8 @@ public class PreferencesDialog extends JDialog implements ActionListener
 	private static ColorPicker		   vertexLineColorPicker;
 	private static ColorPicker		   selectedVertexFillColorPicker;
 	private static ColorPicker		   selectedVertexLineColorPicker;
-	private static ColorPicker 		   draggingHandleEdgeColorPicker;
 	private static ColorPicker 		   draggingEdgeColorPicker;
-	private static ColorPicker 		   uncoloredEdgeHandleColorPicker;
+	private static ColorPicker 		   edgeHandleColorPicker;
 	private static ColorPicker 		   selectedEdgeColorPicker;
 	private static ColorPicker 	   	   selectedEdgeHandleColorPicker;
 	private static ColorPicker 		   captionTextColorPicker;
@@ -339,9 +338,8 @@ public class PreferencesDialog extends JDialog implements ActionListener
 		FieldLabel selectedVertexLineLabel = new FieldLabel("Selected line:"); selectedVertexLineColorPicker = new ColorPicker();
 			
 		Header edgeColorsHeader = new Header("Edge colors:");
-		FieldLabel draggingHandleEdgeLabel  = new FieldLabel("Dragging handle:");  draggingHandleEdgeColorPicker  = new ColorPicker();
 		FieldLabel draggingEdgeLabel        = new FieldLabel("Dragging:");         draggingEdgeColorPicker        = new ColorPicker();
-		FieldLabel uncoloredEdgeHandleLabel = new FieldLabel("Uncolored handle:"); uncoloredEdgeHandleColorPicker = new ColorPicker();
+		FieldLabel edgeHandleLabel 			= new FieldLabel("Uncolored handle:"); edgeHandleColorPicker		  = new ColorPicker();
 		FieldLabel selectedEdgeLabel        = new FieldLabel("Selected:");         selectedEdgeColorPicker        = new ColorPicker();
 		FieldLabel selectedEdgeHandleLabel  = new FieldLabel("Selected handle:");  selectedEdgeHandleColorPicker  = new ColorPicker();
 			
@@ -556,9 +554,8 @@ public class PreferencesDialog extends JDialog implements ActionListener
 					.addComponent(vertexLineLabel)
 					.addComponent(selectedVertexFillLabel)
 					.addComponent(selectedVertexLineLabel)
-					.addComponent(draggingHandleEdgeLabel)
 					.addComponent(draggingEdgeLabel)
-					.addComponent(uncoloredEdgeHandleLabel)
+					.addComponent(edgeHandleLabel)
 					.addComponent(selectedEdgeLabel)
 					.addComponent(selectedEdgeHandleLabel)
 					.addComponent(captionTextLabel)
@@ -573,9 +570,8 @@ public class PreferencesDialog extends JDialog implements ActionListener
 					.addComponent(vertexLineColorPicker)
 					.addComponent(selectedVertexFillColorPicker)
 					.addComponent(selectedVertexLineColorPicker)
-					.addComponent(draggingHandleEdgeColorPicker)
 					.addComponent(draggingEdgeColorPicker)
-					.addComponent(uncoloredEdgeHandleColorPicker)
+					.addComponent(edgeHandleColorPicker)
 					.addComponent(selectedEdgeColorPicker)
 					.addComponent(selectedEdgeHandleColorPicker)
 					.addComponent(captionTextColorPicker)
@@ -596,9 +592,8 @@ public class PreferencesDialog extends JDialog implements ActionListener
 				.addGroup(layout.createParallelGroup(GroupLayout.Alignment.CENTER).addComponent(selectedVertexFillLabel).addComponent(selectedVertexFillColorPicker))
 				.addGroup(layout.createParallelGroup(GroupLayout.Alignment.CENTER).addComponent(selectedVertexLineLabel).addComponent(selectedVertexLineColorPicker))
 				.addComponent(edgeColorsHeader)
-				.addGroup(layout.createParallelGroup(GroupLayout.Alignment.CENTER).addComponent(draggingHandleEdgeLabel).addComponent(draggingHandleEdgeColorPicker))
 				.addGroup(layout.createParallelGroup(GroupLayout.Alignment.CENTER).addComponent(draggingEdgeLabel).addComponent(draggingEdgeColorPicker))
-				.addGroup(layout.createParallelGroup(GroupLayout.Alignment.CENTER).addComponent(uncoloredEdgeHandleLabel).addComponent(uncoloredEdgeHandleColorPicker))
+				.addGroup(layout.createParallelGroup(GroupLayout.Alignment.CENTER).addComponent(edgeHandleLabel).addComponent(edgeHandleColorPicker))
 				.addGroup(layout.createParallelGroup(GroupLayout.Alignment.CENTER).addComponent(selectedEdgeLabel).addComponent(selectedEdgeColorPicker))
 				.addGroup(layout.createParallelGroup(GroupLayout.Alignment.CENTER).addComponent(selectedEdgeHandleLabel).addComponent(selectedEdgeHandleColorPicker))
 				.addComponent(captionColorsHeader)
@@ -874,9 +869,8 @@ public class PreferencesDialog extends JDialog implements ActionListener
 		vertexLineColorPicker					.setColor( userSettings.vertexLine.get( ) );
 		selectedVertexFillColorPicker			.setColor( userSettings.selectedVertexFill.get( ) );
 		selectedVertexLineColorPicker			.setColor( userSettings.selectedVertexLine.get( ) );
-		draggingHandleEdgeColorPicker			.setColor( userSettings.draggingHandleEdge.get( ) );
 		draggingEdgeColorPicker					.setColor( userSettings.draggingEdge.get( ) );
-		uncoloredEdgeHandleColorPicker			.setColor( userSettings.uncoloredEdgeHandle.get( ) );
+		edgeHandleColorPicker					.setColor( userSettings.edgeHandle.get( ) );
 		selectedEdgeColorPicker					.setColor( userSettings.selectedEdge.get( ) );
 		selectedEdgeHandleColorPicker			.setColor( userSettings.selectedEdgeHandle.get( ) );
 		captionTextColorPicker					.setColor( userSettings.captionText.get( ) );
@@ -947,9 +941,8 @@ public class PreferencesDialog extends JDialog implements ActionListener
 		userSettings.vertexLine						.set( vertexLineColorPicker.getColor( ) );
 		userSettings.selectedVertexFill				.set( selectedVertexFillColorPicker.getColor( ) );
 		userSettings.selectedVertexLine				.set( selectedVertexLineColorPicker.getColor( ) );
-		userSettings.draggingHandleEdge				.set( draggingHandleEdgeColorPicker.getColor( ) );
 		userSettings.draggingEdge					.set( draggingEdgeColorPicker.getColor( ) );
-		userSettings.uncoloredEdgeHandle			.set( uncoloredEdgeHandleColorPicker.getColor( ) );
+		userSettings.edgeHandle						.set( edgeHandleColorPicker.getColor( ) );
 		userSettings.selectedEdge					.set( selectedEdgeColorPicker.getColor( ) );
 		userSettings.selectedEdgeHandle				.set( selectedEdgeHandleColorPicker.getColor( ) );
 		userSettings.captionText					.set( captionTextColorPicker.getColor( ) );
