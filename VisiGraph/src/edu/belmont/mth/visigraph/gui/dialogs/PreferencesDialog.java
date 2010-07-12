@@ -36,6 +36,7 @@ public class PreferencesDialog extends JDialog implements ActionListener
 	private static ValidatingTextField defaultLoopDiameterTextField;
 	private static JCheckBox           defaultEdgeIsSelectedCheckBox;
 	private static JTextField 		   defaultCaptionTextTextField;
+	private static ValidatingTextField defaultCaptionFontSizeTextField;
 	private static JCheckBox           defaultCaptionIsSelectedCheckBox;
 	private static JCheckBox           defaultShowVertexWeightsCheckBox;
 	private static JCheckBox           defaultShowVertexLabelsCheckBox;
@@ -88,7 +89,6 @@ public class PreferencesDialog extends JDialog implements ActionListener
 	private static ValidatingTextField areCloseDistanceTextField;
 	private static ValidatingTextField paintToolMenuDelayTextField;
 	private static UserSettings		   userSettings = UserSettings.instance;
-	
 	
 	private final int[] columnWidths = new int[] { 125, 165, 160 };
 	private final Insets fieldMargin = new Insets(2, 2, 2, 7);
@@ -186,7 +186,8 @@ public class PreferencesDialog extends JDialog implements ActionListener
 		defaultEdgeIsSelectedCheckBox.setMinimumSize(new Dimension(32, 26));
 		
 		Header captionDefaultsHeader = new Header("Caption properties:");
-		FieldLabel defaultCaptionTextLabel = new FieldLabel("Text:"); defaultCaptionTextTextField = new JTextField(20); defaultCaptionTextTextField.setMargin(fieldMargin); defaultCaptionTextTextField.setMaximumSize(new Dimension(175, defaultVertexWeightTextField.getPreferredSize().height));
+		FieldLabel defaultCaptionTextLabel     = new FieldLabel("Text:");      defaultCaptionTextTextField     = new JTextField(20);                     defaultCaptionTextTextField    .setMargin(fieldMargin); defaultCaptionTextTextField    .setMaximumSize(new Dimension(175, defaultVertexWeightTextField.getPreferredSize().height));
+		FieldLabel defaultCaptionFontSizeLabel = new FieldLabel("Font size:"); defaultCaptionFontSizeTextField = new ValidatingTextField(8, "\\d{1,3}"); defaultCaptionFontSizeTextField.setMargin(fieldMargin); defaultCaptionFontSizeTextField.setMaximumSize(new Dimension(70, defaultVertexWeightTextField.getPreferredSize().height));
 		FieldLabel defaultCaptionIsSelectedLabel = new FieldLabel("Is selected:");
 		defaultCaptionIsSelectedCheckBox = new JCheckBox();
 		defaultCaptionIsSelectedCheckBox.setBackground(panel.getBackground());
@@ -254,6 +255,7 @@ public class PreferencesDialog extends JDialog implements ActionListener
 					.addComponent(defaultLoopDiameterLabel)
 					.addComponent(defaultEdgeIsSelectedLabel)
 					.addComponent(defaultCaptionTextLabel)
+					.addComponent(defaultCaptionFontSizeLabel)
 					.addComponent(defaultCaptionIsSelectedLabel)
 					.addComponent(defaultShowEdgeHandlesLabel)
 					.addComponent(defaultShowEdgeWeightsLabel)
@@ -277,6 +279,7 @@ public class PreferencesDialog extends JDialog implements ActionListener
 					.addComponent(defaultLoopDiameterTextField)
 					.addComponent(defaultEdgeIsSelectedCheckBox)
 					.addComponent(defaultCaptionTextTextField)
+					.addComponent(defaultCaptionFontSizeTextField)
 					.addComponent(defaultCaptionIsSelectedCheckBox)
 					.addComponent(defaultShowEdgeHandlesCheckBox)
 					.addComponent(defaultShowEdgeWeightsCheckBox)
@@ -305,6 +308,7 @@ public class PreferencesDialog extends JDialog implements ActionListener
 				.addGroup(layout.createParallelGroup(GroupLayout.Alignment.CENTER).addComponent(defaultEdgeIsSelectedLabel).addComponent(defaultEdgeIsSelectedCheckBox))
 				.addComponent(captionDefaultsHeader)
 				.addGroup(layout.createParallelGroup(GroupLayout.Alignment.CENTER).addComponent(defaultCaptionTextLabel).addComponent(defaultCaptionTextTextField))
+				.addGroup(layout.createParallelGroup(GroupLayout.Alignment.CENTER).addComponent(defaultCaptionFontSizeLabel).addComponent(defaultCaptionFontSizeTextField))
 				.addGroup(layout.createParallelGroup(GroupLayout.Alignment.CENTER).addComponent(defaultCaptionIsSelectedLabel).addComponent(defaultCaptionIsSelectedCheckBox))
 				.addComponent(viewportDefaultsHeader)
 				.addGroup(layout.createParallelGroup(GroupLayout.Alignment.CENTER).addComponent(defaultShowEdgeHandlesLabel).addComponent(defaultShowEdgeHandlesCheckBox))
@@ -814,7 +818,8 @@ public class PreferencesDialog extends JDialog implements ActionListener
 				defaultEdgeColorTextField				.isValid( ) && 
 				defaultEdgeThicknessTextField			.isValid( ) && 
 				defaultEdgeHandleRadiusRatioTextField	.isValid( ) && 
-				defaultLoopDiameterTextField			.isValid( ) && 
+				defaultLoopDiameterTextField			.isValid( ) &&
+				defaultCaptionFontSizeTextField			.isValid( ) &&
 				vertexClickMarginTextField				.isValid( ) && 
 				edgeHandleClickMarginTextField			.isValid( ) && 
 				captionHandleClickMarginTextField		.isValid( ) && 
@@ -855,6 +860,7 @@ public class PreferencesDialog extends JDialog implements ActionListener
 		defaultLoopDiameterTextField			.setText( userSettings.defaultLoopDiameter.get( ).toString( ) );
 		defaultEdgeIsSelectedCheckBox			.setSelected( userSettings.defaultEdgeIsSelected.get( ) );
 		defaultCaptionTextTextField				.setText( userSettings.defaultCaptionText.get( ) );
+		defaultCaptionFontSizeTextField			.setText( userSettings.defaultCaptionFontSize.get( ).toString( ) );
 		defaultCaptionIsSelectedCheckBox		.setSelected( userSettings.defaultCaptionIsSelected.get( ) );
 		defaultShowVertexWeightsCheckBox		.setSelected( userSettings.defaultShowVertexWeights.get( ) );
 		defaultShowVertexLabelsCheckBox			.setSelected( userSettings.defaultShowVertexLabels.get( ) );
@@ -918,36 +924,37 @@ public class PreferencesDialog extends JDialog implements ActionListener
 		userSettings.defaultVertexColor				.set( new Integer( defaultVertexColorTextField.getText( ) ) );
 		userSettings.defaultVertexPrefix			.set(              defaultVertexPrefixTextField.getText( )   );
 		userSettings.defaultVertexRadius			.set( new Double ( defaultVertexRadiusTextField.getText( ) ) );
-		userSettings.defaultVertexIsSelected		.set( defaultVertexIsSelectedCheckBox.isSelected( ) );
+		userSettings.defaultVertexIsSelected		.set(              defaultVertexIsSelectedCheckBox.isSelected( ) );
 		userSettings.defaultEdgeWeight				.set( new Double ( defaultEdgeWeightTextField.getText( ) ) );
 		userSettings.defaultEdgeColor				.set( new Integer( defaultEdgeColorTextField.getText( ) ) );
 		userSettings.defaultEdgePrefix				.set(              defaultEdgePrefixTextField.getText( )   );
 		userSettings.defaultEdgeThickness			.set( new Double ( defaultEdgeThicknessTextField.getText( ) ) );
 		userSettings.defaultEdgeHandleRadiusRatio	.set( new Double ( defaultEdgeHandleRadiusRatioTextField.getText( ) ) );
 		userSettings.defaultLoopDiameter			.set( new Double ( defaultLoopDiameterTextField.getText( ) ) );
-		userSettings.defaultEdgeIsSelected			.set( defaultEdgeIsSelectedCheckBox.isSelected( ) );
+		userSettings.defaultEdgeIsSelected			.set( 			   defaultEdgeIsSelectedCheckBox.isSelected( ) );
 		userSettings.defaultCaptionText				.set(              defaultCaptionTextTextField.getText( )   );
-		userSettings.defaultCaptionIsSelected		.set( defaultCaptionIsSelectedCheckBox.isSelected( ) );
-		userSettings.defaultShowVertexWeights		.set( defaultShowVertexWeightsCheckBox.isSelected( ) );
-		userSettings.defaultShowVertexLabels		.set( defaultShowVertexLabelsCheckBox.isSelected( ) );
-		userSettings.defaultShowEdgeHandles			.set( defaultShowEdgeHandlesCheckBox.isSelected( ) );
-		userSettings.defaultShowEdgeWeights			.set( defaultShowEdgeWeightsCheckBox.isSelected( ) );
-		userSettings.defaultShowCaptions			.set( defaultShowCaptionsCheckBox.isSelected( ) );
-		userSettings.defaultShowCaptionHandles		.set( defaultShowCaptionHandlesCheckBox.isSelected( ) );
-		userSettings.defaultShowCaptionEditors		.set( defaultShowCaptionEditorsCheckBox.isSelected( ) );
-		userSettings.graphBackground				.set( graphBackgroundColorPicker.getColor( ) );
-		userSettings.selectionBoxFill				.set( selectionBoxFillColorPicker.getColor( ) );
-		userSettings.selectionBoxLine				.set( selectionBoxLineColorPicker.getColor( ) );
-		userSettings.vertexLine						.set( vertexLineColorPicker.getColor( ) );
-		userSettings.selectedVertexFill				.set( selectedVertexFillColorPicker.getColor( ) );
-		userSettings.selectedVertexLine				.set( selectedVertexLineColorPicker.getColor( ) );
-		userSettings.draggingEdge					.set( draggingEdgeColorPicker.getColor( ) );
-		userSettings.edgeHandle						.set( edgeHandleColorPicker.getColor( ) );
-		userSettings.selectedEdge					.set( selectedEdgeColorPicker.getColor( ) );
-		userSettings.selectedEdgeHandle				.set( selectedEdgeHandleColorPicker.getColor( ) );
-		userSettings.captionText					.set( captionTextColorPicker.getColor( ) );
-		userSettings.selectedCaptionText			.set( selectedCaptionTextColorPicker.getColor( ) );
-		userSettings.uncoloredElementFill			.set( uncoloredElementColorPicker.getColor( ) );
+		userSettings.defaultCaptionFontSize			.set( new Integer( defaultCaptionFontSizeTextField.getText( ) ) );
+		userSettings.defaultCaptionIsSelected		.set( 			   defaultCaptionIsSelectedCheckBox.isSelected( ) );
+		userSettings.defaultShowVertexWeights		.set( 			   defaultShowVertexWeightsCheckBox.isSelected( ) );
+		userSettings.defaultShowVertexLabels		.set( 			   defaultShowVertexLabelsCheckBox.isSelected( ) );
+		userSettings.defaultShowEdgeHandles			.set( 			   defaultShowEdgeHandlesCheckBox.isSelected( ) );
+		userSettings.defaultShowEdgeWeights			.set( 			   defaultShowEdgeWeightsCheckBox.isSelected( ) );
+		userSettings.defaultShowCaptions			.set( 			   defaultShowCaptionsCheckBox.isSelected( ) );
+		userSettings.defaultShowCaptionHandles		.set( 			   defaultShowCaptionHandlesCheckBox.isSelected( ) );
+		userSettings.defaultShowCaptionEditors		.set( 			   defaultShowCaptionEditorsCheckBox.isSelected( ) );
+		userSettings.graphBackground				.set( 			   graphBackgroundColorPicker.getColor( ) );
+		userSettings.selectionBoxFill				.set( 			   selectionBoxFillColorPicker.getColor( ) );
+		userSettings.selectionBoxLine				.set( 			   selectionBoxLineColorPicker.getColor( ) );
+		userSettings.vertexLine						.set( 			   vertexLineColorPicker.getColor( ) );
+		userSettings.selectedVertexFill				.set( 			   selectedVertexFillColorPicker.getColor( ) );
+		userSettings.selectedVertexLine				.set( 			   selectedVertexLineColorPicker.getColor( ) );
+		userSettings.draggingEdge					.set( 			   draggingEdgeColorPicker.getColor( ) );
+		userSettings.edgeHandle						.set( 			   edgeHandleColorPicker.getColor( ) );
+		userSettings.selectedEdge					.set( 			   selectedEdgeColorPicker.getColor( ) );
+		userSettings.selectedEdgeHandle				.set( 			   selectedEdgeHandleColorPicker.getColor( ) );
+		userSettings.captionText					.set( 			   captionTextColorPicker.getColor( ) );
+		userSettings.selectedCaptionText			.set( 			   selectedCaptionTextColorPicker.getColor( ) );
+		userSettings.uncoloredElementFill			.set( 			   uncoloredElementColorPicker.getColor( ) );
 		userSettings.vertexClickMargin				.set( new Double ( vertexClickMarginTextField.getText( ) ) );
 		userSettings.edgeHandleClickMargin			.set( new Double ( edgeHandleClickMarginTextField.getText( ) ) );
 		userSettings.captionHandleClickMargin		.set( new Double ( captionHandleClickMarginTextField.getText( ) ) );
@@ -963,9 +970,9 @@ public class PreferencesDialog extends JDialog implements ActionListener
 		userSettings.autoArrangeAttractiveForce		.set( new Double ( autoArrangeAttractiveForceTextField.getText( ) ) );
 		userSettings.autoArrangeRepulsiveForce		.set( new Double ( autoArrangeRepulsiveForceTextField.getText( ) ) );
 		userSettings.autoArrangeDecelerationFactor	.set( new Double ( autoArrangeDecelerationFactorTextField.getText( ) ) );
-		userSettings.useAntiAliasing				.set( useAntiAliasingCheckBox.isSelected( ) );
-		userSettings.usePureStroke					.set( usePureStrokeCheckBox.isSelected( ) );
-		userSettings.useBicubicInterpolation		.set( useBicubicInterpolationCheckBox.isSelected( ) );
+		userSettings.useAntiAliasing				.set(              useAntiAliasingCheckBox.isSelected( ) );
+		userSettings.usePureStroke					.set(              usePureStrokeCheckBox.isSelected( ) );
+		userSettings.useBicubicInterpolation		.set(              useBicubicInterpolationCheckBox.isSelected( ) );
 		
 		String[] dimensions = mainWindowSizeTextField.getText( ).split(",");
 		userSettings.mainWindowWidth				.set( new Integer( dimensions[0].trim() ) );

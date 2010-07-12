@@ -23,9 +23,15 @@ public class CaptionDisplayView
 		
 		// Draw each line in the text
 		g2D.setColor(c.isSelected.get() ? ColorUtilities.blend(UserSettings.instance.captionText.get(), UserSettings.instance.selectedCaptionText.get()) : UserSettings.instance.captionText.get());
+		
+		Font oldFont = g2D.getFont();
+		g2D.setFont(new Font(oldFont.getFamily(), oldFont.getStyle(), c.size.get()));
+		
 		String[] lines = c.text.get().split("\\n");
 		for(int i = 0; i < lines.length; ++i)
-			g2D.drawString(lines[i], c.x.get().floatValue(), c.y.get().floatValue() + i * 12);
+			g2D.drawString(lines[i], c.x.get().floatValue(), c.y.get().floatValue() + (i + 0.9f) * c.size.get() - 10);
+		
+		g2D.setFont(oldFont);
 		
 		// Draw the handle
 		if(s.showCaptionHandles.get())

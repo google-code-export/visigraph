@@ -30,6 +30,7 @@ public class UserSettings extends ObservableBase
 	public final Property<Double>  defaultLoopDiameter;
 	public final Property<Boolean> defaultEdgeIsSelected;
 	public final Property<String>  defaultCaptionText;
+	public final Property<Integer> defaultCaptionFontSize;
 	public final Property<Boolean> defaultCaptionIsSelected;
 	public final Property<Boolean> defaultShowVertexWeights;
 	public final Property<Boolean> defaultShowVertexLabels;
@@ -97,6 +98,7 @@ public class UserSettings extends ObservableBase
 		this.defaultLoopDiameter			= new Property<Double> (GlobalSettings.defaultLoopDiameter,						"defaultLoopDiameter"			);
 		this.defaultEdgeIsSelected			= new Property<Boolean>(GlobalSettings.defaultEdgeIsSelected,					"defaultEdgeIsSelected"			);
 		this.defaultCaptionText				= new Property<String> (GlobalSettings.defaultCaptionText,						"defaultCaptionText"			);
+		this.defaultCaptionFontSize			= new Property<Integer>(GlobalSettings.defaultCaptionFontSize,					"defaultCaptionFontSize"		);
 		this.defaultCaptionIsSelected		= new Property<Boolean>(GlobalSettings.defaultCaptionIsSelected,				"defaultCaptionIsSelected"		);
 		this.defaultShowVertexWeights		= new Property<Boolean>(GlobalSettings.defaultShowVertexWeights,				"defaultShowVertexWeights"		);
 		this.defaultShowVertexLabels		= new Property<Boolean>(GlobalSettings.defaultShowVertexLabels,					"defaultShowVertexLabels"		);
@@ -182,6 +184,7 @@ public class UserSettings extends ObservableBase
 		if(members.containsKey("defaultLoopDiameter"))			defaultLoopDiameter			 .set( (Double)  members.get( "defaultLoopDiameter"				) );
 		if(members.containsKey("defaultEdgeIsSelected"))		defaultEdgeIsSelected		 .set( (Boolean) members.get( "defaultEdgeIsSelected"			) );
 		if(members.containsKey("defaultCaptionText"))			defaultCaptionText			 .set( (String)  members.get( "defaultCaptionText"				) );
+		if(members.containsKey("defaultCaptionFontSize"))		defaultCaptionFontSize		 .set( (Integer) members.get( "defaultCaptionFontSize"			) );
 		if(members.containsKey("defaultCaptionIsSelected"))		defaultCaptionIsSelected	 .set( (Boolean) members.get( "defaultCaptionIsSelected"		) );
 		if(members.containsKey("defaultShowVertexWeights"))		defaultShowVertexWeights	 .set( (Boolean) members.get( "defaultShowVertexWeights"		) );
 		if(members.containsKey("defaultShowVertexLabels"))		defaultShowVertexLabels		 .set( (Boolean) members.get( "defaultShowVertexLabels"			) );
@@ -257,6 +260,7 @@ public class UserSettings extends ObservableBase
 		members.put("defaultLoopDiameter",			defaultLoopDiameter				);
 		members.put("defaultEdgeIsSelected",		defaultEdgeIsSelected			);
 		members.put("defaultCaptionText",			defaultCaptionText				);
+		members.put("defaultCaptionFontSize",		defaultCaptionFontSize			);
 		members.put("defaultCaptionIsSelected",		defaultCaptionIsSelected		);
 		members.put("defaultShowVertexWeights",		defaultShowVertexWeights		);
 		members.put("defaultShowVertexLabels",		defaultShowVertexLabels			);

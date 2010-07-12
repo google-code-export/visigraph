@@ -6,6 +6,8 @@ package edu.belmont.mth.visigraph.gui.dialogs;
 import java.awt.*;
 import java.awt.event.*;
 import javax.swing.*;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
 
 /**
  * @author Cameron Behar
@@ -14,20 +16,21 @@ import javax.swing.*;
 @SuppressWarnings("serial")
 public class EditCaptionDialog extends JDialog implements ActionListener
 {
-	private static EditCaptionDialog	dialog;
-	private static JLabel				captionTextLabel;
-	private static JTextArea			captionTextArea;
-	private static String				value;
+	private static EditCaptionDialog	  dialog;
+	private static JLabel				  captionTextLabel;
+	private static JTextArea			  captionTextArea;
+	private static JSlider				  captionFontSizeSlider;
+	private static Value                  value;
 	
-	public static String showDialog(Component frameComp, Component locationComp, String defaultText)
+	public static Value showDialog(Component frameComp, Component locationComp, String defaultText, int defaultSize)
 	{
 		Frame frame = JOptionPane.getFrameForComponent(frameComp);
-		dialog = new EditCaptionDialog(frame, locationComp, defaultText);
+		dialog = new EditCaptionDialog(frame, locationComp, defaultText, defaultSize);
 		dialog.setVisible(true);
 		return value;
 	}
 	
-	private EditCaptionDialog(Frame frame, Component locationComp, String defaultText)
+	private EditCaptionDialog(Frame frame, Component locationComp, String defaultText, int defaultSize)
 	{
 		super(frame, "Edit caption", true);
 		
@@ -54,13 +57,34 @@ public class EditCaptionDialog extends JDialog implements ActionListener
 		gridBagConstraints.fill = GridBagConstraints.HORIZONTAL;
 		gridBagConstraints.gridx = 0;
 		gridBagConstraints.gridy = 2;
-		gridBagConstraints.gridwidth = 1;
+		gridBagConstraints.gridwidth = 2;
 		JScrollPane captionTextAreaScrollPane = new JScrollPane(captionTextArea);
 		captionTextAreaScrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
 		captionTextAreaScrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
 		captionTextAreaScrollPane.setPreferredSize(new Dimension(300, 150));
 		inputPanel.add(captionTextAreaScrollPane, gridBagConstraints);
-
+		
+		captionFontSizeSlider = new JSlider(SwingConstants.HORIZONTAL, 8, 100, 8);
+		captionFontSizeSlider.setMajorTickSpacing(10);
+		captionFontSizeSlider.setPaintTicks(true);
+		captionFontSizeSlider.addChangeListener(new ChangeListener()
+		{
+			@Override
+			public void stateChanged(ChangeEvent e)
+			{
+				captionFontSizeSlider.setToolTipText(captionFontSizeSlider.getValue() + "%");
+				captionTextArea.setFont(new Font(captionTextArea.getFont().getFamily(), captionTextArea.getFont().getStyle(), (int)Math.round(Math.pow(captionFontSizeSlider.getValue() * 0.3155, 2))));
+			}
+		});
+		captionFontSizeSlider.setBorder(BorderFactory.createEmptyBorder(10, 0, -2, 0));
+		captionFontSizeSlider.setValue(9);
+		captionFontSizeSlider.setValue((int)(Math.round(Math.sqrt(defaultSize) / 0.315)));
+		gridBagConstraints.fill = GridBagConstraints.HORIZONTAL;
+		gridBagConstraints.gridx = 0;
+		gridBagConstraints.gridy = 3;
+		gridBagConstraints.gridwidth = 2;
+		inputPanel.add(captionFontSizeSlider, gridBagConstraints);
+		
 		//Create and initialize the buttons
 		final JButton okButton = new JButton("Ok");
 		okButton.setPreferredSize(new Dimension(80, 28));
@@ -96,18 +120,37 @@ public class EditCaptionDialog extends JDialog implements ActionListener
 		Dimension size = this.getPreferredSize();
 		size.width += 40;
 		size.height += 40;
-		setPreferredSize(size);
+		this.setPreferredSize(size);
 		
-		pack();
-		setLocationRelativeTo(locationComp);
+		this.pack();
+		this.setLocationRelativeTo(locationComp);
+		this.setResizable(false);
 		value = null;
 	}
 	
 	public void actionPerformed(ActionEvent e)
 	{
 		if ("Ok".equals(e.getActionCommand()))
-			value = captionTextArea.getText();
+			value = new Value(captionTextArea.getText(), (int)Math.round(Math.pow(captionFontSizeSlider.getValue() * 0.3155, 2)));
 		
 		EditCaptionDialog.dialog.setVisible(false);
+	}
+
+	public class Value
+	{
+		private String text;
+		private int size;
+		
+		public Value(String text, int size)
+		{
+			this.text = text;
+			this.size = size;
+		}
+		
+		public String getText()            { return text; }
+		public void   setText(String text) { this.text = text; }
+		
+		public int  getSize()         { return size; }
+		public void setSize(int size) { this.size = size; }
 	}
 }
