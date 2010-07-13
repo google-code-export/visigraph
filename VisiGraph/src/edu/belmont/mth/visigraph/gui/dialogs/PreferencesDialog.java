@@ -4,6 +4,8 @@
 package edu.belmont.mth.visigraph.gui.dialogs;
 
 import java.io.*;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import java.awt.*;
 import javax.swing.*;
 import java.awt.event.*;
@@ -81,6 +83,7 @@ public class PreferencesDialog extends JDialog implements ActionListener
 	private static JCheckBox           useAntiAliasingCheckBox;
 	private static JCheckBox           usePureStrokeCheckBox;
 	private static JCheckBox           useBicubicInterpolationCheckBox;
+	private static JCheckBox           useFractionalMetricsCheckBox;
 	private static ValidatingTextField mainWindowSizeTextField;
 	private static ValidatingTextField graphWindowSizeTextField;
 	private static ValidatingTextField cascadeWindowOffsetTextField;
@@ -658,10 +661,14 @@ public class PreferencesDialog extends JDialog implements ActionListener
 		useBicubicInterpolationCheckBox = new JCheckBox();
 		useBicubicInterpolationCheckBox.setBackground(panel.getBackground());
 		useBicubicInterpolationCheckBox.setMinimumSize(new Dimension(32, 26));
+		FieldLabel useFractionalMetricsLabel = new FieldLabel("Use fractional metrics:");
+		useFractionalMetricsCheckBox = new JCheckBox();
+		useFractionalMetricsCheckBox.setBackground(panel.getBackground());
+		useFractionalMetricsCheckBox.setMinimumSize(new Dimension(32, 26));
 		
 		Header windowSettingsHeader = new Header("Window settings:");
-		FieldLabel mainWindowSizeLabel      = new FieldLabel("Main window size:");      mainWindowSizeTextField      = new ValidatingTextField(16, "\\d+\\s*,\\s*\\d+"); mainWindowSizeTextField     .setMargin(fieldMargin); mainWindowSizeTextField     .setMaximumSize(new Dimension(140, 100));
-		FieldLabel graphWindowSizeLabel     = new FieldLabel("Graph window size:");     graphWindowSizeTextField     = new ValidatingTextField(16, "\\d+\\s*,\\s*\\d+"); graphWindowSizeTextField    .setMargin(fieldMargin); graphWindowSizeTextField    .setMaximumSize(new Dimension(140, 100));
+		FieldLabel mainWindowSizeLabel      = new FieldLabel("Main window size:");      mainWindowSizeTextField      = new ValidatingTextField(16, "(\\d+)\\s*,\\s*(\\d+)"); mainWindowSizeTextField     .setMargin(fieldMargin); mainWindowSizeTextField     .setMaximumSize(new Dimension(140, 100));
+		FieldLabel graphWindowSizeLabel     = new FieldLabel("Graph window size:");     graphWindowSizeTextField     = new ValidatingTextField(16, "(\\d+)\\s*,\\s*(\\d+)"); graphWindowSizeTextField    .setMargin(fieldMargin); graphWindowSizeTextField    .setMaximumSize(new Dimension(140, 100));
 		FieldLabel cascadeWindowOffsetLabel = new FieldLabel("Cascade window offset:"); cascadeWindowOffsetTextField = new ValidatingTextField(8, "\\d+");  cascadeWindowOffsetTextField.setMargin(fieldMargin); cascadeWindowOffsetTextField.setMaximumSize(new Dimension(70, 100));
 			
 		Header otherHeader = new Header("Other:");
@@ -713,6 +720,7 @@ public class PreferencesDialog extends JDialog implements ActionListener
 					.addComponent(useAntiAliasingLabel)
 					.addComponent(usePureStrokeLabel)
 					.addComponent(useBicubicInterpolationLabel)
+					.addComponent(useFractionalMetricsLabel)
 					.addComponent(mainWindowSizeLabel)
 					.addComponent(graphWindowSizeLabel)
 					.addComponent(cascadeWindowOffsetLabel)
@@ -744,6 +752,7 @@ public class PreferencesDialog extends JDialog implements ActionListener
 					.addComponent(useAntiAliasingCheckBox)
 					.addComponent(usePureStrokeCheckBox)
 					.addComponent(useBicubicInterpolationCheckBox)
+					.addComponent(useFractionalMetricsCheckBox)
 					.addComponent(mainWindowSizeTextField)
 					.addComponent(graphWindowSizeTextField)
 					.addComponent(cascadeWindowOffsetTextField)
@@ -781,6 +790,7 @@ public class PreferencesDialog extends JDialog implements ActionListener
 				.addGroup(layout.createParallelGroup(GroupLayout.Alignment.CENTER).addComponent(useAntiAliasingLabel).addComponent(useAntiAliasingCheckBox))
 				.addGroup(layout.createParallelGroup(GroupLayout.Alignment.CENTER).addComponent(usePureStrokeLabel).addComponent(usePureStrokeCheckBox))
 				.addGroup(layout.createParallelGroup(GroupLayout.Alignment.CENTER).addComponent(useBicubicInterpolationLabel).addComponent(useBicubicInterpolationCheckBox))
+				.addGroup(layout.createParallelGroup(GroupLayout.Alignment.CENTER).addComponent(useFractionalMetricsLabel).addComponent(useFractionalMetricsCheckBox))
 				.addComponent(windowSettingsHeader)
 				.addGroup(layout.createParallelGroup(GroupLayout.Alignment.CENTER).addComponent(mainWindowSizeLabel).addComponent(mainWindowSizeTextField))
 				.addGroup(layout.createParallelGroup(GroupLayout.Alignment.CENTER).addComponent(graphWindowSizeLabel).addComponent(graphWindowSizeTextField))
@@ -914,6 +924,7 @@ public class PreferencesDialog extends JDialog implements ActionListener
 		useAntiAliasingCheckBox					.setSelected( userSettings.useAntiAliasing.get( ) );
 		usePureStrokeCheckBox					.setSelected( userSettings.usePureStroke.get( ) );
 		useBicubicInterpolationCheckBox			.setSelected( userSettings.useBicubicInterpolation.get( ) );
+		useFractionalMetricsCheckBox			.setSelected( userSettings.useFractionalMetrics.get( ) );
 		mainWindowSizeTextField					.setText( userSettings.mainWindowWidth.get( ) + ", " + userSettings.mainWindowHeight.get( ) );
 		graphWindowSizeTextField				.setText( userSettings.graphWindowWidth.get( ) + ", " + userSettings.graphWindowWidth.get( ) );
 		cascadeWindowOffsetTextField			.setText( userSettings.cascadeWindowOffset.get( ).toString( ) );
@@ -989,13 +1000,15 @@ public class PreferencesDialog extends JDialog implements ActionListener
 		userSettings.useAntiAliasing				.set(              useAntiAliasingCheckBox.isSelected( ) );
 		userSettings.usePureStroke					.set(              usePureStrokeCheckBox.isSelected( ) );
 		userSettings.useBicubicInterpolation		.set(              useBicubicInterpolationCheckBox.isSelected( ) );
+		userSettings.useFractionalMetrics			.set(              useFractionalMetricsCheckBox.isSelected( ) );
 		
-		String[] dimensions = mainWindowSizeTextField.getText( ).split(",");
-		userSettings.mainWindowWidth				.set( new Integer( dimensions[0].trim() ) );
-		userSettings.mainWindowHeight				.set( new Integer( dimensions[1].trim() ) );
-		dimensions = graphWindowSizeTextField.getText( ).split(",");
-		userSettings.graphWindowWidth				.set( new Integer( dimensions[0].trim() ) );
-		userSettings.graphWindowHeight				.set( new Integer( dimensions[1].trim() ) );
+		Matcher matcher = Pattern.compile(mainWindowSizeTextField.getValidatingExpression( )).matcher(mainWindowSizeTextField.getText( )); matcher.find();
+		userSettings.mainWindowWidth				.set( new Integer( matcher.group(1) ) );
+		userSettings.mainWindowHeight				.set( new Integer( matcher.group(2) ) );
+		
+		matcher = Pattern.compile(graphWindowSizeTextField.getValidatingExpression( )).matcher(graphWindowSizeTextField.getText( )); matcher.find();
+		userSettings.graphWindowWidth				.set( new Integer( matcher.group(1) ) );
+		userSettings.graphWindowHeight				.set( new Integer( matcher.group(2) ) );
 		
 		userSettings.cascadeWindowOffset			.set( new Integer( cascadeWindowOffsetTextField.getText( ) ) );
 		userSettings.defaultGraphName				.set(              defaultGraphNameTextField.getText( )   );
