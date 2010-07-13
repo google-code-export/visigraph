@@ -1281,7 +1281,9 @@ public class GraphDisplayController extends JPanel implements ClipboardOwner
 		private JButton rotateLeft90Button;
 		private JButton rotateRight90Button;
 		private JButton flipHorizontallyButton;
-		private JButton flipVerticallyButton;	
+		private JButton flipVerticallyButton;
+		private JButton contractButton;
+		private JButton expandButton;
 		
 		public ArrangeToolBar()
 		{
@@ -1763,6 +1765,74 @@ public class GraphDisplayController extends JPanel implements ClipboardOwner
 			});
 			flipVerticallyButton.setToolTipText("Flip vertically");
 			this.add(flipVerticallyButton);
+			
+			this.add(new JToolBar.Separator());
+			
+			contractButton = new JButton((ImageIcon) imageIcons.getObject("contract_icon"));
+			contractButton.addActionListener(new ActionListener()
+			{
+				public void actionPerformed(ActionEvent e)
+				{
+					int selectedElementCount = 0;
+					Point2D.Double centroid = new Point2D.Double();
+					
+					for(Vertex vertex : graph.vertexes)
+						if(vertex.isSelected.get())
+						{
+							centroid.x += vertex.x.get();
+							centroid.y += vertex.y.get();
+							++selectedElementCount;
+						}
+					
+					if(selectedElementCount == 0)
+						return;
+					
+					centroid.x /= (double)selectedElementCount;
+					centroid.y /= (double)selectedElementCount;
+					
+					for(Vertex vertex : graph.vertexes)
+						if(vertex.isSelected.get())
+						{
+							vertex.x.set(userSettings.arrangeContractFactor.get() * (vertex.x.get() - centroid.x) + centroid.x);
+							vertex.y.set(userSettings.arrangeContractFactor.get() * (vertex.y.get() - centroid.y) + centroid.y);
+						}
+				}
+			});
+			contractButton.setToolTipText("Contract");
+			this.add(contractButton);
+			
+			expandButton = new JButton((ImageIcon) imageIcons.getObject("expand_icon"));
+			expandButton.addActionListener(new ActionListener()
+			{
+				public void actionPerformed(ActionEvent e)
+				{
+					int selectedElementCount = 0;
+					Point2D.Double centroid = new Point2D.Double();
+					
+					for(Vertex vertex : graph.vertexes)
+						if(vertex.isSelected.get())
+						{
+							centroid.x += vertex.x.get();
+							centroid.y += vertex.y.get();
+							++selectedElementCount;
+						}
+					
+					if(selectedElementCount == 0)
+						return;
+					
+					centroid.x /= (double)selectedElementCount;
+					centroid.y /= (double)selectedElementCount;
+					
+					for(Vertex vertex : graph.vertexes)
+						if(vertex.isSelected.get())
+						{
+							vertex.x.set(userSettings.arrangeExpandFactor.get() * (vertex.x.get() - centroid.x) + centroid.x);
+							vertex.y.set(userSettings.arrangeExpandFactor.get() * (vertex.y.get() - centroid.y) + centroid.y);
+						}
+				}
+			});
+			expandButton.setToolTipText("Expand");
+			this.add(expandButton);
 		}
 	}
 	
