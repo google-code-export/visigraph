@@ -52,7 +52,8 @@ public class GlobalSettings
 	
 	public static final boolean					 defaultUseAntiAliasing						= true;
 	public static final boolean					 defaultUsePureStroke						= true;
-	public static final boolean					 drawBicubicInterpolation					= true;
+	public static final boolean					 defaultUseBicubicInterpolation				= true;
+	public static final boolean					 defaultUseFractionalMetrics				= true;
 	
 	public static final double					 defaultEdgeWeight							= 1.0;
 	public static final int						 defaultEdgeColor							= -1;

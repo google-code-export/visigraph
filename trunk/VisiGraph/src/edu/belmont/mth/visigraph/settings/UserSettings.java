@@ -73,6 +73,7 @@ public class UserSettings extends ObservableBase
 	public final Property<Boolean> useAntiAliasing;
 	public final Property<Boolean> usePureStroke;
 	public final Property<Boolean> useBicubicInterpolation;
+	public final Property<Boolean> useFractionalMetrics;
 	public final Property<Integer> mainWindowWidth;
 	public final Property<Integer> mainWindowHeight;
 	public final Property<Integer> graphWindowWidth;
@@ -141,7 +142,8 @@ public class UserSettings extends ObservableBase
 		this.arrangeExpandFactor			= new Property<Double> (GlobalSettings.defaultArrangeExpandFactor,				"arrangeExpandFactor"			);
 		this.useAntiAliasing				= new Property<Boolean>(GlobalSettings.defaultUseAntiAliasing,					"useAntiAliasing"				);
 		this.usePureStroke					= new Property<Boolean>(GlobalSettings.defaultUsePureStroke,					"usePureStroke"					);
-		this.useBicubicInterpolation		= new Property<Boolean>(GlobalSettings.drawBicubicInterpolation,				"useBicubicInterpolation"		);
+		this.useBicubicInterpolation		= new Property<Boolean>(GlobalSettings.defaultUseBicubicInterpolation,			"useBicubicInterpolation"		);
+		this.useFractionalMetrics			= new Property<Boolean>(GlobalSettings.defaultUseFractionalMetrics,				"useFractionalMetrics"			);
 		this.mainWindowWidth				= new Property<Integer>(GlobalSettings.defaultMainWindowWidth,					"mainWindowWidth"				);
 		this.mainWindowHeight				= new Property<Integer>(GlobalSettings.defaultMainWindowHeight,					"mainWindowHeight"				);
 		this.graphWindowWidth				= new Property<Integer>(GlobalSettings.defaultGraphWindowWidth,					"graphWindowWidth"				);
@@ -230,6 +232,7 @@ public class UserSettings extends ObservableBase
 		if(members.containsKey("useAntiAliasing"))				useAntiAliasing				 .set( (Boolean) members.get( "useAntiAliasing"					) );
 		if(members.containsKey("usePureStroke"))				usePureStroke				 .set( (Boolean) members.get( "usePureStroke"					) );
 		if(members.containsKey("useBicubicInterpolation"))		useBicubicInterpolation		 .set( (Boolean) members.get( "useBicubicInterpolation"			) );
+		if(members.containsKey("useFractionalMetrics"))			useFractionalMetrics		 .set( (Boolean) members.get( "useFractionalMetrics"			) );
 		if(members.containsKey("mainWindowWidth"))				mainWindowWidth				 .set( (Integer) members.get( "mainWindowWidth"					) );
 		if(members.containsKey("mainWindowHeight"))				mainWindowHeight			 .set( (Integer) members.get( "mainWindowHeight"				) );
 		if(members.containsKey("graphWindowWidth"))				graphWindowWidth			 .set( (Integer) members.get( "graphWindowWidth"				) );
@@ -309,6 +312,7 @@ public class UserSettings extends ObservableBase
 		members.put("useAntiAliasing",				useAntiAliasing					);
 		members.put("usePureStroke",				usePureStroke					);
 		members.put("useBicubicInterpolation",		useBicubicInterpolation			);
+		members.put("useFractionalMetrics",			useFractionalMetrics			);
 		members.put("mainWindowWidth",				mainWindowWidth					);
 		members.put("mainWindowHeight",				mainWindowHeight				);
 		members.put("graphWindowWidth",				graphWindowWidth				);

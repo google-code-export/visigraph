@@ -399,6 +399,9 @@ public class GraphDisplayController extends JPanel implements ClipboardOwner
 		if (userSettings.useBicubicInterpolation.get())
 			g2D.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BICUBIC);
 		
+		if (userSettings.useFractionalMetrics.get())
+			g2D.setRenderingHint(RenderingHints.KEY_FRACTIONALMETRICS, RenderingHints.VALUE_FRACTIONALMETRICS_ON);
+		
 		// Apply any one-time functions
 		Set<FunctionBase> run = new TreeSet<FunctionBase>();
 		run.addAll(functionsToBeRun);
