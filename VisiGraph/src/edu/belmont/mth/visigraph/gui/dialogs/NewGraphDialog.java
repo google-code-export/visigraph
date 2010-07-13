@@ -87,6 +87,7 @@ public class NewGraphDialog extends JDialog implements ActionListener
 		inputPanel.add(generatorParametersField, gridBagConstraints);
 		
 		allowLoopsCheckBox = new JCheckBox("Allow loops");
+		allowLoopsCheckBox.setPreferredSize(new Dimension(160, allowLoopsCheckBox.getPreferredSize().height));
 		gridBagConstraints.fill = GridBagConstraints.HORIZONTAL;
 		gridBagConstraints.gridx = 1;
 		gridBagConstraints.gridy = 3;
@@ -117,6 +118,7 @@ public class NewGraphDialog extends JDialog implements ActionListener
 		inputPanel.add(allowLoopsCheckBox, gridBagConstraints);
 		
 		allowDirectedEdgesCheckBox = new JCheckBox("Allow directed edges");
+		allowDirectedEdgesCheckBox.setPreferredSize(new Dimension(160, allowDirectedEdgesCheckBox.getPreferredSize().height));
 		gridBagConstraints.fill = GridBagConstraints.HORIZONTAL;
 		gridBagConstraints.gridx = 2;
 		gridBagConstraints.gridy = 3;
@@ -124,6 +126,7 @@ public class NewGraphDialog extends JDialog implements ActionListener
 		inputPanel.add(allowDirectedEdgesCheckBox, gridBagConstraints);
 		
 		allowMultipleEdgesCheckBox = new JCheckBox("Allow multiple edges");
+		allowMultipleEdgesCheckBox.setPreferredSize(new Dimension(160, allowMultipleEdgesCheckBox.getPreferredSize().height));
 		gridBagConstraints.fill = GridBagConstraints.HORIZONTAL;
 		gridBagConstraints.gridx = 1;
 		gridBagConstraints.gridy = 4;
@@ -153,6 +156,7 @@ public class NewGraphDialog extends JDialog implements ActionListener
 		inputPanel.add(allowMultipleEdgesCheckBox, gridBagConstraints);
 		
 		allowCyclesCheckBox = new JCheckBox("Allow cycles");
+		allowCyclesCheckBox.setPreferredSize(new Dimension(160, allowCyclesCheckBox.getPreferredSize().height));
 		gridBagConstraints.fill = GridBagConstraints.HORIZONTAL;
 		gridBagConstraints.gridx = 2;
 		gridBagConstraints.gridy = 4;

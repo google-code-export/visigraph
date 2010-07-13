@@ -85,6 +85,9 @@ public class GlobalSettings
 	public static final double					 defaultAutoArrangeRepulsiveForce			= -80.0;
 	public static final double					 defaultAutoArrangeDecelerationFactor		= 1.1;
 	
+	public static final double					 defaultArrangeContractFactor				= 0.8;
+	public static final double					 defaultArrangeExpandFactor					= 1.2;
+	
 	public static final double					 defaultZoomInFactor						= 1.2;
 	public static final double					 defaultZoomOutFactor						= 0.8;
 	public static final double					 defaultMaximumZoomFactor					= 2.0;

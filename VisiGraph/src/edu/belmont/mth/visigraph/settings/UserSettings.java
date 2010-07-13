@@ -68,6 +68,8 @@ public class UserSettings extends ObservableBase
 	public final Property<Double>  autoArrangeAttractiveForce;
 	public final Property<Double>  autoArrangeRepulsiveForce;
 	public final Property<Double>  autoArrangeDecelerationFactor;
+	public final Property<Double>  arrangeContractFactor;
+	public final Property<Double>  arrangeExpandFactor;
 	public final Property<Boolean> useAntiAliasing;
 	public final Property<Boolean> usePureStroke;
 	public final Property<Boolean> useBicubicInterpolation;
@@ -135,6 +137,8 @@ public class UserSettings extends ObservableBase
 		this.autoArrangeAttractiveForce		= new Property<Double> (GlobalSettings.defaultAutoArrangeAttractiveForce,		"autoArrangeAttractiveForce"	);
 		this.autoArrangeRepulsiveForce		= new Property<Double> (GlobalSettings.defaultAutoArrangeRepulsiveForce,		"autoArrangeRepulsiveForce"		);
 		this.autoArrangeDecelerationFactor	= new Property<Double> (GlobalSettings.defaultAutoArrangeDecelerationFactor,	"autoArrangeDecelerationFactor"	);
+		this.arrangeContractFactor			= new Property<Double> (GlobalSettings.defaultArrangeContractFactor,			"arrangeContractFactor"			);
+		this.arrangeExpandFactor			= new Property<Double> (GlobalSettings.defaultArrangeExpandFactor,				"arrangeExpandFactor"			);
 		this.useAntiAliasing				= new Property<Boolean>(GlobalSettings.defaultUseAntiAliasing,					"useAntiAliasing"				);
 		this.usePureStroke					= new Property<Boolean>(GlobalSettings.defaultUsePureStroke,					"usePureStroke"					);
 		this.useBicubicInterpolation		= new Property<Boolean>(GlobalSettings.drawBicubicInterpolation,				"useBicubicInterpolation"		);
@@ -221,6 +225,8 @@ public class UserSettings extends ObservableBase
 		if(members.containsKey("autoArrangeAttractiveForce"))	autoArrangeAttractiveForce	 .set( (Double)  members.get( "autoArrangeAttractiveForce"		) );
 		if(members.containsKey("autoArrangeRepulsiveForce"))	autoArrangeRepulsiveForce	 .set( (Double)  members.get( "autoArrangeRepulsiveForce"		) );
 		if(members.containsKey("autoArrangeDecelerationFactor"))autoArrangeDecelerationFactor.set( (Double)  members.get( "autoArrangeDecelerationFactor"	) );
+		if(members.containsKey("arrangeContractFactor"))		arrangeContractFactor		 .set( (Double)  members.get( "arrangeContractFactor"			) );
+		if(members.containsKey("arrangeExpandFactor"))			arrangeExpandFactor			 .set( (Double)  members.get( "arrangeExpandFactor"				) );
 		if(members.containsKey("useAntiAliasing"))				useAntiAliasing				 .set( (Boolean) members.get( "useAntiAliasing"					) );
 		if(members.containsKey("usePureStroke"))				usePureStroke				 .set( (Boolean) members.get( "usePureStroke"					) );
 		if(members.containsKey("useBicubicInterpolation"))		useBicubicInterpolation		 .set( (Boolean) members.get( "useBicubicInterpolation"			) );
@@ -298,6 +304,8 @@ public class UserSettings extends ObservableBase
 		members.put("autoArrangeAttractiveForce",	autoArrangeAttractiveForce		);
 		members.put("autoArrangeRepulsiveForce",	autoArrangeRepulsiveForce		);
 		members.put("autoArrangeDecelerationFactor",autoArrangeDecelerationFactor	);
+		members.put("arrangeContractFactor",		arrangeContractFactor			);
+		members.put("arrangeExpandFactor",			arrangeExpandFactor				);
 		members.put("useAntiAliasing",				useAntiAliasing					);
 		members.put("usePureStroke",				usePureStroke					);
 		members.put("useBicubicInterpolation",		useBicubicInterpolation			);

@@ -76,6 +76,8 @@ public class PreferencesDialog extends JDialog implements ActionListener
 	private static ValidatingTextField autoArrangeAttractiveForceTextField;
 	private static ValidatingTextField autoArrangeRepulsiveForceTextField;
 	private static ValidatingTextField autoArrangeDecelerationFactorTextField;
+	private static ValidatingTextField arrangeContractFactorTextField;
+	private static ValidatingTextField arrangeExpandFactorTextField;
 	private static JCheckBox           useAntiAliasingCheckBox;
 	private static JCheckBox           usePureStrokeCheckBox;
 	private static JCheckBox           useBicubicInterpolationCheckBox;
@@ -638,9 +640,11 @@ public class PreferencesDialog extends JDialog implements ActionListener
 		FieldLabel arrangeCircleRadiusMultiplierLabel = new FieldLabel("Arrange circle radius multiplier:"); arrangeCircleRadiusMultiplierTextField = new ValidatingTextField(8, "(?:\\d+\\.?\\d*|\\d*\\.?\\d+)(?:[eE][+\\-\\x20]?\\d+)?"); arrangeCircleRadiusMultiplierTextField.setMargin(fieldMargin); arrangeCircleRadiusMultiplierTextField.setMaximumSize(new Dimension(70, 100));
 		FieldLabel arrangeGridSpacingLabel            = new FieldLabel("Arrange grid spacing:");             arrangeGridSpacingTextField            = new ValidatingTextField(8, "(?:\\d+\\.?\\d*|\\d*\\.?\\d+)(?:[eE][+\\-\\x20]?\\d+)?"); arrangeGridSpacingTextField           .setMargin(fieldMargin); arrangeGridSpacingTextField           .setMaximumSize(new Dimension(70, 100));
 		FieldLabel autoArrangeAttractiveForceLabel    = new FieldLabel("Auto-arrange attractive force:");    autoArrangeAttractiveForceTextField    = new ValidatingTextField(8, "(?:\\d+\\.?\\d*|\\d*\\.?\\d+)(?:[eE][+\\-\\x20]?\\d+)?"); autoArrangeAttractiveForceTextField   .setMargin(fieldMargin); autoArrangeAttractiveForceTextField   .setMaximumSize(new Dimension(70, 100));
-		FieldLabel autoArrangeRepulsiveForceLabel     = new FieldLabel("Auto-arrange repulsive force:");     autoArrangeRepulsiveForceTextField     = new ValidatingTextField(8, "-(?:\\d+\\.?\\d*|\\d*\\.?\\d+)(?:[eE][+\\-\\x20]?\\d+)?"); autoArrangeRepulsiveForceTextField    .setMargin(fieldMargin); autoArrangeRepulsiveForceTextField    .setMaximumSize(new Dimension(70, 100));
+		FieldLabel autoArrangeRepulsiveForceLabel     = new FieldLabel("Auto-arrange repulsive force:");     autoArrangeRepulsiveForceTextField     = new ValidatingTextField(8, "-(?:\\d+\\.?\\d*|\\d*\\.?\\d+)(?:[eE][+\\-\\x20]?\\d+)?"); autoArrangeRepulsiveForceTextField   .setMargin(fieldMargin); autoArrangeRepulsiveForceTextField    .setMaximumSize(new Dimension(70, 100));
 		FieldLabel autoArrangeDecelerationFactorLabel = new FieldLabel("Auto-arrange deceleration factor:"); autoArrangeDecelerationFactorTextField = new ValidatingTextField(8, "(?:\\d+\\.?\\d*|\\d*\\.?\\d+)(?:[eE][+\\-\\x20]?\\d+)?"); autoArrangeDecelerationFactorTextField.setMargin(fieldMargin); autoArrangeDecelerationFactorTextField.setMaximumSize(new Dimension(70, 100));
-			
+		FieldLabel arrangeContractFactorLabel         = new FieldLabel("Arrange contract factor:");          arrangeContractFactorTextField         = new ValidatingTextField(8, "(?:\\d+\\.?\\d*|\\d*\\.?\\d+)(?:[eE][+\\-\\x20]?\\d+)?"); arrangeContractFactorTextField        .setMargin(fieldMargin); arrangeContractFactorTextField        .setMaximumSize(new Dimension(70, 100));
+		FieldLabel arrangeExpandFactorLabel           = new FieldLabel("Arrange expand factor:");            arrangeExpandFactorTextField           = new ValidatingTextField(8, "(?:\\d+\\.?\\d*|\\d*\\.?\\d+)(?:[eE][+\\-\\x20]?\\d+)?"); arrangeExpandFactorTextField          .setMargin(fieldMargin); arrangeExpandFactorTextField          .setMaximumSize(new Dimension(70, 100));
+		
 		Header renderingSettingsHeader = new Header("Rendering settings:");
 		FieldLabel useAntiAliasingLabel = new FieldLabel("Use anti-aliasing:");
 		useAntiAliasingCheckBox = new JCheckBox();
@@ -704,6 +708,8 @@ public class PreferencesDialog extends JDialog implements ActionListener
 					.addComponent(autoArrangeAttractiveForceLabel)
 					.addComponent(autoArrangeRepulsiveForceLabel)
 					.addComponent(autoArrangeDecelerationFactorLabel)
+					.addComponent(arrangeContractFactorLabel)
+					.addComponent(arrangeExpandFactorLabel)
 					.addComponent(useAntiAliasingLabel)
 					.addComponent(usePureStrokeLabel)
 					.addComponent(useBicubicInterpolationLabel)
@@ -733,6 +739,8 @@ public class PreferencesDialog extends JDialog implements ActionListener
 					.addComponent(autoArrangeAttractiveForceTextField)
 					.addComponent(autoArrangeRepulsiveForceTextField)
 					.addComponent(autoArrangeDecelerationFactorTextField)
+					.addComponent(arrangeContractFactorTextField)
+					.addComponent(arrangeExpandFactorTextField)
 					.addComponent(useAntiAliasingCheckBox)
 					.addComponent(usePureStrokeCheckBox)
 					.addComponent(useBicubicInterpolationCheckBox)
@@ -767,6 +775,8 @@ public class PreferencesDialog extends JDialog implements ActionListener
 				.addGroup(layout.createParallelGroup(GroupLayout.Alignment.CENTER).addComponent(autoArrangeAttractiveForceLabel).addComponent(autoArrangeAttractiveForceTextField))
 				.addGroup(layout.createParallelGroup(GroupLayout.Alignment.CENTER).addComponent(autoArrangeRepulsiveForceLabel).addComponent(autoArrangeRepulsiveForceTextField))
 				.addGroup(layout.createParallelGroup(GroupLayout.Alignment.CENTER).addComponent(autoArrangeDecelerationFactorLabel).addComponent(autoArrangeDecelerationFactorTextField))
+				.addGroup(layout.createParallelGroup(GroupLayout.Alignment.CENTER).addComponent(arrangeContractFactorLabel).addComponent(arrangeContractFactorTextField))
+				.addGroup(layout.createParallelGroup(GroupLayout.Alignment.CENTER).addComponent(arrangeExpandFactorLabel).addComponent(arrangeExpandFactorTextField))
 				.addComponent(renderingSettingsHeader)
 				.addGroup(layout.createParallelGroup(GroupLayout.Alignment.CENTER).addComponent(useAntiAliasingLabel).addComponent(useAntiAliasingCheckBox))
 				.addGroup(layout.createParallelGroup(GroupLayout.Alignment.CENTER).addComponent(usePureStrokeLabel).addComponent(usePureStrokeCheckBox))
@@ -835,6 +845,8 @@ public class PreferencesDialog extends JDialog implements ActionListener
 				autoArrangeAttractiveForceTextField		.isValid( ) && 
 				autoArrangeRepulsiveForceTextField		.isValid( ) && 
 				autoArrangeDecelerationFactorTextField	.isValid( ) && 
+				arrangeContractFactorTextField			.isValid( ) &&
+				arrangeExpandFactorTextField			.isValid( ) &&
 				mainWindowSizeTextField					.isValid( ) && 
 				graphWindowSizeTextField				.isValid( ) && 
 				cascadeWindowOffsetTextField			.isValid( ) && 
@@ -897,6 +909,8 @@ public class PreferencesDialog extends JDialog implements ActionListener
 		autoArrangeAttractiveForceTextField		.setText( userSettings.autoArrangeAttractiveForce.get( ).toString( ) );
 		autoArrangeRepulsiveForceTextField		.setText( userSettings.autoArrangeRepulsiveForce.get( ).toString( ) );
 		autoArrangeDecelerationFactorTextField	.setText( userSettings.autoArrangeDecelerationFactor.get( ).toString( ) );
+		arrangeContractFactorTextField			.setText( userSettings.arrangeContractFactor.get( ).toString( ) );
+		arrangeExpandFactorTextField			.setText( userSettings.arrangeExpandFactor.get( ).toString( ) );
 		useAntiAliasingCheckBox					.setSelected( userSettings.useAntiAliasing.get( ) );
 		usePureStrokeCheckBox					.setSelected( userSettings.usePureStroke.get( ) );
 		useBicubicInterpolationCheckBox			.setSelected( userSettings.useBicubicInterpolation.get( ) );
@@ -970,6 +984,8 @@ public class PreferencesDialog extends JDialog implements ActionListener
 		userSettings.autoArrangeAttractiveForce		.set( new Double ( autoArrangeAttractiveForceTextField.getText( ) ) );
 		userSettings.autoArrangeRepulsiveForce		.set( new Double ( autoArrangeRepulsiveForceTextField.getText( ) ) );
 		userSettings.autoArrangeDecelerationFactor	.set( new Double ( autoArrangeDecelerationFactorTextField.getText( ) ) );
+		userSettings.arrangeContractFactor			.set( new Double ( arrangeContractFactorTextField.getText( ) ) );
+		userSettings.arrangeExpandFactor			.set( new Double ( arrangeExpandFactorTextField.getText( ) ) );
 		userSettings.useAntiAliasing				.set(              useAntiAliasingCheckBox.isSelected( ) );
 		userSettings.usePureStroke					.set(              usePureStrokeCheckBox.isSelected( ) );
 		userSettings.useBicubicInterpolation		.set(              useBicubicInterpolationCheckBox.isSelected( ) );
