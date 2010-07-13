@@ -37,7 +37,8 @@ public class EdgeDisplayView
 		g2D.setStroke(oldStroke);
 		
 		// Set the handle-specific color
-		g2D.setColor(e.isSelected.get() ? ColorUtilities.blend(UserSettings.instance.edgeHandle.get(), UserSettings.instance.selectedEdgeHandle.get()) : UserSettings.instance.edgeHandle.get());
+		if(e.color.get() == -1) g2D.setColor(e.isSelected.get() ? ColorUtilities.blend(UserSettings.instance.edgeHandle.get(), UserSettings.instance.selectedEdgeHandle.get()) : UserSettings.instance.edgeHandle.get());
+		else                    g2D.setColor(e.isSelected.get() ? ColorUtilities.blend(UserSettings.instance.getElementColor(e.color.get()), UserSettings.instance.selectedEdgeHandle.get()) : UserSettings.instance.getElementColor(e.color.get()));
 		
 		// Draw handle
 		if(s.showEdgeHandles.get())
