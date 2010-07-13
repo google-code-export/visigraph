@@ -57,9 +57,14 @@ public class EdgeSvgView
 			sb.append("cx=\"" + apparentHandleLocation.getX() + "\" ");
 			sb.append("cy=\"" + apparentHandleLocation.getY() + "\" ");
 			sb.append("r=\"" + handleRadius + "\" ");
-			sb.append("stroke=\"" + SvgUtilities.formatColor(e.isSelected.get() ? ColorUtilities.blend(UserSettings.instance.edgeHandle.get(), UserSettings.instance.selectedEdgeHandle.get()) : UserSettings.instance.edgeHandle.get()) + "\" ");
+			
+			String handleColor;
+			if(e.color.get() == -1) handleColor = SvgUtilities.formatColor(e.isSelected.get() ? ColorUtilities.blend(UserSettings.instance.edgeHandle.get(), UserSettings.instance.selectedEdgeHandle.get()) : UserSettings.instance.edgeHandle.get());
+			else                    handleColor = SvgUtilities.formatColor(e.isSelected.get() ? ColorUtilities.blend(UserSettings.instance.getElementColor(e.color.get()), UserSettings.instance.selectedEdgeHandle.get()) : UserSettings.instance.getElementColor(e.color.get()));
+			
+			sb.append("stroke=\"" + handleColor + "\" ");
 			sb.append("stroke-width=\"1\" ");
-			sb.append("style=\"fill:" + SvgUtilities.formatColor(e.isSelected.get() ? ColorUtilities.blend(UserSettings.instance.edgeHandle.get(), UserSettings.instance.selectedEdgeHandle.get()) : UserSettings.instance.edgeHandle.get()) + ";\"/>\r\n");
+			sb.append("style=\"fill:" + handleColor + ";\"/>\r\n");
 		}
 		
 		// Draw arrow head for directed edges
