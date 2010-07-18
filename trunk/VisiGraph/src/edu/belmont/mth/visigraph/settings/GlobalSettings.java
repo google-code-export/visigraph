@@ -4,8 +4,6 @@
 package edu.belmont.mth.visigraph.settings;
 
 import java.awt.*;
-import edu.belmont.mth.visigraph.models.functions.*;
-import edu.belmont.mth.visigraph.models.generators.*;
 
 /**
  * @author Cameron Behar
@@ -110,7 +108,4 @@ public class GlobalSettings
 	public static final int						 defaultPaintToolMenuDelay					= 750;
 
 	public static final double					 defaultPanDecelerationFactor				= -5.0;
-	
-	public static final GraphGeneratorBase[] 	 allGraphGenerators							= new GraphGeneratorBase[] { new EmptyGraphGenerator(), new CycleGraphGenerator(), new CompleteGraphGenerator(), new CompleteBipartiteGraphGenerator(), new SymmetricTreeGraphGenerator(), new CartesianProductOfCompleteBipartiteGraphAndCycleGeneratorScott(), new CartesianProductOfCompleteBipartiteGraphAndCycleGeneratorBehar() };
-	public static final FunctionBase[]		 	 allFunctions								= new FunctionBase[] { new CountEdgesFunction(), new CountVertexesFunction(), new CountCrossingsFunction(), new IsEulerianFunction(), new IsConnectedFunction() };
 }

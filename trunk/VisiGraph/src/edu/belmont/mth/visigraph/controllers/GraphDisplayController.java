@@ -15,12 +15,12 @@ import javax.swing.*;
 import javax.swing.Timer;
 import javax.swing.border.*;
 import javax.swing.event.*;
-import edu.belmont.mth.visigraph.gui.dialogs.*;
-import edu.belmont.mth.visigraph.models.*;
-import edu.belmont.mth.visigraph.models.functions.*;
-import edu.belmont.mth.visigraph.settings.*;
 import edu.belmont.mth.visigraph.views.*;
+import edu.belmont.mth.visigraph.models.*;
+import edu.belmont.mth.visigraph.settings.*;
+import edu.belmont.mth.visigraph.gui.dialogs.*;
 import edu.belmont.mth.visigraph.views.display.*;
+import edu.belmont.mth.visigraph.models.functions.*;
 
 /**
  * @author Cameron Behar
@@ -408,7 +408,7 @@ public class GraphDisplayController extends JPanel implements ClipboardOwner
 		functionsToBeRun.clear();
 		
 		for (FunctionBase function : run)
-			JOptionPane.showMessageDialog(viewport, function.getDescription() +": " + function.evaluate(g2D, graph), GlobalSettings.applicationName, JOptionPane.OK_OPTION + JOptionPane.INFORMATION_MESSAGE);
+			JOptionPane.showMessageDialog(viewport, function +": " + function.evaluate(g2D, graph), GlobalSettings.applicationName, JOptionPane.OK_OPTION + JOptionPane.INFORMATION_MESSAGE);
 		
 		// Clear everything
 		super.paintComponent(g2D);
@@ -423,7 +423,7 @@ public class GraphDisplayController extends JPanel implements ClipboardOwner
 		
 		// Apply any selected functions
 		for (Entry<FunctionBase, JLabel> entry : selectedFunctionLabels.entrySet())
-			entry.getValue().setText(entry.getKey().getDescription() + ": " + entry.getKey().evaluate(g2D, graph));
+			entry.getValue().setText(entry.getKey() + ": " + entry.getKey().evaluate(g2D, graph));
 		
 		// Paint controller-specific stuff
 		if (isMouseDownOnCanvas)
@@ -2003,11 +2003,11 @@ public class GraphDisplayController extends JPanel implements ClipboardOwner
 	{
 		private JButton								  oneTimeFunctionsButton;
 		private JPopupMenu							  oneTimeFunctionsMenu;
-		private Map<JMenuItem, FunctionBase>		   oneTimeFunctionMenuItems;
+		private Map<JMenuItem, FunctionBase>		  oneTimeFunctionMenuItems;
 		
 		private JButton								  dynamicFunctionsButton;
 		private JPopupMenu							  dynamicFunctionsMenu;
-		private Map<JCheckBoxMenuItem, FunctionBase> dynamicFunctionMenuItems;
+		private Map<JCheckBoxMenuItem, FunctionBase>  dynamicFunctionMenuItems;
 		
 		public FunctionToolBar()
 		{
@@ -2051,7 +2051,6 @@ public class GraphDisplayController extends JPanel implements ClipboardOwner
 				
 				oneTimeFunctionMenuItems = new HashMap<JMenuItem, FunctionBase>();
 				dynamicFunctionMenuItems = new HashMap<JCheckBoxMenuItem, FunctionBase>();
-				
 				ActionListener oneTimeFunctionMenuItemActionListener = new ActionListener()
 				{
 					public void actionPerformed(ActionEvent arg0)
@@ -2086,7 +2085,7 @@ public class GraphDisplayController extends JPanel implements ClipboardOwner
 					}
 				};
 				
-				for (FunctionBase function : GlobalSettings.allFunctions)
+				for (FunctionBase function : FunctionService.instance.functions)
 				{
 					JCheckBoxMenuItem dynamicFunctionMenuItem = new JCheckBoxMenuItem(function.toString());
 					dynamicFunctionMenuItem.addActionListener(dynamicFunctionMenuItemActionListener);
