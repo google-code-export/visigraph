@@ -1,20 +1,14 @@
-/**
- * ScottCartesianProductOfCompleteBipartiteGraphAndCycle.java
- */
-package edu.belmont.mth.visigraph.models.generators;
-
 import java.util.regex.*;
 import edu.belmont.mth.visigraph.models.*;
+import edu.belmont.mth.visigraph.settings.*;
+import edu.belmont.mth.visigraph.models.generators.*;
 
-/**
- * @author Cameron Behar
- *
- */
-public class CartesianProductOfCompleteBipartiteGraphAndCycleGeneratorScott extends GraphGeneratorBase
-{	
-	@Override
-	public Graph generate(Graph graph, Matcher matcher)
+	public Graph generate (String params, boolean areLoopsAllowed, boolean areDirectedEdgesAllowed, boolean areMultipleEdgesAllowed, boolean areCyclesAllowed)
 	{
+		Graph graph = new Graph(UserSettings.instance.defaultGraphName.get() + " " + toString(), areLoopsAllowed,areDirectedEdgesAllowed,areMultipleEdgesAllowed,areCyclesAllowed);
+		Pattern pattern = Pattern.compile(getParametersValidatingExpression());
+		Matcher matcher = pattern.matcher(params); matcher.find();
+		
 		int r = Integer.parseInt(matcher.group(1));
 		int s = Integer.parseInt(matcher.group(2));
 		int n = Integer.parseInt(matcher.group(3));
@@ -32,22 +26,22 @@ public class CartesianProductOfCompleteBipartiteGraphAndCycleGeneratorScott exte
 			// Add all the vertices of one bipartite graph (or end)
 			for(int j = 0; j < north; ++j)
 				graph.vertexes.add(new Vertex(graph.nextVertexId(), (j - north) * 50.0 + 25.0, (i == -1 || i == n ? 0.0 : j - north) * 50.0 + (linkHeight + 100) * i));
-			
+		
 			for(int j = 0; j < south; ++j)
 				graph.vertexes.add(new Vertex(graph.nextVertexId(), (j + 1)     * 50.0 - 25.0, (i == -1 || i == n ? 0.0 : j + 1)     * 50.0 + (linkHeight + 100) * i));
-			
+		
 			for(int j = 0; j < west; ++j)
 				graph.vertexes.add(new Vertex(graph.nextVertexId(), (j - west) * 50.0, (linkHeight + 100) * i));
-			
+		
 			for(int j = 0; j < east; ++j)
 				graph.vertexes.add(new Vertex(graph.nextVertexId(), (j + 1)    * 50.0, (linkHeight + 100) * i));
-			
+		
 			// Add all the edges for that bipartite graph
 			if(i != -1 && i != n)
 				for(int j = 0; j < r; ++j)
 					for(int k = 0; k < s; ++k)
 						graph.edges.add(new Edge(false, graph.vertexes.get(graph.vertexes.size() - r - s + j), graph.vertexes.get(graph.vertexes.size() - s + k)));
-			
+		
 			// Add the edges between this bipartite graph and the previous one
 			if(i > -1)
 				for(int j = 0; j < r + s; ++j)
@@ -64,51 +58,23 @@ public class CartesianProductOfCompleteBipartiteGraphAndCycleGeneratorScott exte
 		return graph;
 	}
 	
-	@Override
-	public String getDescription()
-	{
-		return "Cartesian product of a complete bipartite graph and cycle (Scott)";
-	}
+	public String toString                          ( ) { return "Cartesian product of a complete bipartite graph and cycle (Scott)"; }
+	public String getParametersDescription          ( ) { return "[order of slant axes] [order of horizontal axes] [order of cycle]"; }
+	public String getParametersValidatingExpression ( ) { return "^\\s*(\\d+)\\s+(\\d+)\\s+(\\d+)\\s*$"; }
+	
+	public GeneratorBase.BooleanRule areLoopsAllowed         ( ) { return GeneratorBase.BooleanRule.DefaultFalse; }
+	public GeneratorBase.BooleanRule areDirectedEdgesAllowed ( ) { return GeneratorBase.BooleanRule.ForcedFalse;  }
+	public GeneratorBase.BooleanRule areMultipleEdgesAllowed ( ) { return GeneratorBase.BooleanRule.DefaultFalse; }
+	public GeneratorBase.BooleanRule areCyclesAllowed        ( ) { return GeneratorBase.BooleanRule.ForcedTrue;   }
+	public GeneratorBase.BooleanRule areParametersAllowed    ( ) { return GeneratorBase.BooleanRule.ForcedTrue;   }
 
-	@Override
-	public String getParametersDescription()
-	{
-		return "[order of slant axes] [order of horizontal axes] [order of cycle]";
-	}
-	
-	@Override
-	public String getParametersValidatingExpression()
-	{
-		return "^\\s*(\\d+)\\s+(\\d+)\\s+(\\d+)\\s*$";
-	}
-	
-	@Override
-	public BooleanRule areLoopsAllowed()
-	{
-		return BooleanRule.DefaultFalse;
-	}
-	
-	@Override
-	public BooleanRule areDirectedEdgesAllowed()
-	{
-		return BooleanRule.ForcedFalse;
-	}
+return (GeneratorBase)this;
 
-	@Override
-	public BooleanRule areMultipleEdgesAllowed()
-	{
-		return BooleanRule.DefaultFalse;
-	}
-	
-	@Override
-	public BooleanRule areCyclesAllowed()
-	{
-		return BooleanRule.ForcedTrue;
-	}
 
-	@Override
-	public BooleanRule areParametersAllowed()
-	{
-		return BooleanRule.ForcedTrue;
-	}
-}
+
+
+
+
+
+
+

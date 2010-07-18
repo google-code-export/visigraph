@@ -3,14 +3,12 @@
  */
 package edu.belmont.mth.visigraph.gui.dialogs;
 
-import javax.swing.*;
-
-import edu.belmont.mth.visigraph.gui.controls.ValidatingTextField;
-import edu.belmont.mth.visigraph.models.*;
-import edu.belmont.mth.visigraph.models.generators.*;
-import edu.belmont.mth.visigraph.settings.*;
 import java.awt.*;
+import javax.swing.*;
 import java.awt.event.*;
+import edu.belmont.mth.visigraph.models.*;
+import edu.belmont.mth.visigraph.gui.controls.*;
+import edu.belmont.mth.visigraph.models.generators.*;
 
 /**
  * @author Cameron Behar
@@ -20,8 +18,8 @@ import java.awt.event.*;
 public class NewGraphDialog extends JDialog implements ActionListener
 {
 	private static NewGraphDialog		dialog;
-	private static JComboBox			functionComboBox;
-	private static JLabel				functionParametersLabel;
+	private static JComboBox			generatorComboBox;
+	private static JLabel				generatorParametersLabel;
 	private static ValidatingTextField	generatorParametersField;
 	private static JCheckBox			allowLoopsCheckBox;
 	private static JCheckBox			allowDirectedEdgesCheckBox;
@@ -49,16 +47,18 @@ public class NewGraphDialog extends JDialog implements ActionListener
 		
 		GridBagConstraints gridBagConstraints = new GridBagConstraints();
 		
-		JLabel functionLabel = new JLabel("Family: ");
+		JLabel generatorLabel = new JLabel("Family: ");
 		gridBagConstraints.fill = GridBagConstraints.HORIZONTAL;
 		gridBagConstraints.gridx = 0;
 		gridBagConstraints.gridy = 1;
 		gridBagConstraints.gridwidth = 1;
-		functionLabel.setHorizontalAlignment(SwingConstants.RIGHT);
-		inputPanel.add(functionLabel, gridBagConstraints);
+		generatorLabel.setHorizontalAlignment(SwingConstants.RIGHT);
+		inputPanel.add(generatorLabel, gridBagConstraints);
 		
-		functionComboBox = new JComboBox(GlobalSettings.allGraphGenerators);
-		functionComboBox.addItemListener(new ItemListener()
+		generatorComboBox = new JComboBox();
+		for(GeneratorBase generator : GeneratorService.instance.generators)
+			generatorComboBox.addItem(generator);
+		generatorComboBox.addItemListener(new ItemListener()
 		{
 			public void itemStateChanged(ItemEvent arg0)
 			{
@@ -69,15 +69,15 @@ public class NewGraphDialog extends JDialog implements ActionListener
 		gridBagConstraints.gridx = 1;
 		gridBagConstraints.gridy = 1;
 		gridBagConstraints.gridwidth = 2;
-		inputPanel.add(functionComboBox, gridBagConstraints);
+		inputPanel.add(generatorComboBox, gridBagConstraints);
 		
-		functionParametersLabel = new JLabel("Parameters: ");
+		generatorParametersLabel = new JLabel("Parameters: ");
 		gridBagConstraints.fill = GridBagConstraints.HORIZONTAL;
 		gridBagConstraints.gridx = 0;
 		gridBagConstraints.gridy = 2;
 		gridBagConstraints.gridwidth = 1;
-		functionParametersLabel.setHorizontalAlignment(SwingConstants.RIGHT);
-		inputPanel.add(functionParametersLabel, gridBagConstraints);
+		generatorParametersLabel.setHorizontalAlignment(SwingConstants.RIGHT);
+		inputPanel.add(generatorParametersLabel, gridBagConstraints);
 		
 		generatorParametersField = new ValidatingTextField(10, ".*");
 		gridBagConstraints.fill = GridBagConstraints.HORIZONTAL;
@@ -97,7 +97,7 @@ public class NewGraphDialog extends JDialog implements ActionListener
 			@Override
 			public void itemStateChanged(ItemEvent arg0)
 			{
-				GraphGeneratorBase generator = (GraphGeneratorBase)functionComboBox.getSelectedItem();
+				GeneratorBase generator = (GeneratorBase)generatorComboBox.getSelectedItem();
 				
 				if(!generator.areCyclesAllowed().isForced())
 				{
@@ -136,7 +136,7 @@ public class NewGraphDialog extends JDialog implements ActionListener
 			@Override
 			public void itemStateChanged(ItemEvent e)
 			{
-				GraphGeneratorBase generator = (GraphGeneratorBase)functionComboBox.getSelectedItem();
+				GeneratorBase generator = (GeneratorBase)generatorComboBox.getSelectedItem();
 				
 				if(!generator.areCyclesAllowed().isForced())
 				{
@@ -166,7 +166,7 @@ public class NewGraphDialog extends JDialog implements ActionListener
 			@Override
 			public void itemStateChanged(ItemEvent e)
 			{
-				GraphGeneratorBase generator = (GraphGeneratorBase)functionComboBox.getSelectedItem();
+				GeneratorBase generator = (GeneratorBase)generatorComboBox.getSelectedItem();
 				
 				if(!generator.areLoopsAllowed().isForced())
 				{
@@ -237,7 +237,7 @@ public class NewGraphDialog extends JDialog implements ActionListener
 		this.pack();
 		this.setResizable(false);
 		setLocationRelativeTo(locationComp);
-		generatorChanged(functionComboBox.getSelectedObjects()[0]);
+		generatorChanged(generatorComboBox.getSelectedObjects()[0]);
 		value = null;
 	}
 	
@@ -248,7 +248,7 @@ public class NewGraphDialog extends JDialog implements ActionListener
 			if(!generatorParametersField.isValid())
 				return;
 			
-			GraphGeneratorBase generator = (GraphGeneratorBase)functionComboBox.getSelectedObjects()[0];
+			GeneratorBase generator = (GeneratorBase)generatorComboBox.getSelectedObjects()[0];
 			value = generator.generate(generatorParametersField.getText(), allowLoopsCheckBox.isSelected(), allowDirectedEdgesCheckBox.isSelected(), allowMultipleEdgesCheckBox.isSelected(), allowCyclesCheckBox.isSelected());
 		}
 		
@@ -257,11 +257,11 @@ public class NewGraphDialog extends JDialog implements ActionListener
 	
 	private void generatorChanged(Object item)
 	{
-		if (item instanceof GraphGeneratorBase)
+		if (item instanceof GeneratorBase)
 		{
-			GraphGeneratorBase generator = (GraphGeneratorBase) item;
+			GeneratorBase generator = (GeneratorBase) item;
 			
-			functionParametersLabel.setEnabled(generator.areParametersAllowed().isTrue());
+			generatorParametersLabel.setEnabled(generator.areParametersAllowed().isTrue());
 			generatorParametersField.setEnabled(generator.areParametersAllowed().isTrue());
 			
 			allowLoopsCheckBox.setSelected(generator.areLoopsAllowed().isTrue());

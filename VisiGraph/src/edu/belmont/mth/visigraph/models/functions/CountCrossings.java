@@ -1,23 +1,23 @@
 /**
- * CountCrossingsFunction.java
+ * CountCrossings.java
  */
 package edu.belmont.mth.visigraph.models.functions;
 
 import java.awt.*;
-import java.awt.geom.*;
+import java.awt.geom.Ellipse2D;
+import java.awt.geom.Point2D;
 import java.util.*;
-
 import edu.belmont.mth.visigraph.models.*;
-import edu.belmont.mth.visigraph.utilities.*;
+import edu.belmont.mth.visigraph.utilities.GeometryUtilities;
 
 /**
  * @author Cameron Behar
  *
  */
-public class CountCrossingsFunction extends FunctionBase
+public class CountCrossings implements FunctionBase
 {
 	@Override
-	public Object evaluate(Graphics2D g2D, Graph g)
+	public String evaluate(Graphics2D g2D, Graph g)
 	{
 		Vector<Edge> edges = new Vector<Edge>();
 		
@@ -55,13 +55,7 @@ public class CountCrossingsFunction extends FunctionBase
 			}
 		}
 		
-		return crossingsCount;
-	}
-
-	@Override
-	public String getDescription()
-	{
-		return "Count crossings";
+		return crossingsCount + "";
 	}	
 
 	private static Vector<Point2D> getCrossings(Edge e0, Edge e1)
@@ -94,7 +88,7 @@ public class CountCrossingsFunction extends FunctionBase
 			setLocations(locations);
 			setThickness(thickness);
 		}
-		
+
 		public Vector<Point2D> getLocations()
 		{
 			return locations;
@@ -104,15 +98,21 @@ public class CountCrossingsFunction extends FunctionBase
 		{
 			this.locations = locations;
 		}
-		
+
 		public double getThickness()
 		{
 			return thickness;
 		}
-		
+
 		public void setThickness(double radius)
 		{
 			this.thickness = radius;
 		}
+	}
+
+	@Override
+	public String toString()
+	{
+		return "Count crossings";
 	}
 }

@@ -10,13 +10,17 @@ import edu.belmont.mth.visigraph.settings.*;
 
 /**
  * @author Cameron Behar
- * 
+ *
  */
-public class EmptyGraphGenerator extends GraphGeneratorBase
-{
+public class EmptyGraph implements GeneratorBase
+{	
 	@Override
-	public Graph generate(Graph graph, Matcher matcher)
+	public Graph generate(String params, boolean areLoopsAllowed, boolean areDirectedEdgesAllowed, boolean areMultipleEdgesAllowed, boolean areCyclesAllowed)
 	{
+		Graph graph = new Graph(UserSettings.instance.defaultGraphName.get() + " " + toString(), areLoopsAllowed,areDirectedEdgesAllowed,areMultipleEdgesAllowed,areCyclesAllowed);
+		Pattern pattern = Pattern.compile(getParametersValidatingExpression());
+		Matcher matcher = pattern.matcher(params); matcher.find();
+		
 		int n = (matcher.group(0).trim().length() > 0 ? Integer.parseInt(matcher.group(1)) : 0);
 		
 		int rows = (int) Math.round(Math.sqrt(n));
@@ -24,16 +28,16 @@ public class EmptyGraphGenerator extends GraphGeneratorBase
 		Point2D.Double location = new Point2D.Double((columns / 2.0) * -UserSettings.instance.arrangeGridSpacing.get(), (rows / 2.0) * -UserSettings.instance.arrangeGridSpacing.get());
 		
 		for (int row = 0; row < rows; ++row)
-			for(int col = 0; (row < rows - 1 && col < columns) || (row == rows - 1 && col < (n % columns == 0 ? columns : n % columns)); ++col)
-				graph.vertexes.add(new Vertex(graph.nextVertexId(), location.x + UserSettings.instance.arrangeGridSpacing.get() * col, location.y + UserSettings.instance.arrangeGridSpacing.get() * row));
+		for(int col = 0; (row < rows - 1 && col < columns) || (row == rows - 1 && col < (n % columns == 0 ? columns : n % columns)); ++col)
+		graph.vertexes.add(new Vertex(graph.nextVertexId(), location.x + UserSettings.instance.arrangeGridSpacing.get() * col, location.y + UserSettings.instance.arrangeGridSpacing.get() * row));
 		
 		return graph;
 	}
 	
 	@Override
-	public String getDescription()
+	public String toString()
 	{
-		return "Empty graph";
+		return "(Empty graph)";
 	}
 	
 	@Override
@@ -53,13 +57,13 @@ public class EmptyGraphGenerator extends GraphGeneratorBase
 	{
 		return BooleanRule.DefaultFalse;
 	}
-
+	
 	@Override
 	public BooleanRule areMultipleEdgesAllowed()
 	{
 		return BooleanRule.DefaultFalse;
 	}
-
+	
 	@Override
 	public BooleanRule areDirectedEdgesAllowed()
 	{
