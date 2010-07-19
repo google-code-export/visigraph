@@ -22,7 +22,7 @@ public class EditCaptionDialog extends JDialog implements ActionListener
 	private static JSlider				  captionFontSizeSlider;
 	private static Value                  value;
 	
-	public static Value showDialog(Component frameComp, Component locationComp, String defaultText, int defaultSize)
+	public static Value showDialog(Component frameComp, Component locationComp, String defaultText, double defaultSize)
 	{
 		Frame frame = JOptionPane.getFrameForComponent(frameComp);
 		dialog = new EditCaptionDialog(frame, locationComp, defaultText, defaultSize);
@@ -30,7 +30,7 @@ public class EditCaptionDialog extends JDialog implements ActionListener
 		return value;
 	}
 	
-	private EditCaptionDialog(Frame frame, Component locationComp, String defaultText, int defaultSize)
+	private EditCaptionDialog(Frame frame, Component locationComp, String defaultText, double defaultSize)
 	{
 		super(frame, "Edit caption", true);
 		
@@ -131,7 +131,7 @@ public class EditCaptionDialog extends JDialog implements ActionListener
 	public void actionPerformed(ActionEvent e)
 	{
 		if ("Ok".equals(e.getActionCommand()))
-			value = new Value(captionTextArea.getText(), (int)Math.round(Math.pow(captionFontSizeSlider.getValue() * 0.3155, 2)));
+			value = new Value(captionTextArea.getText(), Math.pow(captionFontSizeSlider.getValue() * 0.3155, 2.0));
 		
 		EditCaptionDialog.dialog.setVisible(false);
 	}
@@ -139,18 +139,18 @@ public class EditCaptionDialog extends JDialog implements ActionListener
 	public class Value
 	{
 		private String text;
-		private int size;
+		private double size;
 		
-		public Value(String text, int size)
+		public Value(String text, double size)
 		{
 			this.text = text;
 			this.size = size;
 		}
 		
-		public String getText()            { return text; }
+		public String getText( )           { return text; }
 		public void   setText(String text) { this.text = text; }
 		
-		public int  getSize()         { return size; }
-		public void setSize(int size) { this.size = size; }
+		public double getSize( )           { return size; }
+		public void   setSize(double size) { this.size = size; }
 	}
 }
