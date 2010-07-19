@@ -25,11 +25,11 @@ public class CaptionDisplayView
 		g2D.setColor(c.isSelected.get() ? ColorUtilities.blend(UserSettings.instance.captionText.get(), UserSettings.instance.selectedCaptionText.get()) : UserSettings.instance.captionText.get());
 		
 		Font oldFont = g2D.getFont();
-		g2D.setFont(new Font(oldFont.getFamily(), oldFont.getStyle(), c.size.get()));
+		g2D.setFont(new Font(oldFont.getFamily(), oldFont.getStyle(), (int)Math.round(c.size.get())));
 		
 		String[] lines = c.text.get().split("\\n");
 		for(int i = 0; i < lines.length; ++i)
-			g2D.drawString(lines[i], c.x.get().floatValue(), c.y.get().floatValue() + (i + 0.9f) * c.size.get() - 10);
+			g2D.drawString(lines[i], (float)(c.x.get().floatValue()), (float)(c.y.get() + (i + 0.9f) * c.size.get() - 10));
 		
 		g2D.setFont(oldFont);
 		
