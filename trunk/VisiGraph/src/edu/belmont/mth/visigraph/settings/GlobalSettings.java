@@ -32,8 +32,10 @@ public class GlobalSettings
 	
 	public static final double					 defaultDirectedEdgeArrowRatio				= 4.0;
 	
-	public static final Color					 defaultCaptionTextDisplayColor				= Color.black;
-	public static final Color					 defaultSelectedCaptionTextDisplayColor		= Color.blue;
+	public static final Color					 defaultCaptionTextColor					= Color.black;
+	public static final Color					 defaultCaptionButtonFill					= new Color(230, 230, 230);
+	public static final Color					 defaultCaptionButtonLine					= new Color(193, 193, 193);
+	public static final Color					 defaultSelectedCaptionLineColor			= Color.blue;
 	
 	// Initialized with black, gray, and 6 colors--past 6 hues with no saturation or brightness difference, some of the colors become difficult to distinguish.
 	public static final Color[]					 defaultElementColors						= new Color[] { Color.black, new Color(185, 122, 27), Color.getHSBColor(0, .95f, .95f), Color.getHSBColor(1/6f, .95f, .95f), Color.getHSBColor(2/6f, .95f, .95f), Color.getHSBColor(3/6f, .95f, .95f), Color.getHSBColor(4/6f, .95f, .95f), Color.getHSBColor(5/6f, .95f, .95f) };
@@ -69,7 +71,7 @@ public class GlobalSettings
 	public static final double					 defaultVertexClickMargin					= 2.5;
 	
 	public static final String					 defaultCaptionText							= "";
-	public static final Integer					 defaultCaptionFontSize						= 11;
+	public static final double					 defaultCaptionFontSize						= 14;
 	public static final boolean					 defaultCaptionIsSelected					= false;
 	public static final double					 defaultCaptionHandleClickMargin			= 2.5;
 	public static final double					 defaultCaptionEditorClickMargin			= 2.5;
@@ -89,7 +91,7 @@ public class GlobalSettings
 	
 	public static final double					 defaultZoomInFactor						= 1.2;
 	public static final double					 defaultZoomOutFactor						= 0.8;
-	public static final double					 defaultMaximumZoomFactor					= 2.0;
+	public static final double					 defaultMaximumZoomFactor					= 100.0;
 	
 	public static final double					 defaultZoomGraphPadding					= 20.0;
 	

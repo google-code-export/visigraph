@@ -30,7 +30,7 @@ public class UserSettings extends ObservableBase
 	public final Property<Double>  defaultLoopDiameter;
 	public final Property<Boolean> defaultEdgeIsSelected;
 	public final Property<String>  defaultCaptionText;
-	public final Property<Integer> defaultCaptionFontSize;
+	public final Property<Double>  defaultCaptionFontSize;
 	public final Property<Boolean> defaultCaptionIsSelected;
 	public final Property<Boolean> defaultShowVertexWeights;
 	public final Property<Boolean> defaultShowVertexLabels;
@@ -50,7 +50,9 @@ public class UserSettings extends ObservableBase
 	public final Property<Color>   selectedEdge;
 	public final Property<Color>   selectedEdgeHandle;
 	public final Property<Color>   captionText;
-	public final Property<Color>   selectedCaptionText;
+	public final Property<Color>   captionButtonFill;
+	public final Property<Color>   captionButtonLine;
+	public final Property<Color>   selectedCaptionLine;
 	public final Property<Color>   uncoloredElementFill;
 	public final ObservableList<Color> elementColors;
 	public final Property<Double>  vertexClickMargin;
@@ -101,7 +103,7 @@ public class UserSettings extends ObservableBase
 		this.defaultLoopDiameter			= new Property<Double> (GlobalSettings.defaultLoopDiameter,						"defaultLoopDiameter"			);
 		this.defaultEdgeIsSelected			= new Property<Boolean>(GlobalSettings.defaultEdgeIsSelected,					"defaultEdgeIsSelected"			);
 		this.defaultCaptionText				= new Property<String> (GlobalSettings.defaultCaptionText,						"defaultCaptionText"			);
-		this.defaultCaptionFontSize			= new Property<Integer>(GlobalSettings.defaultCaptionFontSize,					"defaultCaptionFontSize"		);
+		this.defaultCaptionFontSize			= new Property<Double> (GlobalSettings.defaultCaptionFontSize,					"defaultCaptionFontSize"		);
 		this.defaultCaptionIsSelected		= new Property<Boolean>(GlobalSettings.defaultCaptionIsSelected,				"defaultCaptionIsSelected"		);
 		this.defaultShowVertexWeights		= new Property<Boolean>(GlobalSettings.defaultShowVertexWeights,				"defaultShowVertexWeights"		);
 		this.defaultShowVertexLabels		= new Property<Boolean>(GlobalSettings.defaultShowVertexLabels,					"defaultShowVertexLabels"		);
@@ -120,8 +122,10 @@ public class UserSettings extends ObservableBase
 		this.edgeHandle						= new Property<Color>  (GlobalSettings.defaultEdgeHandleFill,					"edgeHandle"					);
 		this.selectedEdge					= new Property<Color>  (GlobalSettings.defaultSelectedEdgeLine,					"selectedEdge"					);
 		this.selectedEdgeHandle				= new Property<Color>  (GlobalSettings.defaultSelectedEdgeHandleFill,			"selectedEdgeHandle"			);
-		this.captionText					= new Property<Color>  (GlobalSettings.defaultCaptionTextDisplayColor,			"captionText"					);
-		this.selectedCaptionText			= new Property<Color>  (GlobalSettings.defaultSelectedCaptionTextDisplayColor,	"selectedCaptionText"			);
+		this.captionText					= new Property<Color>  (GlobalSettings.defaultCaptionTextColor,					"captionText"					);
+		this.captionButtonFill				= new Property<Color>  (GlobalSettings.defaultCaptionButtonFill,				"captionButtonFill"				);
+		this.captionButtonLine				= new Property<Color>  (GlobalSettings.defaultCaptionButtonLine,				"captionButtonLine"				);
+		this.selectedCaptionLine			= new Property<Color>  (GlobalSettings.defaultSelectedCaptionLineColor,			"selectedCaptionLine"			);
 		this.uncoloredElementFill			= new Property<Color>  (GlobalSettings.defaultUncoloredElementFill,				"uncoloredElement"				);
 		this.vertexClickMargin				= new Property<Double> (GlobalSettings.defaultVertexClickMargin,				"vertexClickMargin"				);
 		this.edgeHandleClickMargin			= new Property<Double> (GlobalSettings.defaultEdgeHandleClickMargin,			"edgeHandleClickMargin"			);
@@ -190,7 +194,7 @@ public class UserSettings extends ObservableBase
 		if(members.containsKey("defaultLoopDiameter"))			defaultLoopDiameter			 .set( (Double)  members.get( "defaultLoopDiameter"				) );
 		if(members.containsKey("defaultEdgeIsSelected"))		defaultEdgeIsSelected		 .set( (Boolean) members.get( "defaultEdgeIsSelected"			) );
 		if(members.containsKey("defaultCaptionText"))			defaultCaptionText			 .set( (String)  members.get( "defaultCaptionText"				) );
-		if(members.containsKey("defaultCaptionFontSize"))		defaultCaptionFontSize		 .set( (Integer) members.get( "defaultCaptionFontSize"			) );
+		if(members.containsKey("defaultCaptionFontSize"))		defaultCaptionFontSize		 .set( (Double)  members.get( "defaultCaptionFontSize"			) );
 		if(members.containsKey("defaultCaptionIsSelected"))		defaultCaptionIsSelected	 .set( (Boolean) members.get( "defaultCaptionIsSelected"		) );
 		if(members.containsKey("defaultShowVertexWeights"))		defaultShowVertexWeights	 .set( (Boolean) members.get( "defaultShowVertexWeights"		) );
 		if(members.containsKey("defaultShowVertexLabels"))		defaultShowVertexLabels		 .set( (Boolean) members.get( "defaultShowVertexLabels"			) );
@@ -210,7 +214,9 @@ public class UserSettings extends ObservableBase
 		if(members.containsKey("selectedEdge"))					selectedEdge				 .set( (Color)   members.get( "selectedEdge"					) );
 		if(members.containsKey("selectedEdgeHandle"))			selectedEdgeHandle			 .set( (Color)   members.get( "selectedEdgeHandle"				) );
 		if(members.containsKey("captionText"))					captionText					 .set( (Color)   members.get( "captionText"						) );
-		if(members.containsKey("selectedCaptionText"))			selectedCaptionText			 .set( (Color)   members.get( "selectedCaptionText"				) );
+		if(members.containsKey("captionButtonFill"))			captionButtonFill			 .set( (Color)   members.get( "captionButtonFill"				) );
+		if(members.containsKey("captionButtonLine"))			captionButtonLine			 .set( (Color)   members.get( "captionButtonLine"				) );
+		if(members.containsKey("selectedCaptionLine"))			selectedCaptionLine			 .set( (Color)   members.get( "selectedCaptionLine"				) );
 		if(members.containsKey("uncoloredElementFill"))			uncoloredElementFill		 .set( (Color)   members.get( "uncoloredElementFill"			) );
 		if(members.containsKey("vertexClickMargin"))			vertexClickMargin			 .set( (Double)  members.get( "vertexClickMargin"				) );
 		if(members.containsKey("edgeHandleClickMargin"))		edgeHandleClickMargin		 .set( (Double)  members.get( "edgeHandleClickMargin"			) );
@@ -289,7 +295,9 @@ public class UserSettings extends ObservableBase
 		members.put("selectedEdge",					selectedEdge					);
 		members.put("selectedEdgeHandle",			selectedEdgeHandle				);
 		members.put("captionText",					captionText						);
-		members.put("selectedCaptionText",			selectedCaptionText				);
+		members.put("captionButtonFill",			captionButtonFill				);
+		members.put("captionButtonLine",			captionButtonLine				);
+		members.put("selectedCaptionLine",			selectedCaptionLine				);
 		members.put("uncoloredElementFill",			uncoloredElementFill			);
 		members.put("elementColors",				elementColors					);
 		members.put("vertexClickMargin",			vertexClickMargin				);
