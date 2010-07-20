@@ -41,7 +41,7 @@ public class ObservableList<T> extends ObservableBase implements List<T>
 				((ObservableBase)e).addObserver(elementObserver);
 		suspendNotifications(false);
 		
-		notifyObservers(name + "\tadd\t[null]\t" + e);
+		notifyObservers(this);
 		return ret;
 	}
 
@@ -58,13 +58,11 @@ public class ObservableList<T> extends ObservableBase implements List<T>
 				((ObservableBase)element).addObserver(elementObserver);
 		suspendNotifications(false);
 		
-		notifyObservers(name + "\tadd\t[null]\t" + element + "\t@\t" + index);
+		notifyObservers(this);
 	}
 
 	public boolean addAll(Collection<? extends T> c)
 	{
-		int originalSize = size();
-		
 		suspendNotifications(true);
 			boolean ret = list.addAll(c);
 			for(T element : c)
@@ -72,14 +70,12 @@ public class ObservableList<T> extends ObservableBase implements List<T>
 					((ObservableBase)element).addObserver(elementObserver);
 		suspendNotifications(false);
 		
-		notifyObservers(name + "\taddAll\t" + originalSize + "\t" + list.size());
+		notifyObservers(this);
 		return ret;
 	}
 
 	public boolean addAll(int index, Collection<? extends T> c)
 	{
-		int originalSize = size();
-		
 		suspendNotifications(true);
 			boolean ret = list.addAll(index, c);
 			for(T element : c)
@@ -87,14 +83,12 @@ public class ObservableList<T> extends ObservableBase implements List<T>
 					((ObservableBase)element).addObserver(elementObserver);
 		suspendNotifications(false);
 		
-		notifyObservers(name + "\taddAll\t" + originalSize + "\t" + list.size() + "\t@\t" + index);
+		notifyObservers(this);
 		return ret;
 	}
 
 	public void clear()
 	{
-		int originalSize = size();
-		
 		suspendNotifications(true);
 			for(T element : list)
 				if(element instanceof ObservableBase)
@@ -102,7 +96,7 @@ public class ObservableList<T> extends ObservableBase implements List<T>
 			list.clear();
 		suspendNotifications(false);
 		
-		notifyObservers(name + "\tclear\t" + originalSize + "\t0");
+		notifyObservers(this);
 	}
 
 	public boolean contains(Object o)
@@ -158,28 +152,24 @@ public class ObservableList<T> extends ObservableBase implements List<T>
 				((ObservableBase)o).deleteObserver(elementObserver);
 		suspendNotifications(false);
 		
-		notifyObservers(name + "\tremove\t" + o + "\t[null]");
+		notifyObservers(this);
 		return ret;
 	}
 
 	public T remove(int index)
 	{
-		int originalSize = size();
-		
 		suspendNotifications(true);
 			T ret = list.remove(index);
 			if(ret instanceof ObservableBase)
 				((ObservableBase)ret).deleteObserver(elementObserver);
 		suspendNotifications(false);
 		
-		notifyObservers(name + "\tremove\t" + originalSize + "\t" + list.size());
+		notifyObservers(this);
 		return ret;
 	}
 
 	public boolean removeAll(Collection<?> c)
 	{
-		int originalSize = size();
-		
 		suspendNotifications(true);
 			for(Object element : c)
 			{
@@ -190,14 +180,12 @@ public class ObservableList<T> extends ObservableBase implements List<T>
 			boolean ret = list.removeAll(c);
 		suspendNotifications(false);
 		
-		notifyObservers(name + "\tremoveAll\t" + originalSize + "\t" + list.size());
+		notifyObservers(this);
 		return ret;
 	}
 
 	public boolean retainAll(Collection<?> c)
 	{
-		int originalSize = size();
-		
 		suspendNotifications(true);
 			for(T element : list)
 				if(!c.contains(element))
@@ -206,14 +194,12 @@ public class ObservableList<T> extends ObservableBase implements List<T>
 			boolean ret = list.retainAll(c);
 		suspendNotifications(false);
 		
-		notifyObservers(name + "\tretainAll\t" + originalSize + "\t" + list.size());
+		notifyObservers(this);
 		return ret;
 	}
 
 	public T set(int index, T element)
 	{
-		T originalItem = list.get(index);
-		
 		suspendNotifications(true);
 			if(list.get(index) != element)
 			{
@@ -226,7 +212,7 @@ public class ObservableList<T> extends ObservableBase implements List<T>
 			T ret = list.set(index, element);
 		suspendNotifications(false);
 		
-		notifyObservers(name + "\tset\t" + originalItem + "\t" + element);
+		notifyObservers(this);
 		return ret;
 	}
 

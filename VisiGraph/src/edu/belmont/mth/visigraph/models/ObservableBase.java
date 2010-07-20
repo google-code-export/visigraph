@@ -57,17 +57,21 @@ public abstract class ObservableBase
 			{
 				Number num = (Number) value;
 				if (num.doubleValue() < -Integer.MIN_VALUE || num.doubleValue() > Integer.MAX_VALUE) return;
-				if (Double.isInfinite(num.doubleValue()) || Double.isNaN(num.doubleValue()))         return;
+				if (Double.isInfinite(num.doubleValue())   || Double.isNaN(num.doubleValue()))       return;
 			}
 			
 			if (this.value != value)
 			{				
 				suspendNotifications(true);
+				
 				if (this.value instanceof ObservableBase)
 					((ObservableBase) this.value).deleteObserver(valueObserver);
+				
 				this.value = value;
+				
 				if (value instanceof ObservableBase)
 					((ObservableBase) value).addObserver(valueObserver);
+				
 				suspendNotifications(false);
 				
 				notifyObservers(this);
