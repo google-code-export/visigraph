@@ -58,7 +58,9 @@ public class PreferencesDialog extends JDialog implements ActionListener
 	private static ColorPicker 		   selectedEdgeColorPicker;
 	private static ColorPicker 	   	   selectedEdgeHandleColorPicker;
 	private static ColorPicker 		   captionTextColorPicker;
-	private static ColorPicker 		   selectedCaptionTextColorPicker;
+	private static ColorPicker 		   captionButtonFillColorPicker;
+	private static ColorPicker 		   captionButtonLineColorPicker;
+	private static ColorPicker 		   selectedCaptionLineColorPicker;
 	private static ColorPicker 		   uncoloredElementColorPicker;
 	private static JPanel              elementColorsPanel;
 	private static JButton			   addButton;
@@ -191,8 +193,8 @@ public class PreferencesDialog extends JDialog implements ActionListener
 		defaultEdgeIsSelectedCheckBox.setMinimumSize(new Dimension(32, 26));
 		
 		Header captionDefaultsHeader = new Header("Caption properties:");
-		FieldLabel defaultCaptionTextLabel     = new FieldLabel("Text:");      defaultCaptionTextTextField     = new JTextField(20);                     defaultCaptionTextTextField    .setMargin(fieldMargin); defaultCaptionTextTextField    .setMaximumSize(new Dimension(175, defaultVertexWeightTextField.getPreferredSize().height));
-		FieldLabel defaultCaptionFontSizeLabel = new FieldLabel("Font size:"); defaultCaptionFontSizeTextField = new ValidatingTextField(8, "\\d{1,3}"); defaultCaptionFontSizeTextField.setMargin(fieldMargin); defaultCaptionFontSizeTextField.setMaximumSize(new Dimension(70, defaultVertexWeightTextField.getPreferredSize().height));
+		FieldLabel defaultCaptionTextLabel     = new FieldLabel("Text:");      defaultCaptionTextTextField     = new JTextField(20);                                                   defaultCaptionTextTextField    .setMargin(fieldMargin); defaultCaptionTextTextField    .setMaximumSize(new Dimension(175, defaultVertexWeightTextField.getPreferredSize().height));
+		FieldLabel defaultCaptionFontSizeLabel = new FieldLabel("Font size:"); defaultCaptionFontSizeTextField = new ValidatingTextField(8, "(?:\\d{1,3}(\\.\\d*)?|\\d{0,3}\\.\\d+)"); defaultCaptionFontSizeTextField.setMargin(fieldMargin); defaultCaptionFontSizeTextField.setMaximumSize(new Dimension(70, defaultVertexWeightTextField.getPreferredSize().height));
 		FieldLabel defaultCaptionIsSelectedLabel = new FieldLabel("Is selected:");
 		defaultCaptionIsSelectedCheckBox = new JCheckBox();
 		defaultCaptionIsSelectedCheckBox.setBackground(panel.getBackground());
@@ -353,8 +355,10 @@ public class PreferencesDialog extends JDialog implements ActionListener
 		FieldLabel selectedEdgeHandleLabel  = new FieldLabel("Selected handle:");  selectedEdgeHandleColorPicker  = new ColorPicker();
 			
 		Header captionColorsHeader = new Header("Caption colors:");
-		FieldLabel captionTextLabel         = new FieldLabel("Caption text:");  captionTextColorPicker         = new ColorPicker();
-		FieldLabel selectedCaptionTextLabel = new FieldLabel("Selected text:"); selectedCaptionTextColorPicker = new ColorPicker();
+		FieldLabel captionTextLabel         = new FieldLabel("Caption text:");        captionTextColorPicker         = new ColorPicker();
+		FieldLabel captionButtonFillLabel   = new FieldLabel("Caption button fill:"); captionButtonFillColorPicker   = new ColorPicker();
+		FieldLabel captionButtonLineLabel   = new FieldLabel("Caption button line:"); captionButtonLineColorPicker   = new ColorPicker();
+		FieldLabel selectedCaptionLineLabel = new FieldLabel("Selected line:");       selectedCaptionLineColorPicker = new ColorPicker();
 			
 		Header sharedColorsHeader = new Header("Shared colors:");
 		FieldLabel uncoloredElementLabel = new FieldLabel("Uncolored element:"); uncoloredElementColorPicker = new ColorPicker();
@@ -568,7 +572,9 @@ public class PreferencesDialog extends JDialog implements ActionListener
 					.addComponent(selectedEdgeLabel)
 					.addComponent(selectedEdgeHandleLabel)
 					.addComponent(captionTextLabel)
-					.addComponent(selectedCaptionTextLabel)
+					.addComponent(captionButtonFillLabel)
+					.addComponent(captionButtonLineLabel)
+					.addComponent(selectedCaptionLineLabel)
 					.addComponent(uncoloredElementLabel)
 					.addComponent(elementColorsLabel)
 					.addComponent(col1Padding))
@@ -584,7 +590,9 @@ public class PreferencesDialog extends JDialog implements ActionListener
 					.addComponent(selectedEdgeColorPicker)
 					.addComponent(selectedEdgeHandleColorPicker)
 					.addComponent(captionTextColorPicker)
-					.addComponent(selectedCaptionTextColorPicker)
+					.addComponent(captionButtonFillColorPicker)
+					.addComponent(captionButtonLineColorPicker)
+					.addComponent(selectedCaptionLineColorPicker)
 					.addComponent(uncoloredElementColorPicker)
 					.addComponent(elementColorsPanel)
 					.addComponent(buttonPanel)
@@ -607,7 +615,9 @@ public class PreferencesDialog extends JDialog implements ActionListener
 				.addGroup(layout.createParallelGroup(GroupLayout.Alignment.CENTER).addComponent(selectedEdgeHandleLabel).addComponent(selectedEdgeHandleColorPicker))
 				.addComponent(captionColorsHeader)
 				.addGroup(layout.createParallelGroup(GroupLayout.Alignment.CENTER).addComponent(captionTextLabel).addComponent(captionTextColorPicker))
-				.addGroup(layout.createParallelGroup(GroupLayout.Alignment.CENTER).addComponent(selectedCaptionTextLabel).addComponent(selectedCaptionTextColorPicker))
+				.addGroup(layout.createParallelGroup(GroupLayout.Alignment.CENTER).addComponent(captionButtonFillLabel).addComponent(captionButtonFillColorPicker))
+				.addGroup(layout.createParallelGroup(GroupLayout.Alignment.CENTER).addComponent(captionButtonLineLabel).addComponent(captionButtonLineColorPicker))
+				.addGroup(layout.createParallelGroup(GroupLayout.Alignment.CENTER).addComponent(selectedCaptionLineLabel).addComponent(selectedCaptionLineColorPicker))
 				.addComponent(sharedColorsHeader)
 				.addGroup(layout.createParallelGroup(GroupLayout.Alignment.CENTER).addComponent(uncoloredElementLabel).addComponent(uncoloredElementColorPicker))
 				.addGroup(layout.createParallelGroup(GroupLayout.Alignment.LEADING).addComponent(elementColorsLabel).addComponent(elementColorsPanel))
@@ -902,7 +912,9 @@ public class PreferencesDialog extends JDialog implements ActionListener
 		selectedEdgeColorPicker					.setColor( userSettings.selectedEdge.get( ) );
 		selectedEdgeHandleColorPicker			.setColor( userSettings.selectedEdgeHandle.get( ) );
 		captionTextColorPicker					.setColor( userSettings.captionText.get( ) );
-		selectedCaptionTextColorPicker			.setColor( userSettings.selectedCaptionText.get( ) );
+		captionButtonFillColorPicker			.setColor( userSettings.captionButtonFill.get( ) );
+		captionButtonLineColorPicker			.setColor( userSettings.captionButtonLine.get( ) );
+		selectedCaptionLineColorPicker			.setColor( userSettings.selectedCaptionLine.get( ) );
 		uncoloredElementColorPicker				.setColor( userSettings.uncoloredElementFill.get( ) );
 		vertexClickMarginTextField				.setText( userSettings.vertexClickMargin.get( ).toString( ) );
 		edgeHandleClickMarginTextField			.setText( userSettings.edgeHandleClickMargin.get( ).toString( ) );
@@ -958,7 +970,7 @@ public class PreferencesDialog extends JDialog implements ActionListener
 		userSettings.defaultLoopDiameter			.set( new Double ( defaultLoopDiameterTextField.getText( ) ) );
 		userSettings.defaultEdgeIsSelected			.set( 			   defaultEdgeIsSelectedCheckBox.isSelected( ) );
 		userSettings.defaultCaptionText				.set(              defaultCaptionTextTextField.getText( )   );
-		userSettings.defaultCaptionFontSize			.set( new Integer( defaultCaptionFontSizeTextField.getText( ) ) );
+		userSettings.defaultCaptionFontSize			.set( new Double( defaultCaptionFontSizeTextField.getText( ) ) );
 		userSettings.defaultCaptionIsSelected		.set( 			   defaultCaptionIsSelectedCheckBox.isSelected( ) );
 		userSettings.defaultShowVertexWeights		.set( 			   defaultShowVertexWeightsCheckBox.isSelected( ) );
 		userSettings.defaultShowVertexLabels		.set( 			   defaultShowVertexLabelsCheckBox.isSelected( ) );
@@ -978,7 +990,9 @@ public class PreferencesDialog extends JDialog implements ActionListener
 		userSettings.selectedEdge					.set( 			   selectedEdgeColorPicker.getColor( ) );
 		userSettings.selectedEdgeHandle				.set( 			   selectedEdgeHandleColorPicker.getColor( ) );
 		userSettings.captionText					.set( 			   captionTextColorPicker.getColor( ) );
-		userSettings.selectedCaptionText			.set( 			   selectedCaptionTextColorPicker.getColor( ) );
+		userSettings.captionButtonFill				.set( 			   captionButtonFillColorPicker.getColor( ) );
+		userSettings.captionButtonLine				.set( 			   captionButtonLineColorPicker.getColor( ) );
+		userSettings.selectedCaptionLine			.set( 			   selectedCaptionLineColorPicker.getColor( ) );
 		userSettings.uncoloredElementFill			.set( 			   uncoloredElementColorPicker.getColor( ) );
 		userSettings.vertexClickMargin				.set( new Double ( vertexClickMarginTextField.getText( ) ) );
 		userSettings.edgeHandleClickMargin			.set( new Double ( edgeHandleClickMarginTextField.getText( ) ) );
