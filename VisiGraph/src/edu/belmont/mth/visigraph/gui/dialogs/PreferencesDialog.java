@@ -168,7 +168,8 @@ public class PreferencesDialog extends JDialog implements ActionListener
 	private JScrollPane initializeDefaultsPanel()
 	{
 		JPanel panel = new JPanel();
-		panel.setBackground(Color.white);
+		if(System.getProperty("os.name").startsWith("Windows"))
+			panel.setBackground(Color.white);
 		
 		Header vertexDefaultsHeader = new Header("Vertex properties:");
 		FieldLabel defaultVertexWeightLabel = new FieldLabel("Weight:"); defaultVertexWeightTextField = new ValidatingTextField(8, "-?(?:\\d+\\.?\\d*|\\d*\\.?\\d+)(?:[eE][+\\-\\x20]?\\d+)?");	defaultVertexWeightTextField.setMargin(fieldMargin); defaultVertexWeightTextField.setMaximumSize(new Dimension(70, 100));
@@ -336,7 +337,8 @@ public class PreferencesDialog extends JDialog implements ActionListener
 	private JScrollPane initializeAppearancesPanel()
 	{
 		JPanel panel = new JPanel(new GridBagLayout());
-		panel.setBackground(Color.white);
+		if(System.getProperty("os.name").startsWith("Windows"))
+			panel.setBackground(Color.white);
 		
 		Header graphColorsHeader = new Header("Graph colors:");
 		FieldLabel graphBackgroundLabel  = new FieldLabel("Background:");         graphBackgroundColorPicker  = new ColorPicker();
@@ -633,7 +635,8 @@ public class PreferencesDialog extends JDialog implements ActionListener
 	private JScrollPane initializeUnderTheHoodPanel()
 	{
 		JPanel panel = new JPanel(new GridBagLayout());
-		panel.setBackground(Color.white);
+		if(System.getProperty("os.name").startsWith("Windows"))
+			panel.setBackground(Color.white);
 		
 		Header clickingBehaviorHeader = new Header("Clicking behavior:");
 		FieldLabel vertexClickMarginLabel        = new FieldLabel("Vertex click margin:");         vertexClickMarginTextField        = new ValidatingTextField(8, "(?:\\d+\\.?\\d*|\\d*\\.?\\d+)(?:[eE][+\\-\\x20]?\\d+)?");  vertexClickMarginTextField       .setMargin(fieldMargin); vertexClickMarginTextField       .setMaximumSize(new Dimension(70, 100));
