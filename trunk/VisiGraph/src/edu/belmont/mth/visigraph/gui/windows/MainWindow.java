@@ -225,7 +225,7 @@ public class MainWindow extends JFrame
 		
 		fileMenu.addSeparator();
 		
-		exitGraphMenuItem = new JMenuItem("Exit");
+		exitGraphMenuItem = new JMenuItem(System.getProperty("os.name").startsWith("Windows") ? "Exit" : "Quit");
 		exitGraphMenuItem.addActionListener(new ActionListener()
 		{
 			@Override
