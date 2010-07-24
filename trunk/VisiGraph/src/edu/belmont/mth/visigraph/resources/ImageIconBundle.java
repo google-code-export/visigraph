@@ -5,6 +5,7 @@ package edu.belmont.mth.visigraph.resources;
 
 import java.net.*;
 import java.util.*;
+
 import javax.swing.ImageIcon;
 
 /**
@@ -13,17 +14,13 @@ import javax.swing.ImageIcon;
  */
 public class ImageIconBundle extends ResourceBundle
 {
-	private String								fileSuffix;
-	private static HashMap<String, ImageIcon>	map	= new HashMap<String, ImageIcon>();
+	private static HashMap<String, ImageIcon> map      = new HashMap<String, ImageIcon>();
+	private static final ResourceBundle	      instance = ResourceBundle.getBundle("edu.belmont.mth.visigraph.resources.ImageIconBundle");
 	
-	public ImageIconBundle()
+	public static ImageIcon get(String key)
 	{
-		this("");
-	}
-	
-	private ImageIconBundle(String suffix)
-	{
-		fileSuffix = suffix;
+		try { return (ImageIcon) instance.getObject(key); }
+		catch (MissingResourceException e) { return null; }
 	}
 	
 	@Override
@@ -40,7 +37,7 @@ public class ImageIconBundle extends ResourceBundle
 	
 	private ImageIcon loadImageIcon(String filename, String extension)
 	{
-		String imageName = filename + fileSuffix + extension;
+		String imageName = filename + extension;
 		
 		ImageIcon icon = map.get(imageName);
 		

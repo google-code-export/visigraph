@@ -13,6 +13,7 @@ import javax.swing.border.*;
 
 import edu.belmont.mth.visigraph.gui.controls.ColorPicker;
 import edu.belmont.mth.visigraph.gui.controls.ValidatingTextField;
+import edu.belmont.mth.visigraph.resources.StringBundle;
 import edu.belmont.mth.visigraph.settings.UserSettings;
 
 /**
@@ -110,7 +111,7 @@ public class PreferencesDialog extends JDialog implements ActionListener
 	
 	private PreferencesDialog(Frame frame, Component locationComp)
 	{
-		super(frame, "Preferences", true);
+		super(frame, StringBundle.get("preferences_dialog_title"), true);
 		this.setResizable(false);
 		
 		JPanel inputPanel = new JPanel(new BorderLayout());
@@ -119,22 +120,22 @@ public class PreferencesDialog extends JDialog implements ActionListener
 		tabPanel.setPreferredSize(new Dimension(570, 520));
 		tabPanel.setBorder(new EmptyBorder(7, 7, 0, 7));
 		
-		tabPanel.addTab(" Defaults ",       initializeDefaultsPanel());
-		tabPanel.addTab(" Appearances ",    initializeAppearancesPanel());
-		tabPanel.addTab(" Under the Hood ", initializeUnderTheHoodPanel());
+		tabPanel.addTab(StringBundle.get("preferences_dialog_defaults_tab"),       initializeDefaultsPanel());
+		tabPanel.addTab(StringBundle.get("preferences_dialog_appearances_tab"),    initializeAppearancesPanel());
+		tabPanel.addTab(StringBundle.get("preferences_dialog_under_the_hood_tab"), initializeUnderTheHoodPanel());
 		
 		inputPanel.add(tabPanel, BorderLayout.CENTER);
 		
 		loadPreferences();
 		
 		//Create and initialize the buttons
-		final JButton okButton = new JButton("Ok");
+		final JButton okButton = new JButton(StringBundle.get("ok_button_text"));
 		okButton.setPreferredSize(new Dimension(80, 28));
 		okButton.setActionCommand("Ok");
 		okButton.addActionListener(this);
 		getRootPane().setDefaultButton(okButton);
 		
-		JButton cancelButton = new JButton("Cancel");
+		JButton cancelButton = new JButton(StringBundle.get("cancel_button_text"));
 		cancelButton.setPreferredSize(new Dimension(80, 28));
 		cancelButton.addActionListener(this);
 		
@@ -171,62 +172,62 @@ public class PreferencesDialog extends JDialog implements ActionListener
 		if(System.getProperty("os.name").startsWith("Windows"))
 			panel.setBackground(Color.white);
 		
-		Header vertexDefaultsHeader = new Header("Vertex properties:");
-		FieldLabel defaultVertexWeightLabel = new FieldLabel("Weight:"); defaultVertexWeightTextField = new ValidatingTextField(8, "-?(?:\\d+\\.?\\d*|\\d*\\.?\\d+)(?:[eE][+\\-\\x20]?\\d+)?");	defaultVertexWeightTextField.setMargin(fieldMargin); defaultVertexWeightTextField.setMaximumSize(new Dimension(70, 100));
-		FieldLabel defaultVertexColorLabel  = new FieldLabel("Color:");  defaultVertexColorTextField  = new ValidatingTextField(8, "-1|\\d+");													defaultVertexColorTextField .setMargin(fieldMargin); defaultVertexColorTextField .setMaximumSize(new Dimension(70, 100));
-		FieldLabel defaultVertexPrefixLabel = new FieldLabel("Prefix:"); defaultVertexPrefixTextField = new JTextField(8);																		defaultVertexPrefixTextField.setMargin(fieldMargin); defaultVertexPrefixTextField.setMaximumSize(new Dimension(70, 100));
-		FieldLabel defaultVertexRadiusLabel = new FieldLabel("Radius:"); defaultVertexRadiusTextField = new ValidatingTextField(8, "(?:\\d+\\.?\\d*|\\d*\\.?\\d+)(?:[eE][+\\-\\x20]?\\d+)?");	defaultVertexRadiusTextField.setMargin(fieldMargin); defaultVertexRadiusTextField.setMaximumSize(new Dimension(70, 100));
-		FieldLabel defaultVertexIsSelectedLabel = new FieldLabel("Is selected:");
+		Header vertexDefaultsHeader = new Header(StringBundle.get("preferences_dialog_default_vertex_properties_heading"));
+		FieldLabel defaultVertexWeightLabel = new FieldLabel(StringBundle.get("preferences_dialog_default_vertex_weight_label")); defaultVertexWeightTextField = new ValidatingTextField(8, "-?(?:\\d+\\.?\\d*|\\d*\\.?\\d+)(?:[eE][+\\-\\x20]?\\d+)?");	defaultVertexWeightTextField.setMargin(fieldMargin); defaultVertexWeightTextField.setMaximumSize(new Dimension(70, 100));
+		FieldLabel defaultVertexColorLabel  = new FieldLabel(StringBundle.get("preferences_dialog_default_vertex_color_label"));  defaultVertexColorTextField  = new ValidatingTextField(8, "-1|\\d+");													defaultVertexColorTextField .setMargin(fieldMargin); defaultVertexColorTextField .setMaximumSize(new Dimension(70, 100));
+		FieldLabel defaultVertexPrefixLabel = new FieldLabel(StringBundle.get("preferences_dialog_default_vertex_prefix_label")); defaultVertexPrefixTextField = new JTextField(8);																		defaultVertexPrefixTextField.setMargin(fieldMargin); defaultVertexPrefixTextField.setMaximumSize(new Dimension(70, 100));
+		FieldLabel defaultVertexRadiusLabel = new FieldLabel(StringBundle.get("preferences_dialog_default_vertex_radius_label")); defaultVertexRadiusTextField = new ValidatingTextField(8, "(?:\\d+\\.?\\d*|\\d*\\.?\\d+)(?:[eE][+\\-\\x20]?\\d+)?");	defaultVertexRadiusTextField.setMargin(fieldMargin); defaultVertexRadiusTextField.setMaximumSize(new Dimension(70, 100));
+		FieldLabel defaultVertexIsSelectedLabel = new FieldLabel(StringBundle.get("preferences_dialog_default_vertex_is_selected_label"));
 		defaultVertexIsSelectedCheckBox = new JCheckBox();
 		defaultVertexIsSelectedCheckBox.setBackground(panel.getBackground());
 		defaultVertexIsSelectedCheckBox.setMinimumSize(new Dimension(32, 26));
 		
-		Header edgeDefaultsHeader = new Header("Edge properties:");
-		FieldLabel defaultEdgeWeightLabel    = new FieldLabel("Weight:");        defaultEdgeWeightTextField    = new ValidatingTextField(8, "-?(?:\\d+\\.?\\d*|\\d*\\.?\\d+)(?:[eE][+\\-\\x20]?\\d+)?"); defaultEdgeWeightTextField   .setMargin(fieldMargin); defaultEdgeWeightTextField   .setMaximumSize(new Dimension(70, 100));
-		FieldLabel defaultEdgeColorLabel     = new FieldLabel("Color:");         defaultEdgeColorTextField     = new ValidatingTextField(8, "-1|\\d+");													 defaultEdgeColorTextField    .setMargin(fieldMargin); defaultEdgeColorTextField    .setMaximumSize(new Dimension(70, 100));
-		FieldLabel defaultEdgePrefixLabel    = new FieldLabel("Prefix:");        defaultEdgePrefixTextField    = new JTextField(8);																		 defaultEdgePrefixTextField   .setMargin(fieldMargin); defaultEdgePrefixTextField   .setMaximumSize(new Dimension(70, 100));
-		FieldLabel defaultEdgeThicknessLabel = new FieldLabel("Thickness:");     defaultEdgeThicknessTextField = new ValidatingTextField(8, "(?:\\d+\\.?\\d*|\\d*\\.?\\d+)(?:[eE][+\\-\\x20]?\\d+)?");	 defaultEdgeThicknessTextField.setMargin(fieldMargin); defaultEdgeThicknessTextField.setMaximumSize(new Dimension(70, 100));
-		FieldLabel defaultEdgeHandleRadiusRatioLabel = new FieldLabel("Edge handle radius ratio:"); defaultEdgeHandleRadiusRatioTextField = new ValidatingTextField(8, "(?:\\d+\\.?\\d*|\\d*\\.?\\d+)(?:[eE][+\\-\\x20]?\\d+)?"); defaultEdgeHandleRadiusRatioTextField.setMargin(fieldMargin); defaultEdgeHandleRadiusRatioTextField.setMaximumSize(new Dimension(70, 100));
-		FieldLabel defaultLoopDiameterLabel  = new FieldLabel("Loop diameter:"); defaultLoopDiameterTextField  = new ValidatingTextField(8, "-?(?:\\d+\\.?\\d*|\\d*\\.?\\d+)(?:[eE][+\\-\\x20]?\\d+)?"); defaultLoopDiameterTextField .setMargin(fieldMargin); defaultLoopDiameterTextField .setMaximumSize(new Dimension(70, 100));
-		FieldLabel defaultEdgeIsSelectedLabel = new FieldLabel("Is selected:");
+		Header edgeDefaultsHeader = new Header(StringBundle.get("preferences_dialog_default_edge_properties_heading"));
+		FieldLabel defaultEdgeWeightLabel    = new FieldLabel(StringBundle.get("preferences_dialog_default_edge_weight_label"));        defaultEdgeWeightTextField    = new ValidatingTextField(8, "-?(?:\\d+\\.?\\d*|\\d*\\.?\\d+)(?:[eE][+\\-\\x20]?\\d+)?"); defaultEdgeWeightTextField   .setMargin(fieldMargin); defaultEdgeWeightTextField   .setMaximumSize(new Dimension(70, 100));
+		FieldLabel defaultEdgeColorLabel     = new FieldLabel(StringBundle.get("preferences_dialog_default_edge_color_label"));         defaultEdgeColorTextField     = new ValidatingTextField(8, "-1|\\d+");													 defaultEdgeColorTextField    .setMargin(fieldMargin); defaultEdgeColorTextField    .setMaximumSize(new Dimension(70, 100));
+		FieldLabel defaultEdgePrefixLabel    = new FieldLabel(StringBundle.get("preferences_dialog_default_edge_prefix_label"));        defaultEdgePrefixTextField    = new JTextField(8);																		 defaultEdgePrefixTextField   .setMargin(fieldMargin); defaultEdgePrefixTextField   .setMaximumSize(new Dimension(70, 100));
+		FieldLabel defaultEdgeThicknessLabel = new FieldLabel(StringBundle.get("preferences_dialog_default_edge_thickness_label"));     defaultEdgeThicknessTextField = new ValidatingTextField(8, "(?:\\d+\\.?\\d*|\\d*\\.?\\d+)(?:[eE][+\\-\\x20]?\\d+)?");	 defaultEdgeThicknessTextField.setMargin(fieldMargin); defaultEdgeThicknessTextField.setMaximumSize(new Dimension(70, 100));
+		FieldLabel defaultEdgeHandleRadiusRatioLabel = new FieldLabel(StringBundle.get("preferences_dialog_default_edge_handle_radius_ratio_label")); defaultEdgeHandleRadiusRatioTextField = new ValidatingTextField(8, "(?:\\d+\\.?\\d*|\\d*\\.?\\d+)(?:[eE][+\\-\\x20]?\\d+)?"); defaultEdgeHandleRadiusRatioTextField.setMargin(fieldMargin); defaultEdgeHandleRadiusRatioTextField.setMaximumSize(new Dimension(70, 100));
+		FieldLabel defaultLoopDiameterLabel  = new FieldLabel(StringBundle.get("preferences_dialog_default_loop_diameter_label")); defaultLoopDiameterTextField  = new ValidatingTextField(8, "-?(?:\\d+\\.?\\d*|\\d*\\.?\\d+)(?:[eE][+\\-\\x20]?\\d+)?"); defaultLoopDiameterTextField .setMargin(fieldMargin); defaultLoopDiameterTextField .setMaximumSize(new Dimension(70, 100));
+		FieldLabel defaultEdgeIsSelectedLabel = new FieldLabel(StringBundle.get("preferences_dialog_default_edge_is_selected_label"));
 		defaultEdgeIsSelectedCheckBox     = new JCheckBox();
 		defaultEdgeIsSelectedCheckBox.setBackground(panel.getBackground());
 		defaultEdgeIsSelectedCheckBox.setMinimumSize(new Dimension(32, 26));
 		
-		Header captionDefaultsHeader = new Header("Caption properties:");
-		FieldLabel defaultCaptionTextLabel     = new FieldLabel("Text:");      defaultCaptionTextTextField     = new JTextField(20);                                                   defaultCaptionTextTextField    .setMargin(fieldMargin); defaultCaptionTextTextField    .setMaximumSize(new Dimension(175, defaultVertexWeightTextField.getPreferredSize().height));
-		FieldLabel defaultCaptionFontSizeLabel = new FieldLabel("Font size:"); defaultCaptionFontSizeTextField = new ValidatingTextField(8, "(?:\\d{1,3}(\\.\\d*)?|\\d{0,3}\\.\\d+)"); defaultCaptionFontSizeTextField.setMargin(fieldMargin); defaultCaptionFontSizeTextField.setMaximumSize(new Dimension(70, defaultVertexWeightTextField.getPreferredSize().height));
-		FieldLabel defaultCaptionIsSelectedLabel = new FieldLabel("Is selected:");
+		Header captionDefaultsHeader = new Header(StringBundle.get("preferences_dialog_default_caption_properties_heading"));
+		FieldLabel defaultCaptionTextLabel     = new FieldLabel(StringBundle.get("preferences_dialog_default_caption_text_label"));      defaultCaptionTextTextField     = new JTextField(20);                                                   defaultCaptionTextTextField    .setMargin(fieldMargin); defaultCaptionTextTextField    .setMaximumSize(new Dimension(175, defaultVertexWeightTextField.getPreferredSize().height));
+		FieldLabel defaultCaptionFontSizeLabel = new FieldLabel(StringBundle.get("preferences_dialog_default_caption_font_size_label")); defaultCaptionFontSizeTextField = new ValidatingTextField(8, "(?:\\d{1,3}(\\.\\d*)?|\\d{0,3}\\.\\d+)"); defaultCaptionFontSizeTextField.setMargin(fieldMargin); defaultCaptionFontSizeTextField.setMaximumSize(new Dimension(70, defaultVertexWeightTextField.getPreferredSize().height));
+		FieldLabel defaultCaptionIsSelectedLabel = new FieldLabel(StringBundle.get("preferences_dialog_default_caption_is_selected_label"));
 		defaultCaptionIsSelectedCheckBox = new JCheckBox();
 		defaultCaptionIsSelectedCheckBox.setBackground(panel.getBackground());
 		defaultCaptionIsSelectedCheckBox.setMinimumSize(new Dimension(32, 26));
 
-		Header viewportDefaultsHeader = new Header("Viewport settings:");
-		FieldLabel defaultShowVertexWeightsLabel = new FieldLabel("Show vertex weights:");
+		Header viewportDefaultsHeader = new Header(StringBundle.get("preferences_dialog_default_viewport_settings_heading"));
+		FieldLabel defaultShowVertexWeightsLabel = new FieldLabel(StringBundle.get("preferences_dialog_default_show_vertex_weights_label"));
 		defaultShowVertexWeightsCheckBox = new JCheckBox();
 		defaultShowVertexWeightsCheckBox.setBackground(panel.getBackground());
 		defaultShowVertexWeightsCheckBox.setMinimumSize(new Dimension(32, 26));
-		FieldLabel defaultShowVertexLabelsLabel = new FieldLabel("Show vertex labels:");
+		FieldLabel defaultShowVertexLabelsLabel = new FieldLabel(StringBundle.get("preferences_dialog_default_show_vertex_labels_label"));
 		defaultShowVertexLabelsCheckBox = new JCheckBox();
 		defaultShowVertexLabelsCheckBox.setBackground(panel.getBackground());
 		defaultShowVertexLabelsCheckBox.setMinimumSize(new Dimension(32, 26));
-		FieldLabel defaultShowEdgeHandlesLabel = new FieldLabel("Show edge handles:");
+		FieldLabel defaultShowEdgeHandlesLabel = new FieldLabel(StringBundle.get("preferences_dialog_default_show_edge_handles_label"));
 		defaultShowEdgeHandlesCheckBox = new JCheckBox();
 		defaultShowEdgeHandlesCheckBox.setBackground(panel.getBackground());
 		defaultShowEdgeHandlesCheckBox.setMinimumSize(new Dimension(32, 26));
-		FieldLabel defaultShowEdgeWeightsLabel = new FieldLabel("Show edge weights:");
+		FieldLabel defaultShowEdgeWeightsLabel = new FieldLabel(StringBundle.get("preferences_dialog_default_show_edge_weights_label"));
 		defaultShowEdgeWeightsCheckBox = new JCheckBox();
 		defaultShowEdgeWeightsCheckBox.setBackground(panel.getBackground());
 		defaultShowEdgeWeightsCheckBox.setMinimumSize(new Dimension(32, 26));
-		FieldLabel defaultShowCaptionsLabel = new FieldLabel("Show captions:");
+		FieldLabel defaultShowCaptionsLabel = new FieldLabel(StringBundle.get("preferences_dialog_default_show_captions_label"));
 		defaultShowCaptionsCheckBox = new JCheckBox();
 		defaultShowCaptionsCheckBox.setBackground(panel.getBackground());
 		defaultShowCaptionsCheckBox.setMinimumSize(new Dimension(32, 26));
-		FieldLabel defaultShowCaptionHandlesLabel = new FieldLabel("Show caption handles:");
+		FieldLabel defaultShowCaptionHandlesLabel = new FieldLabel(StringBundle.get("preferences_dialog_default_show_caption_handles_label"));
 		defaultShowCaptionHandlesCheckBox = new JCheckBox();
 		defaultShowCaptionHandlesCheckBox.setBackground(panel.getBackground());
 		defaultShowCaptionHandlesCheckBox.setMinimumSize(new Dimension(32, 26));
-		FieldLabel defaultShowCaptionEditorsLabel = new FieldLabel("Show caption editors:");
+		FieldLabel defaultShowCaptionEditorsLabel = new FieldLabel(StringBundle.get("preferences_dialog_default_show_caption_editors_label"));
 		defaultShowCaptionEditorsCheckBox = new JCheckBox();
 		defaultShowCaptionEditorsCheckBox.setBackground(panel.getBackground());
 		defaultShowCaptionEditorsCheckBox.setMinimumSize(new Dimension(32, 26));
@@ -340,31 +341,31 @@ public class PreferencesDialog extends JDialog implements ActionListener
 		if(System.getProperty("os.name").startsWith("Windows"))
 			panel.setBackground(Color.white);
 		
-		Header graphColorsHeader = new Header("Graph colors:");
-		FieldLabel graphBackgroundLabel  = new FieldLabel("Background:");         graphBackgroundColorPicker  = new ColorPicker();
-		FieldLabel selectionBoxFillLabel = new FieldLabel("Selection box fill:"); selectionBoxFillColorPicker = new ColorPicker();
-		FieldLabel selectionBoxLineLabel = new FieldLabel("Selection box line:"); selectionBoxLineColorPicker = new ColorPicker();
+		Header graphColorsHeader = new Header(StringBundle.get("preferences_dialog_graph_colors_heading"));
+		FieldLabel graphBackgroundLabel  = new FieldLabel(StringBundle.get("preferences_dialog_graph_background_label"));         graphBackgroundColorPicker  = new ColorPicker();
+		FieldLabel selectionBoxFillLabel = new FieldLabel(StringBundle.get("preferences_dialog_graph_selection_box_fill_label")); selectionBoxFillColorPicker = new ColorPicker();
+		FieldLabel selectionBoxLineLabel = new FieldLabel(StringBundle.get("preferences_dialog_graph_selection_box_line_label")); selectionBoxLineColorPicker = new ColorPicker();
 		
-		Header vertexColorsHeader = new Header("Vertex colors:");
-		FieldLabel vertexLineLabel         = new FieldLabel("Line:");          vertexLineColorPicker         = new ColorPicker();
-		FieldLabel selectedVertexFillLabel = new FieldLabel("Selected fill:"); selectedVertexFillColorPicker = new ColorPicker();
-		FieldLabel selectedVertexLineLabel = new FieldLabel("Selected line:"); selectedVertexLineColorPicker = new ColorPicker();
+		Header vertexColorsHeader = new Header(StringBundle.get("preferences_dialog_vertex_colors_heading"));
+		FieldLabel vertexLineLabel         = new FieldLabel(StringBundle.get("preferences_dialog_vertex_line_label"));          vertexLineColorPicker         = new ColorPicker();
+		FieldLabel selectedVertexFillLabel = new FieldLabel(StringBundle.get("preferences_dialog_vertex_selected_fill_label")); selectedVertexFillColorPicker = new ColorPicker();
+		FieldLabel selectedVertexLineLabel = new FieldLabel(StringBundle.get("preferences_dialog_vertex_selected_line_label")); selectedVertexLineColorPicker = new ColorPicker();
 			
-		Header edgeColorsHeader = new Header("Edge colors:");
-		FieldLabel draggingEdgeLabel        = new FieldLabel("Dragging:");         draggingEdgeColorPicker        = new ColorPicker();
-		FieldLabel edgeHandleLabel 			= new FieldLabel("Uncolored handle:"); edgeHandleColorPicker		  = new ColorPicker();
-		FieldLabel selectedEdgeLabel        = new FieldLabel("Selected:");         selectedEdgeColorPicker        = new ColorPicker();
-		FieldLabel selectedEdgeHandleLabel  = new FieldLabel("Selected handle:");  selectedEdgeHandleColorPicker  = new ColorPicker();
+		Header edgeColorsHeader = new Header(StringBundle.get("preferences_dialog_edge_colors_heading"));
+		FieldLabel draggingEdgeLabel        = new FieldLabel(StringBundle.get("preferences_dialog_edge_dragging_label"));         draggingEdgeColorPicker        = new ColorPicker();
+		FieldLabel edgeHandleLabel 			= new FieldLabel(StringBundle.get("preferences_dialog_edge_uncolored_handle_label")); edgeHandleColorPicker		  = new ColorPicker();
+		FieldLabel selectedEdgeLabel        = new FieldLabel(StringBundle.get("preferences_dialog_edge_selected_label"));         selectedEdgeColorPicker        = new ColorPicker();
+		FieldLabel selectedEdgeHandleLabel  = new FieldLabel(StringBundle.get("preferences_dialog_edge_selected_handle_label"));  selectedEdgeHandleColorPicker  = new ColorPicker();
 			
-		Header captionColorsHeader = new Header("Caption colors:");
-		FieldLabel captionTextLabel         = new FieldLabel("Caption text:");        captionTextColorPicker         = new ColorPicker();
-		FieldLabel captionButtonFillLabel   = new FieldLabel("Caption button fill:"); captionButtonFillColorPicker   = new ColorPicker();
-		FieldLabel captionButtonLineLabel   = new FieldLabel("Caption button line:"); captionButtonLineColorPicker   = new ColorPicker();
-		FieldLabel selectedCaptionLineLabel = new FieldLabel("Selected line:");       selectedCaptionLineColorPicker = new ColorPicker();
+		Header captionColorsHeader = new Header(StringBundle.get("preferences_dialog_caption_colors_heading"));
+		FieldLabel captionTextLabel         = new FieldLabel(StringBundle.get("preferences_dialog_caption_text_label"));        captionTextColorPicker         = new ColorPicker();
+		FieldLabel captionButtonFillLabel   = new FieldLabel(StringBundle.get("preferences_dialog_caption_button_fill_label")); captionButtonFillColorPicker   = new ColorPicker();
+		FieldLabel captionButtonLineLabel   = new FieldLabel(StringBundle.get("preferences_dialog_caption_button_line_label")); captionButtonLineColorPicker   = new ColorPicker();
+		FieldLabel selectedCaptionLineLabel = new FieldLabel(StringBundle.get("preferences_dialog_caption_selected_line_label"));       selectedCaptionLineColorPicker = new ColorPicker();
 			
-		Header sharedColorsHeader = new Header("Shared colors:");
-		FieldLabel uncoloredElementLabel = new FieldLabel("Uncolored element:"); uncoloredElementColorPicker = new ColorPicker();
-		FieldLabel elementColorsLabel    = new FieldLabel("Colored elements:");
+		Header sharedColorsHeader = new Header(StringBundle.get("preferences_dialog_shared_colors_heading"));
+		FieldLabel uncoloredElementLabel = new FieldLabel(StringBundle.get("preferences_dialog_shared_uncolored_element_label")); uncoloredElementColorPicker = new ColorPicker();
+		FieldLabel elementColorsLabel    = new FieldLabel(StringBundle.get("preferences_dialog_shared_colored_elements_label"));
 		
 		elementColorsPanel = new JPanel(new LayoutManager()
 		{
@@ -502,10 +503,10 @@ public class PreferencesDialog extends JDialog implements ActionListener
 		elementColorsPanel.setBackground(panel.getBackground());
 		elementColorsPanel.setBorder(BorderFactory.createEmptyBorder(-6, 0, 0, 0));
 		
-		addButton = new JButton("Add");
+		addButton = new JButton(StringBundle.get("preferences_dialog_add_button_text"));
 		addButton.setPreferredSize(new Dimension(80, 28));
 		
-		removeButton = new JButton("Remove");
+		removeButton = new JButton(StringBundle.get("preferences_dialog_remove_button_text"));
 		removeButton.setPreferredSize(new Dimension(80, 28));
 		removeButton.setEnabled(false);
 		
@@ -638,59 +639,59 @@ public class PreferencesDialog extends JDialog implements ActionListener
 		if(System.getProperty("os.name").startsWith("Windows"))
 			panel.setBackground(Color.white);
 		
-		Header clickingBehaviorHeader = new Header("Clicking behavior:");
-		FieldLabel vertexClickMarginLabel        = new FieldLabel("Vertex click margin:");         vertexClickMarginTextField        = new ValidatingTextField(8, "(?:\\d+\\.?\\d*|\\d*\\.?\\d+)(?:[eE][+\\-\\x20]?\\d+)?");  vertexClickMarginTextField       .setMargin(fieldMargin); vertexClickMarginTextField       .setMaximumSize(new Dimension(70, 100));
-		FieldLabel edgeHandleClickMarginLabel    = new FieldLabel("Edge handle click margin:");    edgeHandleClickMarginTextField    = new ValidatingTextField(8, "(?:\\d+\\.?\\d*|\\d*\\.?\\d+)(?:[eE][+\\-\\x20]?\\d+)?");  edgeHandleClickMarginTextField   .setMargin(fieldMargin); edgeHandleClickMarginTextField   .setMaximumSize(new Dimension(70, 100));
-		FieldLabel captionHandleClickMarginLabel = new FieldLabel("Caption handle click margin:"); captionHandleClickMarginTextField = new ValidatingTextField(8, "(?:\\d+\\.?\\d*|\\d*\\.?\\d+)(?:[eE][+\\-\\x20]?\\d+)?");  captionHandleClickMarginTextField.setMargin(fieldMargin); captionHandleClickMarginTextField.setMaximumSize(new Dimension(70, 100));
-		FieldLabel captionEditorClickMarginLabel = new FieldLabel("Caption editor click margin:"); captionEditorClickMarginTextField = new ValidatingTextField(8, "(?:\\d+\\.?\\d*|\\d*\\.?\\d+)(?:[eE][+\\-\\x20]?\\d+)?");  captionEditorClickMarginTextField.setMargin(fieldMargin); captionEditorClickMarginTextField.setMaximumSize(new Dimension(70, 100));
-		FieldLabel panDecelerationFactorLabel    = new FieldLabel("Pan deceleration factor:");     panDecelerationFactorTextField    = new ValidatingTextField(8, "-(?:\\d+\\.?\\d*|\\d*\\.?\\d+)(?:[eE][+\\-\\x20]?\\d+)?"); panDecelerationFactorTextField   .setMargin(fieldMargin); panDecelerationFactorTextField   .setMaximumSize(new Dimension(70, 100));
+		Header clickingBehaviorHeader = new Header(StringBundle.get("preferences_dialog_clicking_behavior_heading"));
+		FieldLabel vertexClickMarginLabel        = new FieldLabel(StringBundle.get("preferences_dialog_vertex_click_margin_label"));         vertexClickMarginTextField        = new ValidatingTextField(8, "(?:\\d+\\.?\\d*|\\d*\\.?\\d+)(?:[eE][+\\-\\x20]?\\d+)?");  vertexClickMarginTextField       .setMargin(fieldMargin); vertexClickMarginTextField       .setMaximumSize(new Dimension(70, 100));
+		FieldLabel edgeHandleClickMarginLabel    = new FieldLabel(StringBundle.get("preferences_dialog_edge_handle_click_margin_label"));    edgeHandleClickMarginTextField    = new ValidatingTextField(8, "(?:\\d+\\.?\\d*|\\d*\\.?\\d+)(?:[eE][+\\-\\x20]?\\d+)?");  edgeHandleClickMarginTextField   .setMargin(fieldMargin); edgeHandleClickMarginTextField   .setMaximumSize(new Dimension(70, 100));
+		FieldLabel captionHandleClickMarginLabel = new FieldLabel(StringBundle.get("preferences_dialog_caption_handle_click_margin_label")); captionHandleClickMarginTextField = new ValidatingTextField(8, "(?:\\d+\\.?\\d*|\\d*\\.?\\d+)(?:[eE][+\\-\\x20]?\\d+)?");  captionHandleClickMarginTextField.setMargin(fieldMargin); captionHandleClickMarginTextField.setMaximumSize(new Dimension(70, 100));
+		FieldLabel captionEditorClickMarginLabel = new FieldLabel(StringBundle.get("preferences_dialog_caption_editor_click_margin_label")); captionEditorClickMarginTextField = new ValidatingTextField(8, "(?:\\d+\\.?\\d*|\\d*\\.?\\d+)(?:[eE][+\\-\\x20]?\\d+)?");  captionEditorClickMarginTextField.setMargin(fieldMargin); captionEditorClickMarginTextField.setMaximumSize(new Dimension(70, 100));
+		FieldLabel panDecelerationFactorLabel    = new FieldLabel(StringBundle.get("preferences_dialog_pan_deceleration_factor_label"));     panDecelerationFactorTextField    = new ValidatingTextField(8, "-(?:\\d+\\.?\\d*|\\d*\\.?\\d+)(?:[eE][+\\-\\x20]?\\d+)?"); panDecelerationFactorTextField   .setMargin(fieldMargin); panDecelerationFactorTextField   .setMaximumSize(new Dimension(70, 100));
 		
-		Header zoomingBehaviorHeader = new Header("Zooming behavior:");
-		FieldLabel zoomInFactorLabel        = new FieldLabel("Zoom in factor:");        zoomInFactorTextField        = new ValidatingTextField(8, "(?:\\d+\\.?\\d*|\\d*\\.?\\d+)(?:[eE][+\\-\\x20]?\\d+)?"); zoomInFactorTextField       .setMargin(fieldMargin); zoomInFactorTextField       .setMaximumSize(new Dimension(70, 100));
-		FieldLabel zoomOutFactorLabel       = new FieldLabel("Zoom out factor:");       zoomOutFactorTextField       = new ValidatingTextField(8, "(?:\\d+\\.?\\d*|\\d*\\.?\\d+)(?:[eE][+\\-\\x20]?\\d+)?"); zoomOutFactorTextField      .setMargin(fieldMargin); zoomOutFactorTextField      .setMaximumSize(new Dimension(70, 100));
-		FieldLabel maximumZoomFactorLabel   = new FieldLabel("Maximum zoom factor:");   maximumZoomFactorTextField   = new ValidatingTextField(8, "(?:\\d+\\.?\\d*|\\d*\\.?\\d+)(?:[eE][+\\-\\x20]?\\d+)?"); maximumZoomFactorTextField  .setMargin(fieldMargin); maximumZoomFactorTextField  .setMaximumSize(new Dimension(70, 100));
-		FieldLabel zoomGraphPaddingLabel    = new FieldLabel("Zoom fit padding:");      zoomGraphPaddingTextField    = new ValidatingTextField(8, "(?:\\d+\\.?\\d*|\\d*\\.?\\d+)(?:[eE][+\\-\\x20]?\\d+)?"); zoomGraphPaddingTextField   .setMargin(fieldMargin); zoomGraphPaddingTextField   .setMaximumSize(new Dimension(70, 100));
-		FieldLabel scrollZoomIncrementLabel = new FieldLabel("Scroll zoom increment:"); scrollIncrementZoomTextField = new ValidatingTextField(8, "(?:\\d+\\.?\\d*|\\d*\\.?\\d+)(?:[eE][+\\-\\x20]?\\d+)?"); scrollIncrementZoomTextField.setMargin(fieldMargin); scrollIncrementZoomTextField.setMaximumSize(new Dimension(70, 100));
+		Header zoomingBehaviorHeader = new Header(StringBundle.get("preferences_dialog_zooming_behavior_heading"));
+		FieldLabel zoomInFactorLabel        = new FieldLabel(StringBundle.get("preferences_dialog_zoom_in_factor_label"));        zoomInFactorTextField        = new ValidatingTextField(8, "(?:\\d+\\.?\\d*|\\d*\\.?\\d+)(?:[eE][+\\-\\x20]?\\d+)?"); zoomInFactorTextField       .setMargin(fieldMargin); zoomInFactorTextField       .setMaximumSize(new Dimension(70, 100));
+		FieldLabel zoomOutFactorLabel       = new FieldLabel(StringBundle.get("preferences_dialog_zoom_out_factor_label"));       zoomOutFactorTextField       = new ValidatingTextField(8, "(?:\\d+\\.?\\d*|\\d*\\.?\\d+)(?:[eE][+\\-\\x20]?\\d+)?"); zoomOutFactorTextField      .setMargin(fieldMargin); zoomOutFactorTextField      .setMaximumSize(new Dimension(70, 100));
+		FieldLabel maximumZoomFactorLabel   = new FieldLabel(StringBundle.get("preferences_dialog_maximum_zoom_factor_label"));   maximumZoomFactorTextField   = new ValidatingTextField(8, "(?:\\d+\\.?\\d*|\\d*\\.?\\d+)(?:[eE][+\\-\\x20]?\\d+)?"); maximumZoomFactorTextField  .setMargin(fieldMargin); maximumZoomFactorTextField  .setMaximumSize(new Dimension(70, 100));
+		FieldLabel zoomGraphPaddingLabel    = new FieldLabel(StringBundle.get("preferences_dialog_zoom_fit_padding_label"));      zoomGraphPaddingTextField    = new ValidatingTextField(8, "(?:\\d+\\.?\\d*|\\d*\\.?\\d+)(?:[eE][+\\-\\x20]?\\d+)?"); zoomGraphPaddingTextField   .setMargin(fieldMargin); zoomGraphPaddingTextField   .setMaximumSize(new Dimension(70, 100));
+		FieldLabel scrollZoomIncrementLabel = new FieldLabel(StringBundle.get("preferences_dialog_scroll_zoom_increment_label")); scrollIncrementZoomTextField = new ValidatingTextField(8, "(?:\\d+\\.?\\d*|\\d*\\.?\\d+)(?:[eE][+\\-\\x20]?\\d+)?"); scrollIncrementZoomTextField.setMargin(fieldMargin); scrollIncrementZoomTextField.setMaximumSize(new Dimension(70, 100));
 		
-		Header arrangingBehaviorHeader = new Header("Arranging behavior:");
-		FieldLabel arrangeCircleRadiusMultiplierLabel = new FieldLabel("Arrange circle radius multiplier:"); arrangeCircleRadiusMultiplierTextField = new ValidatingTextField(8, "(?:\\d+\\.?\\d*|\\d*\\.?\\d+)(?:[eE][+\\-\\x20]?\\d+)?"); arrangeCircleRadiusMultiplierTextField.setMargin(fieldMargin); arrangeCircleRadiusMultiplierTextField.setMaximumSize(new Dimension(70, 100));
-		FieldLabel arrangeGridSpacingLabel            = new FieldLabel("Arrange grid spacing:");             arrangeGridSpacingTextField            = new ValidatingTextField(8, "(?:\\d+\\.?\\d*|\\d*\\.?\\d+)(?:[eE][+\\-\\x20]?\\d+)?"); arrangeGridSpacingTextField           .setMargin(fieldMargin); arrangeGridSpacingTextField           .setMaximumSize(new Dimension(70, 100));
-		FieldLabel autoArrangeAttractiveForceLabel    = new FieldLabel("Auto-arrange attractive force:");    autoArrangeAttractiveForceTextField    = new ValidatingTextField(8, "(?:\\d+\\.?\\d*|\\d*\\.?\\d+)(?:[eE][+\\-\\x20]?\\d+)?"); autoArrangeAttractiveForceTextField   .setMargin(fieldMargin); autoArrangeAttractiveForceTextField   .setMaximumSize(new Dimension(70, 100));
-		FieldLabel autoArrangeRepulsiveForceLabel     = new FieldLabel("Auto-arrange repulsive force:");     autoArrangeRepulsiveForceTextField     = new ValidatingTextField(8, "-(?:\\d+\\.?\\d*|\\d*\\.?\\d+)(?:[eE][+\\-\\x20]?\\d+)?"); autoArrangeRepulsiveForceTextField   .setMargin(fieldMargin); autoArrangeRepulsiveForceTextField    .setMaximumSize(new Dimension(70, 100));
-		FieldLabel autoArrangeDecelerationFactorLabel = new FieldLabel("Auto-arrange deceleration factor:"); autoArrangeDecelerationFactorTextField = new ValidatingTextField(8, "(?:\\d+\\.?\\d*|\\d*\\.?\\d+)(?:[eE][+\\-\\x20]?\\d+)?"); autoArrangeDecelerationFactorTextField.setMargin(fieldMargin); autoArrangeDecelerationFactorTextField.setMaximumSize(new Dimension(70, 100));
-		FieldLabel arrangeContractFactorLabel         = new FieldLabel("Arrange contract factor:");          arrangeContractFactorTextField         = new ValidatingTextField(8, "(?:\\d+\\.?\\d*|\\d*\\.?\\d+)(?:[eE][+\\-\\x20]?\\d+)?"); arrangeContractFactorTextField        .setMargin(fieldMargin); arrangeContractFactorTextField        .setMaximumSize(new Dimension(70, 100));
-		FieldLabel arrangeExpandFactorLabel           = new FieldLabel("Arrange expand factor:");            arrangeExpandFactorTextField           = new ValidatingTextField(8, "(?:\\d+\\.?\\d*|\\d*\\.?\\d+)(?:[eE][+\\-\\x20]?\\d+)?"); arrangeExpandFactorTextField          .setMargin(fieldMargin); arrangeExpandFactorTextField          .setMaximumSize(new Dimension(70, 100));
+		Header arrangingBehaviorHeader = new Header(StringBundle.get("preferences_dialog_arranging_behavior_heading"));
+		FieldLabel arrangeCircleRadiusMultiplierLabel = new FieldLabel(StringBundle.get("preferences_dialog_arrange_circle_radius_multiplier_label")); arrangeCircleRadiusMultiplierTextField = new ValidatingTextField(8, "(?:\\d+\\.?\\d*|\\d*\\.?\\d+)(?:[eE][+\\-\\x20]?\\d+)?"); arrangeCircleRadiusMultiplierTextField.setMargin(fieldMargin); arrangeCircleRadiusMultiplierTextField.setMaximumSize(new Dimension(70, 100));
+		FieldLabel arrangeGridSpacingLabel            = new FieldLabel(StringBundle.get("preferences_dialog_arrange_grid_spacing_label"));             arrangeGridSpacingTextField            = new ValidatingTextField(8, "(?:\\d+\\.?\\d*|\\d*\\.?\\d+)(?:[eE][+\\-\\x20]?\\d+)?"); arrangeGridSpacingTextField           .setMargin(fieldMargin); arrangeGridSpacingTextField           .setMaximumSize(new Dimension(70, 100));
+		FieldLabel autoArrangeAttractiveForceLabel    = new FieldLabel(StringBundle.get("preferences_dialog_auto_arrange_attractive_force_label"));    autoArrangeAttractiveForceTextField    = new ValidatingTextField(8, "(?:\\d+\\.?\\d*|\\d*\\.?\\d+)(?:[eE][+\\-\\x20]?\\d+)?"); autoArrangeAttractiveForceTextField   .setMargin(fieldMargin); autoArrangeAttractiveForceTextField   .setMaximumSize(new Dimension(70, 100));
+		FieldLabel autoArrangeRepulsiveForceLabel     = new FieldLabel(StringBundle.get("preferences_dialog_auto_arrange_repulsive_force_label"));     autoArrangeRepulsiveForceTextField     = new ValidatingTextField(8, "-(?:\\d+\\.?\\d*|\\d*\\.?\\d+)(?:[eE][+\\-\\x20]?\\d+)?"); autoArrangeRepulsiveForceTextField   .setMargin(fieldMargin); autoArrangeRepulsiveForceTextField    .setMaximumSize(new Dimension(70, 100));
+		FieldLabel autoArrangeDecelerationFactorLabel = new FieldLabel(StringBundle.get("preferences_dialog_auto_arrange_deceleration_factor_label")); autoArrangeDecelerationFactorTextField = new ValidatingTextField(8, "(?:\\d+\\.?\\d*|\\d*\\.?\\d+)(?:[eE][+\\-\\x20]?\\d+)?"); autoArrangeDecelerationFactorTextField.setMargin(fieldMargin); autoArrangeDecelerationFactorTextField.setMaximumSize(new Dimension(70, 100));
+		FieldLabel arrangeContractFactorLabel         = new FieldLabel(StringBundle.get("preferences_dialog_auto_arrange_contract_factor_label"));     arrangeContractFactorTextField         = new ValidatingTextField(8, "(?:\\d+\\.?\\d*|\\d*\\.?\\d+)(?:[eE][+\\-\\x20]?\\d+)?"); arrangeContractFactorTextField        .setMargin(fieldMargin); arrangeContractFactorTextField        .setMaximumSize(new Dimension(70, 100));
+		FieldLabel arrangeExpandFactorLabel           = new FieldLabel(StringBundle.get("preferences_dialog_arrange_expand_factor_label"));            arrangeExpandFactorTextField           = new ValidatingTextField(8, "(?:\\d+\\.?\\d*|\\d*\\.?\\d+)(?:[eE][+\\-\\x20]?\\d+)?"); arrangeExpandFactorTextField          .setMargin(fieldMargin); arrangeExpandFactorTextField          .setMaximumSize(new Dimension(70, 100));
 		
-		Header renderingSettingsHeader = new Header("Rendering settings:");
-		FieldLabel useAntiAliasingLabel = new FieldLabel("Use anti-aliasing:");
+		Header renderingSettingsHeader = new Header(StringBundle.get("preferences_dialog_rendering_settings_heading"));
+		FieldLabel useAntiAliasingLabel = new FieldLabel(StringBundle.get("preferences_dialog_use_anti_aliasing_label"));
 		useAntiAliasingCheckBox = new JCheckBox();
 		useAntiAliasingCheckBox.setBackground(panel.getBackground());
 		useAntiAliasingCheckBox.setMinimumSize(new Dimension(32, 26));
-		FieldLabel usePureStrokeLabel = new FieldLabel("Use pure stroke:");
+		FieldLabel usePureStrokeLabel = new FieldLabel(StringBundle.get("preferences_dialog_use_pure_stroke_label"));
 		usePureStrokeCheckBox = new JCheckBox();
 		usePureStrokeCheckBox.setBackground(panel.getBackground());
 		usePureStrokeCheckBox.setMinimumSize(new Dimension(32, 26));
-		FieldLabel useBicubicInterpolationLabel = new FieldLabel("Use bicubic interpolation:");
+		FieldLabel useBicubicInterpolationLabel = new FieldLabel(StringBundle.get("preferences_dialog_use_bicubic_interpolation_label"));
 		useBicubicInterpolationCheckBox = new JCheckBox();
 		useBicubicInterpolationCheckBox.setBackground(panel.getBackground());
 		useBicubicInterpolationCheckBox.setMinimumSize(new Dimension(32, 26));
-		FieldLabel useFractionalMetricsLabel = new FieldLabel("Use fractional metrics:");
+		FieldLabel useFractionalMetricsLabel = new FieldLabel(StringBundle.get("preferences_dialog_use_fractional_metrics_label"));
 		useFractionalMetricsCheckBox = new JCheckBox();
 		useFractionalMetricsCheckBox.setBackground(panel.getBackground());
 		useFractionalMetricsCheckBox.setMinimumSize(new Dimension(32, 26));
 		
-		Header windowSettingsHeader = new Header("Window settings:");
-		FieldLabel mainWindowSizeLabel      = new FieldLabel("Main window size:");      mainWindowSizeTextField      = new ValidatingTextField(16, "(\\d+)\\s*,\\s*(\\d+)"); mainWindowSizeTextField     .setMargin(fieldMargin); mainWindowSizeTextField     .setMaximumSize(new Dimension(140, 100));
-		FieldLabel graphWindowSizeLabel     = new FieldLabel("Graph window size:");     graphWindowSizeTextField     = new ValidatingTextField(16, "(\\d+)\\s*,\\s*(\\d+)"); graphWindowSizeTextField    .setMargin(fieldMargin); graphWindowSizeTextField    .setMaximumSize(new Dimension(140, 100));
-		FieldLabel cascadeWindowOffsetLabel = new FieldLabel("Cascade window offset:"); cascadeWindowOffsetTextField = new ValidatingTextField(8, "\\d+");  cascadeWindowOffsetTextField.setMargin(fieldMargin); cascadeWindowOffsetTextField.setMaximumSize(new Dimension(70, 100));
+		Header windowSettingsHeader = new Header(StringBundle.get("preferences_dialog_window_settings_heading"));
+		FieldLabel mainWindowSizeLabel      = new FieldLabel(StringBundle.get("preferences_dialog_main_window_size_label"));      mainWindowSizeTextField      = new ValidatingTextField(16, "(\\d+)\\s*,\\s*(\\d+)"); mainWindowSizeTextField     .setMargin(fieldMargin); mainWindowSizeTextField     .setMaximumSize(new Dimension(140, 100));
+		FieldLabel graphWindowSizeLabel     = new FieldLabel(StringBundle.get("preferences_dialog_graph_window_size_label"));     graphWindowSizeTextField     = new ValidatingTextField(16, "(\\d+)\\s*,\\s*(\\d+)"); graphWindowSizeTextField    .setMargin(fieldMargin); graphWindowSizeTextField    .setMaximumSize(new Dimension(140, 100));
+		FieldLabel cascadeWindowOffsetLabel = new FieldLabel(StringBundle.get("preferences_dialog_cascade_window_offset_label")); cascadeWindowOffsetTextField = new ValidatingTextField(8, "\\d+");  cascadeWindowOffsetTextField.setMargin(fieldMargin); cascadeWindowOffsetTextField.setMaximumSize(new Dimension(70, 100));
 			
-		Header otherHeader = new Header("Other:");
-		FieldLabel defaultGraphNameLabel       = new FieldLabel("Default graph name:");        defaultGraphNameTextField       = new JTextField(20);             defaultGraphNameTextField      .setMargin(fieldMargin); defaultGraphNameTextField      .setMaximumSize(new Dimension(175, 100));
-		FieldLabel directedEdgeArrowRatioLabel = new FieldLabel("Directed edge arrow ratio:"); directedEdgeArrowRatioTextField = new ValidatingTextField(8, "(?:\\d+\\.?\\d*|\\d*\\.?\\d+)(?:[eE][+\\-\\x20]?\\d+)?"); directedEdgeArrowRatioTextField.setMargin(fieldMargin); directedEdgeArrowRatioTextField.setMaximumSize(new Dimension(70, 100));
-		FieldLabel arrowKeyIncrementLabel      = new FieldLabel("Arrow key increment:");       arrowKeyIncrementTextField      = new ValidatingTextField(8, "(?:\\d+\\.?\\d*|\\d*\\.?\\d+)(?:[eE][+\\-\\x20]?\\d+)?"); arrowKeyIncrementTextField     .setMargin(fieldMargin); arrowKeyIncrementTextField     .setMaximumSize(new Dimension(70, 100));
-		FieldLabel edgeSnapMarginRatioLabel    = new FieldLabel("Edge snap margin:");          edgeSnapMarginRatioTextField    = new ValidatingTextField(8, "(?:\\d+\\.?\\d*|\\d*\\.?\\d+)(?:[eE][+\\-\\x20]?\\d+)?"); edgeSnapMarginRatioTextField   .setMargin(fieldMargin); edgeSnapMarginRatioTextField   .setMaximumSize(new Dimension(70, 100));
-		FieldLabel areCloseDistanceLabel       = new FieldLabel("Are close distance:");        areCloseDistanceTextField       = new ValidatingTextField(8, "(?:\\d+\\.?\\d*|\\d*\\.?\\d+)(?:[eE][+\\-\\x20]?\\d+)?"); areCloseDistanceTextField      .setMargin(fieldMargin); areCloseDistanceTextField      .setMaximumSize(new Dimension(70, 100));
-		FieldLabel paintToolMenuDelayLabel     = new FieldLabel("Paint tool menu delay:");     paintToolMenuDelayTextField     = new ValidatingTextField(8, "\\d+"); paintToolMenuDelayTextField    .setMargin(fieldMargin); paintToolMenuDelayTextField    .setMaximumSize(new Dimension(70, 100));
+		Header otherHeader = new Header(StringBundle.get("preferences_dialog_other_heading"));
+		FieldLabel defaultGraphNameLabel       = new FieldLabel(StringBundle.get("preferences_dialog_default_graph_name_label"));        defaultGraphNameTextField       = new JTextField(20);             defaultGraphNameTextField      .setMargin(fieldMargin); defaultGraphNameTextField      .setMaximumSize(new Dimension(175, 100));
+		FieldLabel directedEdgeArrowRatioLabel = new FieldLabel(StringBundle.get("preferences_dialog_directed_edge_arrow_ratio_label")); directedEdgeArrowRatioTextField = new ValidatingTextField(8, "(?:\\d+\\.?\\d*|\\d*\\.?\\d+)(?:[eE][+\\-\\x20]?\\d+)?"); directedEdgeArrowRatioTextField.setMargin(fieldMargin); directedEdgeArrowRatioTextField.setMaximumSize(new Dimension(70, 100));
+		FieldLabel arrowKeyIncrementLabel      = new FieldLabel(StringBundle.get("preferences_dialog_arrow_key_increment_label"));       arrowKeyIncrementTextField      = new ValidatingTextField(8, "(?:\\d+\\.?\\d*|\\d*\\.?\\d+)(?:[eE][+\\-\\x20]?\\d+)?"); arrowKeyIncrementTextField     .setMargin(fieldMargin); arrowKeyIncrementTextField     .setMaximumSize(new Dimension(70, 100));
+		FieldLabel edgeSnapMarginRatioLabel    = new FieldLabel(StringBundle.get("preferences_dialog_edge_snap_margin_label"));          edgeSnapMarginRatioTextField    = new ValidatingTextField(8, "(?:\\d+\\.?\\d*|\\d*\\.?\\d+)(?:[eE][+\\-\\x20]?\\d+)?"); edgeSnapMarginRatioTextField   .setMargin(fieldMargin); edgeSnapMarginRatioTextField   .setMaximumSize(new Dimension(70, 100));
+		FieldLabel areCloseDistanceLabel       = new FieldLabel(StringBundle.get("preferences_dialog_are_close_distance_label"));        areCloseDistanceTextField       = new ValidatingTextField(8, "(?:\\d+\\.?\\d*|\\d*\\.?\\d+)(?:[eE][+\\-\\x20]?\\d+)?"); areCloseDistanceTextField      .setMargin(fieldMargin); areCloseDistanceTextField      .setMaximumSize(new Dimension(70, 100));
+		FieldLabel paintToolMenuDelayLabel     = new FieldLabel(StringBundle.get("preferences_dialog_paint_tool_menu_delay_label"));     paintToolMenuDelayTextField     = new ValidatingTextField(8, "\\d+"); paintToolMenuDelayTextField    .setMargin(fieldMargin); paintToolMenuDelayTextField    .setMaximumSize(new Dimension(70, 100));
 		
 		Component col0Padding = Box.createRigidArea(new Dimension(columnWidths[0], 7));
 		Component col1Padding = Box.createRigidArea(new Dimension(columnWidths[1], 7));
@@ -829,12 +830,12 @@ public class PreferencesDialog extends JDialog implements ActionListener
 		{
 			if(!validatePreferences( ))
 			{
-				JOptionPane.showMessageDialog(this, "Unable to save preferences because one or more field values are invalid.", "Invalid values!", JOptionPane.ERROR_MESSAGE);
+				JOptionPane.showMessageDialog(this, StringBundle.get("preferences_dialog_invalid_values_error_message"), StringBundle.get("preferences_dialog_invalid_values_error_title"), JOptionPane.ERROR_MESSAGE);
 			}
 			else
 			{
 				savePreferences( );
-				value = "value";
+				value = "saved";
 				PreferencesDialog.dialog.setVisible(false);
 			}
 		}
@@ -1053,7 +1054,7 @@ public class PreferencesDialog extends JDialog implements ActionListener
 		}
 		catch (IOException exception)
 		{
-			System.out.println("Unable to save user settings to file \"" + userSettingsFile.getAbsolutePath() + "\".");
+			System.out.println(String.format(StringBundle.get("preferences_dialog_unable_to_save_error_message"), userSettingsFile.getAbsolutePath()));
 		}
 	}
 	

@@ -13,17 +13,13 @@ import java.util.*;
  */
 public class CursorBundle extends ResourceBundle
 {
-	private String							fileSuffix;
-	private static HashMap<String, Cursor>	map	= new HashMap<String, Cursor>();
+	private static HashMap<String, Cursor> map = new HashMap<String, Cursor>();																									
+	private static final ResourceBundle	   instance = ResourceBundle.getBundle("edu.belmont.mth.visigraph.resources.CursorBundle");
 	
-	public CursorBundle()
+	public static Cursor get(String key)
 	{
-		this("");
-	}
-	
-	private CursorBundle(String suffix)
-	{
-		fileSuffix = suffix;
+		try { return (Cursor) instance.getObject(key); }
+		catch (MissingResourceException e) { return null; }
 	}
 	
 	@Override
@@ -40,7 +36,7 @@ public class CursorBundle extends ResourceBundle
 	
 	private Cursor loadCursor(String filename, String extension)
 	{
-		String imageName = filename + fileSuffix + extension;
+		String imageName = filename + extension;
 		
 		Cursor cursor = map.get(imageName);
 		

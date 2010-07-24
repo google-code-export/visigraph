@@ -15,6 +15,7 @@ import edu.belmont.mth.visigraph.controllers.*;
 import edu.belmont.mth.visigraph.controllers.GraphDisplayController.GraphChangeEvent;
 import edu.belmont.mth.visigraph.controllers.GraphDisplayController.GraphChangeEventListener;
 import edu.belmont.mth.visigraph.models.*;
+import edu.belmont.mth.visigraph.resources.StringBundle;
 import edu.belmont.mth.visigraph.settings.*;
 import edu.belmont.mth.visigraph.views.svg.GraphSvgView;
 
@@ -29,7 +30,7 @@ public class GraphWindow extends JInternalFrame implements GraphChangeEventListe
 	private GraphDisplayController	gdc;
 	private boolean					hasChanged;
 	private File					file;
-	private UserSettings			userSettings	= UserSettings.instance;
+	private UserSettings			userSettings = UserSettings.instance;
 	
 	public GraphWindow(Graph g)
 	{
@@ -127,7 +128,7 @@ public class GraphWindow extends JInternalFrame implements GraphChangeEventListe
 	{
 		if (hasChanged)
 		{
-			int result = JOptionPane.showInternalConfirmDialog(this, "Do you want to save changes to \"" + gdc.getGraph().name.get() + "\"?", GlobalSettings.applicationName, JOptionPane.YES_NO_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE);
+			int result = JOptionPane.showInternalConfirmDialog(this, String.format(StringBundle.get("do_you_want_to_save_changes_dialog_message"), gdc.getGraph().name.get()), GlobalSettings.applicationName, JOptionPane.YES_NO_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE);
 			
 			switch (result)
 			{
@@ -139,7 +140,7 @@ public class GraphWindow extends JInternalFrame implements GraphChangeEventListe
 					}
 					catch (IOException ex)
 					{
-						JOptionPane.showInternalMessageDialog(this, "An exception occurred while trying to save \"" + gdc.getGraph().name.get() + "\"!");
+						JOptionPane.showInternalMessageDialog(this, String.format(StringBundle.get("an_exception_occurred_while_saving_graph_dialog_message"), gdc.getGraph().name.get()));
 					}
 					break;
 				case JOptionPane.NO_OPTION:
@@ -157,9 +158,9 @@ public class GraphWindow extends JInternalFrame implements GraphChangeEventListe
 	{
 		fileChooser.resetChoosableFileFilters();
 		fileChooser.setAcceptAllFileFilterUsed(false);
-		fileChooser.addChoosableFileFilter(new FileNameExtensionFilter("Portable Network Graphics File", "png"));
-		fileChooser.addChoosableFileFilter(new FileNameExtensionFilter("Scalable Vector Graphics File", "svg"));
-		fileChooser.addChoosableFileFilter(new FileNameExtensionFilter("VisiGraph Graph File", "vsg"));
+		fileChooser.addChoosableFileFilter(new FileNameExtensionFilter(StringBundle.get("portable_network_graphics_file_description"), "png"));
+		fileChooser.addChoosableFileFilter(new FileNameExtensionFilter(StringBundle.get("scalable_vector_graphics_file_description"), "svg"));
+		fileChooser.addChoosableFileFilter(new FileNameExtensionFilter(StringBundle.get("visigraph_file_description"), "vsg"));
 		fileChooser.setMultiSelectionEnabled(false);
 		
 		boolean success = false;
@@ -172,11 +173,11 @@ public class GraphWindow extends JInternalFrame implements GraphChangeEventListe
 				{
 					File selectedFile = fileChooser.getSelectedFile();
 					
-					if (fileChooser.getFileFilter().getDescription().equals("VisiGraph Graph File") && !selectedFile.getName().endsWith(".vsg"))
+					if (fileChooser.getFileFilter().getDescription().equals(StringBundle.get("visigraph_file_description")) && !selectedFile.getName().endsWith(".vsg"))
 						selectedFile = new File(selectedFile.getAbsolutePath() + ".vsg");
-					else if (fileChooser.getFileFilter().getDescription().equals("Scalable Vector Graphics File") && !selectedFile.getName().endsWith(".svg"))
+					else if (fileChooser.getFileFilter().getDescription().equals(StringBundle.get("scalable_vector_graphics_file_description")) && !selectedFile.getName().endsWith(".svg"))
 						selectedFile = new File(selectedFile.getAbsolutePath() + ".svg");
-					else if (fileChooser.getFileFilter().getDescription().equals("Portable Network Graphics File") && !selectedFile.getName().endsWith(".png"))
+					else if (fileChooser.getFileFilter().getDescription().equals(StringBundle.get("portable_network_graphics_file_description")) && !selectedFile.getName().endsWith(".png"))
 						selectedFile = new File(selectedFile.getAbsolutePath() + ".png");
 					
 					saveFile(selectedFile);

@@ -11,10 +11,9 @@ import java.io.*;
 import java.util.*;
 import javax.swing.*;
 import javax.swing.filechooser.*;
-
-import edu.belmont.mth.visigraph.gui.dialogs.NewGraphDialog;
-import edu.belmont.mth.visigraph.gui.dialogs.PreferencesDialog;
+import edu.belmont.mth.visigraph.gui.dialogs.*;
 import edu.belmont.mth.visigraph.models.*;
+import edu.belmont.mth.visigraph.resources.*;
 import edu.belmont.mth.visigraph.settings.*;
 
 /**
@@ -62,10 +61,10 @@ public class MainWindow extends JFrame
 		
 		fileChooser = new JFileChooser();
 		
-		fileMenu = new JMenu("File");
+		fileMenu = new JMenu(StringBundle.get("file_menu_text"));
 		menuBar.add(fileMenu);
 		
-		newGraphMenuItem = new JMenuItem("New...");
+		newGraphMenuItem = new JMenuItem(StringBundle.get("file_new_menu_text"));
 		newGraphMenuItem.addActionListener(new ActionListener()
 		{
 			@Override
@@ -88,7 +87,7 @@ public class MainWindow extends JFrame
 		newGraphMenuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_N, ActionEvent.CTRL_MASK));
 		fileMenu.add(newGraphMenuItem);
 		
-		duplicateGraphMenuItem = new JMenuItem("Duplicate");
+		duplicateGraphMenuItem = new JMenuItem(StringBundle.get("file_duplicate_menu_text"));
 		duplicateGraphMenuItem.addActionListener(new ActionListener()
 		{
 			@Override
@@ -116,7 +115,7 @@ public class MainWindow extends JFrame
 		
 		fileMenu.addSeparator();
 		
-		openGraphMenuItem = new JMenuItem("Open...");
+		openGraphMenuItem = new JMenuItem(StringBundle.get("file_open_menu_text"));
 		openGraphMenuItem.addActionListener(new ActionListener()
 		{
 			@Override
@@ -126,7 +125,7 @@ public class MainWindow extends JFrame
 				
 				fileChooser.resetChoosableFileFilters();
 				fileChooser.setAcceptAllFileFilterUsed(false);
-				fileChooser.setFileFilter(new FileNameExtensionFilter("VisiGraph Graph File", "vsg"));
+				fileChooser.setFileFilter(new FileNameExtensionFilter(StringBundle.get("visigraph_file_description"), "vsg"));
 				fileChooser.setMultiSelectionEnabled(false);
 
 				boolean success = false;
@@ -174,39 +173,41 @@ public class MainWindow extends JFrame
 		openGraphMenuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_O, ActionEvent.CTRL_MASK));
 		fileMenu.add(openGraphMenuItem);
 		
-		saveGraphMenuItem = new JMenuItem("Save");
+		saveGraphMenuItem = new JMenuItem(StringBundle.get("file_save_menu_text"));
 		saveGraphMenuItem.addActionListener(new ActionListener()
 		{
 			@Override
-			public void actionPerformed(ActionEvent arg0)
+			public void actionPerformed(ActionEvent arg)
 			{
 				JInternalFrame selectedFrame = desktopPane.getSelectedFrame();
 				GraphWindow graphWindow = ((GraphWindow)selectedFrame);
 				
-				try	{ graphWindow.save(); }
-				catch (IOException e) { }
+				if(graphWindow != null)
+					try	{ graphWindow.save(); }
+					catch (IOException e) { }
 			}
 		});
 		saveGraphMenuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_S, ActionEvent.CTRL_MASK));
 		fileMenu.add(saveGraphMenuItem);
 		
-		saveAsGraphMenuItem = new JMenuItem("Save As...");
+		saveAsGraphMenuItem = new JMenuItem(StringBundle.get("file_save_as_menu_text"));
 		saveAsGraphMenuItem.addActionListener(new ActionListener()
 		{
 			@Override
-			public void actionPerformed(ActionEvent arg0)
+			public void actionPerformed(ActionEvent arg)
 			{
 				JInternalFrame selectedFrame = desktopPane.getSelectedFrame();
 				GraphWindow graphWindow = ((GraphWindow)selectedFrame);
 				
-				graphWindow.saveAs();
+				if(graphWindow != null)
+					graphWindow.saveAs();
 			}
 		});
 		fileMenu.add(saveAsGraphMenuItem);
 		
 		fileMenu.addSeparator();
 		
-		printGraphMenuItem = new JMenuItem("Print...");
+		printGraphMenuItem = new JMenuItem(StringBundle.get("file_print_menu_text"));
 		printGraphMenuItem.addActionListener(new ActionListener()
 		{
 			@Override
@@ -225,7 +226,7 @@ public class MainWindow extends JFrame
 		
 		fileMenu.addSeparator();
 		
-		exitGraphMenuItem = new JMenuItem(System.getProperty("os.name").startsWith("Windows") ? "Exit" : "Quit");
+		exitGraphMenuItem = new JMenuItem(System.getProperty("os.name").startsWith("Windows") ? StringBundle.get("file_exit_menu_text") : StringBundle.get("file_quit_menu_text"));
 		exitGraphMenuItem.addActionListener(new ActionListener()
 		{
 			@Override
@@ -236,10 +237,10 @@ public class MainWindow extends JFrame
 		});
 		fileMenu.add(exitGraphMenuItem);
 		
-		windowsMenu = new JMenu("Windows");
+		windowsMenu = new JMenu(StringBundle.get("windows_menu_text"));
 		menuBar.add(windowsMenu);
 		
-		cascadeMenuItem = new JMenuItem("Cascade");
+		cascadeMenuItem = new JMenuItem(StringBundle.get("windows_cascade_menu_text"));
 		cascadeMenuItem.addActionListener(new ActionListener()
 		{
 			@Override
@@ -261,7 +262,7 @@ public class MainWindow extends JFrame
 		});
 		windowsMenu.add(cascadeMenuItem);
 		
-		showSideBySideMenuItem = new JMenuItem("Show side by side");
+		showSideBySideMenuItem = new JMenuItem(StringBundle.get("windows_show_side_by_side_menu_text"));
 		showSideBySideMenuItem.addActionListener(new ActionListener()
 		{
 			@Override
@@ -288,7 +289,7 @@ public class MainWindow extends JFrame
 		});
 		windowsMenu.add(showSideBySideMenuItem);
 		
-		showStackedMenuItem = new JMenuItem("Show stacked");
+		showStackedMenuItem = new JMenuItem(StringBundle.get("windows_show_stacked_menu_text"));
 		showStackedMenuItem.addActionListener(new ActionListener()
 		{
 			@Override
@@ -314,7 +315,7 @@ public class MainWindow extends JFrame
 		});
 		windowsMenu.add(showStackedMenuItem);
 		
-		tileWindowsMenuItem = new JMenuItem("Tile");
+		tileWindowsMenuItem = new JMenuItem(StringBundle.get("windows_tile_menu_text"));
 		tileWindowsMenuItem.addActionListener(new ActionListener()
 		{
 			@Override
@@ -344,15 +345,15 @@ public class MainWindow extends JFrame
 		});
 		windowsMenu.add(tileWindowsMenuItem);
 		
-		helpMenu = new JMenu("Help");
+		helpMenu = new JMenu(StringBundle.get("help_menu_text"));
 		menuBar.add(helpMenu);
 		
-		helpContentsMenuItem = new JMenuItem("Help contents...");
+		helpContentsMenuItem = new JMenuItem(StringBundle.get("help_contents_menu_text"));
 		helpMenu.add(helpContentsMenuItem);
 		
 		helpMenu.addSeparator();
 		
-		preferencesMenuItem = new JMenuItem("Preferences...");
+		preferencesMenuItem = new JMenuItem(StringBundle.get("help_preferences_menu_text"));
 		preferencesMenuItem.addActionListener(new ActionListener()
 		{
 			@Override
@@ -365,7 +366,7 @@ public class MainWindow extends JFrame
 		
 		helpMenu.addSeparator();
 		
-		aboutVisiGraphMenuItem = new JMenuItem("About...");
+		aboutVisiGraphMenuItem = new JMenuItem(StringBundle.get("help_about_menu_text"));
 		helpMenu.add(aboutVisiGraphMenuItem);
 		
 		setJMenuBar(menuBar);
