@@ -3,8 +3,7 @@
  */
 package edu.belmont.mth.visigraph.resources;
 
-import java.util.MissingResourceException;
-import java.util.ResourceBundle;
+import java.util.*;
 
 /**
  * @author Cameron Behar
