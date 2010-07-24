@@ -6,8 +6,8 @@ package edu.belmont.mth.visigraph.gui.dialogs;
 import java.awt.*;
 import java.awt.event.*;
 import javax.swing.*;
-import javax.swing.event.ChangeEvent;
-import javax.swing.event.ChangeListener;
+import javax.swing.event.*;
+import edu.belmont.mth.visigraph.resources.*;
 
 /**
  * @author Cameron Behar
@@ -32,7 +32,7 @@ public class EditCaptionDialog extends JDialog implements ActionListener
 	
 	private EditCaptionDialog(Frame frame, Component locationComp, String defaultText, double defaultSize)
 	{
-		super(frame, "Edit caption", true);
+		super(frame, StringBundle.get("edit_caption_dialog_title"), true);
 		
 		GridBagLayout gbl = new GridBagLayout();
 		JPanel inputPanel = new JPanel(gbl);
@@ -43,7 +43,7 @@ public class EditCaptionDialog extends JDialog implements ActionListener
 		gridBagConstraints.gridy = 0;
 		inputPanel.add(Box.createRigidArea(new Dimension(9, 9)), gridBagConstraints);
 		
-		captionTextLabel = new JLabel("Caption text:");
+		captionTextLabel = new JLabel(StringBundle.get("edit_caption_dialog_text"));
 		captionTextLabel.setHorizontalAlignment(SwingConstants.LEFT);
 		captionTextLabel.setVerticalAlignment(SwingConstants.TOP);
 		captionTextLabel.setPreferredSize(new Dimension(captionTextLabel.getPreferredSize().width, 20));
@@ -86,13 +86,13 @@ public class EditCaptionDialog extends JDialog implements ActionListener
 		inputPanel.add(captionFontSizeSlider, gridBagConstraints);
 		
 		//Create and initialize the buttons
-		final JButton okButton = new JButton("Ok");
+		final JButton okButton = new JButton(StringBundle.get("ok_button_text"));
 		okButton.setPreferredSize(new Dimension(80, 28));
 		okButton.setActionCommand("Ok");
 		okButton.addActionListener(this);
 		getRootPane().setDefaultButton(okButton);
 		
-		JButton cancelButton = new JButton("Cancel");
+		JButton cancelButton = new JButton(StringBundle.get("cancel_button_text"));
 		cancelButton.setPreferredSize(new Dimension(80, 28));
 		cancelButton.addActionListener(this);
 		
@@ -154,3 +154,5 @@ public class EditCaptionDialog extends JDialog implements ActionListener
 		public void   setSize(double size) { this.size = size; }
 	}
 }
+
+

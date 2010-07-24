@@ -261,7 +261,7 @@ public class Graph extends ObservableBase
 		suspendNotifications(false);
 		
 		if (edges.size() != originalSize)
-			notifyObservers("edges\tremove\t" + originalSize + "\t" + edges.size());
+			notifyObservers(edges);
 	}
 	
 	public Set<Edge> getEdges(Vertex v)

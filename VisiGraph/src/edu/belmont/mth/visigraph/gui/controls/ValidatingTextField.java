@@ -26,13 +26,13 @@ public class ValidatingTextField extends JTextField
 		super.getDocument().addDocumentListener(new DocumentListener()
 		{
 			@Override
-			public void changedUpdate(DocumentEvent arg0) { /* ignore ? */ }
+			public void changedUpdate(DocumentEvent arg) { /* ignore ? */ }
 
 			@Override
-			public void insertUpdate(DocumentEvent arg0) { validate(); }
+			public void insertUpdate(DocumentEvent arg) { validate(); }
 
 			@Override
-			public void removeUpdate(DocumentEvent arg0) { validate(); }
+			public void removeUpdate(DocumentEvent arg) { validate(); }
 		} );
 		
 		successColor = new Color(getBackground().getRGB());

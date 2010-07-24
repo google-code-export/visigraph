@@ -13,17 +13,13 @@ import java.util.*;
  */
 public class ImageBundle extends ResourceBundle
 {
-	private String							fileSuffix;
-	private static HashMap<String, Image>	map	= new HashMap<String, Image>();
+	private static HashMap<String, Image> map      = new HashMap<String, Image>();
+	private static final ResourceBundle	  instance = ResourceBundle.getBundle("edu.belmont.mth.visigraph.resources.ImageBundle");
 	
-	public ImageBundle()
+	public static Image get(String key)
 	{
-		this("");
-	}
-	
-	private ImageBundle(String suffix)
-	{
-		fileSuffix = suffix;
+		try { return (Image) instance.getObject(key); }
+		catch (MissingResourceException e) { return null; }
 	}
 	
 	@Override
@@ -40,7 +36,7 @@ public class ImageBundle extends ResourceBundle
 	
 	private Image loadImage(String filename, String extension)
 	{
-		String imageName = filename + fileSuffix + extension;
+		String imageName = filename + extension;
 		
 		Image image = map.get(imageName);
 		

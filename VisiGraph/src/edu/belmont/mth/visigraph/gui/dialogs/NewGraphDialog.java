@@ -9,6 +9,7 @@ import java.awt.event.*;
 import edu.belmont.mth.visigraph.models.*;
 import edu.belmont.mth.visigraph.gui.controls.*;
 import edu.belmont.mth.visigraph.models.generators.*;
+import edu.belmont.mth.visigraph.resources.*;
 
 /**
  * @author Cameron Behar
@@ -39,7 +40,9 @@ public class NewGraphDialog extends JDialog implements ActionListener
 	
 	private NewGraphDialog(Frame frame, Component locationComp)
 	{
-		super(frame, "New graph", true);
+		super(frame, StringBundle.get("new_graph_dialog_title"), true);
+		
+		this.setTitle(StringBundle.get("new_graph_dialog_title"));
 		
 		GridBagLayout gbl = new GridBagLayout();
 		gbl.rowHeights = new int[] { 9, 28, 28, 28, 28 };
@@ -47,7 +50,7 @@ public class NewGraphDialog extends JDialog implements ActionListener
 		
 		GridBagConstraints gridBagConstraints = new GridBagConstraints();
 		
-		JLabel generatorLabel = new JLabel("Family: ");
+		JLabel generatorLabel = new JLabel(StringBundle.get("new_graph_dialog_family_label"));
 		gridBagConstraints.fill = GridBagConstraints.HORIZONTAL;
 		gridBagConstraints.gridx = 0;
 		gridBagConstraints.gridy = 1;
@@ -60,9 +63,9 @@ public class NewGraphDialog extends JDialog implements ActionListener
 			generatorComboBox.addItem(generator);
 		generatorComboBox.addItemListener(new ItemListener()
 		{
-			public void itemStateChanged(ItemEvent arg0)
+			public void itemStateChanged(ItemEvent arg)
 			{
-				generatorChanged(arg0.getItem());
+				generatorChanged(arg.getItem());
 			}
 		});
 		gridBagConstraints.fill = GridBagConstraints.HORIZONTAL;
@@ -71,7 +74,7 @@ public class NewGraphDialog extends JDialog implements ActionListener
 		gridBagConstraints.gridwidth = 2;
 		inputPanel.add(generatorComboBox, gridBagConstraints);
 		
-		generatorParametersLabel = new JLabel("Parameters: ");
+		generatorParametersLabel = new JLabel(StringBundle.get("new_graph_dialog_parameters_label"));
 		gridBagConstraints.fill = GridBagConstraints.HORIZONTAL;
 		gridBagConstraints.gridx = 0;
 		gridBagConstraints.gridy = 2;
@@ -86,7 +89,7 @@ public class NewGraphDialog extends JDialog implements ActionListener
 		gridBagConstraints.gridwidth = 2;
 		inputPanel.add(generatorParametersField, gridBagConstraints);
 		
-		allowLoopsCheckBox = new JCheckBox("Allow loops");
+		allowLoopsCheckBox = new JCheckBox(StringBundle.get("new_graph_dialog_allow_loops_label"));
 		allowLoopsCheckBox.setPreferredSize(new Dimension(160, allowLoopsCheckBox.getPreferredSize().height));
 		gridBagConstraints.fill = GridBagConstraints.HORIZONTAL;
 		gridBagConstraints.gridx = 1;
@@ -95,7 +98,7 @@ public class NewGraphDialog extends JDialog implements ActionListener
 		allowLoopsCheckBox.addItemListener(new ItemListener()
 		{
 			@Override
-			public void itemStateChanged(ItemEvent arg0)
+			public void itemStateChanged(ItemEvent arg)
 			{
 				GeneratorBase generator = (GeneratorBase)generatorComboBox.getSelectedItem();
 				
@@ -117,7 +120,7 @@ public class NewGraphDialog extends JDialog implements ActionListener
 		});
 		inputPanel.add(allowLoopsCheckBox, gridBagConstraints);
 		
-		allowDirectedEdgesCheckBox = new JCheckBox("Allow directed edges");
+		allowDirectedEdgesCheckBox = new JCheckBox(StringBundle.get("new_graph_dialog_allow_directed_edges_label"));
 		allowDirectedEdgesCheckBox.setPreferredSize(new Dimension(160, allowDirectedEdgesCheckBox.getPreferredSize().height));
 		gridBagConstraints.fill = GridBagConstraints.HORIZONTAL;
 		gridBagConstraints.gridx = 2;
@@ -125,7 +128,7 @@ public class NewGraphDialog extends JDialog implements ActionListener
 		gridBagConstraints.gridwidth = 1;
 		inputPanel.add(allowDirectedEdgesCheckBox, gridBagConstraints);
 		
-		allowMultipleEdgesCheckBox = new JCheckBox("Allow multiple edges");
+		allowMultipleEdgesCheckBox = new JCheckBox(StringBundle.get("new_graph_dialog_allow_multiple_edges_label"));
 		allowMultipleEdgesCheckBox.setPreferredSize(new Dimension(160, allowMultipleEdgesCheckBox.getPreferredSize().height));
 		gridBagConstraints.fill = GridBagConstraints.HORIZONTAL;
 		gridBagConstraints.gridx = 1;
@@ -155,7 +158,7 @@ public class NewGraphDialog extends JDialog implements ActionListener
 		});
 		inputPanel.add(allowMultipleEdgesCheckBox, gridBagConstraints);
 		
-		allowCyclesCheckBox = new JCheckBox("Allow cycles");
+		allowCyclesCheckBox = new JCheckBox(StringBundle.get("new_graph_dialog_allow_cycles_label"));
 		allowCyclesCheckBox.setPreferredSize(new Dimension(160, allowCyclesCheckBox.getPreferredSize().height));
 		gridBagConstraints.fill = GridBagConstraints.HORIZONTAL;
 		gridBagConstraints.gridx = 2;
@@ -198,13 +201,13 @@ public class NewGraphDialog extends JDialog implements ActionListener
 		inputPanel.add(allowCyclesCheckBox, gridBagConstraints);
 		
 		//Create and initialize the buttons
-		okButton = new JButton("Ok");
+		okButton = new JButton(StringBundle.get("ok_button_text"));
 		okButton.setPreferredSize(new Dimension(80, 28));
 		okButton.setActionCommand("Ok");
 		okButton.addActionListener(this);
 		getRootPane().setDefaultButton(okButton);
 		
-		cancelButton = new JButton("Cancel");
+		cancelButton = new JButton(StringBundle.get("cancel_button_text"));
 		cancelButton.setPreferredSize(new Dimension(80, 28));
 		cancelButton.addActionListener(this);
 		
