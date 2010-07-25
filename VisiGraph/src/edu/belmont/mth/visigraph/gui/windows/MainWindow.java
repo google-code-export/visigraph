@@ -84,7 +84,7 @@ public class MainWindow extends JFrame
 				}
 			}
 		});
-		newGraphMenuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_N, ActionEvent.CTRL_MASK));
+		newGraphMenuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_N, Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()));
 		fileMenu.add(newGraphMenuItem);
 		
 		duplicateGraphMenuItem = new JMenuItem(StringBundle.get("file_duplicate_menu_text"));
@@ -110,7 +110,7 @@ public class MainWindow extends JFrame
 				}
 			}
 		});
-		duplicateGraphMenuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_D, ActionEvent.CTRL_MASK));
+		duplicateGraphMenuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_D, Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()));
 		fileMenu.add(duplicateGraphMenuItem);
 		
 		fileMenu.addSeparator();
@@ -170,7 +170,7 @@ public class MainWindow extends JFrame
 					graphWindow.setHasChanged(false);
 			}
 		});
-		openGraphMenuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_O, ActionEvent.CTRL_MASK));
+		openGraphMenuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_O, Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()));
 		fileMenu.add(openGraphMenuItem);
 		
 		saveGraphMenuItem = new JMenuItem(StringBundle.get("file_save_menu_text"));
@@ -187,7 +187,7 @@ public class MainWindow extends JFrame
 					catch (IOException e) { }
 			}
 		});
-		saveGraphMenuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_S, ActionEvent.CTRL_MASK));
+		saveGraphMenuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_S, Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()));
 		fileMenu.add(saveGraphMenuItem);
 		
 		saveAsGraphMenuItem = new JMenuItem(StringBundle.get("file_save_as_menu_text"));
@@ -227,6 +227,7 @@ public class MainWindow extends JFrame
 		fileMenu.addSeparator();
 		
 		exitGraphMenuItem = new JMenuItem(System.getProperty("os.name").startsWith("Windows") ? StringBundle.get("file_exit_menu_text") : StringBundle.get("file_quit_menu_text"));
+		if(System.getProperty("os.name").startsWith("Mac")) exitGraphMenuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_Q, Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()));
 		exitGraphMenuItem.addActionListener(new ActionListener()
 		{
 			@Override
