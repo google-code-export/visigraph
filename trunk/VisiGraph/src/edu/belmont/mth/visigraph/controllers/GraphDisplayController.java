@@ -621,28 +621,28 @@ public class GraphDisplayController extends JPanel implements ClipboardOwner
 				}
 			case KeyEvent.VK_A:
 				{
-					if(event.isControlDown())
+					if((event.getModifiers() & Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()) != 0)
 						graph.selectAll();
 					
 					break;
 				}
 			case KeyEvent.VK_C:
 			{
-				if(event.isControlDown())
+				if((event.getModifiers() & Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()) != 0)
 					copy();
 				
 				break;
 			}
 			case KeyEvent.VK_X:
 			{
-				if(event.isControlDown())
+				if((event.getModifiers() & Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()) != 0)
 					cut();
 				
 				break;
 			}
 			case KeyEvent.VK_V:
 			{
-				if(event.isControlDown())
+				if((event.getModifiers() & Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()) != 0)
 					paste();
 				
 				break;
