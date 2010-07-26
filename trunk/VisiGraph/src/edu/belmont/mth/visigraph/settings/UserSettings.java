@@ -36,6 +36,7 @@ public class UserSettings extends ObservableBase
 	public final Property<Boolean> defaultShowVertexLabels;
 	public final Property<Boolean> defaultShowEdgeHandles;
 	public final Property<Boolean> defaultShowEdgeWeights;
+	public final Property<Boolean> defaultShowEdgeLabels;
 	public final Property<Boolean> defaultShowCaptions;
 	public final Property<Boolean> defaultShowCaptionHandles;
 	public final Property<Boolean> defaultShowCaptionEditors;
@@ -109,6 +110,7 @@ public class UserSettings extends ObservableBase
 		this.defaultShowVertexLabels		= new Property<Boolean>(GlobalSettings.defaultShowVertexLabels,					"defaultShowVertexLabels"		);
 		this.defaultShowEdgeHandles			= new Property<Boolean>(GlobalSettings.defaultShowEdgeHandles,					"defaultShowEdgeHandles"		);
 		this.defaultShowEdgeWeights			= new Property<Boolean>(GlobalSettings.defaultShowEdgeWeights,					"defaultShowEdgeWeights"		);
+		this.defaultShowEdgeLabels			= new Property<Boolean>(GlobalSettings.defaultShowEdgeLabels,					"defaultShowEdgeLabels"			);
 		this.defaultShowCaptions			= new Property<Boolean>(GlobalSettings.defaultShowCaptions,						"defaultShowCaptions"			);
 		this.defaultShowCaptionHandles		= new Property<Boolean>(GlobalSettings.defaultShowCaptionHandles,				"defaultShowCaptionHandles"		);
 		this.defaultShowCaptionEditors		= new Property<Boolean>(GlobalSettings.defaultShowCaptionEditors,				"defaultShowCaptionEditors"		);
@@ -200,6 +202,7 @@ public class UserSettings extends ObservableBase
 		if(members.containsKey("defaultShowVertexLabels"))		defaultShowVertexLabels		 .set( (Boolean) members.get( "defaultShowVertexLabels"			) );
 		if(members.containsKey("defaultShowEdgeHandles"))		defaultShowEdgeHandles		 .set( (Boolean) members.get( "defaultShowEdgeHandles"			) );
 		if(members.containsKey("defaultShowEdgeWeights"))		defaultShowEdgeWeights		 .set( (Boolean) members.get( "defaultShowEdgeWeights"			) );
+		if(members.containsKey("defaultShowEdgeLabels"))		defaultShowEdgeLabels		 .set( (Boolean) members.get( "defaultShowEdgeLabels"			) );
 		if(members.containsKey("defaultShowCaptions"))			defaultShowCaptions			 .set( (Boolean) members.get( "defaultShowCaptions"				) );
 		if(members.containsKey("defaultShowCaptionHandles"))	defaultShowCaptionHandles	 .set( (Boolean) members.get( "defaultShowCaptionHandles"		) );
 		if(members.containsKey("defaultShowCaptionEditors"))	defaultShowCaptionEditors	 .set( (Boolean) members.get( "defaultShowCaptionEditors"		) );
@@ -281,6 +284,7 @@ public class UserSettings extends ObservableBase
 		members.put("defaultShowVertexLabels",		defaultShowVertexLabels			);
 		members.put("defaultShowEdgeHandles",		defaultShowEdgeHandles			);
 		members.put("defaultShowEdgeWeights",		defaultShowEdgeWeights			);
+		members.put("defaultShowEdgeLabels",		defaultShowEdgeLabels			);
 		members.put("defaultShowCaptions",			defaultShowCaptions				);
 		members.put("defaultShowCaptionHandles",	defaultShowCaptionHandles		);
 		members.put("defaultShowCaptionEditors",	defaultShowCaptionEditors		);

@@ -45,6 +45,7 @@ public class PreferencesDialog extends JDialog implements ActionListener
 	private static JCheckBox           defaultShowVertexLabelsCheckBox;
 	private static JCheckBox           defaultShowEdgeHandlesCheckBox;
 	private static JCheckBox           defaultShowEdgeWeightsCheckBox;
+	private static JCheckBox           defaultShowEdgeLabelsCheckBox;
 	private static JCheckBox           defaultShowCaptionsCheckBox;
 	private static JCheckBox           defaultShowCaptionHandlesCheckBox;
 	private static JCheckBox           defaultShowCaptionEditorsCheckBox;
@@ -219,6 +220,10 @@ public class PreferencesDialog extends JDialog implements ActionListener
 		defaultShowEdgeWeightsCheckBox = new JCheckBox();
 		defaultShowEdgeWeightsCheckBox.setBackground(panel.getBackground());
 		defaultShowEdgeWeightsCheckBox.setMinimumSize(new Dimension(32, 26));
+		FieldLabel defaultShowEdgeLabelsLabel = new FieldLabel(StringBundle.get("preferences_dialog_default_show_edge_labels_label"));
+		defaultShowEdgeLabelsCheckBox = new JCheckBox();
+		defaultShowEdgeLabelsCheckBox.setBackground(panel.getBackground());
+		defaultShowEdgeLabelsCheckBox.setMinimumSize(new Dimension(32, 26));
 		FieldLabel defaultShowCaptionsLabel = new FieldLabel(StringBundle.get("preferences_dialog_default_show_captions_label"));
 		defaultShowCaptionsCheckBox = new JCheckBox();
 		defaultShowCaptionsCheckBox.setBackground(panel.getBackground());
@@ -268,6 +273,7 @@ public class PreferencesDialog extends JDialog implements ActionListener
 					.addComponent(defaultCaptionIsSelectedLabel)
 					.addComponent(defaultShowEdgeHandlesLabel)
 					.addComponent(defaultShowEdgeWeightsLabel)
+					.addComponent(defaultShowEdgeLabelsLabel)
 					.addComponent(defaultShowVertexWeightsLabel)
 					.addComponent(defaultShowVertexLabelsLabel)
 					.addComponent(defaultShowCaptionsLabel)
@@ -292,6 +298,7 @@ public class PreferencesDialog extends JDialog implements ActionListener
 					.addComponent(defaultCaptionIsSelectedCheckBox)
 					.addComponent(defaultShowEdgeHandlesCheckBox)
 					.addComponent(defaultShowEdgeWeightsCheckBox)
+					.addComponent(defaultShowEdgeLabelsCheckBox)
 					.addComponent(defaultShowVertexWeightsCheckBox)
 					.addComponent(defaultShowVertexLabelsCheckBox)
 					.addComponent(defaultShowCaptionsCheckBox)
@@ -322,6 +329,7 @@ public class PreferencesDialog extends JDialog implements ActionListener
 				.addComponent(viewportDefaultsHeader)
 				.addGroup(layout.createParallelGroup(GroupLayout.Alignment.CENTER).addComponent(defaultShowEdgeHandlesLabel).addComponent(defaultShowEdgeHandlesCheckBox))
 				.addGroup(layout.createParallelGroup(GroupLayout.Alignment.CENTER).addComponent(defaultShowEdgeWeightsLabel).addComponent(defaultShowEdgeWeightsCheckBox))
+				.addGroup(layout.createParallelGroup(GroupLayout.Alignment.CENTER).addComponent(defaultShowEdgeLabelsLabel).addComponent(defaultShowEdgeLabelsCheckBox))
 				.addGroup(layout.createParallelGroup(GroupLayout.Alignment.CENTER).addComponent(defaultShowVertexWeightsLabel).addComponent(defaultShowVertexWeightsCheckBox))
 				.addGroup(layout.createParallelGroup(GroupLayout.Alignment.CENTER).addComponent(defaultShowVertexLabelsLabel).addComponent(defaultShowVertexLabelsCheckBox))
 				.addGroup(layout.createParallelGroup(GroupLayout.Alignment.CENTER).addComponent(defaultShowCaptionsLabel).addComponent(defaultShowCaptionsCheckBox))
@@ -902,6 +910,7 @@ public class PreferencesDialog extends JDialog implements ActionListener
 		defaultShowVertexLabelsCheckBox			.setSelected( userSettings.defaultShowVertexLabels.get( ) );
 		defaultShowEdgeHandlesCheckBox			.setSelected( userSettings.defaultShowEdgeHandles.get( ) );
 		defaultShowEdgeWeightsCheckBox			.setSelected( userSettings.defaultShowEdgeWeights.get( ) );
+		defaultShowEdgeLabelsCheckBox			.setSelected( userSettings.defaultShowEdgeLabels.get( ) );
 		defaultShowCaptionsCheckBox				.setSelected( userSettings.defaultShowCaptions.get( ) );
 		defaultShowCaptionHandlesCheckBox		.setSelected( userSettings.defaultShowCaptionHandles.get( ) );
 		defaultShowCaptionEditorsCheckBox		.setSelected( userSettings.defaultShowCaptionEditors.get( ) );
@@ -980,6 +989,7 @@ public class PreferencesDialog extends JDialog implements ActionListener
 		userSettings.defaultShowVertexLabels		.set( 			   defaultShowVertexLabelsCheckBox.isSelected( ) );
 		userSettings.defaultShowEdgeHandles			.set( 			   defaultShowEdgeHandlesCheckBox.isSelected( ) );
 		userSettings.defaultShowEdgeWeights			.set( 			   defaultShowEdgeWeightsCheckBox.isSelected( ) );
+		userSettings.defaultShowEdgeLabels			.set( 			   defaultShowEdgeLabelsCheckBox.isSelected( ) );
 		userSettings.defaultShowCaptions			.set( 			   defaultShowCaptionsCheckBox.isSelected( ) );
 		userSettings.defaultShowCaptionHandles		.set( 			   defaultShowCaptionHandlesCheckBox.isSelected( ) );
 		userSettings.defaultShowCaptionEditors		.set( 			   defaultShowCaptionEditorsCheckBox.isSelected( ) );

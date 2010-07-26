@@ -25,14 +25,16 @@ public class GraphSettings extends ObservableBase
 	
 	public GraphSettings()
 	{
-		showEdgeHandles    = new Property<Boolean>(GlobalSettings.defaultShowEdgeHandles,    "showEdgeHandles");
-		showEdgeWeights    = new Property<Boolean>(GlobalSettings.defaultShowEdgeWeights,    "showEdgeWeights");
-		showEdgeLabels     = new Property<Boolean>(GlobalSettings.defaultShowEdgeLabels,     "showEdgeLabels");
-		showVertexWeights  = new Property<Boolean>(GlobalSettings.defaultShowVertexWeights,  "showVertexWeights");
-		showVertexLabels   = new Property<Boolean>(GlobalSettings.defaultShowVertexLabels,   "showVertexLabels");
-		showCaptions       = new Property<Boolean>(GlobalSettings.defaultShowCaptions,       "showCaptions");
-		showCaptionHandles = new Property<Boolean>(GlobalSettings.defaultShowCaptionHandles, "showCaptionHandles");
-		showCaptionEditors = new Property<Boolean>(GlobalSettings.defaultShowCaptionEditors, "showCaptionEdits");
+		UserSettings settings = UserSettings.instance;
+		
+		showEdgeHandles    = new Property<Boolean>(settings.defaultShowEdgeHandles.get(),    "showEdgeHandles");
+		showEdgeWeights    = new Property<Boolean>(settings.defaultShowEdgeWeights.get(),    "showEdgeWeights");
+		showEdgeLabels     = new Property<Boolean>(settings.defaultShowEdgeLabels.get(),     "showEdgeLabels");
+		showVertexWeights  = new Property<Boolean>(settings.defaultShowVertexWeights.get(),  "showVertexWeights");
+		showVertexLabels   = new Property<Boolean>(settings.defaultShowVertexLabels.get(),   "showVertexLabels");
+		showCaptions       = new Property<Boolean>(settings.defaultShowCaptions.get(),       "showCaptions");
+		showCaptionHandles = new Property<Boolean>(settings.defaultShowCaptionHandles.get(), "showCaptionHandles");
+		showCaptionEditors = new Property<Boolean>(settings.defaultShowCaptionEditors.get(), "showCaptionEdits");
 	}
 	
 	public GraphSettings(GraphSettings graphSettings)
