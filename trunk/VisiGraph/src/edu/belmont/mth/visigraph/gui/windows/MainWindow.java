@@ -10,6 +10,7 @@ import java.beans.*;
 import java.io.*;
 import java.util.*;
 import javax.swing.*;
+import javax.swing.event.*;
 import javax.swing.filechooser.*;
 import edu.belmont.mth.visigraph.gui.dialogs.*;
 import edu.belmont.mth.visigraph.models.*;
@@ -52,7 +53,38 @@ public class MainWindow extends JFrame
 		this.thisFrame = this;
 		this.setSize(new Dimension(userSettings.mainWindowWidth.get(), userSettings.mainWindowHeight.get()));
 		this.setLocation(450, 200);
-		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		this.setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
+		this.addWindowListener(new WindowListener ()
+		{
+			@Override
+			public void windowActivated(WindowEvent e)
+			{}
+
+			@Override
+			public void windowClosed(WindowEvent e)
+			{}
+
+			@Override
+			public void windowClosing(WindowEvent e)
+			{
+				closingWindow(e);
+			}
+			
+			@Override
+			public void windowDeactivated(WindowEvent e)
+			{}
+			
+			@Override
+			public void windowDeiconified(WindowEvent e)
+			{}
+
+			@Override
+			public void windowIconified(WindowEvent e)
+			{}
+
+			@Override
+			public void windowOpened(WindowEvent e)
+			{} });
 		
 		desktopPane = new JDesktopPane();
 		getContentPane().add(desktopPane, BorderLayout.CENTER);
@@ -373,6 +405,24 @@ public class MainWindow extends JFrame
 		setJMenuBar(menuBar);
 		
 		this.setVisible(true);
+	}
+
+	public void closingWindow(WindowEvent e)
+	{
+		JInternalFrame[] frames = desktopPane.getAllFrames();
+		
+		for(JInternalFrame frame : frames)
+		{
+			GraphWindow window = (GraphWindow)frame;
+			
+			window.closingWindow(new InternalFrameEvent(frame,0));
+			
+			if(!window.isClosed())
+				break;
+		}
+		
+		if(desktopPane.getAllFrames().length == 0)
+			dispose();
 	}
 }
 
