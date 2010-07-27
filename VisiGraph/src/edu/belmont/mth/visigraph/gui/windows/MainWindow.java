@@ -240,6 +240,7 @@ public class MainWindow extends JFrame
 		fileMenu.addSeparator();
 		
 		printGraphMenuItem = new JMenuItem(StringBundle.get("file_print_menu_text"));
+		printGraphMenuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_P, Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()));
 		printGraphMenuItem.addActionListener(new ActionListener()
 		{
 			@Override
@@ -256,19 +257,23 @@ public class MainWindow extends JFrame
 		});
 		fileMenu.add(printGraphMenuItem);
 		
-		fileMenu.addSeparator();
-		
-		exitGraphMenuItem = new JMenuItem(System.getProperty("os.name").startsWith("Windows") ? StringBundle.get("file_exit_menu_text") : StringBundle.get("file_quit_menu_text"));
-		if(System.getProperty("os.name").startsWith("Mac")) exitGraphMenuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_Q, Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()));
-		exitGraphMenuItem.addActionListener(new ActionListener()
+		if(!System.getProperty("os.name").startsWith("Mac"))
 		{
-			@Override
-			public void actionPerformed(ActionEvent arg0)
+			fileMenu.addSeparator();
+			
+			exitGraphMenuItem = new JMenuItem(StringBundle.get("file_exit_menu_text"));
+			exitGraphMenuItem.addActionListener(new ActionListener()
 			{
-				System.exit(0);
-			}
-		});
-		fileMenu.add(exitGraphMenuItem);
+				@Override
+				public void actionPerformed(ActionEvent arg0)
+				{
+					System.exit(0);
+				}
+			});
+			fileMenu.add(exitGraphMenuItem);
+		}
+		else
+			exitGraphMenuItem = null;
 		
 		windowsMenu = new JMenu(StringBundle.get("windows_menu_text"));
 		menuBar.add(windowsMenu);

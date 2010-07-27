@@ -13,7 +13,7 @@ public class GlobalSettings
 {
 	public static final String					 applicationName							= "VisiGraph";
 	public static final String					 applicationAuthor							= "Cameron Behar";
-	public static final String					 applicationBuild							= "201000000000";
+	public static final String					 applicationBuild							= "201007262129";
 	public static final String					 applicationWebsite							= "http://code.google.com/p/visigraph";
 	public static final String					 applicationDescription						= "A flexible cross-platform application for modeling graph theory problems and solutions.";
 	
