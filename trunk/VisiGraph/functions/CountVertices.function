@@ -15,7 +15,7 @@ import edu.belmont.mth.visigraph.models.functions.*;
 	
 	public String toString()
 	{
-		return "Count vertexes";
+		return "Count vertices";
 	}
         
 return (FunctionBase)this;

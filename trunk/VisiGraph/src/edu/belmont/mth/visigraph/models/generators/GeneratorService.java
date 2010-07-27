@@ -34,7 +34,7 @@ public final static GeneratorService instance = new GeneratorService();
 					ValidateGraphGenerator(generator);
 					generators.add(generator);
 				}
-				catch (Exception e) { e.printStackTrace(); }
+				catch (Throwable e) { e.printStackTrace(); }
 			}
 		}
 	}

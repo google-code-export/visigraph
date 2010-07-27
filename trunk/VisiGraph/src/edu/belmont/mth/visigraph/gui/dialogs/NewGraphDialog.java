@@ -42,8 +42,6 @@ public class NewGraphDialog extends JDialog implements ActionListener
 	{
 		super(frame, StringBundle.get("new_graph_dialog_title"), true);
 		
-		this.setTitle(StringBundle.get("new_graph_dialog_title"));
-		
 		GridBagLayout gbl = new GridBagLayout();
 		gbl.rowHeights = new int[] { 9, 28, 28, 28, 28 };
 		JPanel inputPanel = new JPanel(gbl);
