@@ -400,6 +400,14 @@ public class MainWindow extends JFrame
 		helpMenu.addSeparator();
 		
 		aboutVisiGraphMenuItem = new JMenuItem(StringBundle.get("help_about_menu_text"));
+		aboutVisiGraphMenuItem.addActionListener(new ActionListener()
+		{
+			@Override
+			public void actionPerformed(ActionEvent arg0)
+			{
+				AboutDialog.showDialog(thisFrame, thisFrame);
+			}
+		});
 		helpMenu.add(aboutVisiGraphMenuItem);
 		
 		setJMenuBar(menuBar);

@@ -4,17 +4,14 @@
 package edu.belmont.mth.visigraph.gui.dialogs;
 
 import java.io.*;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
+import java.util.regex.*;
 import java.awt.*;
 import javax.swing.*;
 import java.awt.event.*;
 import javax.swing.border.*;
-
-import edu.belmont.mth.visigraph.gui.controls.ColorPicker;
-import edu.belmont.mth.visigraph.gui.controls.ValidatingTextField;
-import edu.belmont.mth.visigraph.resources.StringBundle;
-import edu.belmont.mth.visigraph.settings.UserSettings;
+import edu.belmont.mth.visigraph.gui.controls.*;
+import edu.belmont.mth.visigraph.resources.*;
+import edu.belmont.mth.visigraph.settings.*;
 
 /**
  * @author Cameron Behar
@@ -148,8 +145,6 @@ public class PreferencesDialog extends JDialog implements ActionListener
 		buttonPanel.add(okButton);
 		buttonPanel.add(Box.createRigidArea(new Dimension(10, 0)));
 		buttonPanel.add(cancelButton);
-		
-		inputPanel.add(buttonPanel, BorderLayout.SOUTH);
 		
 		//Put everything together, using the content pane's BorderLayout
 		Container contentPanel = getContentPane();
