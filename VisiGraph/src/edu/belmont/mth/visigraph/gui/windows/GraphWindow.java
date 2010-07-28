@@ -28,9 +28,10 @@ public class GraphWindow extends JInternalFrame implements GraphChangeEventListe
 {
 	private JFileChooser			fileChooser;
 	private GraphDisplayController	gdc;
-	private boolean					hasChanged;
 	private File					file;
 	private UserSettings			userSettings = UserSettings.instance;
+	private boolean					hasChanged;
+	private boolean					hasLoaded;
 	
 	public GraphWindow(Graph g)
 	{
@@ -39,15 +40,21 @@ public class GraphWindow extends JInternalFrame implements GraphChangeEventListe
 		this.setSize(new Dimension(userSettings.graphWindowWidth.get(), userSettings.graphWindowHeight.get()));
 		this.add(setGdc(new GraphDisplayController(g)));
 		this.setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
+		this.hasChanged = true;
+		this.hasLoaded = false;
 		this.addInternalFrameListener(new InternalFrameListener()
 		{
-			public void internalFrameActivated(InternalFrameEvent arg0)
+			public void internalFrameActivated(InternalFrameEvent e)
 			{
-				getGdc().zoomFit();
+				if (!hasLoaded)
+				{
+					gdc.zoomFit();
+					hasLoaded = true;
+				}
 			}
 			
 			public void internalFrameClosed(InternalFrameEvent e)
-			{}
+			{ }
 			
 			public void internalFrameClosing(InternalFrameEvent e)
 			{
@@ -55,18 +62,17 @@ public class GraphWindow extends JInternalFrame implements GraphChangeEventListe
 			}
 			
 			public void internalFrameDeactivated(InternalFrameEvent e)
-			{}
+			{ }
 			
 			public void internalFrameDeiconified(InternalFrameEvent e)
-			{}
+			{ }
 			
 			public void internalFrameIconified(InternalFrameEvent e)
-			{}
+			{ }
 			
 			public void internalFrameOpened(InternalFrameEvent e)
-			{}
+			{ }
 		});
-		this.hasChanged = true;
 		this.updateTitle();
 		this.fileChooser = new JFileChooser();
 		this.setVisible(true);
