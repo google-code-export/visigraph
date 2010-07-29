@@ -16,6 +16,7 @@ import edu.belmont.mth.visigraph.gui.dialogs.*;
 import edu.belmont.mth.visigraph.models.*;
 import edu.belmont.mth.visigraph.resources.*;
 import edu.belmont.mth.visigraph.settings.*;
+import edu.belmont.mth.visigraph.utilities.WebUtilities;
 
 /**
  * @author Cameron Behar
@@ -387,6 +388,14 @@ public class MainWindow extends JFrame
 		menuBar.add(helpMenu);
 		
 		helpContentsMenuItem = new JMenuItem(StringBundle.get("help_contents_menu_text"));
+		helpContentsMenuItem.addActionListener(new ActionListener()
+		{
+			@Override
+			public void actionPerformed(ActionEvent arg0)
+			{
+				WebUtilities.launchBrowser(GlobalSettings.applicationWebsite);
+			}
+		});
 		helpMenu.add(helpContentsMenuItem);
 		
 		helpMenu.addSeparator();
