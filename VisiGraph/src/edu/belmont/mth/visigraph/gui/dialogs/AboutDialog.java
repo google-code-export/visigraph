@@ -4,11 +4,11 @@
 package edu.belmont.mth.visigraph.gui.dialogs;
 
 import java.awt.*;
-
 import javax.swing.*;
 import java.awt.event.*;
+import java.util.*;
 import edu.belmont.mth.visigraph.resources.*;
-import edu.belmont.mth.visigraph.settings.GlobalSettings;
+import edu.belmont.mth.visigraph.settings.*;
 
 /**
  * @author Cameron Behar
@@ -57,7 +57,7 @@ public class AboutDialog extends JDialog implements ActionListener
 		gridBagConstraints.gridy = 2;
 		inputPanel.add( appByLabel, gridBagConstraints );
 		
-		JLabel appBuildLabel = new JLabel(String.format(StringBundle.get("about_dialog_build_label"), GlobalSettings.applicationBuild));
+		JLabel appBuildLabel = new JLabel(String.format(StringBundle.get("about_dialog_version_label"), GlobalSettings.applicationVersion));
 		appBuildLabel.setBorder(BorderFactory.createEmptyBorder(0, 10, 0, 0));
 		gridBagConstraints.gridx = 1;
 		gridBagConstraints.gridy = 3;
@@ -77,7 +77,7 @@ public class AboutDialog extends JDialog implements ActionListener
 		gridBagConstraints.gridy = 6;
 		inputPanel.add( Box.createVerticalStrut(5), gridBagConstraints );
 		
-		JLabel appCopyrightLine0Label = new JLabel(String.format(StringBundle.get("about_dialog_copyright_line_0"), "2010", GlobalSettings.applicationAuthor, GlobalSettings.applicationName));
+		JLabel appCopyrightLine0Label = new JLabel(String.format(StringBundle.get("about_dialog_copyright_line_0"), Calendar.getInstance().get(Calendar.YEAR), GlobalSettings.applicationAuthor, GlobalSettings.applicationName));
 		appCopyrightLine0Label.setBorder(BorderFactory.createEmptyBorder(0, 10, 0, 0));
 		gridBagConstraints.gridx = 1;
 		gridBagConstraints.gridy = 7;
