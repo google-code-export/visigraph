@@ -20,6 +20,7 @@ import edu.belmont.mth.visigraph.models.*;
 import edu.belmont.mth.visigraph.resources.*;
 import edu.belmont.mth.visigraph.settings.*;
 import edu.belmont.mth.visigraph.gui.dialogs.*;
+import edu.belmont.mth.visigraph.gui.layouts.*;
 import edu.belmont.mth.visigraph.views.display.*;
 import edu.belmont.mth.visigraph.models.functions.*;
 
@@ -254,7 +255,7 @@ public class GraphDisplayController extends JPanel implements ClipboardOwner
 		toolToolBar = new ToolToolBar();
 		toolToolBarPanel.add(toolToolBar);
 		
-		nonToolToolbarPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
+		nonToolToolbarPanel = new JPanel(new WrapLayout(FlowLayout.LEFT));
 		nonToolToolbarPanel.setMaximumSize(new Dimension(Integer.MAX_VALUE, 32));
 		add(nonToolToolbarPanel, BorderLayout.NORTH);
 		
