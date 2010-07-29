@@ -10,6 +10,7 @@ import javax.swing.*;
 import java.awt.event.*;
 import javax.swing.border.*;
 import edu.belmont.mth.visigraph.gui.controls.*;
+import edu.belmont.mth.visigraph.gui.layouts.*;
 import edu.belmont.mth.visigraph.resources.*;
 import edu.belmont.mth.visigraph.settings.*;
 
@@ -370,139 +371,7 @@ public class PreferencesDialog extends JDialog implements ActionListener
 		FieldLabel uncoloredElementLabel = new FieldLabel(StringBundle.get("preferences_dialog_shared_uncolored_element_label")); uncoloredElementColorPicker = new ColorPicker();
 		FieldLabel elementColorsLabel    = new FieldLabel(StringBundle.get("preferences_dialog_shared_colored_elements_label"));
 		
-		elementColorsPanel = new JPanel(new LayoutManager()
-		{
-			int hgap = 0, vgap = 6;
-			
-			@Override
-			public void addLayoutComponent(String arg0, Component arg1)
-			{ }
-
-			@Override
-			public void layoutContainer(Container target)
-			{
-				synchronized (target.getTreeLock())
-				{
-					Insets insets = target.getInsets();
-					int maxheight = target.getHeight() - (insets.top + insets.bottom + vgap * 2);
-					int nmembers = target.getComponentCount();
-					int x = insets.left + hgap, y = 0;
-					int colw = 0, start = 0;
-					
-					boolean ltr = target.getComponentOrientation().isLeftToRight();
-					
-					for (int i = 0; i < nmembers; i++)
-					{
-						Component m = target.getComponent(i);
-						if (m.isVisible())
-						{
-							Dimension d = m.getPreferredSize();
-
-							m.setSize(d.width, d.height);
-							
-							if ((y == 0) || ((y + d.height) <= maxheight))
-							{
-								if (y > 0)
-									y += vgap;
-								
-								y += d.height;
-								colw = Math.max(colw, d.width);
-							}
-							else
-							{
-								moveComponents(target, insets.left + hgap, y, maxheight - x, colw, start, i, ltr);
-								moveComponents(target, x, insets.top + vgap, colw, maxheight - y, start, i, ltr);
-								y = d.height;
-								x += hgap + colw;
-								colw = d.width;
-								start = i;
-							}
-						}
-					}
-					moveComponents(target, x, insets.top + vgap, colw, maxheight - y, start, nmembers, ltr);
-				}
-			}
-
-			@Override
-			public Dimension minimumLayoutSize(Container target)
-			{
-				synchronized (target.getTreeLock())
-				{
-					Dimension dim = new Dimension(0, 0);
-					int nmembers = target.getComponentCount();
-					
-					for (int i = 0; i < nmembers; i++)
-					{
-						Component m = target.getComponent(i);
-						if (m.isVisible())
-						{
-							Dimension d = m.getMinimumSize();
-							dim.width = Math.max(dim.width, d.width);
-							if (i > 0) dim.height += vgap;
-
-							dim.height += d.height;
-						}
-					}
-					Insets insets = target.getInsets();
-					dim.width += insets.left + insets.right + hgap * 2;
-					dim.height += insets.top + insets.bottom + vgap * 2;
-					return dim;
-				}
-			}
-
-			@Override
-			public Dimension preferredLayoutSize(Container target)
-			{
-				synchronized (target.getTreeLock())
-				{
-					Dimension dim = new Dimension(0, 0);
-					int nmembers = target.getComponentCount();
-					boolean firstVisibleComponent = true;
-					
-					for (int i = 0; i < nmembers; i++)
-					{
-						Component m = target.getComponent(i);
-						if (m.isVisible())
-						{
-							Dimension d = m.getPreferredSize();
-							dim.width = Math.max(dim.width, d.width);
-							if (firstVisibleComponent) firstVisibleComponent = false;
-							else dim.height += vgap;
-							
-							dim.height += d.height;
-						}
-					}
-					
-					Insets insets = target.getInsets();
-					dim.width += insets.left + insets.right + hgap * 2;
-					dim.height += insets.top + insets.bottom + vgap * 2;
-					return dim;
-				}
-			}
-
-			@Override
-			public void removeLayoutComponent(Component arg0)
-			{ }
-			
-			private void moveComponents(Container target, int x, int y, int width, int height, int colStart, int colEnd, boolean ltr)
-			{
-				synchronized (target.getTreeLock())
-				{
-					y += height / 2;
-					for (int i = colStart; i < colEnd; i++)
-					{
-						Component m = target.getComponent(i);
-						if (m.isVisible())
-						{
-							if (ltr) m.setLocation(x + (width - m.getWidth()) / 2, y);
-							else     m.setLocation(x + (width - m.getWidth()) / 2, target.getHeight() - y - m.getHeight());
-
-							y += m.getHeight() + vgap;
-						}
-					}
-				}
-			}
-		} );
+		elementColorsPanel = new JPanel(new VerticalFlowLayout(VerticalFlowLayout.TOP ,0, 6));
 		elementColorsPanel.setBackground(panel.getBackground());
 		elementColorsPanel.setBorder(BorderFactory.createEmptyBorder(-6, 0, 0, 0));
 		
