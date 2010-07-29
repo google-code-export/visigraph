@@ -1293,13 +1293,32 @@ public class GraphDisplayController extends JPanel implements ClipboardOwner
 			{
 				public void actionPerformed(ActionEvent e)
 				{
-					double radius = userSettings.arrangeCircleRadiusMultiplier.get() * graph.vertexes.size();
-					double degreesPerVertex = 2 * Math.PI / graph.vertexes.size();
+					ArrayList<Vertex> selected = new ArrayList<Vertex>();
 					
-					for (int i = 0; i < graph.vertexes.size(); ++i)
+					for(Vertex vertex : graph.vertexes)
+						if(vertex.isSelected.get())
+							selected.add(vertex);
+					
+					if(selected.size() < 1)
+						selected.addAll(graph.vertexes);
+					
+					double centroidX = 0, centroidY = 0;
+					for(Vertex vertex : selected)
 					{
-						graph.vertexes.get(i).x.set(radius * Math.cos(degreesPerVertex * i - Math.PI / 2.0));
-						graph.vertexes.get(i).y.set(radius * Math.sin(degreesPerVertex * i - Math.PI / 2.0));
+						centroidX += vertex.x.get();
+						centroidY += vertex.y.get();
+					}
+					
+					centroidX /= selected.size();
+					centroidY /= selected.size();
+					
+					double radius = userSettings.arrangeCircleRadiusMultiplier.get() * selected.size();
+					double degreesPerVertex = 2 * Math.PI / selected.size();
+					
+					for (int i = 0; i < selected.size(); ++i)
+					{
+						selected.get(i).x.set(radius * Math.cos(degreesPerVertex * i - Math.PI / 2.0) + centroidX);
+						selected.get(i).y.set(radius * Math.sin(degreesPerVertex * i - Math.PI / 2.0) + centroidY);
 					}
 					
 					zoomFit();
@@ -1313,7 +1332,26 @@ public class GraphDisplayController extends JPanel implements ClipboardOwner
 			{
 				public void actionPerformed(ActionEvent e)
 				{
-					int n = graph.vertexes.size();
+					ArrayList<Vertex> selected = new ArrayList<Vertex>();
+					
+					for(Vertex vertex : graph.vertexes)
+						if(vertex.isSelected.get())
+							selected.add(vertex);
+					
+					if(selected.size() < 1)
+						selected.addAll(graph.vertexes);
+					
+					double centroidX = 0, centroidY = 0;
+					for(Vertex vertex : selected)
+					{
+						centroidX += vertex.x.get();
+						centroidY += vertex.y.get();
+					}
+					
+					centroidX /= selected.size();
+					centroidY /= selected.size();
+					
+					int n = selected.size();
 					int rows = (int) Math.round(Math.sqrt(n));
 					int columns = (int) Math.ceil(n / (double) rows);
 					Point2D.Double location = new Point2D.Double((columns / 2.0) * -userSettings.arrangeGridSpacing.get(), (rows / 2.0) * -userSettings.arrangeGridSpacing.get());
@@ -1321,8 +1359,8 @@ public class GraphDisplayController extends JPanel implements ClipboardOwner
 					for (int row = 0; row < rows; ++row)
 						for(int col = 0; (row < rows - 1 && col < columns) || (row == rows - 1 && col < (n % columns == 0 ? columns : n % columns)); ++col)
 						{
-							graph.vertexes.get(row * columns + col).x.set(location.x + userSettings.arrangeGridSpacing.get() * col);
-							graph.vertexes.get(row * columns + col).y.set(location.y + userSettings.arrangeGridSpacing.get() * row);
+							selected.get(row * columns + col).x.set(location.x + userSettings.arrangeGridSpacing.get() * col + centroidX);
+							selected.get(row * columns + col).y.set(location.y + userSettings.arrangeGridSpacing.get() * row + centroidY);
 						}
 					
 					zoomFit();
@@ -1408,29 +1446,37 @@ public class GraphDisplayController extends JPanel implements ClipboardOwner
 			{
 				public void actionPerformed(ActionEvent e)
 				{
-					new Timer(50, new ActionListener() {
-						public void actionPerformed(ActionEvent arg0)
+					new Timer(50, new ActionListener()
+					{
+						public void actionPerformed(ActionEvent e)
 						{
-							Timer timer = (Timer)arg0.getSource(); 
-							if(timer.getDelay() >= 500)
-							{
-								timer.stop(); return; 
-							}
+							Timer timer = (Timer)e.getSource(); 
 							
 							timer.setDelay((int)(timer.getDelay() * userSettings.autoArrangeDecelerationFactor.get()));
+							
+							ArrayList<Vertex> selected = new ArrayList<Vertex>();
+							
+							for(Vertex vertex : graph.vertexes)
+								if(vertex.isSelected.get())
+									selected.add(vertex);
+							
+							boolean noneWereSelected = (selected.size() < 1);
+							
+							if(noneWereSelected)
+								selected.addAll(graph.vertexes);
 							
 							HashMap<Vertex, Point2D.Double> forces = new HashMap<Vertex, Point2D.Double>();
 						
 							// Initialize the hashmap of forces
-							for (int i = 0; i < graph.vertexes.size(); ++i)
-								forces.put(graph.vertexes.get(i), new Point2D.Double(0, 0));
+							for (int i = 0; i < selected.size(); ++i)
+								forces.put(selected.get(i), new Point2D.Double(0, 0));
 							
 							// Calculate all repulsive forces
-							for (int i = 0; i < graph.vertexes.size(); ++i)
-								for (int j = i + 1; j < graph.vertexes.size(); ++j)
+							for (int i = 0; i < selected.size(); ++i)
+								for (int j = i + 1; j < selected.size(); ++j)
 								{
-									Vertex v0 = graph.vertexes.get(i);
-									Vertex v1 = graph.vertexes.get(j);
+									Vertex v0 = selected.get(i);
+									Vertex v1 = selected.get(j);
 									
 									double xDiff = v1.x.get() - v0.x.get();
 									double yDiff = v1.y.get() - v0.y.get();
@@ -1438,17 +1484,17 @@ public class GraphDisplayController extends JPanel implements ClipboardOwner
 									double xForce = userSettings.autoArrangeRepulsiveForce.get() * (xDiff / distanceSquared);
 									double yForce = userSettings.autoArrangeRepulsiveForce.get() * (yDiff / distanceSquared);
 									
-									forces.get(v0).x += xForce;
-									forces.get(v0).y += yForce;
+									Point2D.Double force0 = forces.get(v0);
+									force0.x += xForce; force0.y += yForce;
 									
 									// And because every action has an opposite and equal reaction
-									forces.get(v1).x -= xForce;
-									forces.get(v1).y -= yForce;
+									Point2D.Double force1 = forces.get(v1);
+									force1.x -= xForce; force1.y -= yForce;
 								}
 							
 							// Calculate all attractive forces
 							for (Edge edge : graph.edges)
-								if (edge.from != edge.to)
+								if (edge.from != edge.to && (noneWereSelected || edge.from.isSelected.get() || edge.to.isSelected.get()))
 								{
 									double xDiff = edge.to.x.get() - edge.from.x.get();
 									double yDiff = edge.to.y.get() - edge.from.y.get();
@@ -1456,20 +1502,35 @@ public class GraphDisplayController extends JPanel implements ClipboardOwner
 									double xForce = userSettings.autoArrangeAttractiveForce.get() * xDiff * distanceSquared;
 									double yForce = userSettings.autoArrangeAttractiveForce.get() * yDiff * distanceSquared;
 									
-									forces.get(edge.from).x += xForce;
-									forces.get(edge.from).y += yForce;
+									if(noneWereSelected || edge.from.isSelected.get())
+									{
+										Point2D.Double force = forces.get(edge.from);
+										force.x += xForce; force.y += yForce;
+									}
 									
 									// And because every action has an opposite and equal reaction
-									forces.get(edge.to).x -= xForce;
-									forces.get(edge.to).y -= yForce;
+									if(noneWereSelected || edge.to.isSelected.get())
+									{
+										Point2D.Double force = forces.get(edge.to);
+										force.x -= xForce; force.y -= yForce;
+									}
 								}
 							
+							double netForce = 0.0;
+							
 							// Apply all net forces
-							for (Vertex v : graph.vertexes)
+							for (Vertex v : selected)
 							{
-								v.x.set(v.x.get() + forces.get(v).x);
-								v.y.set(v.y.get() + forces.get(v).y);
+								Point2D.Double force = forces.get(v);
+								v.x.set(v.x.get() + force.x);
+								v.y.set(v.y.get() + force.y);
+								
+								// And whilst I know I should be using the magnitude, this is quicker
+								netForce += Math.abs(force.x) + Math.abs(force.y);
 							}
+							
+							if(timer.getDelay() >= 500 || (!noneWereSelected && netForce / selected.size() < 0.1))
+								timer.stop(); 
 						} 
 					} ).start();	
 				}
