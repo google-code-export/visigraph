@@ -142,6 +142,7 @@ public class GraphWindow extends JInternalFrame implements GraphChangeEventListe
 					try
 					{
 						save();
+						gdc.dispose();
 						dispose();
 					}
 					catch (IOException ex)
@@ -150,6 +151,7 @@ public class GraphWindow extends JInternalFrame implements GraphChangeEventListe
 					}
 					break;
 				case JOptionPane.NO_OPTION:
+					gdc.dispose();
 					dispose();
 					break;
 				case JOptionPane.CANCEL_OPTION:
@@ -157,7 +159,10 @@ public class GraphWindow extends JInternalFrame implements GraphChangeEventListe
 			}
 		}
 		else
+		{
+			gdc.dispose();
 			dispose();
+		}
 	}
 	
 	public void saveAs()

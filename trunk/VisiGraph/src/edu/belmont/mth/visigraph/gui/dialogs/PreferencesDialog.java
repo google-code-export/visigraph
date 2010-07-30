@@ -82,6 +82,8 @@ public class PreferencesDialog extends JDialog implements ActionListener
 	private static ValidatingTextField autoArrangeDecelerationFactorTextField;
 	private static ValidatingTextField arrangeContractFactorTextField;
 	private static ValidatingTextField arrangeExpandFactorTextField;
+	private static ValidatingTextField undoLoggingIntervalTextField;
+	private static ValidatingTextField undoLoggingMaximumTextField;
 	private static JCheckBox           useAntiAliasingCheckBox;
 	private static JCheckBox           usePureStrokeCheckBox;
 	private static JCheckBox           useBicubicInterpolationCheckBox;
@@ -534,6 +536,10 @@ public class PreferencesDialog extends JDialog implements ActionListener
 		FieldLabel arrangeContractFactorLabel         = new FieldLabel(StringBundle.get("preferences_dialog_auto_arrange_contract_factor_label"));     arrangeContractFactorTextField         = new ValidatingTextField(8, "(?:\\d+\\.?\\d*|\\d*\\.?\\d+)(?:[eE][+\\-\\x20]?\\d+)?"); arrangeContractFactorTextField        .setMargin(fieldMargin); arrangeContractFactorTextField        .setMaximumSize(new Dimension(70, 100));
 		FieldLabel arrangeExpandFactorLabel           = new FieldLabel(StringBundle.get("preferences_dialog_arrange_expand_factor_label"));            arrangeExpandFactorTextField           = new ValidatingTextField(8, "(?:\\d+\\.?\\d*|\\d*\\.?\\d+)(?:[eE][+\\-\\x20]?\\d+)?"); arrangeExpandFactorTextField          .setMargin(fieldMargin); arrangeExpandFactorTextField          .setMaximumSize(new Dimension(70, 100));
 		
+		Header undoBehaviorHeader = new Header(StringBundle.get("preferences_dialog_undo_behavior_heading"));
+		FieldLabel undoLoggingIntervalLabel = new FieldLabel(StringBundle.get("preferences_dialog_undo_logging_interval_label")); undoLoggingIntervalTextField = new ValidatingTextField(8, "\\d{3,8}");  undoLoggingIntervalTextField.setMargin(fieldMargin); undoLoggingIntervalTextField.setMaximumSize(new Dimension(70, 100));
+		FieldLabel undoLoggingMaximumLabel  = new FieldLabel(StringBundle.get("preferences_dialog_undo_logging_maximum_label"));  undoLoggingMaximumTextField  = new ValidatingTextField(8, "\\d{1,3}?"); undoLoggingMaximumTextField .setMargin(fieldMargin); undoLoggingMaximumTextField .setMaximumSize(new Dimension(70, 100));
+		
 		Header renderingSettingsHeader = new Header(StringBundle.get("preferences_dialog_rendering_settings_heading"));
 		FieldLabel useAntiAliasingLabel = new FieldLabel(StringBundle.get("preferences_dialog_use_anti_aliasing_label"));
 		useAntiAliasingCheckBox = new JCheckBox();
@@ -581,6 +587,7 @@ public class PreferencesDialog extends JDialog implements ActionListener
 					.addComponent(clickingBehaviorHeader)
 					.addComponent(zoomingBehaviorHeader)
 					.addComponent(arrangingBehaviorHeader)
+					.addComponent(undoBehaviorHeader)
 					.addComponent(renderingSettingsHeader)
 					.addComponent(windowSettingsHeader)
 					.addComponent(otherHeader)
@@ -603,6 +610,8 @@ public class PreferencesDialog extends JDialog implements ActionListener
 					.addComponent(autoArrangeDecelerationFactorLabel)
 					.addComponent(arrangeContractFactorLabel)
 					.addComponent(arrangeExpandFactorLabel)
+					.addComponent(undoLoggingIntervalLabel)
+					.addComponent(undoLoggingMaximumLabel)
 					.addComponent(useAntiAliasingLabel)
 					.addComponent(usePureStrokeLabel)
 					.addComponent(useBicubicInterpolationLabel)
@@ -635,6 +644,8 @@ public class PreferencesDialog extends JDialog implements ActionListener
 					.addComponent(autoArrangeDecelerationFactorTextField)
 					.addComponent(arrangeContractFactorTextField)
 					.addComponent(arrangeExpandFactorTextField)
+					.addComponent(undoLoggingIntervalTextField)
+					.addComponent(undoLoggingMaximumTextField)
 					.addComponent(useAntiAliasingCheckBox)
 					.addComponent(usePureStrokeCheckBox)
 					.addComponent(useBicubicInterpolationCheckBox)
@@ -672,6 +683,9 @@ public class PreferencesDialog extends JDialog implements ActionListener
 				.addGroup(layout.createParallelGroup(GroupLayout.Alignment.CENTER).addComponent(autoArrangeDecelerationFactorLabel).addComponent(autoArrangeDecelerationFactorTextField))
 				.addGroup(layout.createParallelGroup(GroupLayout.Alignment.CENTER).addComponent(arrangeContractFactorLabel).addComponent(arrangeContractFactorTextField))
 				.addGroup(layout.createParallelGroup(GroupLayout.Alignment.CENTER).addComponent(arrangeExpandFactorLabel).addComponent(arrangeExpandFactorTextField))
+				.addComponent(undoBehaviorHeader)
+				.addGroup(layout.createParallelGroup(GroupLayout.Alignment.CENTER).addComponent(undoLoggingIntervalLabel).addComponent(undoLoggingIntervalTextField))
+				.addGroup(layout.createParallelGroup(GroupLayout.Alignment.CENTER).addComponent(undoLoggingMaximumLabel).addComponent(undoLoggingMaximumTextField))
 				.addComponent(renderingSettingsHeader)
 				.addGroup(layout.createParallelGroup(GroupLayout.Alignment.CENTER).addComponent(useAntiAliasingLabel).addComponent(useAntiAliasingCheckBox))
 				.addGroup(layout.createParallelGroup(GroupLayout.Alignment.CENTER).addComponent(usePureStrokeLabel).addComponent(usePureStrokeCheckBox))
@@ -743,6 +757,8 @@ public class PreferencesDialog extends JDialog implements ActionListener
 				autoArrangeDecelerationFactorTextField	.isValid( ) && 
 				arrangeContractFactorTextField			.isValid( ) &&
 				arrangeExpandFactorTextField			.isValid( ) &&
+				undoLoggingIntervalTextField			.isValid( ) &&
+				undoLoggingMaximumTextField				.isValid( ) &&
 				mainWindowSizeTextField					.isValid( ) && 
 				graphWindowSizeTextField				.isValid( ) && 
 				cascadeWindowOffsetTextField			.isValid( ) && 
@@ -810,6 +826,8 @@ public class PreferencesDialog extends JDialog implements ActionListener
 		autoArrangeDecelerationFactorTextField	.setText( userSettings.autoArrangeDecelerationFactor.get( ).toString( ) );
 		arrangeContractFactorTextField			.setText( userSettings.arrangeContractFactor.get( ).toString( ) );
 		arrangeExpandFactorTextField			.setText( userSettings.arrangeExpandFactor.get( ).toString( ) );
+		undoLoggingIntervalTextField			.setText( userSettings.undoLoggingInterval.get( ).toString( ) );
+		undoLoggingMaximumTextField				.setText( userSettings.undoLoggingMaximum.get( ).toString( ) );
 		useAntiAliasingCheckBox					.setSelected( userSettings.useAntiAliasing.get( ) );
 		usePureStrokeCheckBox					.setSelected( userSettings.usePureStroke.get( ) );
 		useBicubicInterpolationCheckBox			.setSelected( userSettings.useBicubicInterpolation.get( ) );
@@ -889,6 +907,8 @@ public class PreferencesDialog extends JDialog implements ActionListener
 		userSettings.autoArrangeDecelerationFactor	.set( new Double ( autoArrangeDecelerationFactorTextField.getText( ) ) );
 		userSettings.arrangeContractFactor			.set( new Double ( arrangeContractFactorTextField.getText( ) ) );
 		userSettings.arrangeExpandFactor			.set( new Double ( arrangeExpandFactorTextField.getText( ) ) );
+		userSettings.undoLoggingInterval			.set( new Integer( undoLoggingIntervalTextField.getText( ) ) );
+		userSettings.undoLoggingMaximum				.set( new Integer( undoLoggingMaximumTextField.getText( ) ) );
 		userSettings.useAntiAliasing				.set(              useAntiAliasingCheckBox.isSelected( ) );
 		userSettings.usePureStroke					.set(              usePureStrokeCheckBox.isSelected( ) );
 		userSettings.useBicubicInterpolation		.set(              useBicubicInterpolationCheckBox.isSelected( ) );

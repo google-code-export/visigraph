@@ -231,7 +231,7 @@ public class NewGraphDialog extends JDialog implements ActionListener
 		contentPanel.add(buttonPanel, BorderLayout.PAGE_END);
 		
 		Dimension size = this.getPreferredSize();
-		size.width += 40;
+		size.width = (int)Math.max(size.width, 400) + 40;
 		size.height += 40;
 		this.setPreferredSize(size);
 		

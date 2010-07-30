@@ -63,6 +63,8 @@ public class GraphDisplayController extends JPanel implements ClipboardOwner
 	private Vertex				      fromVertex;
 	private AffineTransform		      transform;
 	private Set<FunctionBase>	      functionsToBeRun;
+	private SnapshotList			  undoHistory;
+	private Timer					  undoTimer;
 	private EventListenerList		  graphChangeListenerList;
 	private UserSettings			  userSettings = UserSettings.instance;
 	
@@ -75,15 +77,8 @@ public class GraphDisplayController extends JPanel implements ClipboardOwner
 		graphChangeListenerList = new EventListenerList();
 		
 		// Add/bind graph
-		this.graph = graph;
-		graph.addObserver(new ObserverBase()
-		{
-			@Override
-			public void hasChanged(Object source)
-			{
-				hasGraphChanged(source);
-			}
-		});
+		loadGraph(graph);
+		undoHistory = new SnapshotList(graph.toString());
 		
 		// Add/bind palette
 		userSettings.addObserver(new ObserverBase()
@@ -173,6 +168,11 @@ public class GraphDisplayController extends JPanel implements ClipboardOwner
 		StringSelection stringSelection = new StringSelection( copy.toString() );
 	    Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
 	    clipboard.setContents( stringSelection, thisGdc );
+	}
+	
+	public void dispose()
+	{
+		undoTimer.stop();
 	}
 	
 	private void fireGraphChangeEvent(GraphChangeEvent evt)
@@ -358,16 +358,44 @@ public class GraphDisplayController extends JPanel implements ClipboardOwner
 			// Do nothing
 			}
 		});
-		isMouseDownOnCanvas = false;
-		currentMousePoint = new Point(0, 0);
-		pastMousePoint = new Point(0, 0);
-		pastPanPoint = new Point(0, 0);
 		viewportPanel.add(viewport, BorderLayout.CENTER);
 		viewportPopupMenu = new ViewportPopupMenu();
 		
 		statusBar = new JPanel(new FlowLayout(FlowLayout.LEFT));
 		statusBar.setMaximumSize(new Dimension(Integer.MAX_VALUE, 12));
 		add(statusBar, BorderLayout.SOUTH);
+		
+		undoTimer = new Timer(userSettings.undoLoggingInterval.get(), new ActionListener()
+		{
+			@Override
+			public void actionPerformed(ActionEvent e)
+			{
+				undoHistory.add(graph.toString());
+			}
+		});
+		undoTimer.start();
+	}
+	
+	public void loadGraph(Graph graph)
+	{
+		this.graph = graph;
+		graph.addObserver(new ObserverBase()
+		{
+			@Override
+			public void hasChanged(Object source)
+			{
+				hasGraphChanged(source);
+			}
+		});
+		
+		isMouseDownOnCanvas = false;
+		currentMousePoint = new Point(0, 0);
+		pastMousePoint = new Point(0, 0);
+		pastPanPoint = new Point(0, 0);
+		pointerToolClickedObject = false;
+		cutToolClickedObject = false;
+		paintToolClickedObject = false;
+		fromVertex = null;
 	}
 	
 	@Override
@@ -540,9 +568,32 @@ public class GraphDisplayController extends JPanel implements ClipboardOwner
 		pv.print();
 	}
 	
+	public void redo()
+	{
+		if(undoHistory.next() != null)
+			loadGraph(new Graph(undoHistory.current()));
+	}
+	
 	public void removeGraphChangeListener(GraphChangeEventListener listener)
 	{
 		graphChangeListenerList.remove(GraphChangeEventListener.class, listener);
+	}
+	
+	public void selectAll()
+	{
+		graph.selectAll();
+	}
+	
+	public void selectAllEdges()
+	{
+		for (Edge e : graph.edges)
+			e.isSelected.set(true);
+	}
+
+	public void selectAllVertexes()
+	{
+		for (Vertex v : graph.vertexes)
+			v.isSelected.set(true);
 	}
 	
 	public void setTool(Tool tool)
@@ -565,6 +616,12 @@ public class GraphDisplayController extends JPanel implements ClipboardOwner
 		}
 		
 		setCursor(cursor);
+	}
+	
+	public void undo()
+	{
+		if(undoHistory.previous() != null)
+			loadGraph(new Graph(undoHistory.current()));
 	}
 	
 	private void viewportKeyPressed(KeyEvent event)
@@ -620,34 +677,6 @@ public class GraphDisplayController extends JPanel implements ClipboardOwner
 					
 					break;
 				}
-			case KeyEvent.VK_A:
-				{
-					if((event.getModifiers() & Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()) != 0)
-						graph.selectAll();
-					
-					break;
-				}
-			case KeyEvent.VK_C:
-			{
-				if((event.getModifiers() & Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()) != 0)
-					copy();
-				
-				break;
-			}
-			case KeyEvent.VK_X:
-			{
-				if((event.getModifiers() & Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()) != 0)
-					cut();
-				
-				break;
-			}
-			case KeyEvent.VK_V:
-			{
-				if((event.getModifiers() & Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()) != 0)
-					paste();
-				
-				break;
-			}
 		}
 	}
 	
@@ -1081,7 +1110,7 @@ public class GraphDisplayController extends JPanel implements ClipboardOwner
 		transform.setTransform(userSettings.maximumZoomFactor.get(), transform.getShearY(), transform.getShearX(), userSettings.maximumZoomFactor.get(), transform.getTranslateX(), transform.getTranslateY());
 		viewport.repaint();
 	}
-	
+
 	public enum Tool
 	{
 		POINTER_TOOL, VERTEX_TOOL, EDGE_TOOL, CAPTION_TOOL, CUT_TOOL, PAINT_TOOL
@@ -2162,13 +2191,6 @@ public class GraphDisplayController extends JPanel implements ClipboardOwner
 	
 	private class ViewportPopupMenu extends JPopupMenu
 	{
-		private JMenuItem selectAll;
-		private JMenuItem selectAllVerticesItem;
-		private JMenuItem selectAllEdgesItem;
-		private JMenuItem	cutMenuItem;
-		private JMenuItem	copyMenuItem;
-		private JMenuItem	pasteMenuItem;
-		private JMenuItem propertiesItem;
 		private JMenuItem  vertexItem;
 		private JMenuItem   vertexLabelItem;
 		private JMenuItem   vertexRadiusItem;
@@ -2182,80 +2204,8 @@ public class GraphDisplayController extends JPanel implements ClipboardOwner
 		
 		public ViewportPopupMenu()
 		{
-			selectAll = new JMenuItem(StringBundle.get("select_all_menu_text"));
-			selectAll.addActionListener(new ActionListener()
-			{
-				public void actionPerformed(ActionEvent arg0)
-				{
-					graph.selectAll();
-				}
-			});
-			this.add(selectAll);
-			
-			selectAllVerticesItem = new JMenuItem(StringBundle.get("select_all_vertexes_menu_text"));
-			selectAllVerticesItem.addActionListener(new ActionListener()
-			{
-				public void actionPerformed(ActionEvent arg0)
-				{
-					for (Vertex v : graph.vertexes)
-						v.isSelected.set(true);
-				}
-			});
-			this.add(selectAllVerticesItem);
-			
-			selectAllEdgesItem = new JMenuItem(StringBundle.get("select_all_edges_menu_text"));
-			selectAllEdgesItem.addActionListener(new ActionListener()
-			{
-				public void actionPerformed(ActionEvent arg0)
-				{
-					for (Edge e : graph.edges)
-						e.isSelected.set(true);
-				}
-			});
-			this.add(selectAllEdgesItem);
-			
-			this.addSeparator();
-			
-			cutMenuItem = new JMenuItem(StringBundle.get("cut_menu_text"));
-			cutMenuItem.addActionListener(new ActionListener()
-			{
-				@Override
-				public void actionPerformed(ActionEvent arg0)
-				{
-					cut();
-				}
-			});
-			this.add(cutMenuItem);
-			
-			copyMenuItem = new JMenuItem(StringBundle.get("copy_menu_text"));
-			copyMenuItem.addActionListener(new ActionListener()
-			{
-				@Override
-				public void actionPerformed(ActionEvent arg0)
-				{		
-					copy();
-				}
-			});
-			this.add(copyMenuItem);
-			
-			pasteMenuItem = new JMenuItem(StringBundle.get("paste_menu_text"));
-			pasteMenuItem.addActionListener(new ActionListener()
-			{
-				@Override
-				public void actionPerformed(ActionEvent arg0)
-				{
-					paste();
-				}
-			});
-			this.add(pasteMenuItem);
-			
-			this.addSeparator();
-			
-			propertiesItem = new JMenu(StringBundle.get("properties_menu_text"));
-			this.add(propertiesItem);
-			
 			vertexItem = new JMenu(StringBundle.get("properties_vertex_menu_text"));
-			propertiesItem.add(vertexItem);
+			this.add(vertexItem);
 			
 			vertexLabelItem = new JMenuItem(StringBundle.get("properties_vertex_label_menu_text"));
 			vertexLabelItem.addActionListener(new ActionListener()
@@ -2326,7 +2276,7 @@ public class GraphDisplayController extends JPanel implements ClipboardOwner
 			vertexItem.add(vertexWeightItem);
 			
 			edgeItem = new JMenu(StringBundle.get("properties_edge_menu_text"));
-			propertiesItem.add(edgeItem);
+			this.add(edgeItem);
 			
 			edgeLabelItem = new JMenuItem(StringBundle.get("properties_edge_label_menu_text"));
 			edgeLabelItem.addActionListener(new ActionListener()
@@ -2423,6 +2373,90 @@ public class GraphDisplayController extends JPanel implements ClipboardOwner
 				RepaintManager.currentManager(viewport).setDoubleBufferingEnabled(true);
 				
 				return (PAGE_EXISTS);
+			}
+		}
+	}
+	
+	private class SnapshotList
+	{
+		// SnapshotList is essentially a kind of doubly-linked circular list of strings with a maximum capacity
+		private Snapshot current;
+		private Snapshot newest;
+		private Snapshot oldest;
+		private int capacity;
+		private int size;
+		
+		public SnapshotList(String snapshot)
+		{
+			newest = oldest = current = new Snapshot(snapshot);
+			capacity = userSettings.undoLoggingMaximum.get();
+			size = 0;
+		}
+		
+		public void add(String snapshot)
+		{
+			if(!snapshot.equals(current.value))
+			{
+				if(size < capacity)
+				{
+					Snapshot newSnapshot = new Snapshot(snapshot, current, current.next);
+					current.next.previous = newSnapshot;
+					current = newest = current.next = newSnapshot;
+					++size;
+				}
+				else
+				{
+					current.next.value = snapshot;
+					current = newest = current.next;
+					if(current == oldest)
+						oldest = current.next;
+				}
+			}
+		}
+		
+		public String previous()
+		{
+			if(current == oldest)
+				return null;
+			
+			current = current.previous;
+			
+			return current.value;
+		}
+		
+		public String current()
+		{
+			return current.value;
+		}
+		
+		public String next()
+		{
+			if(current == newest)
+				return null;
+			
+			current = current.next;
+			
+			return current.value;
+		}
+		
+		private class Snapshot
+		{
+			public String value;
+			public Snapshot previous;
+			public Snapshot next;
+			
+			public Snapshot(String value)
+			{
+				this.value = value;
+				this.previous = this;
+				this.next = this;
+			}
+			
+			public Snapshot(String value, Snapshot previous, Snapshot next)
+			{
+				this.value = value;
+				this.previous = previous;
+				this.next = next;
 			}
 		}
 	}
