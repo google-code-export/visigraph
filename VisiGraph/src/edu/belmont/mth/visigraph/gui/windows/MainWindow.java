@@ -34,6 +34,15 @@ public class MainWindow extends JFrame
 	private final JMenuItem	    saveAsGraphMenuItem;
 	private final JMenuItem	    printGraphMenuItem;
 	private final JMenuItem	    exitGraphMenuItem;
+	private final JMenu		   editMenu;
+	private final JMenuItem	    undoMenuItem;
+	private final JMenuItem	    redoMenuItem;
+	private final JMenuItem	    cutMenuItem;
+	private final JMenuItem	    copyMenuItem;
+	private final JMenuItem	    pasteMenuItem;
+	private final JMenuItem 	selectAllMenuItem;
+	private final JMenuItem 	selectAllVertexesMenuItem;
+	private final JMenuItem 	selectAllEdgesMenuItem;
 	private final JMenu		   windowsMenu;
 	private final JMenuItem	    cascadeMenuItem;
 	private final JMenuItem	    showSideBySideMenuItem;
@@ -275,6 +284,128 @@ public class MainWindow extends JFrame
 		}
 		else
 			exitGraphMenuItem = null;
+		
+		editMenu = new JMenu(StringBundle.get("edit_menu_text"));
+		menuBar.add(editMenu);
+		
+		undoMenuItem = new JMenuItem(StringBundle.get("edit_undo_menu_text"));
+		undoMenuItem.addActionListener(new ActionListener()
+		{
+			@Override
+			public void actionPerformed(ActionEvent e)
+			{
+				JInternalFrame selectedFrame = desktopPane.getSelectedFrame();
+				
+				if(selectedFrame instanceof GraphWindow)
+					((GraphWindow)selectedFrame).getGdc().undo();
+			}
+		});
+		undoMenuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_Z, Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()));
+		editMenu.add(undoMenuItem);
+		
+		redoMenuItem = new JMenuItem(StringBundle.get("edit_redo_menu_text"));
+		redoMenuItem.addActionListener(new ActionListener()
+		{
+			@Override
+			public void actionPerformed(ActionEvent e)
+			{
+				JInternalFrame selectedFrame = desktopPane.getSelectedFrame();
+				
+				if(selectedFrame instanceof GraphWindow)
+					((GraphWindow)selectedFrame).getGdc().redo();
+			}
+		});
+		redoMenuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_Y, Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()));
+		editMenu.add(redoMenuItem);
+		
+		editMenu.addSeparator();
+		
+		cutMenuItem = new JMenuItem(StringBundle.get("edit_cut_menu_text"));
+		cutMenuItem.addActionListener(new ActionListener()
+		{
+			@Override
+			public void actionPerformed(ActionEvent e)
+			{
+				JInternalFrame selectedFrame = desktopPane.getSelectedFrame();
+				
+				if(selectedFrame instanceof GraphWindow)
+					((GraphWindow)selectedFrame).getGdc().cut();
+			}
+		});
+		cutMenuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_X, Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()));
+		editMenu.add(cutMenuItem);
+		
+		copyMenuItem = new JMenuItem(StringBundle.get("edit_copy_menu_text"));
+		copyMenuItem.addActionListener(new ActionListener()
+		{
+			@Override
+			public void actionPerformed(ActionEvent e)
+			{
+				JInternalFrame selectedFrame = desktopPane.getSelectedFrame();
+				
+				if(selectedFrame instanceof GraphWindow)
+					((GraphWindow)selectedFrame).getGdc().copy();
+			}
+		});
+		copyMenuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_C, Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()));
+		editMenu.add(copyMenuItem);
+		
+		pasteMenuItem = new JMenuItem(StringBundle.get("edit_paste_menu_text"));
+		pasteMenuItem.addActionListener(new ActionListener()
+		{
+			@Override
+			public void actionPerformed(ActionEvent e)
+			{
+				JInternalFrame selectedFrame = desktopPane.getSelectedFrame();
+				
+				if(selectedFrame instanceof GraphWindow)
+					((GraphWindow)selectedFrame).getGdc().paste();
+			}
+		});
+		pasteMenuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_V, Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()));
+		editMenu.add(pasteMenuItem);
+		
+		editMenu.addSeparator();
+		
+		selectAllMenuItem = new JMenuItem(StringBundle.get("edit_select_all_menu_text"));
+		selectAllMenuItem.addActionListener(new ActionListener()
+		{
+			public void actionPerformed(ActionEvent e)
+			{
+				JInternalFrame selectedFrame = desktopPane.getSelectedFrame();
+				
+				if(selectedFrame instanceof GraphWindow)
+					((GraphWindow)selectedFrame).getGdc().selectAll();
+			}
+		});
+		selectAllMenuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_A, Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()));
+		editMenu.add(selectAllMenuItem);
+		
+		selectAllVertexesMenuItem = new JMenuItem(StringBundle.get("edit_select_all_vertexes_menu_text"));
+		selectAllVertexesMenuItem.addActionListener(new ActionListener()
+		{
+			public void actionPerformed(ActionEvent e)
+			{
+				JInternalFrame selectedFrame = desktopPane.getSelectedFrame();
+				
+				if(selectedFrame instanceof GraphWindow)
+					((GraphWindow)selectedFrame).getGdc().selectAllVertexes();
+			}
+		});
+		editMenu.add(selectAllVertexesMenuItem);
+		
+		selectAllEdgesMenuItem = new JMenuItem(StringBundle.get("edit_select_all_edges_menu_text"));
+		selectAllEdgesMenuItem.addActionListener(new ActionListener()
+		{
+			public void actionPerformed(ActionEvent e)
+			{
+				JInternalFrame selectedFrame = desktopPane.getSelectedFrame();
+				
+				if(selectedFrame instanceof GraphWindow)
+					((GraphWindow)selectedFrame).getGdc().selectAllEdges();
+			}
+		});
+		editMenu.add(selectAllEdgesMenuItem);
 		
 		windowsMenu = new JMenu(StringBundle.get("windows_menu_text"));
 		menuBar.add(windowsMenu);

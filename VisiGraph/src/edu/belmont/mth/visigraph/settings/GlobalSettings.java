@@ -13,7 +13,7 @@ public class GlobalSettings
 {
 	public static final String					 applicationName							= "VisiGraph";
 	public static final String					 applicationAuthor							= "Cameron Behar";
-	public static final String					 applicationVersion							= "1.00.01";
+	public static final String					 applicationVersion							= "1.01.00";
 	public static final String					 applicationWebsite							= "http://code.google.com/p/visigraph";
 	public static final String					 applicationDescription						= "A flexible cross-platform application for modeling graph theory problems and solutions.";
 	
@@ -114,4 +114,7 @@ public class GlobalSettings
 	public static final int						 defaultPaintToolMenuDelay					= 750;
 
 	public static final double					 defaultPanDecelerationFactor				= -5.0;
+	
+	public static final int						 defaultUndoLoggingInterval					= 2000;
+	public static final int						 defaultUndoLoggingMaximum					= 30;
 }
