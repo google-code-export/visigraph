@@ -3,11 +3,12 @@
  */
 package edu.belmont.mth.visigraph.utilities;
 
-import java.util.Arrays;
-
-import javax.swing.JOptionPane;
-
-import edu.belmont.mth.visigraph.resources.StringBundle;
+import java.io.*;
+import java.net.*;
+import java.util.*;
+import javax.swing.*;
+import edu.belmont.mth.visigraph.resources.*;
+import edu.belmont.mth.visigraph.settings.*;
 
 /**
  * @author Cameron Behar
@@ -50,9 +51,23 @@ public class WebUtilities
 			}
 			catch (Exception e)
 			{
-				JOptionPane.showMessageDialog(null, String.format(StringBundle.get("an_exception_occurred_while_launching_browser_dialog_message"), e.toString()));				
+				JOptionPane.showMessageDialog(null, String.format(StringBundle.get("an_exception_occurred_while_launching_browser_dialog_message"), e.toString()), GlobalSettings.applicationName, JOptionPane.ERROR_MESSAGE);				
 			}
 		}
 	}
 	
+	public static void downloadFile(String url, String filename) throws Exception
+	{
+		BufferedInputStream inputStream = new BufferedInputStream(new URL(url).openStream());
+		FileOutputStream fileOutputStream = new FileOutputStream(filename);
+		BufferedOutputStream bufferedOutputStream = new BufferedOutputStream(fileOutputStream, 1024);
+		byte[] data = new byte[1024];
+		
+		int x = 0;
+		while ((x = inputStream.read(data, 0, 1024)) >= 0)
+			bufferedOutputStream.write(data, 0, x);
+		
+		bufferedOutputStream.close();
+		inputStream.close();
+	}
 }
