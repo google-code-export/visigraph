@@ -13,17 +13,25 @@ import edu.belmont.mth.visigraph.models.generators.*;
         double radius = UserSettings.instance.arrangeCircleRadiusMultiplier.get() * n;
         double degreesPerVertex = 2 * Math.PI / n;
         
-        for(int i = 0; i < n; ++i)
-        	graph.vertexes.add(new Vertex(i,radius * Math.cos(degreesPerVertex * i - Math.PI / 2.0), radius * Math.sin(degreesPerVertex * i - Math.PI / 2.0)));
+        Vertex hub = new Vertex(0, 0.0, 0.0);
+        graph.vertexes.add(hub);
         
         for(int i = 0; i < n; ++i)
-        	graph.edges.add(new Edge(false, graph.vertexes.get(i), graph.vertexes.get((i + 1) % n)));
-                
+        {
+        	Vertex corner = new Vertex(i + 1, radius * Math.cos(degreesPerVertex * i - Math.PI / 2.0), radius * Math.sin(degreesPerVertex * i - Math.PI / 2.0));
+        	graph.vertexes.add(corner); graph.edges.add(new Edge(false, hub, corner));
+        }
+
+		for(int i = 1; i < n; ++i)
+        	graph.edges.add(new Edge(false, graph.vertexes.get(i), graph.vertexes.get(i + 1)));
+        	
+        graph.edges.add(new Edge(false, graph.vertexes.get(n), graph.vertexes.get(1)));
+        	                
         return graph;
     }
     
-    public String toString                          ( ) { return "Cycle graph"; }
-    public String getParametersDescription          ( ) { return "[order]"; }
+    public String toString                          ( ) { return "Wheel graph"; }
+    public String getParametersDescription          ( ) { return "[spokes]"; }
     public String getParametersValidatingExpression ( ) { return "^\\s*0*([1-9]\\d{1,5}|[3-9])\\s*$"; }
     
 	public GeneratorBase.BooleanRule areLoopsAllowed         ( ) { return GeneratorBase.BooleanRule.DefaultFalse; }
