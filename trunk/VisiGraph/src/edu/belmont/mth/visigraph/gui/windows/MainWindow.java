@@ -51,6 +51,7 @@ public class MainWindow extends JFrame
 	private final JMenu		   helpMenu;
 	private final JMenuItem	    helpContentsMenuItem;
 	private final JMenuItem	    preferencesMenuItem;
+	private final JMenuItem	    downloadsMenuItem;
 	private final JMenuItem	    aboutVisiGraphMenuItem;
 	private final MainWindow   thisFrame;
 	private final JDesktopPane desktopPane;
@@ -530,6 +531,17 @@ public class MainWindow extends JFrame
 		helpMenu.add(helpContentsMenuItem);
 		
 		helpMenu.addSeparator();
+		
+		downloadsMenuItem = new JMenuItem(StringBundle.get("help_downloads_menu_text"));
+		downloadsMenuItem.addActionListener(new ActionListener()
+		{
+			@Override
+			public void actionPerformed(ActionEvent e)
+			{
+				DownloadsDialog.showDialog(thisFrame, thisFrame);
+			}
+		});
+		helpMenu.add(downloadsMenuItem);
 		
 		preferencesMenuItem = new JMenuItem(StringBundle.get("help_preferences_menu_text"));
 		preferencesMenuItem.addActionListener(new ActionListener()

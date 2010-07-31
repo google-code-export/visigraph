@@ -13,9 +13,14 @@ public class GlobalSettings
 {
 	public static final String					 applicationName							= "VisiGraph";
 	public static final String					 applicationAuthor							= "Cameron Behar";
-	public static final String					 applicationVersion							= "1.01.00";
+	public static final String					 applicationVersion							= "1.02.00";
 	public static final String					 applicationWebsite							= "http://code.google.com/p/visigraph";
 	public static final String					 applicationDescription						= "A flexible cross-platform application for modeling graph theory problems and solutions.";
+	public static final String					 applicationJarDirectoryUrl					= "http://visigraph.googlecode.com/svn/trunk/VisiGraph/jar/";
+	public static final String					 applicationGeneratorDirectoryUrl			= "http://visigraph.googlecode.com/svn/trunk/VisiGraph/generators/";
+	public static final String					 applicationGeneratorFileUrl				= applicationGeneratorDirectoryUrl + "%s.generator";
+	public static final String					 applicationFunctionDirectoryUrl			= "http://visigraph.googlecode.com/svn/trunk/VisiGraph/functions/";
+	public static final String					 applicationFunctionFileUrl					= applicationFunctionDirectoryUrl + "%s.function";
 	
 	public static final String					 defaultGraphName							= "Untitled";
 	

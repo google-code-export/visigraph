@@ -373,7 +373,7 @@ public class PreferencesDialog extends JDialog implements ActionListener
 		FieldLabel uncoloredElementLabel = new FieldLabel(StringBundle.get("preferences_dialog_shared_uncolored_element_label")); uncoloredElementColorPicker = new ColorPicker();
 		FieldLabel elementColorsLabel    = new FieldLabel(StringBundle.get("preferences_dialog_shared_colored_elements_label"));
 		
-		elementColorsPanel = new JPanel(new VerticalFlowLayout(VerticalFlowLayout.TOP ,0, 6));
+		elementColorsPanel = new JPanel(new VerticalFlowLayout(VerticalFlowLayout.TOP, 0, 6));
 		elementColorsPanel.setBackground(panel.getBackground());
 		elementColorsPanel.setBorder(BorderFactory.createEmptyBorder(-6, 0, 0, 0));
 		
@@ -948,7 +948,7 @@ public class PreferencesDialog extends JDialog implements ActionListener
 		}
 		catch (IOException exception)
 		{
-			System.out.println(String.format(StringBundle.get("preferences_dialog_unable_to_save_error_message"), userSettingsFile.getAbsolutePath()));
+			JOptionPane.showMessageDialog(null, String.format(StringBundle.get("preferences_dialog_unable_to_save_error_message"), userSettingsFile.getAbsolutePath()), GlobalSettings.applicationName, JOptionPane.ERROR_MESSAGE);
 		}
 	}
 	
