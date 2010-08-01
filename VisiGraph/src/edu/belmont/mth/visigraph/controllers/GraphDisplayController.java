@@ -982,7 +982,27 @@ public class GraphDisplayController extends JPanel implements ClipboardOwner
 									edge.fixHandle();
 					
 					if (event.getButton() == MouseEvent.BUTTON3)
+					{
+						boolean isVertexSelected = false;
+						for (Vertex vertex : graph.vertexes)
+							if(vertex.isSelected.get())
+							{
+								isVertexSelected = true;
+								break;
+							}
+						
+						boolean isEdgeSelected = false;
+						for (Edge edge : graph.edges)
+							if(edge.isSelected.get())
+							{
+								isEdgeSelected = true;
+								break;
+							}
+						
+						viewportPopupMenu.setVertexMenuEnabled(isVertexSelected);
+						viewportPopupMenu.setEdgeMenuEnabled(isEdgeSelected);
 						viewportPopupMenu.show(viewport, event.getPoint().x, event.getPoint().y);
+					}
 					
 					break;
 				}
@@ -2345,6 +2365,16 @@ public class GraphDisplayController extends JPanel implements ClipboardOwner
 				}
 			});
 			edgeItem.add(edgeWeightItem);
+		}
+	
+		public void setVertexMenuEnabled(boolean enable)
+		{
+			vertexItem.setEnabled(enable);
+		}
+		
+		public void setEdgeMenuEnabled(boolean enable)
+		{
+			edgeItem.setEnabled(enable);
 		}
 	}
 
