@@ -13,13 +13,13 @@ import edu.belmont.mth.visigraph.utilities.*;
  */
 public class VertexSvgView
 {	
-	public static String format(Vertex v, GraphSettings s)
+	public static String format(Vertex v, GraphSettings s, double xOffset, double yOffset)
 	{
 		StringBuilder sb = new StringBuilder();
 		
 		sb.append("<circle ");
-		sb.append("cx=\"" + v.x.get() + "\" ");
-		sb.append("cy=\"" + v.y.get() + "\" ");
+		sb.append("cx=\"" + (v.x.get() + xOffset) + "\" ");
+		sb.append("cy=\"" + (v.y.get() + yOffset) + "\" ");
 		sb.append("r=\"" + v.radius.get() + "\" ");
 		sb.append("stroke=\"" + SvgUtilities.formatColor(v.isSelected.get() ? ColorUtilities.blend(UserSettings.instance.vertexLine.get(), UserSettings.instance.selectedVertexLine.get()) : UserSettings.instance.vertexLine.get()) + "\" ");
 		sb.append("stroke-width=\"1\" ");
@@ -30,16 +30,16 @@ public class VertexSvgView
 		if(s.showVertexLabels.get())
 		{
 			sb.append("<text ");
-			sb.append("x=\"" + (v.x.get() + offset) + "\" ");
-			sb.append("y=\"" + (v.y.get() + offset + 10) + "\" ");
+			sb.append("x=\"" + (v.x.get() + offset + xOffset) + "\" ");
+			sb.append("y=\"" + (v.y.get() + offset + 10 + yOffset) + "\" ");
 			sb.append("fill=\"" + SvgUtilities.formatColor(v.isSelected.get() ? ColorUtilities.blend(UserSettings.instance.vertexLine.get(), UserSettings.instance.selectedVertexLine.get()) : UserSettings.instance.vertexLine.get()) + "\">" + SvgUtilities.formatString(v.label.get()) + "</text>\r\n");
 		}
 		
 		if(s.showVertexWeights.get())
 		{
 			sb.append("<text ");
-			sb.append("x=\"" + (v.x.get() + v.radius.get() + 3f) + "\" ");
-			sb.append("y=\"" + v.y.get() + "\" ");
+			sb.append("x=\"" + (v.x.get() + v.radius.get() + 3f + xOffset) + "\" ");
+			sb.append("y=\"" + (v.y.get() + yOffset) + "\" ");
 			sb.append("fill=\"" + SvgUtilities.formatColor(v.isSelected.get() ? ColorUtilities.blend(UserSettings.instance.vertexLine.get(), UserSettings.instance.selectedVertexLine.get()) : UserSettings.instance.vertexLine.get()) + "\">" + SvgUtilities.formatString(v.weight.get().toString()) + "</text>\r\n");
 		}
 		
