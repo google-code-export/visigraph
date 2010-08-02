@@ -15,7 +15,7 @@ import static edu.belmont.mth.visigraph.utilities.GeometryUtilities.*;
  */
 public class EdgeSvgView
 {	
-	public static String format(Edge e, GraphSettings s)
+	public static String format(Edge e, GraphSettings s, double xOffset, double yOffset)
 	{
 		StringBuilder sb = new StringBuilder();
 		Point2D apparentHandleLocation = e.isLinear() ? GeometryUtilities.midpoint(e.from, e.to) : e.getHandlePoint2D();
@@ -24,10 +24,10 @@ public class EdgeSvgView
 		if(e.isLinear())
 		{
 			sb.append("<line ");
-			sb.append("x1=\"" + e.from.x.get() + "\" ");
-			sb.append("y1=\"" + e.from.y.get() + "\" ");
-			sb.append("x2=\"" + e.to.x.get() + "\" ");
-			sb.append("y2=\"" + e.to.y.get() + "\" ");
+			sb.append("x1=\"" + (e.from.x.get() + xOffset) + "\" ");
+			sb.append("y1=\"" + (e.from.y.get() + yOffset) + "\" ");
+			sb.append("x2=\"" + (e.to.x.get()   + xOffset) + "\" ");
+			sb.append("y2=\"" + (e.to.y.get()   + yOffset) + "\" ");
 			sb.append("style=\"stroke:" + SvgUtilities.formatColor((e.isSelected.get() ? ColorUtilities.blend(UserSettings.instance.getElementColor(e.color.get()), UserSettings.instance.selectedEdge.get()) : UserSettings.instance.getElementColor(e.color.get()))) + ";stroke-width:" + e.thickness.get() + "\"/>\r\n");
 		}
 		else
@@ -39,14 +39,14 @@ public class EdgeSvgView
 			
 			sb.append("<path ");
 			
-			if (isClockwise) sb.append("d=\"M " + e.from.x.get() + "," + e.from.y.get() + " ");
-			else			 sb.append("d=\"M " + e.to.x.get()   + "," + e.to.y.get()   + " ");
+			if (isClockwise) sb.append("d=\"M " + (e.from.x.get() + xOffset) + "," + (e.from.y.get() + yOffset) + " ");
+			else			 sb.append("d=\"M " + (e.to.x.get()   + xOffset) + "," + (e.to.y.get()   + yOffset) + " ");
 			
 			double radius = e.getCenter().distance(e.handleX.get(), e.handleY.get());
 			sb.append("A " + radius + "," + radius + " 0 0,0 ");
 			
-			if (isClockwise) sb.append(e.to.x.get()   + "," + e.to.y.get()   + "\" ");
-			else			 sb.append(e.from.x.get() + "," + e.from.y.get() + "\" ");
+			if (isClockwise) sb.append((e.to.x.get()   + xOffset) + "," + (e.to.y.get()   + yOffset) + "\" ");
+			else			 sb.append((e.from.x.get() + xOffset) + "," + (e.from.y.get() + yOffset) + "\" ");
 			
 			sb.append("style=\"fill:none;stroke:" + SvgUtilities.formatColor((e.isSelected.get() ? ColorUtilities.blend(UserSettings.instance.getElementColor(e.color.get()), UserSettings.instance.selectedEdge.get()) : UserSettings.instance.getElementColor(e.color.get()))) + ";stroke-width:" + e.thickness.get() + "\"/>\r\n");
 		}
@@ -54,8 +54,8 @@ public class EdgeSvgView
 		if(s.showEdgeHandles.get())
 		{
 			sb.append("<circle ");
-			sb.append("cx=\"" + apparentHandleLocation.getX() + "\" ");
-			sb.append("cy=\"" + apparentHandleLocation.getY() + "\" ");
+			sb.append("cx=\"" + (apparentHandleLocation.getX() + xOffset) + "\" ");
+			sb.append("cy=\"" + (apparentHandleLocation.getY() + yOffset) + "\" ");
 			sb.append("r=\"" + handleRadius + "\" ");
 			
 			String handleColor;
@@ -97,26 +97,26 @@ public class EdgeSvgView
 			}
 			
 			sb.append("<path d=\"");
-			sb.append("M " + arrowPoint[0].x + "," + arrowPoint[0].y + " ");
-			sb.append("L " + arrowPoint[1].x + "," + arrowPoint[1].y + " ");
-			sb.append("L " + arrowPoint[2].x + "," + arrowPoint[2].y + " ");
-			sb.append("L " + arrowPoint[0].x + "," + arrowPoint[0].y + "\" ");
+			sb.append("M " + (arrowPoint[0].x + xOffset) + "," + (arrowPoint[0].y + yOffset) + " ");
+			sb.append("L " + (arrowPoint[1].x + xOffset) + "," + (arrowPoint[1].y + yOffset) + " ");
+			sb.append("L " + (arrowPoint[2].x + xOffset) + "," + (arrowPoint[2].y + yOffset) + " ");
+			sb.append("L " + (arrowPoint[0].x + xOffset) + "," + (arrowPoint[0].y + yOffset) + "\" ");
 			sb.append("style=\"fill:" + SvgUtilities.formatColor(e.isSelected.get() ? ColorUtilities.blend(UserSettings.instance.edgeHandle.get(), UserSettings.instance.selectedEdgeHandle.get()) : UserSettings.instance.edgeHandle.get()) + ";\"/>\r\n");
 		}
 		
 		if(s.showEdgeLabels.get())
 		{
 			sb.append("<text ");
-			sb.append("x=\"" + (e.handleX.get() + handleRadius + 1) + "\" ");
-			sb.append("y=\"" + (e.handleY.get() - handleRadius - 1) + "\" ");
+			sb.append("x=\"" + (e.handleX.get() + handleRadius + 1 + xOffset) + "\" ");
+			sb.append("y=\"" + (e.handleY.get() - handleRadius - 1 + yOffset) + "\" ");
 			sb.append("fill=\"" + SvgUtilities.formatColor((e.isSelected.get() ? ColorUtilities.blend(UserSettings.instance.getElementColor(e.color.get()), UserSettings.instance.selectedEdge.get()) : UserSettings.instance.getElementColor(e.color.get()))) + "</text>\r\n");
 		}
 		
 		if(s.showEdgeWeights.get())
 		{
 			sb.append("<text ");
-			sb.append("x=\"" + (e.handleX.get() - handleRadius - 12) + "\" ");
-			sb.append("y=\"" + (e.handleY.get() + handleRadius + 12) + "\" ");
+			sb.append("x=\"" + (e.handleX.get() - handleRadius - 12 + xOffset) + "\" ");
+			sb.append("y=\"" + (e.handleY.get() + handleRadius + 12 + yOffset) + "\" ");
 			sb.append("fill=\"" + SvgUtilities.formatColor((e.isSelected.get() ? ColorUtilities.blend(UserSettings.instance.getElementColor(e.color.get()), UserSettings.instance.selectedEdge.get()) : UserSettings.instance.getElementColor(e.color.get()))) + "</text>\r\n");
 		}
 		
