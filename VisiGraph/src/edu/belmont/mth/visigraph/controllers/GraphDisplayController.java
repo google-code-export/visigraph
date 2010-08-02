@@ -2396,7 +2396,14 @@ public class GraphDisplayController extends JPanel implements ClipboardOwner
 			else
 			{
 				Graphics2D g2d = (Graphics2D) g;
-				g2d.translate(pageFormat.getImageableX(), pageFormat.getImageableY());
+				
+				double widthRatio  = (viewport.getWidth()  + userSettings.zoomGraphPadding.get()) / pageFormat.getImageableWidth();
+				double heightRatio = (viewport.getHeight() + userSettings.zoomGraphPadding.get()) / pageFormat.getImageableHeight();
+				double maxRatio = 1.0 / Math.max(widthRatio, heightRatio);
+				
+				g2d.scale(maxRatio, maxRatio);
+				g2d.translate(pageFormat.getImageableX() + userSettings.zoomGraphPadding.get() / 4.0, 
+						      pageFormat.getImageableY() + userSettings.zoomGraphPadding.get() / 4.0);
 				
 				RepaintManager.currentManager(viewport).setDoubleBufferingEnabled(false);
 				viewport.paint(g2d);
