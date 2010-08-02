@@ -23,16 +23,16 @@ public class GraphSvgView
 		
 		sb.append("<?xml version=\"1.0\" standalone=\"no\"?>\r\n");
 		sb.append("<!DOCTYPE svg PUBLIC \"-//W3C//DTD SVG 1.1//EN\" \"http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd\">\r\n");
-		sb.append(String.format("<svg width=\"%1$s\" height=\"%2$s\" version=\"1.1\" xmlns=\"http://www.w3.org/2000/svg\">\r\n", rect.getWidth() + 2 * userSettings.zoomGraphPadding.get(), rect.getHeight() + 2 * userSettings.zoomGraphPadding.get()));
+		sb.append(String.format("<svg width=\"%1$s\" height=\"%2$s\" version=\"1.1\" xmlns=\"http://www.w3.org/2000/svg\">\r\n", rect.getWidth() + userSettings.zoomGraphPadding.get(), rect.getHeight() + userSettings.zoomGraphPadding.get()));
 		
 		for(Edge edge : g.edges)
-			sb.append(EdgeSvgView.format(edge, s, userSettings.zoomGraphPadding.get() - rect.getX(), userSettings.zoomGraphPadding.get() - rect.getY()));
+			sb.append(EdgeSvgView.format(edge, s, userSettings.zoomGraphPadding.get() / 2.0 - rect.getX(), userSettings.zoomGraphPadding.get() / 2.0 - rect.getY()));
 		
 		for(Vertex vertex : g.vertexes)
-			sb.append(VertexSvgView.format(vertex, s, userSettings.zoomGraphPadding.get() - rect.getX(), userSettings.zoomGraphPadding.get() - rect.getY()));
+			sb.append(VertexSvgView.format(vertex, s, userSettings.zoomGraphPadding.get() / 2.0 - rect.getX(), userSettings.zoomGraphPadding.get() / 2.0 - rect.getY()));
 		
 		for(Caption caption : g.captions)
-			sb.append(CaptionSvgView.format(caption, s, userSettings.zoomGraphPadding.get() - rect.getX(), userSettings.zoomGraphPadding.get() - rect.getY()));
+			sb.append(CaptionSvgView.format(caption, s, userSettings.zoomGraphPadding.get() / 2.0 - rect.getX(), userSettings.zoomGraphPadding.get() / 2.0 - rect.getY()));
 		
 		sb.append("\n</svg>");
 		
