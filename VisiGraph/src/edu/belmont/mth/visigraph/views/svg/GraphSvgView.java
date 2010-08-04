@@ -3,8 +3,7 @@
  */
 package edu.belmont.mth.visigraph.views.svg;
 
-import java.awt.geom.Rectangle2D;
-
+import java.awt.geom.*;
 import edu.belmont.mth.visigraph.models.*;
 import edu.belmont.mth.visigraph.settings.*;
 import edu.belmont.mth.visigraph.views.display.GraphDisplayView;
