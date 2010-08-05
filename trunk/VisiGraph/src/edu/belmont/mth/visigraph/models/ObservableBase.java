@@ -35,6 +35,11 @@ public abstract class ObservableBase
 		{
 			return this.value;
 		}
+
+		public T getDefault()
+		{
+			return defaultValue;
+		}
 		
 		public String getName()
 		{
