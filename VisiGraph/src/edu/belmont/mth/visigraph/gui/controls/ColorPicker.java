@@ -30,7 +30,7 @@ public class ColorPicker extends JComponent
 	private int   alpha;
 	
 	public  Color getColor(       ) { Color c = Color.getHSBColor(hue, saturation, brightness); return new Color(c.getRed(), c.getGreen(), c.getBlue(), alpha); }
-	public  void  setColor(Color c) { float[] hsb = new float[] { 0.0f, 0.0f, 0.0f }; Color.RGBtoHSB(c.getRed(), c.getGreen(), c.getBlue(), hsb); hue = hsb[0]; saturation = hsb[1]; brightness = hsb[2]; alpha = c.getAlpha(); }
+	public  void  setColor(Color c) { float[] hsb = new float[] { 0.0f, 0.0f, 0.0f }; Color.RGBtoHSB(c.getRed(), c.getGreen(), c.getBlue(), hsb); hue = hsb[0]; saturation = hsb[1]; brightness = hsb[2]; alpha = c.getAlpha(); repaint(); }
 	
 	private boolean isDraggingHue        = false;
 	private boolean isDraggingSaturation = false;
