@@ -643,7 +643,11 @@ public class GraphDisplayController extends JPanel implements ClipboardOwner
 				}
 			case KeyEvent.VK_UP:
 				{
-					graph.moveSelected(0, -userSettings.arrowKeyIncrement.get());
+					double increment = -userSettings.arrowKeyIncrement.get();
+					if(event.isAltDown()) increment /= 10.0;
+					if((event.getModifiers() & Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()) != 0) increment *= 10.0;
+					
+					graph.moveSelected(0, increment);
 					for (Edge edge : graph.edges)
 						if (edge.isSelected.get())
 							edge.fixHandle();
@@ -652,7 +656,11 @@ public class GraphDisplayController extends JPanel implements ClipboardOwner
 				}
 			case KeyEvent.VK_RIGHT:
 				{
-					graph.moveSelected(userSettings.arrowKeyIncrement.get(), 0);
+					double increment = userSettings.arrowKeyIncrement.get();
+					if(event.isAltDown()) increment /= 10.0;
+					if((event.getModifiers() & Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()) != 0) increment *= 10.0;
+					
+					graph.moveSelected(increment, 0);
 					for (Edge edge : graph.edges)
 						if (edge.isSelected.get())
 							edge.fixHandle();
@@ -661,7 +669,11 @@ public class GraphDisplayController extends JPanel implements ClipboardOwner
 				}
 			case KeyEvent.VK_DOWN:
 				{
-					graph.moveSelected(0, userSettings.arrowKeyIncrement.get());
+					double increment = userSettings.arrowKeyIncrement.get();
+					if(event.isAltDown()) increment /= 10.0;
+					if((event.getModifiers() & Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()) != 0) increment *= 10.0;
+					
+					graph.moveSelected(0, increment);
 					for (Edge edge : graph.edges)
 						if (edge.isSelected.get())
 							edge.fixHandle();
@@ -670,7 +682,11 @@ public class GraphDisplayController extends JPanel implements ClipboardOwner
 				}
 			case KeyEvent.VK_LEFT:
 				{
-					graph.moveSelected(-userSettings.arrowKeyIncrement.get(), 0);
+					double increment = -userSettings.arrowKeyIncrement.get();
+					if(event.isAltDown()) increment /= 10.0;
+					if((event.getModifiers() & Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()) != 0) increment *= 10.0;
+					
+					graph.moveSelected(increment, 0);
 					for (Edge edge : graph.edges)
 						if (edge.isSelected.get())
 							edge.fixHandle();
