@@ -13,7 +13,7 @@ public class GlobalSettings
 {
 	public static final String					 applicationName							= "VisiGraph";
 	public static final String					 applicationAuthor							= "Cameron Behar";
-	public static final String					 applicationVersion							= "1.02.03";
+	public static final String					 applicationVersion							= "1.02.04";
 	public static final String					 applicationWebsite							= "http://code.google.com/p/visigraph";
 	public static final String					 applicationDescription						= "A flexible cross-platform application for modeling graph theory problems and solutions.";
 	public static final String					 applicationJarDirectoryUrl					= "http://visigraph.googlecode.com/svn/trunk/VisiGraph/jar/";
@@ -96,9 +96,9 @@ public class GlobalSettings
 	public static final double					 defaultAutoArrangeDecelerationFactor		= 1.1;
 	
 	public static final double					 defaultArrangeContractFactor				= 0.8;
-	public static final double					 defaultArrangeExpandFactor					= 1.2;
+	public static final double					 defaultArrangeExpandFactor					= 1.25;
 	
-	public static final double					 defaultZoomInFactor						= 1.2;
+	public static final double					 defaultZoomInFactor						= 1.25;
 	public static final double					 defaultZoomOutFactor						= 0.8;
 	public static final double					 defaultMaximumZoomFactor					= 100.0;
 	
