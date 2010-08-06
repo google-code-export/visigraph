@@ -131,8 +131,7 @@ public class PreferencesDialog extends JDialog implements ActionListener
 		loadPreferences();
 		
 		//Create and initialize the buttons
-		
-		JButton resetButton = new JButton("Reset to defaults");
+		JButton resetButton = new JButton(StringBundle.get("preferences_dialog_reset_to_defaults_button_text"));
 		resetButton.setPreferredSize(new Dimension(120, 28));
 		resetButton.addActionListener(new ActionListener()
 		{
