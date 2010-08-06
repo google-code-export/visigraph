@@ -67,6 +67,8 @@ public class GraphDisplayController extends JPanel implements ClipboardOwner
 	private Timer					  undoTimer;
 	private EventListenerList		  graphChangeListenerList;
 	private UserSettings			  userSettings = UserSettings.instance;
+	private boolean					  isViewportInvalidated;
+	private Timer					  viewportValidationTimer;
 	
 	public GraphDisplayController(Graph graph)
 	{
@@ -106,6 +108,21 @@ public class GraphDisplayController extends JPanel implements ClipboardOwner
 		
 		// Initialize the viewport's affine transform
 		transform = new AffineTransform();
+		
+		// Initialize the viewport's frame delimiter
+		isViewportInvalidated = true;
+		viewportValidationTimer = new Timer(30, new ActionListener()
+		{
+			@Override
+			public void actionPerformed(ActionEvent arg0)
+			{
+				if(isViewportInvalidated)
+					repaint();
+				
+				isViewportInvalidated = false;
+			}
+		});
+		viewportValidationTimer.start();
 	}
 	
 	public void addGraphChangeListener(GraphChangeEventListener listener)
@@ -227,13 +244,13 @@ public class GraphDisplayController extends JPanel implements ClipboardOwner
 	
 	public void hasGraphChanged(Object source)
 	{
-		repaint();
+		isViewportInvalidated = true;
 		fireGraphChangeEvent(new GraphChangeEvent(graph));
 	}
 	
 	public void hasSettingChanged(Object source)
 	{
-		repaint();
+		isViewportInvalidated = true;
 
 		if(toolToolBar != null)
 			toolToolBar.refreshPaintMenu();
@@ -435,7 +452,7 @@ public class GraphDisplayController extends JPanel implements ClipboardOwner
 		functionsToBeRun.clear();
 		
 		for (FunctionBase function : run)
-			JOptionPane.showMessageDialog(viewport, function +": " + function.evaluate(g2D, graph), GlobalSettings.applicationName, JOptionPane.OK_OPTION + JOptionPane.INFORMATION_MESSAGE);
+			JOptionPane.showInternalMessageDialog(viewport, function +": " + function.evaluate(g2D, graph), GlobalSettings.applicationName, JOptionPane.OK_OPTION + JOptionPane.INFORMATION_MESSAGE);
 		
 		// Clear everything
 		super.paintComponent(g2D);
@@ -708,7 +725,7 @@ public class GraphDisplayController extends JPanel implements ClipboardOwner
 			graph.moveSelected(xDifference, yDifference);
 		}
 		
-		repaint();
+		isViewportInvalidated = true;
 	}
 	
 	private void viewportMousePressed(MouseEvent event) throws NoninvertibleTransformException
@@ -931,7 +948,7 @@ public class GraphDisplayController extends JPanel implements ClipboardOwner
 		}
 		
 		isMouseDownOnCanvas = true;
-		repaint();
+		isViewportInvalidated = true;
 	}
 	
 	private void viewportMouseDoubleClicked(MouseEvent event) throws NoninvertibleTransformException
@@ -956,7 +973,7 @@ public class GraphDisplayController extends JPanel implements ClipboardOwner
 					double yDelta = pastMousePoint.y - focusPoint.getY();
 					
 					transform.translate(xDelta / userSettings.panDecelerationFactor.get(), yDelta / userSettings.panDecelerationFactor.get());
-					viewport.repaint();
+					isViewportInvalidated = true;
 					
 					if(Math.pow(xDelta, 2) + Math.pow(yDelta, 2) < 1.0 / transform.getScaleX())
 						timer.stop();
@@ -1091,7 +1108,7 @@ public class GraphDisplayController extends JPanel implements ClipboardOwner
 		}
 		
 		isMouseDownOnCanvas = false;
-		repaint();
+		isViewportInvalidated = true;
 	}
 	
 	public void zoomCenter(Point2D.Double center, double factor)
@@ -1104,7 +1121,7 @@ public class GraphDisplayController extends JPanel implements ClipboardOwner
 		
 		transform.translate(-center.x, -center.y);
 		
-		viewport.repaint();
+		isViewportInvalidated = true;
 	}
 	
 	public void zoomFit(Rectangle2D rectangle)
@@ -1126,7 +1143,7 @@ public class GraphDisplayController extends JPanel implements ClipboardOwner
 		transform.translate(-graphCenter.x, -graphCenter.y);
 		
 		// And of course, we want to refresh the viewport
-		viewport.repaint();
+		isViewportInvalidated = true;
 	}
 	
 	public void zoomFit()
@@ -1138,13 +1155,13 @@ public class GraphDisplayController extends JPanel implements ClipboardOwner
 	public void zoomOneToOne()
 	{
 		transform.setTransform(1, transform.getShearY(), transform.getShearX(), 1, (int)transform.getTranslateX(), (int)transform.getTranslateY());
-		viewport.repaint();
+		isViewportInvalidated = true;
 	}
 	
 	public void zoomMax()
 	{
 		transform.setTransform(userSettings.maximumZoomFactor.get(), transform.getShearY(), transform.getShearX(), userSettings.maximumZoomFactor.get(), transform.getTranslateX(), transform.getTranslateY());
-		viewport.repaint();
+		isViewportInvalidated = true;
 	}
 
 	public enum Tool
@@ -2181,7 +2198,7 @@ public class GraphDisplayController extends JPanel implements ClipboardOwner
 					{
 						JMenuItem oneTimeFunctionMenuItem = (JMenuItem) arg0.getSource();
 						functionsToBeRun.add(oneTimeFunctionMenuItems.get(oneTimeFunctionMenuItem));
-						viewport.repaint();
+						isViewportInvalidated = true;
 					}
 				};
 				ActionListener dynamicFunctionMenuItemActionListener = new ActionListener()
@@ -2205,7 +2222,7 @@ public class GraphDisplayController extends JPanel implements ClipboardOwner
 							selectedFunctionLabels.remove(dynamicFunctionMenuItems.get(dynamicFunctionMenuItem));
 						}
 						
-						viewport.repaint();
+						isViewportInvalidated = true;
 					}
 				};
 				
