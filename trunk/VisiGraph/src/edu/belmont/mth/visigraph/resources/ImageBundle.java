@@ -7,6 +7,8 @@ import java.awt.*;
 import java.net.*;
 import java.util.*;
 
+import edu.belmont.mth.visigraph.utilities.DebugUtilities;
+
 /**
  * @author Cameron Behar
  * 
@@ -19,7 +21,7 @@ public class ImageBundle extends ResourceBundle
 	public static Image get(String key)
 	{
 		try { return (Image) instance.getObject(key); }
-		catch (MissingResourceException e) { return null; }
+		catch (MissingResourceException ex) { DebugUtilities.LogException(String.format("An exception occurred while trying to load resource %s.", key), ex); return null; }
 	}
 	
 	@Override

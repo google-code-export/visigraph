@@ -27,7 +27,7 @@ public class AboutDialog extends JDialog implements ActionListener
 		return;
 	}
 	
-	private AboutDialog(Frame frame, Component locationComp)
+	private AboutDialog(final Frame frame, final Component locationComp)
 	{
 		super(frame, StringBundle.get("about_dialog_title"), true);
 		this.setResizable(false);
@@ -109,7 +109,18 @@ public class AboutDialog extends JDialog implements ActionListener
 		inputPanel.add( appIncludesLine1Label, gridBagConstraints );
 		
 		//Create and initialize the buttons
-		final JButton okButton = new JButton(StringBundle.get("ok_button_text"));
+		JButton debugButton = new JButton(StringBundle.get("debug_button_text"));
+		debugButton.setPreferredSize(new Dimension(80, 28));
+		debugButton.addActionListener(new ActionListener()
+		{
+			@Override
+			public void actionPerformed(ActionEvent e)
+			{
+				DebugDialog.showDialog(frame, locationComp);
+			}
+		});
+		
+		JButton okButton = new JButton(StringBundle.get("ok_button_text"));
 		okButton.setPreferredSize(new Dimension(80, 28));
 		okButton.setActionCommand("Ok");
 		okButton.addActionListener(this);
@@ -119,6 +130,7 @@ public class AboutDialog extends JDialog implements ActionListener
 		JPanel buttonPanel = new JPanel();
 		buttonPanel.setLayout(new BoxLayout(buttonPanel, BoxLayout.LINE_AXIS));
 		buttonPanel.setBorder(BorderFactory.createEmptyBorder(-2, 9, 9, 13));
+		buttonPanel.add(debugButton);
 		buttonPanel.add(Box.createHorizontalGlue());
 		buttonPanel.add(okButton);
 		

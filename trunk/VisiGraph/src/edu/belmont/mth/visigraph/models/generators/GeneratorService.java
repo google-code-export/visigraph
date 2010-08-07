@@ -5,6 +5,7 @@ package edu.belmont.mth.visigraph.models.generators;
 
 import java.io.*;
 import edu.belmont.mth.visigraph.models.*;
+import edu.belmont.mth.visigraph.utilities.DebugUtilities;
 import bsh.Interpreter;
 
 /**
@@ -34,7 +35,7 @@ public final static GeneratorService instance = new GeneratorService();
 					ValidateGraphGenerator(generator);
 					generators.add(generator);
 				}
-				catch (Throwable e) { e.printStackTrace(); }
+				catch (Throwable ex) { DebugUtilities.LogException(String.format("An exception occurred while compiling %s.", filename), ex); }
 			}
 		}
 	}
