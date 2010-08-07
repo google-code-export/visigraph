@@ -7,6 +7,8 @@ import java.awt.*;
 import java.net.*;
 import java.util.*;
 
+import edu.belmont.mth.visigraph.utilities.DebugUtilities;
+
 /**
  * @author Cameron Behar
  * 
@@ -19,7 +21,7 @@ public class CursorBundle extends ResourceBundle
 	public static Cursor get(String key)
 	{
 		try { return (Cursor) instance.getObject(key); }
-		catch (MissingResourceException e) { return null; }
+		catch (MissingResourceException ex) { DebugUtilities.LogException(String.format("An exception occurred while trying to load resource %s.", key), ex); return null; }
 	}
 	
 	@Override

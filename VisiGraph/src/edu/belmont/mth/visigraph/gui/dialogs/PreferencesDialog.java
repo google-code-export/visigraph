@@ -14,6 +14,7 @@ import edu.belmont.mth.visigraph.gui.controls.*;
 import edu.belmont.mth.visigraph.gui.layouts.*;
 import edu.belmont.mth.visigraph.resources.*;
 import edu.belmont.mth.visigraph.settings.*;
+import edu.belmont.mth.visigraph.utilities.DebugUtilities;
 
 /**
  * @author Cameron Behar
@@ -1041,8 +1042,9 @@ public class PreferencesDialog extends JDialog implements ActionListener
 			fileWriter.write(userSettings.toString());
 			fileWriter.close();
 		}
-		catch (IOException exception)
+		catch (IOException ex)
 		{
+			DebugUtilities.LogException("An exception occurred while saving preferences to file.", ex);
 			JOptionPane.showMessageDialog(null, String.format(StringBundle.get("preferences_dialog_unable_to_save_error_message"), userSettingsFile.getAbsolutePath()), GlobalSettings.applicationName, JOptionPane.ERROR_MESSAGE);
 		}
 	}

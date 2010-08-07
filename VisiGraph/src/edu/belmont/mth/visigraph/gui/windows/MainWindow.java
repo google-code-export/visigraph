@@ -16,6 +16,7 @@ import edu.belmont.mth.visigraph.gui.dialogs.*;
 import edu.belmont.mth.visigraph.models.*;
 import edu.belmont.mth.visigraph.resources.*;
 import edu.belmont.mth.visigraph.settings.*;
+import edu.belmont.mth.visigraph.utilities.DebugUtilities;
 import edu.belmont.mth.visigraph.utilities.WebUtilities;
 
 /**
@@ -123,7 +124,7 @@ public class MainWindow extends JFrame
 						graphWindow.setMaximum(true);
 						graphWindow.setSelected(true);
 					}
-					catch (PropertyVetoException e) { }
+					catch (PropertyVetoException ex) { DebugUtilities.LogException("An exception occurred while loading the graph window.", ex); }
 				}
 			}
 		});
@@ -149,7 +150,7 @@ public class MainWindow extends JFrame
 						graphWindow.setMaximum(true);
 						graphWindow.setSelected(true);
 					}
-					catch (PropertyVetoException e) { }
+					catch (PropertyVetoException ex) { DebugUtilities.LogException("An exception occurred while loading the graph window.", ex); }
 				}
 			}
 		});
@@ -198,12 +199,12 @@ public class MainWindow extends JFrame
 									graphWindow.setMaximum(true);
 									graphWindow.setSelected(true);
 								}
-								catch (PropertyVetoException e) { }
+								catch (PropertyVetoException ex) { DebugUtilities.LogException("An exception occurred while loading the graph window.", ex); }
 							}
 							
 							success = true;
 						}
-						catch (IOException e) { success = false; }
+						catch (IOException ex) { DebugUtilities.LogException("An exception occurred while loading a graph from file.", ex); success = false; }
 					}
 					else
 						success = true;
@@ -227,7 +228,7 @@ public class MainWindow extends JFrame
 				
 				if(graphWindow != null)
 					try	{ graphWindow.save(); }
-					catch (IOException e) { }
+					catch (IOException ex) { DebugUtilities.LogException("An exception occurred while saving the selected graph.", ex); }
 			}
 		});
 		saveGraphMenuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_S, Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()));
@@ -262,7 +263,7 @@ public class MainWindow extends JFrame
 				{
 					GraphWindow graphWindow = ((GraphWindow)selectedFrame);					
 					try { graphWindow.getGdc().printGraph(); }
-					catch (PrinterException e) { e.printStackTrace(); }
+					catch (PrinterException ex) { DebugUtilities.LogException("An exception occurred while printing the selected graph.", ex); }
 				}
 			}
 		});
@@ -427,7 +428,7 @@ public class MainWindow extends JFrame
 						frames[frames.length - i - 1].setLocation(i * userSettings.cascadeWindowOffset.get(), i * userSettings.cascadeWindowOffset.get());
 						frames[frames.length - i - 1].setSize(new Dimension(userSettings.graphWindowWidth.get(), userSettings.graphWindowHeight.get()));
 					}
-					catch (PropertyVetoException e1) { }
+					catch (PropertyVetoException ex) { DebugUtilities.LogException("An exception occurred while repositioning an internal window.", ex); }
 				}
 			}
 		});
@@ -453,7 +454,7 @@ public class MainWindow extends JFrame
 							frames[i].setLocation((int)(i * frameWidth), 0);
 							frames[i].setSize((int)frameWidth, desktopPane.getHeight());
 						}
-						catch (PropertyVetoException e1) { }
+						catch (PropertyVetoException ex) { DebugUtilities.LogException("An exception occurred while repositioning an internal window.", ex); }
 					}
 				}
 			}
@@ -479,7 +480,7 @@ public class MainWindow extends JFrame
 							frames[i].setLocation(0, (int)(i * frameHeight));
 							frames[i].setSize(desktopPane.getWidth(), (int)frameHeight);
 						}
-						catch (PropertyVetoException e1) { }
+						catch (PropertyVetoException ex) { DebugUtilities.LogException("An exception occurred while repositioning an internal window.", ex); }
 					}
 				}
 			}
@@ -509,7 +510,7 @@ public class MainWindow extends JFrame
 							frames[i].setLocation((int)((i % columns) * colSpace), (int)((i / columns) * rowSpace));
 							frames[i].setSize((int)colSpace, (int)rowSpace);
 						}
-						catch (PropertyVetoException e1) { }
+						catch (PropertyVetoException ex) { DebugUtilities.LogException("An exception occurred while repositioning an internal window.", ex); }
 				}
 				}
 			}

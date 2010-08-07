@@ -29,7 +29,8 @@ public class WebUtilities
 			// above code mimicks: java.awt.Desktop.getDesktop().browse()
 		}
 		catch (Exception ignore)
-		{ // library not available or failed
+		{ 
+			// library not available or failed
 			String osName = System.getProperty("os.name");
 			try
 			{
@@ -49,9 +50,10 @@ public class WebUtilities
 						throw new Exception(Arrays.toString(browsers));
 				}
 			}
-			catch (Exception e)
-			{
-				JOptionPane.showMessageDialog(null, String.format(StringBundle.get("an_exception_occurred_while_launching_browser_dialog_message"), e.toString()), GlobalSettings.applicationName, JOptionPane.ERROR_MESSAGE);				
+			catch (Exception ex)
+			{	
+				DebugUtilities.LogException("An exception occurred while launching the default browser.", ex);
+				JOptionPane.showMessageDialog(null, String.format(StringBundle.get("an_exception_occurred_while_launching_browser_dialog_message"), ex.toString()), GlobalSettings.applicationName, JOptionPane.ERROR_MESSAGE);				
 			}
 		}
 	}

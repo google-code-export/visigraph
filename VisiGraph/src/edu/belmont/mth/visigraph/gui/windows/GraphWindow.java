@@ -17,6 +17,7 @@ import edu.belmont.mth.visigraph.controllers.GraphDisplayController.GraphChangeE
 import edu.belmont.mth.visigraph.models.*;
 import edu.belmont.mth.visigraph.resources.StringBundle;
 import edu.belmont.mth.visigraph.settings.*;
+import edu.belmont.mth.visigraph.utilities.DebugUtilities;
 import edu.belmont.mth.visigraph.views.svg.GraphSvgView;
 
 /**
@@ -147,6 +148,7 @@ public class GraphWindow extends JInternalFrame implements GraphChangeEventListe
 					}
 					catch (IOException ex)
 					{
+						DebugUtilities.LogException("An exception occurred while saving graph.", ex);
 						JOptionPane.showInternalMessageDialog(this, String.format(StringBundle.get("an_exception_occurred_while_saving_graph_dialog_message"), gdc.getGraph().name.get()));
 					}
 					break;
@@ -195,8 +197,9 @@ public class GraphWindow extends JInternalFrame implements GraphChangeEventListe
 					
 					success = true;
 				}
-				catch (IOException e)
+				catch (IOException ex)
 				{
+					DebugUtilities.LogException("An exception occurred while saving as.", ex);
 					success = false;
 				}
 			}

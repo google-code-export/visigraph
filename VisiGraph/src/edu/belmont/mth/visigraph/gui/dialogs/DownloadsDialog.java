@@ -12,6 +12,7 @@ import javax.swing.*;
 import edu.belmont.mth.visigraph.gui.layouts.*;
 import edu.belmont.mth.visigraph.resources.*;
 import edu.belmont.mth.visigraph.settings.*;
+import edu.belmont.mth.visigraph.utilities.DebugUtilities;
 import edu.belmont.mth.visigraph.utilities.WebUtilities;
 
 /**
@@ -145,10 +146,7 @@ public class DownloadsDialog extends JDialog implements ActionListener
 			generatorsPanel.updateUI();
 			in.close();
 		}
-		catch (Throwable e)
-		{
-			e.printStackTrace();
-		}
+		catch (Throwable ex) { DebugUtilities.LogException("An exception occurred while downloading the standard list of generators.", ex); }
 	}
 	
 	public void loadFunctions()
@@ -178,10 +176,7 @@ public class DownloadsDialog extends JDialog implements ActionListener
 			functionsPanel.updateUI();
 			in.close();
 		}
-		catch (Throwable e)
-		{
-			e.printStackTrace();
-		}
+		catch (Throwable ex) { DebugUtilities.LogException("An exception occurred while downloading the standard list of functions.", ex); }
 	}
 
 	public void downloadGenerators() throws Exception
@@ -255,6 +250,7 @@ public class DownloadsDialog extends JDialog implements ActionListener
  			}
  			catch(Exception ex)
  			{
+ 				DebugUtilities.LogException("An exception occurred while downloading files.", ex);
  				JOptionPane.showMessageDialog(this, StringBundle.get("an_exception_occurred_while_downloading_files_dialog_message"), GlobalSettings.applicationName, JOptionPane.ERROR_MESSAGE);
  			}
  			finally

@@ -8,6 +8,7 @@ import java.util.*;
 import javax.swing.*;
 import edu.belmont.mth.visigraph.gui.windows.*;
 import edu.belmont.mth.visigraph.settings.*;
+import edu.belmont.mth.visigraph.utilities.DebugUtilities;
 
 /**
  * @author Cameron Behar
@@ -23,10 +24,7 @@ public class Main
 			System.setProperty("com.apple.mrj.application.apple.menu.about.name", GlobalSettings.applicationName);
 			UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
 		}
-		catch (Exception e)
-		{
-			System.out.println(e.toString());
-		}
+		catch (Exception ex) { DebugUtilities.LogException("An exception occurred while setting the system look and feel.", ex); }
 		
 		LoadPreferences();
 		
@@ -52,7 +50,7 @@ public class Main
 			}
 			catch (IOException ex)
 			{
-				System.out.print("Unable to write user settings to file \"" + userSettingsFile.getAbsolutePath() + "\"");
+				DebugUtilities.LogException("An exception occurred while loading user settings.", ex);
 			}
 		}
 	}
