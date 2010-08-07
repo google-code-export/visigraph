@@ -970,7 +970,7 @@ public class GraphDisplayController extends JPanel implements ClipboardOwner
 					double xDelta = pastMousePoint.x - focusPoint.getX();
 					double yDelta = pastMousePoint.y - focusPoint.getY();
 					
-					transform.translate(xDelta / userSettings.panDecelerationFactor.get(), yDelta / userSettings.panDecelerationFactor.get());
+					transform.translate(Math.round(xDelta / userSettings.panDecelerationFactor.get()), Math.round(yDelta / userSettings.panDecelerationFactor.get()));
 					isViewportInvalidated = true;
 					
 					if(Math.pow(xDelta, 2) + Math.pow(yDelta, 2) < 1.0 / transform.getScaleX())
@@ -1112,13 +1112,13 @@ public class GraphDisplayController extends JPanel implements ClipboardOwner
 	
 	public void zoomCenter(Point2D.Double center, double factor)
 	{
-		transform.translate(center.x, center.y);
+		transform.translate(Math.round(center.x), Math.round(center.y));
 		
 		transform.scale(factor, factor);
 		if (transform.getScaleX() > userSettings.maximumZoomFactor.get())
 			zoomMax();
 		
-		transform.translate(-center.x, -center.y);
+		transform.translate(Math.round(-center.x), Math.round(-center.y));
 		
 		isViewportInvalidated = true;
 	}
@@ -1127,7 +1127,7 @@ public class GraphDisplayController extends JPanel implements ClipboardOwner
 	{
 		// First we need to reset and translate the graph to the viewport's center
 		transform.setToIdentity();
-		transform.translate(viewport.getWidth() / 2.0, viewport.getHeight() / 2.0);
+		transform.translate(Math.round(viewport.getWidth() / 2.0), Math.round(viewport.getHeight() / 2.0));
 		
 		// We need to fit it to the viewport. So we want to scale according to the lowest viewport-to-graph dimension ratio.
 		double widthRatio = (viewport.getWidth() - userSettings.zoomGraphPadding.get()) / rectangle.getWidth();
@@ -1139,7 +1139,7 @@ public class GraphDisplayController extends JPanel implements ClipboardOwner
 		
 		// Only now that we've properly scaled can we translate to the graph's midpoint
 		Point2D.Double graphCenter = new Point2D.Double(rectangle.getCenterX(), rectangle.getCenterY());
-		transform.translate(-graphCenter.x, -graphCenter.y);
+		transform.translate(Math.round(-graphCenter.x), Math.round(-graphCenter.y));
 		
 		// And of course, we want to refresh the viewport
 		isViewportInvalidated = true;
@@ -1159,7 +1159,7 @@ public class GraphDisplayController extends JPanel implements ClipboardOwner
 	
 	public void zoomMax()
 	{
-		transform.setTransform(userSettings.maximumZoomFactor.get(), transform.getShearY(), transform.getShearX(), userSettings.maximumZoomFactor.get(), transform.getTranslateX(), transform.getTranslateY());
+		transform.setTransform(userSettings.maximumZoomFactor.get(), transform.getShearY(), transform.getShearX(), userSettings.maximumZoomFactor.get(), Math.round(transform.getTranslateX()), Math.round(transform.getTranslateY()));
 		isViewportInvalidated = true;
 	}
 
