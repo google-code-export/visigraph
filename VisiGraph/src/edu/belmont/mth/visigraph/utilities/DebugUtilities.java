@@ -21,7 +21,7 @@ public class DebugUtilities
 		return String.format("<html><body><font size=\"2\" face=\"Consolas, Andale Mono, Droid Sans Mono, Lucida Console, Monaco, Courier New, Courier\">%1$s</font></body></html>", buffer.toString());
 	}
 	
-	public static void LogException(String message, Throwable exception)
+	public static void logException(String message, Throwable exception)
 	{
 		buffer.append("<b><font color=\"red\">");
 		buffer.append(String.format("{Exception %1$tT} %2$s<br/>", Calendar.getInstance(), message.replaceAll("<", "&lt;").replaceAll(">", "&gt;")));
@@ -29,7 +29,7 @@ public class DebugUtilities
 		buffer.append("</font></b>");
 	}
 	
-	public static void LogWarning(String message)
+	public static void logWarning(String message)
 	{
 		buffer.append(String.format("{Warning %1$tT} %2$s<br/>", Calendar.getInstance(), message.replaceAll("<", "&lt;").replaceAll(">", "&gt;")));
 	}

@@ -21,7 +21,7 @@ public class StringBundle
 	public static String get(String key)
 	{
 		try { return instance.getString(key); }
-		catch (MissingResourceException ex) { DebugUtilities.LogException(String.format("An exception occurred while trying to load resource %s.", key), ex); return '!' + key + '!'; }
+		catch (MissingResourceException ex) { DebugUtilities.logException(String.format("An exception occurred while trying to load resource %s.", key), ex); return '!' + key + '!'; }
 	}
 }
 

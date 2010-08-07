@@ -35,7 +35,7 @@ public final static GeneratorService instance = new GeneratorService();
 					ValidateGraphGenerator(generator);
 					generators.add(generator);
 				}
-				catch (Throwable ex) { DebugUtilities.LogException(String.format("An exception occurred while compiling %s.", filename), ex); }
+				catch (Throwable ex) { DebugUtilities.logException(String.format("An exception occurred while compiling %s.", filename), ex); }
 			}
 		}
 	}
@@ -90,9 +90,9 @@ public final static GeneratorService instance = new GeneratorService();
 			}
 			else
 			{
-				if (!generator.areLoopsAllowed().isTrue())
+				if (generator.areLoopsAllowed().isTrue())
 					throw new Error("The \"" + generator + "\" generator's default rules are inconsistent: if cycles are disallowed by default, loops must also be disallowed, either by force or by default.");
-				if (!generator.areMultipleEdgesAllowed().isTrue())
+				if (generator.areMultipleEdgesAllowed().isTrue())
 					throw new Error("The \"" + generator + "\" generator's default rules are inconsistent: if cycles are disallowed by default, multiple edges must also be disallowed, either by force or by default.");
 			}
 		}

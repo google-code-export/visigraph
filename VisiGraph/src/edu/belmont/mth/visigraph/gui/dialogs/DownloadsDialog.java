@@ -146,7 +146,7 @@ public class DownloadsDialog extends JDialog implements ActionListener
 			generatorsPanel.updateUI();
 			in.close();
 		}
-		catch (Throwable ex) { DebugUtilities.LogException("An exception occurred while downloading the standard list of generators.", ex); }
+		catch (Throwable ex) { DebugUtilities.logException("An exception occurred while downloading the standard list of generators.", ex); }
 	}
 	
 	public void loadFunctions()
@@ -176,7 +176,7 @@ public class DownloadsDialog extends JDialog implements ActionListener
 			functionsPanel.updateUI();
 			in.close();
 		}
-		catch (Throwable ex) { DebugUtilities.LogException("An exception occurred while downloading the standard list of functions.", ex); }
+		catch (Throwable ex) { DebugUtilities.logException("An exception occurred while downloading the standard list of functions.", ex); }
 	}
 
 	public void downloadGenerators() throws Exception
@@ -250,7 +250,7 @@ public class DownloadsDialog extends JDialog implements ActionListener
  			}
  			catch(Exception ex)
  			{
- 				DebugUtilities.LogException("An exception occurred while downloading files.", ex);
+ 				DebugUtilities.logException("An exception occurred while downloading files.", ex);
  				JOptionPane.showMessageDialog(this, StringBundle.get("an_exception_occurred_while_downloading_files_dialog_message"), GlobalSettings.applicationName, JOptionPane.ERROR_MESSAGE);
  			}
  			finally

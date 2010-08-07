@@ -28,6 +28,6 @@ public class FunctionService
 		if(folder.exists())
 			for(String filename : folder.list( new FilenameFilter() { public boolean accept(File dir, String name) { return name.endsWith(".function"); } } ))
 				try { functions.add((FunctionBase)new Interpreter().source("functions/" + filename)); }
-				catch (Exception ex) { DebugUtilities.LogException(String.format("An exception occurred while compiling %s.", filename), ex); }
+				catch (Exception ex) { DebugUtilities.logException(String.format("An exception occurred while compiling %s.", filename), ex); }
 	}
 }

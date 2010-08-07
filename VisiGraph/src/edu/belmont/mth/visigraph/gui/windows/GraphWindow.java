@@ -148,7 +148,7 @@ public class GraphWindow extends JInternalFrame implements GraphChangeEventListe
 					}
 					catch (IOException ex)
 					{
-						DebugUtilities.LogException("An exception occurred while saving graph.", ex);
+						DebugUtilities.logException("An exception occurred while saving graph.", ex);
 						JOptionPane.showInternalMessageDialog(this, String.format(StringBundle.get("an_exception_occurred_while_saving_graph_dialog_message"), gdc.getGraph().name.get()));
 					}
 					break;
@@ -199,7 +199,7 @@ public class GraphWindow extends JInternalFrame implements GraphChangeEventListe
 				}
 				catch (IOException ex)
 				{
-					DebugUtilities.LogException("An exception occurred while saving as.", ex);
+					DebugUtilities.logException("An exception occurred while saving as.", ex);
 					success = false;
 				}
 			}

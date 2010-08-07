@@ -311,18 +311,18 @@ public class GraphDisplayController extends JPanel implements ClipboardOwner
 			public void mousePressed(MouseEvent event)
 			{
 				try { viewportMousePressed(event); }
-				catch (NoninvertibleTransformException e) { DebugUtilities.LogException("An exception occurred while inverting transformation.", e); }
+				catch (NoninvertibleTransformException e) { DebugUtilities.logException("An exception occurred while inverting transformation.", e); }
 				
 				if (event.getClickCount() > 1)
 					try { viewportMouseDoubleClicked(event); }
-					catch (NoninvertibleTransformException e) { DebugUtilities.LogException("An exception occurred while inverting transformation.", e); }
+					catch (NoninvertibleTransformException e) { DebugUtilities.logException("An exception occurred while inverting transformation.", e); }
 			}
 			
 			@Override
 			public void mouseReleased(MouseEvent event)
 			{
 				try { viewportMouseReleased(event); }
-				catch (NoninvertibleTransformException e) { DebugUtilities.LogException("An exception occurred while inverting transformation.", e); }
+				catch (NoninvertibleTransformException e) { DebugUtilities.logException("An exception occurred while inverting transformation.", e); }
 			}
 			
 			@Override
@@ -343,14 +343,14 @@ public class GraphDisplayController extends JPanel implements ClipboardOwner
 			public void mouseDragged(MouseEvent event)
 			{
 				try { viewportMouseDragged(event); }
-				catch (NoninvertibleTransformException e) { DebugUtilities.LogException("An exception occurred while inverting transformation.", e); }
+				catch (NoninvertibleTransformException e) { DebugUtilities.logException("An exception occurred while inverting transformation.", e); }
 			}
 			
 			@Override
 			public void mouseMoved(MouseEvent event)
 			{
 				try { transform.inverseTransform(event.getPoint(), currentMousePoint); }
-				catch (NoninvertibleTransformException e) { DebugUtilities.LogException("An exception occurred while inverting transformation.", e); }
+				catch (NoninvertibleTransformException e) { DebugUtilities.logException("An exception occurred while inverting transformation.", e); }
 			}
 		});
 		viewport.addMouseWheelListener(new MouseWheelListener()
@@ -573,7 +573,7 @@ public class GraphDisplayController extends JPanel implements ClipboardOwner
 				graph.deselectAll();
 				graph.union(pasted);
 			}
-			catch (Exception ex) { DebugUtilities.LogException("An exception occurred while painting the viewport.", ex); }
+			catch (Exception ex) { DebugUtilities.logException("An exception occurred while painting the viewport.", ex); }
 		}	
 	}
 	
@@ -978,7 +978,7 @@ public class GraphDisplayController extends JPanel implements ClipboardOwner
 				}
 				catch (Exception ex)
 				{
-					DebugUtilities.LogException("An exception occurred while panning viewport.", ex);
+					DebugUtilities.logException("An exception occurred while panning viewport.", ex);
 					timer.stop();
 				}
 			} 
@@ -2098,7 +2098,7 @@ public class GraphDisplayController extends JPanel implements ClipboardOwner
 					Point2D.Double viewportCenter = new Point2D.Double(viewport.getWidth() / 2.0, viewport.getHeight() / 2.0);
 					Point2D.Double zoomCenter = new Point2D.Double();
 					try { transform.inverseTransform(viewportCenter, zoomCenter); }
-					catch (NoninvertibleTransformException ex) { DebugUtilities.LogException("An exception occurred while inverting transformation.", ex); }
+					catch (NoninvertibleTransformException ex) { DebugUtilities.logException("An exception occurred while inverting transformation.", ex); }
 					
 					zoomCenter(zoomCenter, userSettings.zoomInFactor.get());
 				}
@@ -2114,7 +2114,7 @@ public class GraphDisplayController extends JPanel implements ClipboardOwner
 					Point2D.Double viewportCenter = new Point2D.Double(viewport.getWidth() / 2.0, viewport.getHeight() / 2.0);
 					Point2D.Double zoomCenter = new Point2D.Double();
 					try { transform.inverseTransform(viewportCenter, zoomCenter); }
-					catch (NoninvertibleTransformException ex) { DebugUtilities.LogException("An exception occurred while inverting transformation.", ex); }
+					catch (NoninvertibleTransformException ex) { DebugUtilities.logException("An exception occurred while inverting transformation.", ex); }
 					
 					zoomCenter(zoomCenter, userSettings.zoomOutFactor.get());
 				}

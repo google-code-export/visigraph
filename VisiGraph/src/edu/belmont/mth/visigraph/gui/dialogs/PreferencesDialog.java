@@ -1044,7 +1044,7 @@ public class PreferencesDialog extends JDialog implements ActionListener
 		}
 		catch (IOException ex)
 		{
-			DebugUtilities.LogException("An exception occurred while saving preferences to file.", ex);
+			DebugUtilities.logException("An exception occurred while saving preferences to file.", ex);
 			JOptionPane.showMessageDialog(null, String.format(StringBundle.get("preferences_dialog_unable_to_save_error_message"), userSettingsFile.getAbsolutePath()), GlobalSettings.applicationName, JOptionPane.ERROR_MESSAGE);
 		}
 	}
