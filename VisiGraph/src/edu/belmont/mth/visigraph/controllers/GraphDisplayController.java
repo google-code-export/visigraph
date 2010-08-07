@@ -660,12 +660,20 @@ public class GraphDisplayController extends JPanel implements ClipboardOwner
 				{
 					double increment = -userSettings.arrowKeyIncrement.get();
 					if(event.isAltDown()) increment /= 10.0;
-					if((event.getModifiers() & Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()) != 0) increment *= 10.0;
+					if(event.isShiftDown()) increment *= 10.0;
 					
-					graph.moveSelected(0, increment);
-					for (Edge edge : graph.edges)
-						if (edge.isSelected.get())
-							edge.fixHandle();
+					if((event.getModifiers() & Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()) != 0)
+					{
+						transform.translate(0.0, -increment);
+						isViewportInvalidated = true;
+					}
+					else
+					{
+						graph.moveSelected(0, increment);
+						for (Edge edge : graph.edges)
+							if (edge.isSelected.get())
+								edge.fixHandle();
+					}
 					
 					break;
 				}
@@ -673,12 +681,20 @@ public class GraphDisplayController extends JPanel implements ClipboardOwner
 				{
 					double increment = userSettings.arrowKeyIncrement.get();
 					if(event.isAltDown()) increment /= 10.0;
-					if((event.getModifiers() & Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()) != 0) increment *= 10.0;
+					if(event.isShiftDown()) increment *= 10.0;
 					
-					graph.moveSelected(increment, 0);
-					for (Edge edge : graph.edges)
-						if (edge.isSelected.get())
-							edge.fixHandle();
+					if((event.getModifiers() & Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()) != 0)
+					{
+						transform.translate(-increment, 0.0);
+						isViewportInvalidated = true;
+					}
+					else
+					{
+						graph.moveSelected(increment, 0);
+						for (Edge edge : graph.edges)
+							if (edge.isSelected.get())
+								edge.fixHandle();
+					}
 					
 					break;
 				}
@@ -686,12 +702,20 @@ public class GraphDisplayController extends JPanel implements ClipboardOwner
 				{
 					double increment = userSettings.arrowKeyIncrement.get();
 					if(event.isAltDown()) increment /= 10.0;
-					if((event.getModifiers() & Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()) != 0) increment *= 10.0;
+					if(event.isShiftDown()) increment *= 10.0;
 					
-					graph.moveSelected(0, increment);
-					for (Edge edge : graph.edges)
-						if (edge.isSelected.get())
-							edge.fixHandle();
+					if((event.getModifiers() & Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()) != 0)
+					{
+						transform.translate(0.0, -increment);
+						isViewportInvalidated = true;
+					}
+					else
+					{
+						graph.moveSelected(0, increment);
+						for (Edge edge : graph.edges)
+							if (edge.isSelected.get())
+								edge.fixHandle();
+					}
 					
 					break;
 				}
@@ -699,12 +723,20 @@ public class GraphDisplayController extends JPanel implements ClipboardOwner
 				{
 					double increment = -userSettings.arrowKeyIncrement.get();
 					if(event.isAltDown()) increment /= 10.0;
-					if((event.getModifiers() & Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()) != 0) increment *= 10.0;
+					if(event.isShiftDown()) increment *= 10.0;
 					
-					graph.moveSelected(increment, 0);
-					for (Edge edge : graph.edges)
-						if (edge.isSelected.get())
-							edge.fixHandle();
+					if((event.getModifiers() & Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()) != 0)
+					{
+						transform.translate(-increment, 0.0);
+						isViewportInvalidated = true;
+					}
+					else
+					{
+						graph.moveSelected(increment, 0);
+						for (Edge edge : graph.edges)
+							if (edge.isSelected.get())
+								edge.fixHandle();
+					}
 					
 					break;
 				}
