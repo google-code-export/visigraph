@@ -52,7 +52,7 @@ public class WebUtilities
 			}
 			catch (Exception ex)
 			{	
-				DebugUtilities.LogException("An exception occurred while launching the default browser.", ex);
+				DebugUtilities.logException("An exception occurred while launching the default browser.", ex);
 				JOptionPane.showMessageDialog(null, String.format(StringBundle.get("an_exception_occurred_while_launching_browser_dialog_message"), ex.toString()), GlobalSettings.applicationName, JOptionPane.ERROR_MESSAGE);				
 			}
 		}

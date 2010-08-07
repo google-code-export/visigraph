@@ -21,7 +21,7 @@ public class CursorBundle extends ResourceBundle
 	public static Cursor get(String key)
 	{
 		try { return (Cursor) instance.getObject(key); }
-		catch (MissingResourceException ex) { DebugUtilities.LogException(String.format("An exception occurred while trying to load resource %s.", key), ex); return null; }
+		catch (MissingResourceException ex) { DebugUtilities.logException(String.format("An exception occurred while trying to load resource %s.", key), ex); return null; }
 	}
 	
 	@Override

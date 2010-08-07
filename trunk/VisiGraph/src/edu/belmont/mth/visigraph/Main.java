@@ -24,7 +24,7 @@ public class Main
 			System.setProperty("com.apple.mrj.application.apple.menu.about.name", GlobalSettings.applicationName);
 			UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
 		}
-		catch (Exception ex) { DebugUtilities.LogException("An exception occurred while setting the system look and feel.", ex); }
+		catch (Exception ex) { DebugUtilities.logException("An exception occurred while setting the system look and feel.", ex); }
 		
 		LoadPreferences();
 		
@@ -50,7 +50,7 @@ public class Main
 			}
 			catch (IOException ex)
 			{
-				DebugUtilities.LogException("An exception occurred while loading user settings.", ex);
+				DebugUtilities.logException("An exception occurred while loading user settings.", ex);
 			}
 		}
 	}

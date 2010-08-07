@@ -41,7 +41,7 @@ public class DebugDialog extends JDialog implements ActionListener
 		JEditorPane logPane = new JEditorPane() { { setEditorKit( html ); setBackground( Color.white ); setEditable(false); } };
 		
 		try { html.read( new StringReader(DebugUtilities.getLog()), logPane.getDocument(), 0 ); }
-		catch (Exception e) { DebugUtilities.LogException("An exception occurred while loading the debug console.", e); e.printStackTrace(); }
+		catch (Exception e) { DebugUtilities.logException("An exception occurred while loading the debug console.", e); e.printStackTrace(); }
 
 		inputPanel.add( new JScrollPane(logPane) { { setPreferredSize(new Dimension(700, 500)); } }, new GridBagConstraints() { { gridx = 0; gridy = 0; } } );
 		

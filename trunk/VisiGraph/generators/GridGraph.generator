@@ -9,32 +9,39 @@ import edu.belmont.mth.visigraph.models.generators.*;
 		Pattern pattern = Pattern.compile(getParametersValidatingExpression());
 		Matcher matcher = pattern.matcher(params); matcher.find();
 		
-        int n = Integer.parseInt(matcher.group(1));
-        double radius = UserSettings.instance.arrangeCircleRadiusMultiplier.get() * n;
-        double degreesPerVertex = 2 * Math.PI / n;
+		int rows = Integer.parseInt(matcher.group(1));
+		int cols = Integer.parseInt(matcher.group(2));
         
-        Vertex hub = new Vertex(0, 0.0, 0.0);
-        graph.vertexes.add(hub);
-        
-        for(int i = 0; i < n; ++i)
+        for(int row = 0; row < rows; ++row)
         {
-        	Vertex corner = new Vertex(i + 1, radius * Math.cos(degreesPerVertex * i - Math.PI / 2.0), radius * Math.sin(degreesPerVertex * i - Math.PI / 2.0));
-        	graph.vertexes.add(corner); graph.edges.add(new Edge(false, hub, corner));
-        }
-                
-        return graph;
-    }
-    
-    public String toString                          ( ) { return "Star graph"; }
-    public String getParametersDescription          ( ) { return "[corners]"; }
-    public String getParametersValidatingExpression ( ) { return "^\\s*(\\d+)\\s*$"; }
-    
+        	for(int col = 0; col < cols; ++col)
+        	{
+				graph.vertexes.add(new Vertex(graph.nextVertexId(), col * UserSettings.instance.arrangeGridSpacing.get(), row * UserSettings.instance.arrangeGridSpacing.get()));
+				if(col > 0) graph.edges.add(new Edge(false, graph.vertexes.get(graph.vertexes.size() - 1), graph.vertexes.get(graph.vertexes.size() - 1    - 1)));
+				if(row > 0) graph.edges.add(new Edge(false, graph.vertexes.get(graph.vertexes.size() - 1), graph.vertexes.get(graph.vertexes.size() - cols - 1)));
+			}
+		}
+			
+		return graph;
+	}
+	
+	public String toString                          ( ) { return "Grid graph"; }
+	public String getParametersDescription          ( ) { return "[rows] [columns]"; }
+	public String getParametersValidatingExpression ( ) { return "^\\s*(\\d+)\\s+(\\d+)\\s*$"; }
+	
 	public GeneratorBase.BooleanRule areLoopsAllowed         ( ) { return GeneratorBase.BooleanRule.DefaultFalse; }
 	public GeneratorBase.BooleanRule areDirectedEdgesAllowed ( ) { return GeneratorBase.BooleanRule.ForcedFalse;  }
 	public GeneratorBase.BooleanRule areMultipleEdgesAllowed ( ) { return GeneratorBase.BooleanRule.DefaultFalse; }
-	public GeneratorBase.BooleanRule areCyclesAllowed        ( ) { return GeneratorBase.BooleanRule.DefaultTrue;  }
+	public GeneratorBase.BooleanRule areCyclesAllowed        ( ) { return GeneratorBase.BooleanRule.ForcedTrue;   }
 	public GeneratorBase.BooleanRule areParametersAllowed    ( ) { return GeneratorBase.BooleanRule.ForcedTrue;   }
         
 return (GeneratorBase)this;
+
+
+
+
+
+
+
 
 
