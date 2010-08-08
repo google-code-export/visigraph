@@ -13,6 +13,16 @@ import edu.belmont.mth.visigraph.models.functions.*;
 		return (selectedEdgeCount > 0 ? selectedEdgeCount : g.edges.size()) + "";
 	}
 	
+	public boolean allowsDynamicEvaluation()
+	{
+		return true;
+	}
+	
+	public boolean allowsOneTimeEvaluation()
+	{
+		return true;
+	}
+	
 	public String toString()
 	{
 		return "Count edges";

@@ -31,6 +31,16 @@ import edu.belmont.mth.visigraph.models.functions.*;
 				coverRecursively(neighborArray[i], g, covered);
 	}
 	
+	public boolean allowsDynamicEvaluation()
+	{
+		return true;
+	}
+	
+	public boolean allowsOneTimeEvaluation()
+	{
+		return true;
+	}
+	
 	public String toString()
 	{
 		return "Is Eulerian";

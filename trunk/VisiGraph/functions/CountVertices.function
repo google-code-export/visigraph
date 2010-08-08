@@ -13,6 +13,16 @@ import edu.belmont.mth.visigraph.models.functions.*;
 		return (selectedVertexCount > 0 ? selectedVertexCount : g.vertexes.size()) + "";
 	}
 	
+	public boolean allowsDynamicEvaluation()
+	{
+		return true;
+	}
+	
+	public boolean allowsOneTimeEvaluation()
+	{
+		return true;
+	}
+	
 	public String toString()
 	{
 		return "Count vertices";
