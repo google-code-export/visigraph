@@ -2019,6 +2019,8 @@ public class GraphDisplayController extends JPanel implements ClipboardOwner
 		private JButton showEdgeHandlesButton;
 		private JButton showEdgeLabelsButton;
 		private JButton showEdgeWeightsButton;
+		private JButton showCaptionHandlesButton;
+		private JButton showCaptionEditorsButton;
 		
 		public ViewToolBar()
 		{
@@ -2077,6 +2079,28 @@ public class GraphDisplayController extends JPanel implements ClipboardOwner
 			showEdgeWeightsButton.setToolTipText(StringBundle.get("show_edge_weights_button_tooltip"));
 			this.add(showEdgeWeightsButton);
 			
+			showCaptionHandlesButton = new JButton(ImageIconBundle.get("show_caption_handles_icon"));
+			showCaptionHandlesButton.addActionListener(new ActionListener()
+			{
+				public void actionPerformed(ActionEvent e)
+				{
+					settings.showCaptionHandles.set(!settings.showCaptionHandles.get());
+				}
+			});
+			showCaptionHandlesButton.setToolTipText(StringBundle.get("show_caption_handles_button_tooltip"));
+			this.add(showCaptionHandlesButton);
+			
+			showCaptionEditorsButton = new JButton(ImageIconBundle.get("show_caption_editors_icon"));
+			showCaptionEditorsButton.addActionListener(new ActionListener()
+			{
+				public void actionPerformed(ActionEvent e)
+				{
+					settings.showCaptionEditors.set(!settings.showCaptionEditors.get());
+				}
+			});
+			showCaptionEditorsButton.setToolTipText(StringBundle.get("show_caption_editors_button_tooltip"));
+			this.add(showCaptionEditorsButton);
+			
 			this.refresh();
 		}
 		
@@ -2096,6 +2120,12 @@ public class GraphDisplayController extends JPanel implements ClipboardOwner
 			
 			if (showEdgeWeightsButton != null && showEdgeWeightsButton.isSelected() != settings.showEdgeWeights.get())
 				showEdgeWeightsButton.setSelected(settings.showEdgeWeights.get());
+			
+			if (showCaptionHandlesButton != null && showCaptionHandlesButton.isSelected() != settings.showCaptionHandles.get())
+				showCaptionHandlesButton.setSelected(settings.showCaptionHandles.get());
+			
+			if (showCaptionEditorsButton != null && showCaptionEditorsButton.isSelected() != settings.showCaptionEditors.get())
+				showCaptionEditorsButton.setSelected(settings.showCaptionEditors.get());
 		}
 	}
 	
