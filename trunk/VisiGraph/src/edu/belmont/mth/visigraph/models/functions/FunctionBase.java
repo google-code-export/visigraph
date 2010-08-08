@@ -13,4 +13,8 @@ import edu.belmont.mth.visigraph.models.*;
 public interface FunctionBase
 {	
 	public String evaluate(Graphics2D g2D, Graph g);
+	
+	public boolean allowsDynamicEvaluation();
+	
+	public boolean allowsOneTimeEvaluation();
 }
