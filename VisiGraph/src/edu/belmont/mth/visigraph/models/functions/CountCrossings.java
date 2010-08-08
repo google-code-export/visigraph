@@ -110,6 +110,16 @@ public class CountCrossings implements FunctionBase
 		}
 	}
 
+	public boolean allowsDynamicEvaluation()
+	{
+		return true;
+	}
+	
+	public boolean allowsOneTimeEvaluation()
+	{
+		return true;
+	}
+	
 	@Override
 	public String toString()
 	{

@@ -2244,15 +2244,21 @@ public class GraphDisplayController extends JPanel implements ClipboardOwner
 				
 				for (FunctionBase function : FunctionService.instance.functions)
 				{
-					JCheckBoxMenuItem dynamicFunctionMenuItem = new JCheckBoxMenuItem(function.toString());
-					dynamicFunctionMenuItem.addActionListener(dynamicFunctionMenuItemActionListener);
-					dynamicFunctionsMenu.add(dynamicFunctionMenuItem);
-					dynamicFunctionMenuItems.put(dynamicFunctionMenuItem, function);
+					if(function.allowsDynamicEvaluation())
+					{
+						JCheckBoxMenuItem dynamicFunctionMenuItem = new JCheckBoxMenuItem(function.toString());
+						dynamicFunctionMenuItem.addActionListener(dynamicFunctionMenuItemActionListener);
+						dynamicFunctionsMenu.add(dynamicFunctionMenuItem);
+						dynamicFunctionMenuItems.put(dynamicFunctionMenuItem, function);
+					}
 					
-					JMenuItem oneTimeFunctionMenuItem = new JMenuItem(function.toString());
-					oneTimeFunctionMenuItem.addActionListener(oneTimeFunctionMenuItemActionListener);
-					oneTimeFunctionsMenu.add(oneTimeFunctionMenuItem);
-					oneTimeFunctionMenuItems.put(oneTimeFunctionMenuItem, function);
+					if(function.allowsOneTimeEvaluation())
+					{
+						JMenuItem oneTimeFunctionMenuItem = new JMenuItem(function.toString());
+						oneTimeFunctionMenuItem.addActionListener(oneTimeFunctionMenuItemActionListener);
+						oneTimeFunctionsMenu.add(oneTimeFunctionMenuItem);
+						oneTimeFunctionMenuItems.put(oneTimeFunctionMenuItem, function);
+					}
 				}
 			}
 		}
