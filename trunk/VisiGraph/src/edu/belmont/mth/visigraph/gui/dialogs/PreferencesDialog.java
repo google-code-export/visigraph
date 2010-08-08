@@ -72,6 +72,7 @@ public class PreferencesDialog extends JDialog implements ActionListener
 	private static ValidatingTextField captionHandleClickMarginTextField;
 	private static ValidatingTextField captionEditorClickMarginTextField;
 	private static ValidatingTextField panDecelerationFactorTextField;
+	private static JCheckBox           panOnDoubleClickCheckBox;
 	private static ValidatingTextField zoomInFactorTextField;
 	private static ValidatingTextField zoomOutFactorTextField;
 	private static ValidatingTextField maximumZoomFactorTextField;
@@ -533,6 +534,10 @@ public class PreferencesDialog extends JDialog implements ActionListener
 		FieldLabel captionHandleClickMarginLabel = new FieldLabel(StringBundle.get("preferences_dialog_caption_handle_click_margin_label")); captionHandleClickMarginTextField = new ValidatingTextField(8, "(?:\\d+\\.?\\d*|\\d*\\.?\\d+)(?:[eE][+\\-\\x20]?\\d+)?");  captionHandleClickMarginTextField.setMargin(fieldMargin); captionHandleClickMarginTextField.setMaximumSize(new Dimension(70, 100));
 		FieldLabel captionEditorClickMarginLabel = new FieldLabel(StringBundle.get("preferences_dialog_caption_editor_click_margin_label")); captionEditorClickMarginTextField = new ValidatingTextField(8, "(?:\\d+\\.?\\d*|\\d*\\.?\\d+)(?:[eE][+\\-\\x20]?\\d+)?");  captionEditorClickMarginTextField.setMargin(fieldMargin); captionEditorClickMarginTextField.setMaximumSize(new Dimension(70, 100));
 		FieldLabel panDecelerationFactorLabel    = new FieldLabel(StringBundle.get("preferences_dialog_pan_deceleration_factor_label"));     panDecelerationFactorTextField    = new ValidatingTextField(8, "-(?:\\d+\\.?\\d*|\\d*\\.?\\d+)(?:[eE][+\\-\\x20]?\\d+)?"); panDecelerationFactorTextField   .setMargin(fieldMargin); panDecelerationFactorTextField   .setMaximumSize(new Dimension(70, 100));
+		FieldLabel panOnDoubleClickLabel		 = new FieldLabel(StringBundle.get("preferences_dialog_pan_on_double_click_label"));
+		panOnDoubleClickCheckBox = new JCheckBox();
+		panOnDoubleClickCheckBox.setBackground(panel.getBackground());
+		panOnDoubleClickCheckBox.setMinimumSize(new Dimension(32, 26));
 		
 		Header zoomingBehaviorHeader = new Header(StringBundle.get("preferences_dialog_zooming_behavior_heading"));
 		FieldLabel zoomInFactorLabel        = new FieldLabel(StringBundle.get("preferences_dialog_zoom_in_factor_label"));        zoomInFactorTextField        = new ValidatingTextField(8, "(?:\\d+\\.?\\d*|\\d*\\.?\\d+)(?:[eE][+\\-\\x20]?\\d+)?"); zoomInFactorTextField       .setMargin(fieldMargin); zoomInFactorTextField       .setMaximumSize(new Dimension(70, 100));
@@ -612,6 +617,7 @@ public class PreferencesDialog extends JDialog implements ActionListener
 					.addComponent(captionHandleClickMarginLabel)
 					.addComponent(captionEditorClickMarginLabel)
 					.addComponent(panDecelerationFactorLabel)
+					.addComponent(panOnDoubleClickLabel)
 					.addComponent(zoomInFactorLabel)
 					.addComponent(zoomOutFactorLabel)
 					.addComponent(maximumZoomFactorLabel)
@@ -646,6 +652,7 @@ public class PreferencesDialog extends JDialog implements ActionListener
 					.addComponent(captionHandleClickMarginTextField)
 					.addComponent(captionEditorClickMarginTextField)
 					.addComponent(panDecelerationFactorTextField)
+					.addComponent(panOnDoubleClickCheckBox)
 					.addComponent(zoomInFactorTextField)
 					.addComponent(zoomOutFactorTextField)
 					.addComponent(maximumZoomFactorTextField)
@@ -683,6 +690,7 @@ public class PreferencesDialog extends JDialog implements ActionListener
 				.addGroup(layout.createParallelGroup(GroupLayout.Alignment.CENTER).addComponent(captionHandleClickMarginLabel).addComponent(captionHandleClickMarginTextField))
 				.addGroup(layout.createParallelGroup(GroupLayout.Alignment.CENTER).addComponent(captionEditorClickMarginLabel).addComponent(captionEditorClickMarginTextField))
 				.addGroup(layout.createParallelGroup(GroupLayout.Alignment.CENTER).addComponent(panDecelerationFactorLabel).addComponent(panDecelerationFactorTextField))
+				.addGroup(layout.createParallelGroup(GroupLayout.Alignment.CENTER).addComponent(panOnDoubleClickLabel).addComponent(panOnDoubleClickCheckBox))
 				.addComponent(zoomingBehaviorHeader)
 				.addGroup(layout.createParallelGroup(GroupLayout.Alignment.CENTER).addComponent(zoomInFactorLabel).addComponent(zoomInFactorTextField))
 				.addGroup(layout.createParallelGroup(GroupLayout.Alignment.CENTER).addComponent(zoomOutFactorLabel).addComponent(zoomOutFactorTextField))
@@ -828,6 +836,7 @@ public class PreferencesDialog extends JDialog implements ActionListener
 		captionHandleClickMarginTextField		.setText( userSettings.captionHandleClickMargin.get( ).toString( ) );
 		captionEditorClickMarginTextField		.setText( userSettings.captionEditorClickMargin.get( ).toString( ) );
 		panDecelerationFactorTextField			.setText( userSettings.panDecelerationFactor.get( ).toString( ) );
+		panOnDoubleClickCheckBox				.setSelected( userSettings.panOnDoubleClick.get( ) );
 		zoomInFactorTextField					.setText( userSettings.zoomInFactor.get( ).toString( ) );
 		zoomOutFactorTextField					.setText( userSettings.zoomOutFactor.get( ).toString( ) );
 		maximumZoomFactorTextField				.setText( userSettings.maximumZoomFactor.get( ).toString( ) );
@@ -909,6 +918,7 @@ public class PreferencesDialog extends JDialog implements ActionListener
 		captionHandleClickMarginTextField		.setText( userSettings.captionHandleClickMargin.getDefault( ).toString( ) );
 		captionEditorClickMarginTextField		.setText( userSettings.captionEditorClickMargin.getDefault( ).toString( ) );
 		panDecelerationFactorTextField			.setText( userSettings.panDecelerationFactor.getDefault( ).toString( ) );
+		panOnDoubleClickCheckBox				.setSelected( userSettings.panOnDoubleClick.getDefault( ) );
 		zoomInFactorTextField					.setText( userSettings.zoomInFactor.getDefault( ).toString( ) );
 		zoomOutFactorTextField					.setText( userSettings.zoomOutFactor.getDefault( ).toString( ) );
 		maximumZoomFactorTextField				.setText( userSettings.maximumZoomFactor.getDefault( ).toString( ) );
@@ -991,6 +1001,7 @@ public class PreferencesDialog extends JDialog implements ActionListener
 		userSettings.captionHandleClickMargin		.set( new Double ( captionHandleClickMarginTextField.getText( ) ) );
 		userSettings.captionEditorClickMargin		.set( new Double ( captionEditorClickMarginTextField.getText( ) ) );
 		userSettings.panDecelerationFactor			.set( new Double ( panDecelerationFactorTextField.getText( ) ) );
+		userSettings.panOnDoubleClick				.set( 			   panOnDoubleClickCheckBox.isSelected( ) );
 		userSettings.zoomInFactor					.set( new Double ( zoomInFactorTextField.getText( ) ) );
 		userSettings.zoomOutFactor					.set( new Double ( zoomOutFactorTextField.getText( ) ) );
 		userSettings.maximumZoomFactor				.set( new Double ( maximumZoomFactorTextField.getText( ) ) );

@@ -67,6 +67,7 @@ public class GraphDisplayController extends JPanel implements ClipboardOwner
 	private Set<FunctionBase>	      functionsToBeRun;
 	private SnapshotList			  undoHistory;
 	private Timer					  undoTimer;
+	private Timer					  panTimer;
 	private EventListenerList		  graphChangeListenerList;
 	private UserSettings			  userSettings = UserSettings.instance;
 	private boolean					  isViewportInvalidated;
@@ -988,33 +989,40 @@ public class GraphDisplayController extends JPanel implements ClipboardOwner
 		
 		transform.inverseTransform(event.getPoint(), pastPanPoint);
 		
-		new Timer(50, new ActionListener()
+		if(userSettings.panOnDoubleClick.get())
 		{
-			public void actionPerformed(ActionEvent arg0)
+			if(panTimer != null)
+				panTimer.stop();
+			
+			panTimer = new Timer(50, new ActionListener()
 			{
-				Timer timer = (Timer)arg0.getSource(); 
-				
-				try
+				public void actionPerformed(ActionEvent e)
 				{
-					Point2D focusPoint = new Point2D.Double();
-					transform.inverseTransform(new Point(viewport.getWidth() / 2, viewport.getHeight() / 2), focusPoint);
+					Timer timer = (Timer)e.getSource(); 
 					
-					double xDelta = pastMousePoint.x - focusPoint.getX();
-					double yDelta = pastMousePoint.y - focusPoint.getY();
-					
-					transform.translate(Math.round(xDelta / userSettings.panDecelerationFactor.get()), Math.round(yDelta / userSettings.panDecelerationFactor.get()));
-					isViewportInvalidated = true;
-					
-					if(Math.pow(xDelta, 2) + Math.pow(yDelta, 2) < 1.0 / transform.getScaleX())
+					try
+					{
+						Point2D focusPoint = new Point2D.Double();
+						transform.inverseTransform(new Point(viewport.getWidth() / 2, viewport.getHeight() / 2), focusPoint);
+						
+						double xDelta = Math.round((pastMousePoint.x - focusPoint.getX()) / userSettings.panDecelerationFactor.get());
+						double yDelta = Math.round((pastMousePoint.y - focusPoint.getY()) / userSettings.panDecelerationFactor.get());
+						
+						transform.translate(xDelta, yDelta);
+						isViewportInvalidated = true;
+						
+						if(xDelta == 0 && yDelta == 0)
+							timer.stop();
+					}
+					catch (Exception ex)
+					{
+						DebugUtilities.logException("An exception occurred while panning viewport.", ex);
 						timer.stop();
-				}
-				catch (Exception ex)
-				{
-					DebugUtilities.logException("An exception occurred while panning viewport.", ex);
-					timer.stop();
-				}
-			} 
-		} ).start();
+					}
+				} 
+			} );
+			panTimer.start();
+		}
 	}
 	
  	private void viewportMouseReleased(MouseEvent event) throws NoninvertibleTransformException
