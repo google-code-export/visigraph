@@ -4,8 +4,12 @@
 package edu.belmont.mth.visigraph.settings;
 
 import java.awt.*;
+import java.io.File;
+import java.io.IOException;
 import java.util.*;
+
 import edu.belmont.mth.visigraph.models.*;
+import edu.belmont.mth.visigraph.utilities.DebugUtilities;
 import edu.belmont.mth.visigraph.utilities.JsonUtilities;
 import edu.belmont.mth.visigraph.views.ObserverBase;
 
@@ -178,11 +182,36 @@ public class UserSettings extends ObservableBase
 				notifyObservers(source);
 			}
 		} );
+	
+		fromFile(new File("UserSettings.json"));
 	}
 	
 	public Color getElementColor(int i)
 	{
 		return (i < 0 || i >= elementColors.size() ? uncoloredElementFill.get() : elementColors.get(i));
+	}
+	
+	public void fromFile(File file)
+	{
+		if(file.exists())
+		{
+			try
+			{
+				Scanner in = new Scanner(file);
+				
+				StringBuilder sb = new StringBuilder();
+				while(in.hasNextLine())
+					sb.append(in.nextLine());
+				
+				fromString(sb.toString());
+				
+				in.close();
+			}
+			catch (IOException ex)
+			{
+				DebugUtilities.logException("An exception occurred while loading user settings.", ex);
+			}
+		}	
 	}
 	
 	public void fromString (String json)

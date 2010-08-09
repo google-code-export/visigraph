@@ -150,28 +150,26 @@ public class Graph extends ObservableBase
 		this.captions.addObserver(captionListObserver);
 	}
 
-	public void selectAll()
+	public void selectAll(boolean select)
 	{
 		for (Edge edge : edges)
-			edge.isSelected.set(true);
+			edge.isSelected.set(select);
 		
 		for (Vertex vertex : vertexes)
-			vertex.isSelected.set(true);
+			vertex.isSelected.set(select);
 		
 		for (Caption caption : captions)
-			caption.isSelected.set(true);
+			caption.isSelected.set(select);
+	}
+	
+	public void selectAll()
+	{
+		selectAll(true);
 	}
 	
 	public void deselectAll()
 	{
-		for (Edge edge : edges)
-			edge.isSelected.set(false);
-		
-		for (Vertex vertex : vertexes)
-			vertex.isSelected.set(false);
-		
-		for (Caption caption : captions)
-			caption.isSelected.set(false);
+		selectAll(false);
 	}
 	
 	public void removeSelected()
@@ -223,8 +221,6 @@ public class Graph extends ObservableBase
 			{
 				vertex.x.set(vertex.x.get() + x);
 				vertex.y.set(vertex.y.get() + y);
-				//vertex.x.set(Math.round((vertex.x.get() + x) / userSettings.snapGridSize) * userSettings.snapGridSize);
-				//vertex.y.set(Math.round((vertex.y.get() + y) / userSettings.snapGridSize) * userSettings.snapGridSize);
 			}
 
 		// Now move the handles to where they should go
@@ -232,8 +228,6 @@ public class Graph extends ObservableBase
 		{
 			entry.getKey().handleX.set(entry.getValue().getX());
 			entry.getKey().handleY.set(entry.getValue().getY());
-			//entry.getKey().handleX.set(Math.round(entry.getValue().getX() / userSettings.snapGridSize) * userSettings.snapGridSize);
-			//entry.getKey().handleY.set(Math.round(entry.getValue().getY() / userSettings.snapGridSize) * userSettings.snapGridSize);
 		}
 		
 		// Move the captions
@@ -242,8 +236,6 @@ public class Graph extends ObservableBase
 			{
 				caption.x.set(caption.x.get() + x);
 				caption.y.set(caption.y.get() + y);
-				//caption.x.set(Math.round((caption.x.get() + x) / userSettings.snapGridSize) * userSettings.snapGridSize);
-				//caption.y.set(Math.round((caption.y.get() + y) / userSettings.snapGridSize) * userSettings.snapGridSize);
 			}
 	}
 	

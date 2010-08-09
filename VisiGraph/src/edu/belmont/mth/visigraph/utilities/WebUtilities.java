@@ -26,7 +26,7 @@ public class WebUtilities
 			// attempt to use Desktop library from JDK 1.6+
 			Class<?> d = Class.forName("java.awt.Desktop");
 			d.getDeclaredMethod("browse", new Class[] { java.net.URI.class }).invoke(d.getDeclaredMethod("getDesktop").invoke(null), new Object[] { java.net.URI.create(url) });
-			// above code mimicks: java.awt.Desktop.getDesktop().browse()
+			// above code mimics: java.awt.Desktop.getDesktop().browse()
 		}
 		catch (Exception ignore)
 		{ 

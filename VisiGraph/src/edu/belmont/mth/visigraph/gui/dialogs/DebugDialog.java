@@ -46,18 +46,20 @@ public class DebugDialog extends JDialog implements ActionListener
 		inputPanel.add( new JScrollPane(logPane) { { setPreferredSize(new Dimension(700, 500)); } }, new GridBagConstraints() { { gridx = 0; gridy = 0; } } );
 		
 		//Create and initialize the buttons
-		final JButton okButton = new JButton(StringBundle.get("ok_button_text"));
-		okButton.setPreferredSize(new Dimension(80, 28));
-		okButton.setActionCommand("Ok");
+		final JButton okButton = new JButton(StringBundle.get("ok_button_text")) { { setPreferredSize(new Dimension(80, 28)); setActionCommand("Ok"); } };
 		okButton.addActionListener(this);
 		getRootPane().setDefaultButton(okButton);
 		
 		//Lay out the buttons from left to right
-		JPanel buttonPanel = new JPanel();
-		buttonPanel.setLayout(new BoxLayout(buttonPanel, BoxLayout.LINE_AXIS));
-		buttonPanel.setBorder(BorderFactory.createEmptyBorder(-2, 9, 9, 13));
-		buttonPanel.add(Box.createHorizontalGlue());
-		buttonPanel.add(okButton);
+		JPanel buttonPanel = new JPanel()
+		{
+			{
+				setLayout(new BoxLayout(this, BoxLayout.LINE_AXIS));
+				setBorder(BorderFactory.createEmptyBorder(-2, 9, 9, 13));
+				add(Box.createHorizontalGlue());
+				add(okButton);
+			}
+		};
 		
 		//Put everything together, using the content pane's BorderLayout
 		Container contentPanel = getContentPane();

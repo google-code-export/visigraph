@@ -83,10 +83,10 @@ public class GraphWindow extends JInternalFrame implements GraphChangeEventListe
 	
 	public void updateTitle()
 	{
-		this.setTitle(GlobalSettings.applicationName + " - " + getGdc().getGraph().name.get() + (hasChanged ? "*" : ""));
+		this.setTitle(String.format("%1$s - %2$s%3$s", GlobalSettings.applicationName, getGdc().getGraph().name.get(), (hasChanged ? "*" : "")));
 	}
 	
-	public void graphChangeEventOccurred(GraphChangeEvent evt)
+	public void graphChangeEventOccurred(GraphChangeEvent e)
 	{
 		setHasChanged(true);
 	}

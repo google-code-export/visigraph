@@ -42,187 +42,165 @@ public class NewGraphDialog extends JDialog implements ActionListener
 	{
 		super(frame, StringBundle.get("new_graph_dialog_title"), true);
 		
-		GridBagLayout gbl = new GridBagLayout();
-		gbl.rowHeights = new int[] { 9, 28, 28, 28, 28 };
-		JPanel inputPanel = new JPanel(gbl);
+		JPanel inputPanel = new JPanel( new GridBagLayout() { { rowHeights = new int[] { 9, 28, 28, 28, 28 }; } } );
 		
-		GridBagConstraints gridBagConstraints = new GridBagConstraints();
-		
-		JLabel generatorLabel = new JLabel(StringBundle.get("new_graph_dialog_family_label"));
-		gridBagConstraints.fill = GridBagConstraints.HORIZONTAL;
-		gridBagConstraints.gridx = 0;
-		gridBagConstraints.gridy = 1;
-		gridBagConstraints.gridwidth = 1;
-		generatorLabel.setHorizontalAlignment(SwingConstants.RIGHT);
-		inputPanel.add(generatorLabel, gridBagConstraints);
+		JLabel generatorLabel = new JLabel(StringBundle.get("new_graph_dialog_family_label")) { { setHorizontalAlignment(SwingConstants.RIGHT); } };
+		inputPanel.add(generatorLabel, new GridBagConstraints() { { fill = GridBagConstraints.HORIZONTAL; gridx = 0; gridy = 1; } } );
 		
 		generatorComboBox = new JComboBox();
 		for(GeneratorBase generator : GeneratorService.instance.generators)
 			generatorComboBox.addItem(generator);
 		generatorComboBox.addItemListener(new ItemListener()
 		{
-			public void itemStateChanged(ItemEvent arg)
+			public void itemStateChanged(ItemEvent e)
 			{
-				generatorChanged(arg.getItem());
+				generatorChanged(e.getItem());
 			}
 		});
-		gridBagConstraints.fill = GridBagConstraints.HORIZONTAL;
-		gridBagConstraints.gridx = 1;
-		gridBagConstraints.gridy = 1;
-		gridBagConstraints.gridwidth = 2;
-		inputPanel.add(generatorComboBox, gridBagConstraints);
+		inputPanel.add(generatorComboBox, new GridBagConstraints() { { fill = GridBagConstraints.HORIZONTAL; gridx = 1; gridy = 1; gridwidth = 2; } } );
 		
-		generatorParametersLabel = new JLabel(StringBundle.get("new_graph_dialog_parameters_label"));
-		gridBagConstraints.fill = GridBagConstraints.HORIZONTAL;
-		gridBagConstraints.gridx = 0;
-		gridBagConstraints.gridy = 2;
-		gridBagConstraints.gridwidth = 1;
-		generatorParametersLabel.setHorizontalAlignment(SwingConstants.RIGHT);
-		inputPanel.add(generatorParametersLabel, gridBagConstraints);
+		generatorParametersLabel = new JLabel(StringBundle.get("new_graph_dialog_parameters_label")) { { setHorizontalAlignment(SwingConstants.RIGHT); } };
+		inputPanel.add(generatorParametersLabel, new GridBagConstraints() { { fill = GridBagConstraints.HORIZONTAL; gridx = 0; gridy = 2; } });
 		
 		generatorParametersField = new ValidatingTextField(10, ".*");
-		gridBagConstraints.fill = GridBagConstraints.HORIZONTAL;
-		gridBagConstraints.gridx = 1;
-		gridBagConstraints.gridy = 2;
-		gridBagConstraints.gridwidth = 2;
-		inputPanel.add(generatorParametersField, gridBagConstraints);
+		inputPanel.add(generatorParametersField, new GridBagConstraints() { { fill = GridBagConstraints.HORIZONTAL; gridx = 1; gridy = 2; gridwidth = 2; } } );
 		
-		allowLoopsCheckBox = new JCheckBox(StringBundle.get("new_graph_dialog_allow_loops_label"));
-		allowLoopsCheckBox.setPreferredSize(new Dimension(160, allowLoopsCheckBox.getPreferredSize().height));
-		gridBagConstraints.fill = GridBagConstraints.HORIZONTAL;
-		gridBagConstraints.gridx = 1;
-		gridBagConstraints.gridy = 3;
-		gridBagConstraints.gridwidth = 1;
-		allowLoopsCheckBox.addItemListener(new ItemListener()
+		allowLoopsCheckBox = new JCheckBox(StringBundle.get("new_graph_dialog_allow_loops_label"))
 		{
-			@Override
-			public void itemStateChanged(ItemEvent arg)
 			{
-				GeneratorBase generator = (GeneratorBase)generatorComboBox.getSelectedItem();
-				
-				if(!generator.areCyclesAllowed().isForced())
+				setPreferredSize(new Dimension(160, getPreferredSize().height));
+				addItemListener(new ItemListener()
 				{
-					if(allowLoopsCheckBox.isSelected())
+					@Override
+					public void itemStateChanged(ItemEvent e)
 					{
-						allowCyclesCheckBox.setEnabled(false);
-						allowCyclesCheckBox.setSelected(true);
+						if(allowLoopsCheckBox != null)
+						{
+							GeneratorBase generator = (GeneratorBase)generatorComboBox.getSelectedItem();
+							
+							if(!generator.areCyclesAllowed().isForced())
+							{
+								if(allowLoopsCheckBox.isSelected())
+								{
+									allowCyclesCheckBox.setEnabled(false);
+									allowCyclesCheckBox.setSelected(true);
+								}
+								else
+								{
+									
+									if(!allowMultipleEdgesCheckBox.isSelected())
+										allowCyclesCheckBox.setEnabled(true);
+								}
+							}
+						}
 					}
-					else
-					{
-						
-						if(!allowMultipleEdgesCheckBox.isSelected())
-							allowCyclesCheckBox.setEnabled(true);
-					}
-				}
+				});
 			}
-		});
-		inputPanel.add(allowLoopsCheckBox, gridBagConstraints);
+		};
+		inputPanel.add(allowLoopsCheckBox, new GridBagConstraints() { { fill = GridBagConstraints.HORIZONTAL; gridx = 1; gridy = 3; } } );
 		
-		allowDirectedEdgesCheckBox = new JCheckBox(StringBundle.get("new_graph_dialog_allow_directed_edges_label"));
-		allowDirectedEdgesCheckBox.setPreferredSize(new Dimension(160, allowDirectedEdgesCheckBox.getPreferredSize().height));
-		gridBagConstraints.fill = GridBagConstraints.HORIZONTAL;
-		gridBagConstraints.gridx = 2;
-		gridBagConstraints.gridy = 3;
-		gridBagConstraints.gridwidth = 1;
-		inputPanel.add(allowDirectedEdgesCheckBox, gridBagConstraints);
+		allowDirectedEdgesCheckBox = new JCheckBox(StringBundle.get("new_graph_dialog_allow_directed_edges_label")) { { setPreferredSize(new Dimension(160, getPreferredSize().height)); } };
+		inputPanel.add(allowDirectedEdgesCheckBox, new GridBagConstraints() { { fill = GridBagConstraints.HORIZONTAL; gridx = 2; gridy = 3; } } );
 		
-		allowMultipleEdgesCheckBox = new JCheckBox(StringBundle.get("new_graph_dialog_allow_multiple_edges_label"));
-		allowMultipleEdgesCheckBox.setPreferredSize(new Dimension(160, allowMultipleEdgesCheckBox.getPreferredSize().height));
-		gridBagConstraints.fill = GridBagConstraints.HORIZONTAL;
-		gridBagConstraints.gridx = 1;
-		gridBagConstraints.gridy = 4;
-		gridBagConstraints.gridwidth = 1;
-		allowMultipleEdgesCheckBox.addItemListener(new ItemListener()
+		allowMultipleEdgesCheckBox = new JCheckBox(StringBundle.get("new_graph_dialog_allow_multiple_edges_label"))
 		{
-			@Override
-			public void itemStateChanged(ItemEvent e)
 			{
-				GeneratorBase generator = (GeneratorBase)generatorComboBox.getSelectedItem();
-				
-				if(!generator.areCyclesAllowed().isForced())
+				setPreferredSize(new Dimension(160, getPreferredSize().height));
+				addItemListener(new ItemListener()
 				{
-					if(allowMultipleEdgesCheckBox.isSelected())
+					@Override
+					public void itemStateChanged(ItemEvent e)
 					{
-						allowCyclesCheckBox.setEnabled(false);
-						allowCyclesCheckBox.setSelected(true);
-					}
-					else
-					{
-						if(!allowLoopsCheckBox.isSelected())
-							allowCyclesCheckBox.setEnabled(true);
-					}
-				}
-			} 
-		});
-		inputPanel.add(allowMultipleEdgesCheckBox, gridBagConstraints);
+						if(allowMultipleEdgesCheckBox != null)
+						{
+							GeneratorBase generator = (GeneratorBase)generatorComboBox.getSelectedItem();
+							
+							if(!generator.areCyclesAllowed().isForced())
+							{
+								if(allowMultipleEdgesCheckBox.isSelected())
+								{
+									allowCyclesCheckBox.setEnabled(false);
+									allowCyclesCheckBox.setSelected(true);
+								}
+								else
+								{
+									if(!allowLoopsCheckBox.isSelected())
+										allowCyclesCheckBox.setEnabled(true);
+								}
+							}
+						}
+					} 
+				});
+			}
+		};
+		inputPanel.add(allowMultipleEdgesCheckBox, new GridBagConstraints() { { fill = GridBagConstraints.HORIZONTAL; gridx = 1; gridy = 4; } } );
 		
-		allowCyclesCheckBox = new JCheckBox(StringBundle.get("new_graph_dialog_allow_cycles_label"));
-		allowCyclesCheckBox.setPreferredSize(new Dimension(160, allowCyclesCheckBox.getPreferredSize().height));
-		gridBagConstraints.fill = GridBagConstraints.HORIZONTAL;
-		gridBagConstraints.gridx = 2;
-		gridBagConstraints.gridy = 4;
-		gridBagConstraints.gridwidth = 1;
-		allowCyclesCheckBox.addItemListener(new ItemListener()
+		allowCyclesCheckBox = new JCheckBox(StringBundle.get("new_graph_dialog_allow_cycles_label"))
 		{
-			@Override
-			public void itemStateChanged(ItemEvent e)
 			{
-				GeneratorBase generator = (GeneratorBase)generatorComboBox.getSelectedItem();
-				
-				if(!generator.areLoopsAllowed().isForced())
+				setPreferredSize(new Dimension(160, getPreferredSize().height));
+				addItemListener(new ItemListener()
 				{
-					if(allowCyclesCheckBox.isSelected())
+					@Override
+					public void itemStateChanged(ItemEvent e)
 					{
-						allowLoopsCheckBox.setEnabled(true);
-					}
-					else
-					{
-						allowLoopsCheckBox.setEnabled(false);
-						allowLoopsCheckBox.setSelected(false);
-					}
-				}
-				
-				if(!generator.areMultipleEdgesAllowed().isForced())
-				{
-					if(allowCyclesCheckBox.isSelected())
-					{
-						allowMultipleEdgesCheckBox.setEnabled(true);
-					}
-					else
-					{
-						allowMultipleEdgesCheckBox.setEnabled(false);
-						allowMultipleEdgesCheckBox.setSelected(false);
-					}
-				}
-			} 
-		});
-		inputPanel.add(allowCyclesCheckBox, gridBagConstraints);
+						if(allowCyclesCheckBox != null)
+						{
+							GeneratorBase generator = (GeneratorBase)generatorComboBox.getSelectedItem();
+							
+							if(!generator.areLoopsAllowed().isForced())
+							{
+								if(allowCyclesCheckBox.isSelected())
+								{
+									allowLoopsCheckBox.setEnabled(true);
+								}
+								else
+								{
+									allowLoopsCheckBox.setEnabled(false);
+									allowLoopsCheckBox.setSelected(false);
+								}
+							}
+							
+							if(!generator.areMultipleEdgesAllowed().isForced())
+							{
+								if(allowCyclesCheckBox.isSelected())
+								{
+									allowMultipleEdgesCheckBox.setEnabled(true);
+								}
+								else
+								{
+									allowMultipleEdgesCheckBox.setEnabled(false);
+									allowMultipleEdgesCheckBox.setSelected(false);
+								}
+							}
+						}
+					} 
+				});
+			}
+		};
+		inputPanel.add(allowCyclesCheckBox, new GridBagConstraints() { { fill = GridBagConstraints.HORIZONTAL; gridx = 2; gridy = 4; } } );
 		
 		//Create and initialize the buttons
-		okButton = new JButton(StringBundle.get("ok_button_text"));
-		okButton.setPreferredSize(new Dimension(80, 28));
-		okButton.setActionCommand("Ok");
+		okButton = new JButton(StringBundle.get("ok_button_text")) { { setPreferredSize(new Dimension(80, 28)); setActionCommand("Ok"); } };
 		okButton.addActionListener(this);
 		getRootPane().setDefaultButton(okButton);
 		
-		cancelButton = new JButton(StringBundle.get("cancel_button_text"));
-		cancelButton.setPreferredSize(new Dimension(80, 28));
+		cancelButton = new JButton(StringBundle.get("cancel_button_text")) { { setPreferredSize(new Dimension(80, 28)); } };
 		cancelButton.addActionListener(this);
 		
 		//Lay out the buttons from left to right
-		JPanel buttonPanel = new JPanel();
-		buttonPanel.setLayout(new BoxLayout(buttonPanel, BoxLayout.LINE_AXIS));
-		buttonPanel.setBorder(BorderFactory.createEmptyBorder(0, 10, 10, 10));
-		buttonPanel.add(Box.createHorizontalGlue());
-		buttonPanel.add(okButton);
-		buttonPanel.add(Box.createRigidArea(new Dimension(10, 0)));
-		buttonPanel.add(cancelButton);
-		
-		gridBagConstraints.fill = GridBagConstraints.HORIZONTAL;
-		gridBagConstraints.gridx = 0;
-		gridBagConstraints.gridy = 5;
-		gridBagConstraints.gridwidth = 3;
-		inputPanel.add(buttonPanel, gridBagConstraints);
+		JPanel buttonPanel = new JPanel()
+		{
+			{
+				setLayout(new BoxLayout(this, BoxLayout.LINE_AXIS));
+				setBorder(BorderFactory.createEmptyBorder(0, 10, 10, 10));
+				add(Box.createHorizontalGlue());
+				add(okButton);
+				add(Box.createRigidArea(new Dimension(10, 0)));
+				add(cancelButton);
+			}
+		};
+		inputPanel.add(buttonPanel, new GridBagConstraints() { { fill = GridBagConstraints.HORIZONTAL; gridx = 0; gridy = 5; gridwidth = 3; } } );
 		
 		//Put everything together, using the content pane's BorderLayout
 		Container contentPanel = getContentPane();

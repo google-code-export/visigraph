@@ -32,28 +32,23 @@ public class CountCrossings implements FunctionBase
 		}
 		
 		int crossingsCount = 0;
-		Vector<CrossingMarker> crossingMarkers = new Vector<CrossingMarker>();
+		g2D.setColor(Color.red);
 		
 		for (int i = 0; i < edges.size(); ++i)
 			for (int j = i + 1; j < edges.size(); ++j)
 			{
 				Vector<Point2D> crossings = getCrossings(edges.get(i), edges.get(j));
 				crossingsCount += crossings.size();
-				if(crossings.size() > 0)
-					crossingMarkers.add(new CrossingMarker(crossings, (edges.get(i).thickness.get() + edges.get(j).thickness.get()) / 2.0));
+				
+				if(crossings.size() > 0 && g2D != null)
+				{
+					double markerRadius = edges.get(i).thickness.get() + edges.get(j).thickness.get();
+					double markerDiameter = 2 * markerRadius;
+					
+					for(Point2D location : crossings)
+						g2D.fill(new Ellipse2D.Double(location.getX() - markerRadius, location.getY() - markerRadius, markerDiameter, markerDiameter));
+				}
 			}
-		
-		if(g2D != null)
-		{
-			g2D.setColor(Color.red);
-		
-			for(CrossingMarker crossing : crossingMarkers)
-			{
-				double markerRadii = crossing.getThickness() * 1.5;
-				for(Point2D location : crossing.getLocations())
-					g2D.fill(new Ellipse2D.Double(location.getX() - markerRadii, location.getY() - markerRadii, 2.0 * markerRadii, 2.0 * markerRadii));
-			}
-		}
 		
 		return crossingsCount + "";
 	}	
@@ -76,38 +71,6 @@ public class CountCrossings implements FunctionBase
 			return GeometryUtilities.getCrossings(e1.getLine(), e0.getArc(), e0.getCenter());
 		else
 			return GeometryUtilities.getCrossings(e0.getArc(), e0.getCenter(), e1.getArc(), e1.getCenter());
-	}
-
-	private class CrossingMarker
-	{
-		private Vector<Point2D> locations;
-		private double          thickness;
-		
-		public CrossingMarker(Vector<Point2D> locations, double thickness)
-		{
-			setLocations(locations);
-			setThickness(thickness);
-		}
-
-		public Vector<Point2D> getLocations()
-		{
-			return locations;
-		}
-		
-		public void setLocations(Vector<Point2D> locations)
-		{
-			this.locations = locations;
-		}
-
-		public double getThickness()
-		{
-			return thickness;
-		}
-
-		public void setThickness(double radius)
-		{
-			this.thickness = radius;
-		}
 	}
 
 	public boolean allowsDynamicEvaluation()

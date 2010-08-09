@@ -30,86 +30,66 @@ public class EditCaptionDialog extends JDialog implements ActionListener
 		return value;
 	}
 	
-	private EditCaptionDialog(Frame frame, Component locationComp, String defaultText, double defaultSize)
+	private EditCaptionDialog(Frame frame, Component locationComp, String defaultText, final double defaultSize)
 	{
 		super(frame, StringBundle.get("edit_caption_dialog_title"), true);
 		
-		GridBagLayout gbl = new GridBagLayout();
-		JPanel inputPanel = new JPanel(gbl);
+		JPanel inputPanel = new JPanel( new GridBagLayout( ) );
 		
-		GridBagConstraints gridBagConstraints = new GridBagConstraints();
+		inputPanel.add( Box.createRigidArea(new Dimension(9, 9)), new GridBagConstraints() { { gridx = 0; gridy = 0; } } );
 		
-		gridBagConstraints.gridx = 0;
-		gridBagConstraints.gridy = 0;
-		inputPanel.add(Box.createRigidArea(new Dimension(9, 9)), gridBagConstraints);
+		captionTextLabel = new JLabel(StringBundle.get("edit_caption_dialog_text")) { { setHorizontalAlignment(SwingConstants.LEFT); setVerticalAlignment(SwingConstants.TOP); setPreferredSize(new Dimension(getPreferredSize().width, 20)); } };
+		inputPanel.add( captionTextLabel, new GridBagConstraints( ) { { fill = GridBagConstraints.HORIZONTAL; gridx = 0; gridy = 1; } } );
 		
-		captionTextLabel = new JLabel(StringBundle.get("edit_caption_dialog_text"));
-		captionTextLabel.setHorizontalAlignment(SwingConstants.LEFT);
-		captionTextLabel.setVerticalAlignment(SwingConstants.TOP);
-		captionTextLabel.setPreferredSize(new Dimension(captionTextLabel.getPreferredSize().width, 20));
-		gridBagConstraints.fill = GridBagConstraints.HORIZONTAL;
-		gridBagConstraints.gridx = 0;
-		gridBagConstraints.gridy = 1;
-		inputPanel.add(captionTextLabel, gridBagConstraints);
+		captionTextArea = new JTextArea(defaultText) { { setFont(captionTextLabel.getFont()); } };
+		JScrollPane captionTextAreaScrollPane = new JScrollPane(captionTextArea) { { setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED); setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED); setPreferredSize(new Dimension(300, 150)); } };
+		inputPanel.add( captionTextAreaScrollPane, new GridBagConstraints() { { fill = GridBagConstraints.HORIZONTAL; gridx = 0; gridy = 2; gridwidth = 2; } } );
 		
-		captionTextArea = new JTextArea(defaultText);
-		captionTextArea.setFont(captionTextLabel.getFont());
-		gridBagConstraints.fill = GridBagConstraints.HORIZONTAL;
-		gridBagConstraints.gridx = 0;
-		gridBagConstraints.gridy = 2;
-		gridBagConstraints.gridwidth = 2;
-		JScrollPane captionTextAreaScrollPane = new JScrollPane(captionTextArea);
-		captionTextAreaScrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
-		captionTextAreaScrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
-		captionTextAreaScrollPane.setPreferredSize(new Dimension(300, 150));
-		inputPanel.add(captionTextAreaScrollPane, gridBagConstraints);
-		
-		captionFontSizeSlider = new JSlider(SwingConstants.HORIZONTAL, 8, 100, 8);
-		captionFontSizeSlider.setMajorTickSpacing(10);
-		captionFontSizeSlider.setPaintTicks(true);
-		captionFontSizeSlider.addChangeListener(new ChangeListener()
+		captionFontSizeSlider = new JSlider(SwingConstants.HORIZONTAL, 8, 100, 8)
 		{
-			@Override
-			public void stateChanged(ChangeEvent e)
 			{
-				captionFontSizeSlider.setToolTipText(captionFontSizeSlider.getValue() + "%");
-				captionTextArea.setFont(new Font(captionTextArea.getFont().getFamily(), captionTextArea.getFont().getStyle(), (int)Math.round(Math.pow(captionFontSizeSlider.getValue() * 0.3155, 2))));
+				setMajorTickSpacing(10); 
+				setPaintTicks(true);
+				addChangeListener(new ChangeListener()
+				{
+					@Override
+					public void stateChanged(ChangeEvent e)
+					{
+						if(captionFontSizeSlider != null)
+						{
+							captionFontSizeSlider.setToolTipText(captionFontSizeSlider.getValue() + "%");
+							captionTextArea.setFont(new Font(captionTextArea.getFont().getFamily(), captionTextArea.getFont().getStyle(), (int)Math.round(Math.pow(captionFontSizeSlider.getValue() * 0.3155, 2))));
+						}
+					}
+				});
+				setBorder(BorderFactory.createEmptyBorder(10, 0, -2, 0));
+				setValue(9);
+				setValue((int)(Math.round(Math.sqrt(defaultSize) / 0.315)));
 			}
-		});
-		captionFontSizeSlider.setBorder(BorderFactory.createEmptyBorder(10, 0, -2, 0));
-		captionFontSizeSlider.setValue(9);
-		captionFontSizeSlider.setValue((int)(Math.round(Math.sqrt(defaultSize) / 0.315)));
-		gridBagConstraints.fill = GridBagConstraints.HORIZONTAL;
-		gridBagConstraints.gridx = 0;
-		gridBagConstraints.gridy = 3;
-		gridBagConstraints.gridwidth = 2;
-		inputPanel.add(captionFontSizeSlider, gridBagConstraints);
+		};
+		inputPanel.add(captionFontSizeSlider, new GridBagConstraints() { { fill = GridBagConstraints.HORIZONTAL; gridx = 0; gridy = 3; gridwidth = 2; } });
 		
 		//Create and initialize the buttons
-		final JButton okButton = new JButton(StringBundle.get("ok_button_text"));
-		okButton.setPreferredSize(new Dimension(80, 28));
-		okButton.setActionCommand("Ok");
+		final JButton okButton = new JButton(StringBundle.get("ok_button_text")) { { setPreferredSize(new Dimension(80, 28)); setActionCommand("Ok"); } };
 		okButton.addActionListener(this);
 		getRootPane().setDefaultButton(okButton);
 		
-		JButton cancelButton = new JButton(StringBundle.get("cancel_button_text"));
-		cancelButton.setPreferredSize(new Dimension(80, 28));
+		final JButton cancelButton = new JButton(StringBundle.get("cancel_button_text")) { { setPreferredSize(new Dimension(80, 28)); } };
 		cancelButton.addActionListener(this);
 		
 		//Lay out the buttons from left to right
-		JPanel buttonPanel = new JPanel();
-		buttonPanel.setLayout(new BoxLayout(buttonPanel, BoxLayout.LINE_AXIS));
-		buttonPanel.setBorder(BorderFactory.createEmptyBorder(0, 10, 10, 10));
-		buttonPanel.add(Box.createHorizontalGlue());
-		buttonPanel.add(okButton);
-		buttonPanel.add(Box.createRigidArea(new Dimension(10, 0)));
-		buttonPanel.add(cancelButton);
-		
-		gridBagConstraints.fill = GridBagConstraints.HORIZONTAL;
-		gridBagConstraints.gridx = 0;
-		gridBagConstraints.gridy = 5;
-		gridBagConstraints.gridwidth = 3;
-		inputPanel.add(buttonPanel, gridBagConstraints);
+		JPanel buttonPanel = new JPanel()
+		{
+			{
+				setLayout(new BoxLayout(this, BoxLayout.LINE_AXIS));
+				setBorder(BorderFactory.createEmptyBorder(0, 10, 10, 10));
+				add(Box.createHorizontalGlue());
+				add(okButton);
+				add(Box.createRigidArea(new Dimension(10, 0)));
+				add(cancelButton);
+			}
+		};
+		inputPanel.add(buttonPanel, new GridBagConstraints() { { fill = GridBagConstraints.HORIZONTAL; gridx = 0; gridy = 5; gridwidth = 3; } });
 		
 		//Put everything together, using the content pane's BorderLayout
 		Container contentPanel = getContentPane();
