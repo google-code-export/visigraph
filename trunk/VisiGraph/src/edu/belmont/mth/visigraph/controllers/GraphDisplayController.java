@@ -813,6 +813,7 @@ public class GraphDisplayController extends JPanel
 						// The procedure for adding an edge using the edge tool is to click a vertex the edge will come from and subsequently a vertex
 						// the edge will go to
 						boolean fromVertexClicked = false;
+						boolean toVertexClicked   = false;
 						
 						for (Vertex vertex : graph.vertexes)
 							if (VertexDisplayView.wasClicked(vertex, currentMousePoint, transform.getScaleX()))
@@ -836,13 +837,20 @@ public class GraphDisplayController extends JPanel
 											if(graph.areCyclesAllowed || !graph.areConnected(fromVertex, vertex))
 											{
 												graph.edges.add(new Edge(graph.areDirectedEdgesAllowed, fromVertex, vertex));
+												fromVertex.isSelected.set(false);
+												if(!userSettings.deselectVertexWithNewEdge.get())
+												{
+													vertex.isSelected.set(true);
+													fromVertex = vertex;
+												}
+												toVertexClicked = true;
 											}
 										}
 									}
 								}
 						
 						// If the user didn't click a from vertex (clicked a to Vertex or nothing), reset and deselect all
-						if (!fromVertexClicked && event.getButton() == MouseEvent.BUTTON1)
+						if (!fromVertexClicked && (!toVertexClicked || userSettings.deselectVertexWithNewEdge.get()) && event.getButton() == MouseEvent.BUTTON1)
 						{
 							fromVertex = null;
 							graph.deselectAll();
@@ -1046,8 +1054,10 @@ public class GraphDisplayController extends JPanel
 									if(graph.areCyclesAllowed || !graph.areConnected(fromVertex, vertex))
 									{
 										graph.edges.add(new Edge(graph.areDirectedEdgesAllowed, fromVertex, vertex));
-										fromVertex = null;
-										graph.deselectAll();
+										fromVertex.isSelected.set(false);
+										fromVertex = userSettings.deselectVertexWithNewEdge.get() ? null : vertex;
+										if(fromVertex != null)
+											fromVertex.isSelected.set(true);
 									}
 								}
 								break;
