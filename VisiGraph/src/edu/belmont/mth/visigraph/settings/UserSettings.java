@@ -66,6 +66,7 @@ public class UserSettings extends ObservableBase
 	public final Property<Double>  captionEditorClickMargin;
 	public final Property<Double>  panDecelerationFactor;
 	public final Property<Boolean> panOnDoubleClick;
+	public final Property<Boolean> deselectVertexWithNewEdge;
 	public final Property<Double>  zoomInFactor;
 	public final Property<Double>  zoomOutFactor;
 	public final Property<Double>  maximumZoomFactor;
@@ -142,6 +143,7 @@ public class UserSettings extends ObservableBase
 		this.captionEditorClickMargin		= new Property<Double> (GlobalSettings.defaultCaptionEditorClickMargin,			"captionEditorClickMargin"		);
 		this.panDecelerationFactor			= new Property<Double> (GlobalSettings.defaultPanDecelerationFactor,			"panDecelerationFactor"			);
 		this.panOnDoubleClick				= new Property<Boolean>(GlobalSettings.defaultPanOnDoubleClick,					"panOnDoubleClick"				);
+		this.deselectVertexWithNewEdge		= new Property<Boolean>(GlobalSettings.defaultDeselectVertexWithNewEdge,		"deselectVertexWithNewEdge"		);
 		this.zoomInFactor					= new Property<Double> (GlobalSettings.defaultZoomInFactor,						"zoomInFactor"					);
 		this.zoomOutFactor					= new Property<Double> (GlobalSettings.defaultZoomOutFactor,					"zoomOutFactor"					);
 		this.maximumZoomFactor				= new Property<Double> (GlobalSettings.defaultMaximumZoomFactor,				"maximumZoomFactor"				);
@@ -262,6 +264,7 @@ public class UserSettings extends ObservableBase
 		if(members.containsKey("captionEditorClickMargin"))		captionEditorClickMargin	 .set( (Double)  members.get( "captionEditorClickMargin"		) );
 		if(members.containsKey("panDecelerationFactor"))		panDecelerationFactor		 .set( (Double)  members.get( "panDecelerationFactor"			) );
 		if(members.containsKey("panOnDoubleClick"))				panOnDoubleClick			 .set( (Boolean) members.get( "panOnDoubleClick"				) );
+		if(members.containsKey("deselectVertexWithNewEdge"))	deselectVertexWithNewEdge	 .set( (Boolean) members.get( "deselectVertexWithNewEdge"		) );
 		if(members.containsKey("zoomInFactor"))					zoomInFactor				 .set( (Double)  members.get( "zoomInFactor"					) );
 		if(members.containsKey("zoomOutFactor"))				zoomOutFactor				 .set( (Double)  members.get( "zoomOutFactor"					) );
 		if(members.containsKey("maximumZoomFactor"))			maximumZoomFactor			 .set( (Double)  members.get( "maximumZoomFactor"				) );
@@ -348,6 +351,7 @@ public class UserSettings extends ObservableBase
 		members.put("captionEditorClickMargin",		captionEditorClickMargin		);
 		members.put("panDecelerationFactor",		panDecelerationFactor			);
 		members.put("panOnDoubleClick",				panOnDoubleClick				);
+		members.put("deselectVertexWithNewEdge",	deselectVertexWithNewEdge		);
 		members.put("zoomInFactor",					zoomInFactor					);
 		members.put("zoomOutFactor",				zoomOutFactor					);
 		members.put("maximumZoomFactor",			maximumZoomFactor				);

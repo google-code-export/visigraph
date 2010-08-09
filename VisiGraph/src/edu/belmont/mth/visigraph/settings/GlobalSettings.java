@@ -13,7 +13,7 @@ public class GlobalSettings
 {
 	public static final String					 applicationName							= "VisiGraph";
 	public static final String					 applicationAuthor							= "Cameron Behar";
-	public static final String					 applicationVersion							= "1.04.00";
+	public static final String					 applicationVersion							= "1.04.01";
 	public static final String					 applicationWebsite							= "http://code.google.com/p/visigraph";
 	public static final String					 applicationDescription						= "A flexible cross-platform application for modeling graph theory problems and solutions.";
 	public static final String					 applicationJarDirectoryUrl					= "http://visigraph.googlecode.com/svn/trunk/VisiGraph/jar/";
@@ -123,4 +123,6 @@ public class GlobalSettings
 	
 	public static final int						 defaultUndoLoggingInterval					= 2000;
 	public static final int						 defaultUndoLoggingMaximum					= 30;
+	
+	public static final boolean					 defaultDeselectVertexWithNewEdge			= false;
 }
