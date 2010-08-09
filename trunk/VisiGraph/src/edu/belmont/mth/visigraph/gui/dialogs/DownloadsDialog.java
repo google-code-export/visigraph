@@ -44,16 +44,12 @@ public class DownloadsDialog extends JDialog implements ActionListener
 		getLatestCheckBox = new JCheckBox(String.format(StringBundle.get("downloads_dialog_download_latest_label"), GlobalSettings.applicationName));
 		
 		JLabel generatorsLabel = new JLabel(StringBundle.get("downloads_dialog_available_generators_label"));
-		generatorsPanel = new JPanel(new VerticalFlowLayout(VerticalFlowLayout.TOP, 0, 0));
-		generatorsPanel.setBackground(Color.white);
-		JScrollPane generatorsScrollPane = new JScrollPane(generatorsPanel);
-		generatorsScrollPane.setMinimumSize(new Dimension(400, 150));
+		generatorsPanel = new JPanel(new VerticalFlowLayout(VerticalFlowLayout.TOP, 0, 0)) { { setBackground(Color.white); } };
+		JScrollPane generatorsScrollPane = new JScrollPane(generatorsPanel) { { setMinimumSize(new Dimension(400, 150)); } };
 		
 		JLabel functionsLabel = new JLabel(StringBundle.get("downloads_dialog_available_functions_label"));
-		functionsPanel = new JPanel(new VerticalFlowLayout(VerticalFlowLayout.TOP, 0, 0));
-		functionsPanel.setBackground(Color.white);
-		JScrollPane functionsScrollPane = new JScrollPane(functionsPanel);
-		functionsScrollPane.setMinimumSize(new Dimension(400, 150));
+		functionsPanel = new JPanel(new VerticalFlowLayout(VerticalFlowLayout.TOP, 0, 0)) { { setBackground(Color.white); } };
+		JScrollPane functionsScrollPane = new JScrollPane(functionsPanel) { { setMinimumSize(new Dimension(400, 150)); } };
 		
 		JPanel inputPanel = new JPanel();
 		inputPanel.setBorder(BorderFactory.createEmptyBorder(3, 8, -5, 8));
@@ -82,24 +78,25 @@ public class DownloadsDialog extends JDialog implements ActionListener
 				.addGroup(layout.createParallelGroup(GroupLayout.Alignment.LEADING).addComponent(getLatestCheckBox)));
 		
 		//Create and initialize the buttons
-		final JButton okButton = new JButton(StringBundle.get("download_button_text"));
-		okButton.setPreferredSize(new Dimension(100, 28));
-		okButton.setActionCommand("Download");
+		final JButton okButton = new JButton(StringBundle.get("download_button_text")) { { setPreferredSize(new Dimension(100, 28)); setActionCommand("Download"); } };
 		okButton.addActionListener(this);
 		getRootPane().setDefaultButton(okButton);
 		
-		JButton cancelButton = new JButton(StringBundle.get("cancel_button_text"));
-		cancelButton.setPreferredSize(new Dimension(80, 28));
+		final JButton cancelButton = new JButton(StringBundle.get("cancel_button_text")) { { setPreferredSize(new Dimension(80, 28)); } };
 		cancelButton.addActionListener(this);
 		
 		//Lay out the buttons from left to right
-		JPanel buttonPanel = new JPanel();
-		buttonPanel.setLayout(new BoxLayout(buttonPanel, BoxLayout.LINE_AXIS));
-		buttonPanel.setBorder(BorderFactory.createEmptyBorder(-2, 9, 9, 13));
-		buttonPanel.add(Box.createHorizontalGlue());
-		buttonPanel.add(okButton);
-		buttonPanel.add(Box.createRigidArea(new Dimension(10, 0)));
-		buttonPanel.add(cancelButton);
+		JPanel buttonPanel = new JPanel()
+		{
+			{
+				setLayout(new BoxLayout(this, BoxLayout.LINE_AXIS));
+				setBorder(BorderFactory.createEmptyBorder(-2, 9, 9, 13));
+				add(Box.createHorizontalGlue());
+				add(okButton);
+				add(Box.createRigidArea(new Dimension(10, 0)));
+				add(cancelButton);
+			}
+		};
 		
 		//Put everything together, using the content pane's BorderLayout
 		Container contentPanel = getContentPane();
@@ -135,12 +132,7 @@ public class DownloadsDialog extends JDialog implements ActionListener
 				Matcher matcher = pattern.matcher(line); matcher.find();
 				
 				if(matcher.matches() && matcher.group(1).equals(matcher.group(2)))
-				{
-					JCheckBox checkbox = new JCheckBox(matcher.group(1));
-					checkbox.setPreferredSize(new Dimension(375, checkbox.getPreferredSize().height));
-					checkbox.setBackground(generatorsPanel.getBackground());
-					generatorsPanel.add(checkbox);
-				}
+					generatorsPanel.add(new JCheckBox(matcher.group(1)) { { setPreferredSize(new Dimension(375, getPreferredSize().height)); setBackground(generatorsPanel.getBackground()); } });
 			}
 			
 			generatorsPanel.updateUI();
@@ -165,12 +157,7 @@ public class DownloadsDialog extends JDialog implements ActionListener
 				Matcher matcher = pattern.matcher(line); matcher.find();
 				
 				if(matcher.matches() && matcher.group(1).equals(matcher.group(2)))
-				{
-					JCheckBox checkbox = new JCheckBox(matcher.group(1));
-					checkbox.setPreferredSize(new Dimension(375, checkbox.getPreferredSize().height));
-					checkbox.setBackground(functionsPanel.getBackground());
-					functionsPanel.add(checkbox);
-				}
+					functionsPanel.add(new JCheckBox(matcher.group(1)) { { setPreferredSize(new Dimension(375, getPreferredSize().height)); setBackground(functionsPanel.getBackground()); } });
 			}
 			
 			functionsPanel.updateUI();

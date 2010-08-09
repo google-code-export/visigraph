@@ -172,30 +172,18 @@ public class ColorPicker extends JComponent
 		g2D.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 		g2D.setRenderingHint(RenderingHints.KEY_STROKE_CONTROL, RenderingHints.VALUE_STROKE_PURE);
 		
-		int hueX = (int)Math.round(hue * 69.0) + 23;
-		Path2D.Double hueHandle = new Path2D.Double();
-		hueHandle.moveTo(hueX, 13);
-		hueHandle.lineTo(hueX + 4, 20);
-		hueHandle.lineTo(hueX - 4, 20);
-		hueHandle.lineTo(hueX, 13);
+		final int hueX = (int)Math.round(hue * 69.0) + 23;
+		Path2D.Double hueHandle = new Path2D.Double() { { moveTo(hueX, 13); lineTo(hueX + 4, 20); lineTo(hueX - 4, 20); lineTo(hueX, 13); } };
 		g2D.setColor(Color.black); g2D.fill(hueHandle);
 		g2D.setColor(Color.white); g2D.draw(hueHandle);
 		
-		int saturationX = (int)Math.round(saturation * 69.0) + 98;
-		Path2D.Double saturationHandle = new Path2D.Double();
-		saturationHandle.moveTo(saturationX, 13);
-		saturationHandle.lineTo(saturationX + 4, 20);
-		saturationHandle.lineTo(saturationX - 4, 20);
-		saturationHandle.lineTo(saturationX, 13);
+		final int saturationX = (int)Math.round(saturation * 69.0) + 98;
+		Path2D.Double saturationHandle = new Path2D.Double() { { moveTo(saturationX, 13); lineTo(saturationX + 4, 20); lineTo(saturationX - 4, 20); lineTo(saturationX, 13); } };
 		g2D.setColor(Color.black); g2D.fill(saturationHandle);
 		g2D.setColor(Color.white); g2D.draw(saturationHandle);
 		
-		int brightnessX = (int)Math.round(brightness * 69.0) + 173;
-		Path2D.Double brightnessHandle = new Path2D.Double();
-		brightnessHandle.moveTo(brightnessX, 13);
-		brightnessHandle.lineTo(brightnessX + 4, 20);
-		brightnessHandle.lineTo(brightnessX - 4, 20);
-		brightnessHandle.lineTo(brightnessX, 13);
+		final int brightnessX = (int)Math.round(brightness * 69.0) + 173;
+		Path2D.Double brightnessHandle = new Path2D.Double() { { moveTo(brightnessX, 13); lineTo(brightnessX + 4, 20); lineTo(brightnessX - 4, 20); lineTo(brightnessX, 13); } };
 		g2D.setColor(Color.black); g2D.fill(brightnessHandle);
 		g2D.setColor(Color.white); g2D.draw(brightnessHandle);
 	}

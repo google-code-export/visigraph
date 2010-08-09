@@ -31,10 +31,8 @@ import edu.belmont.mth.visigraph.models.functions.*;
  * 
  */
 @SuppressWarnings("serial")
-public class GraphDisplayController extends JPanel implements ClipboardOwner
+public class GraphDisplayController extends JPanel
 {
-	private GraphDisplayController   thisGdc;
-	
 	private Graph				     graph;
 	private GraphSettings 	  		 settings;
 	
@@ -75,9 +73,6 @@ public class GraphDisplayController extends JPanel implements ClipboardOwner
 	
 	public GraphDisplayController(Graph graph)
 	{
-		// Maintain instance
-		thisGdc = this;
-		
 		// Initialize the list of GraphChangeEvent listeners
 		graphChangeListenerList = new EventListenerList();
 		
@@ -96,15 +91,19 @@ public class GraphDisplayController extends JPanel implements ClipboardOwner
 		});
 				
 		// Add/bind display settings
-		settings = new GraphSettings();
-		settings.addObserver(new ObserverBase()
+		settings = new GraphSettings()
 		{
-			@Override
-			public void hasChanged(Object source)
 			{
-				hasSettingChanged(source);
+				addObserver(new ObserverBase()
+				{
+					@Override
+					public void hasChanged(Object source)
+					{
+						hasSettingChanged(source);
+					}
+				}); 
 			}
-		});
+		};
 		
 		// Initialize the toolbar, buttons, and viewport
 		initializeComponents();
@@ -117,7 +116,7 @@ public class GraphDisplayController extends JPanel implements ClipboardOwner
 		viewportValidationTimer = new Timer(30, new ActionListener()
 		{
 			@Override
-			public void actionPerformed(ActionEvent arg0)
+			public void actionPerformed(ActionEvent e)
 			{
 				if(isViewportInvalidated)
 					repaint();
@@ -187,7 +186,14 @@ public class GraphDisplayController extends JPanel implements ClipboardOwner
 		// Send the JSON to the clipboard
 		StringSelection stringSelection = new StringSelection( copy.toString() );
 	    Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
-	    clipboard.setContents( stringSelection, thisGdc );
+	    clipboard.setContents( stringSelection, new ClipboardOwner()
+	    {
+			@Override
+			public void lostOwnership(Clipboard c, Transferable t)
+			{
+				// Who cares?		
+			}
+		} );
 	}
 	
 	public void dispose()
@@ -237,12 +243,15 @@ public class GraphDisplayController extends JPanel implements ClipboardOwner
 	
 	public Rectangle getSelectionRectangle()
 	{
-		Rectangle ret = new Rectangle();
-		ret.x = Math.min(pastMousePoint.x, currentMousePoint.x);
-		ret.y = Math.min(pastMousePoint.y, currentMousePoint.y);
-		ret.width = Math.abs(pastMousePoint.x - currentMousePoint.x);
-		ret.height = Math.abs(pastMousePoint.y - currentMousePoint.y);
-		return ret;
+		return new Rectangle()
+		{
+			{
+				x = Math.min(pastMousePoint.x, currentMousePoint.x);
+				y = Math.min(pastMousePoint.y, currentMousePoint.y);
+				width = Math.abs(pastMousePoint.x - currentMousePoint.x);
+				height = Math.abs(pastMousePoint.y - currentMousePoint.y);
+			}
+		};
 	}
 	
 	public void hasGraphChanged(Object source)
@@ -268,15 +277,13 @@ public class GraphDisplayController extends JPanel implements ClipboardOwner
 		setBackground(userSettings.graphBackground.get());
 		setOpaque(true);
 		
-		toolToolBarPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
-		toolToolBarPanel.setMaximumSize(new Dimension(Integer.MAX_VALUE, 24));
+		toolToolBarPanel = new JPanel(new FlowLayout(FlowLayout.LEFT)) { { setMaximumSize(new Dimension(Integer.MAX_VALUE, 24)); } };
 		add(toolToolBarPanel, BorderLayout.WEST);
 		
 		toolToolBar = new ToolToolBar();
 		toolToolBarPanel.add(toolToolBar);
 		
-		nonToolToolbarPanel = new JPanel(new WrapLayout(FlowLayout.LEFT));
-		nonToolToolbarPanel.setMaximumSize(new Dimension(Integer.MAX_VALUE, 32));
+		nonToolToolbarPanel = new JPanel(new WrapLayout(FlowLayout.LEFT)) { { setMaximumSize(new Dimension(Integer.MAX_VALUE, 32)); } };
 		add(nonToolToolbarPanel, BorderLayout.NORTH);
 		
 		arrangeToolBar = new ArrangeToolBar();
@@ -294,8 +301,7 @@ public class GraphDisplayController extends JPanel implements ClipboardOwner
 		selectedFunctionLabels = new HashMap<FunctionBase, JLabel>();
 		functionsToBeRun = new TreeSet<FunctionBase>();
 		
-		viewportPanel = new JPanel(new BorderLayout());
-		viewportPanel.setBorder(new BevelBorder(BevelBorder.LOWERED));
+		viewportPanel = new JPanel(new BorderLayout()) { { setBorder(new BevelBorder(BevelBorder.LOWERED)); } };
 		add(viewportPanel, BorderLayout.CENTER);
 		
 		viewport = new JComponent()
@@ -363,26 +369,25 @@ public class GraphDisplayController extends JPanel implements ClipboardOwner
 		});
 		viewport.addKeyListener(new KeyListener()
 		{
-			public void keyPressed(KeyEvent arg0)
+			public void keyPressed(KeyEvent e)
 			{
-				viewportKeyPressed(arg0);
+				viewportKeyPressed(e);
 			}
 			
-			public void keyReleased(KeyEvent arg0)
+			public void keyReleased(KeyEvent e)
 			{
-			// Do nothing
+				// Do nothing
 			}
 			
-			public void keyTyped(KeyEvent arg0)
+			public void keyTyped(KeyEvent e)
 			{
-			// Do nothing
+				// Do nothing
 			}
 		});
 		viewportPanel.add(viewport, BorderLayout.CENTER);
 		viewportPopupMenu = new ViewportPopupMenu();
 		
-		statusBar = new JPanel(new FlowLayout(FlowLayout.LEFT));
-		statusBar.setMaximumSize(new Dimension(Integer.MAX_VALUE, 12));
+		statusBar = new JPanel(new FlowLayout(FlowLayout.LEFT)) { { setMaximumSize(new Dimension(Integer.MAX_VALUE, 12)); } };
 		add(statusBar, BorderLayout.SOUTH);
 		
 		undoTimer = new Timer(userSettings.undoLoggingInterval.get(), new ActionListener()
@@ -418,12 +423,6 @@ public class GraphDisplayController extends JPanel implements ClipboardOwner
 		fromVertex = null;
 	}
 	
-	@Override
-	public void lostOwnership(Clipboard arg0, Transferable arg1)
-	{
-		// Who cares?
-	}
-	
 	public void paintSelectionRectangle(Graphics2D g2D)
 	{
 		Rectangle selection = getSelectionRectangle();
@@ -437,6 +436,7 @@ public class GraphDisplayController extends JPanel implements ClipboardOwner
 	
 	public void paintViewport(Graphics2D g2D)
 	{
+		// Apply rendering settings
 		if (userSettings.useAntiAliasing.get())
 			g2D.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 		
@@ -455,7 +455,11 @@ public class GraphDisplayController extends JPanel implements ClipboardOwner
 		functionsToBeRun.clear();
 		
 		for (FunctionBase function : run)
-			JOptionPane.showInternalMessageDialog(viewport, function +": " + function.evaluate(g2D, graph), GlobalSettings.applicationName, JOptionPane.OK_OPTION + JOptionPane.INFORMATION_MESSAGE);
+		{
+			String result = function.evaluate(g2D, graph);
+			if(result != null && result.trim().length() > 0)
+				JOptionPane.showInternalMessageDialog(viewport, function +": " + result, GlobalSettings.applicationName, JOptionPane.OK_OPTION + JOptionPane.INFORMATION_MESSAGE);
+		}
 		
 		// Clear everything
 		super.paintComponent(g2D);
@@ -580,8 +584,7 @@ public class GraphDisplayController extends JPanel implements ClipboardOwner
 	
 	public void printGraph() throws PrinterException
 	{
-		ViewportPrinter pv = new ViewportPrinter();
-		pv.print();
+		new ViewportPrinter().print();
 	}
 	
 	public void redo()
@@ -658,82 +661,36 @@ public class GraphDisplayController extends JPanel implements ClipboardOwner
 					break;
 				}
 			case KeyEvent.VK_UP:
-				{
-					double increment = -userSettings.arrowKeyIncrement.get();
-					if(event.isAltDown()) increment /= 10.0;
-					if(event.isShiftDown()) increment *= 10.0;
-					
-					if((event.getModifiers() & Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()) != 0)
-					{
-						transform.translate(0.0, -increment);
-						isViewportInvalidated = true;
-					}
-					else
-					{
-						graph.moveSelected(0, increment);
-						for (Edge edge : graph.edges)
-							if (edge.isSelected.get())
-								edge.fixHandle();
-					}
-					
-					break;
-				}
 			case KeyEvent.VK_RIGHT:
-				{
-					double increment = userSettings.arrowKeyIncrement.get();
-					if(event.isAltDown()) increment /= 10.0;
-					if(event.isShiftDown()) increment *= 10.0;
-					
-					if((event.getModifiers() & Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()) != 0)
-					{
-						transform.translate(-increment, 0.0);
-						isViewportInvalidated = true;
-					}
-					else
-					{
-						graph.moveSelected(increment, 0);
-						for (Edge edge : graph.edges)
-							if (edge.isSelected.get())
-								edge.fixHandle();
-					}
-					
-					break;
-				}
 			case KeyEvent.VK_DOWN:
-				{
-					double increment = userSettings.arrowKeyIncrement.get();
-					if(event.isAltDown()) increment /= 10.0;
-					if(event.isShiftDown()) increment *= 10.0;
-					
-					if((event.getModifiers() & Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()) != 0)
-					{
-						transform.translate(0.0, -increment);
-						isViewportInvalidated = true;
-					}
-					else
-					{
-						graph.moveSelected(0, increment);
-						for (Edge edge : graph.edges)
-							if (edge.isSelected.get())
-								edge.fixHandle();
-					}
-					
-					break;
-				}
 			case KeyEvent.VK_LEFT:
 				{
-					double increment = -userSettings.arrowKeyIncrement.get();
+					double increment = userSettings.arrowKeyIncrement.get();
 					if(event.isAltDown()) increment /= 10.0;
 					if(event.isShiftDown()) increment *= 10.0;
 					
 					if((event.getModifiers() & Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()) != 0)
 					{
-						transform.translate(-increment, 0.0);
+						switch(event.getKeyCode())
+						{
+							case KeyEvent.VK_UP:    transform.translate(0.0, increment);  break;
+							case KeyEvent.VK_RIGHT: transform.translate(-increment, 0.0); break;
+							case KeyEvent.VK_DOWN:  transform.translate(0.0, -increment); break;
+							case KeyEvent.VK_LEFT:  transform.translate(increment, 0.0);  break;
+						}
+						
 						isViewportInvalidated = true;
 					}
 					else
 					{
-						graph.moveSelected(increment, 0);
+						switch(event.getKeyCode())
+						{
+							case KeyEvent.VK_UP:    graph.moveSelected(0.0, -increment); break;
+							case KeyEvent.VK_RIGHT: graph.moveSelected(increment, 0.0);  break;
+							case KeyEvent.VK_DOWN:  graph.moveSelected(0.0, increment);  break;
+							case KeyEvent.VK_LEFT:  graph.moveSelected(-increment, 0.0); break;
+						}
+						
 						for (Edge edge : graph.edges)
 							if (edge.isSelected.get())
 								edge.fixHandle();
@@ -750,11 +707,7 @@ public class GraphDisplayController extends JPanel implements ClipboardOwner
 		transform.inverseTransform(event.getPoint(), currentMousePoint);
 		
 		if (tool == Tool.POINTER_TOOL && pointerToolClickedObject)
-		{
-			double xDifference = currentMousePoint.getX() - oldPoint.x;
-			double yDifference = currentMousePoint.getY() - oldPoint.y;
-			graph.moveSelected(xDifference, yDifference);
-		}
+			graph.moveSelected(currentMousePoint.getX() - oldPoint.x, currentMousePoint.getY() - oldPoint.y);
 		
 		isViewportInvalidated = true;
 	}
@@ -1170,7 +1123,7 @@ public class GraphDisplayController extends JPanel implements ClipboardOwner
 		transform.translate(Math.round(viewport.getWidth() / 2.0), Math.round(viewport.getHeight() / 2.0));
 		
 		// We need to fit it to the viewport. So we want to scale according to the lowest viewport-to-graph dimension ratio.
-		double widthRatio = (viewport.getWidth() - userSettings.zoomGraphPadding.get()) / rectangle.getWidth();
+		double widthRatio  = (viewport.getWidth()  - userSettings.zoomGraphPadding.get()) / rectangle.getWidth();
 		double heightRatio = (viewport.getHeight() - userSettings.zoomGraphPadding.get()) / rectangle.getHeight();
 		double minRatio = Math.min(widthRatio, heightRatio);
 		
@@ -1224,91 +1177,116 @@ public class GraphDisplayController extends JPanel implements ClipboardOwner
 			this.setOrientation(SwingConstants.VERTICAL);
 			this.setFloatable(false);
 			
-			pointerToolButton = new JButton(ImageIconBundle.get("pointer_tool_icon"));
-			pointerToolButton.addActionListener(new ActionListener()
+			pointerToolButton = new JButton(ImageIconBundle.get("pointer_tool_icon"))
 			{
-				public void actionPerformed(ActionEvent e)
 				{
-					setTool(Tool.POINTER_TOOL);
-					graph.deselectAll();
+					addActionListener(new ActionListener()
+					{
+						public void actionPerformed(ActionEvent e)
+						{
+							setTool(Tool.POINTER_TOOL);
+							graph.deselectAll();
+						}
+					});
+					setToolTipText(StringBundle.get("pointer_tool_tooltip"));
+					setSelected(true);
 				}
-			});
-			pointerToolButton.setToolTipText(StringBundle.get("pointer_tool_tooltip"));
-			pointerToolButton.setSelected(true);
+			};
 			this.add(pointerToolButton);
 			
-			vertexToolButton = new JButton(ImageIconBundle.get("vertex_tool_icon"));
-			vertexToolButton.addActionListener(new ActionListener()
+			vertexToolButton = new JButton(ImageIconBundle.get("vertex_tool_icon"))
 			{
-				public void actionPerformed(ActionEvent e)
-				{
-					setTool(Tool.VERTEX_TOOL);
-					graph.deselectAll();
+				{			
+					addActionListener(new ActionListener()
+					{
+						public void actionPerformed(ActionEvent e)
+						{
+							setTool(Tool.VERTEX_TOOL);
+							graph.deselectAll();
+						}
+					});
+					setToolTipText(StringBundle.get("vertex_tool_tooltip"));
 				}
-			});
-			vertexToolButton.setToolTipText(StringBundle.get("vertex_tool_tooltip"));
+			};
 			this.add(vertexToolButton);
 			
-			edgeToolButton = new JButton(ImageIconBundle.get("edge_tool_icon"));
-			edgeToolButton.addActionListener(new ActionListener()
+			edgeToolButton = new JButton(ImageIconBundle.get("edge_tool_icon"))
 			{
-				public void actionPerformed(ActionEvent e)
 				{
-					setTool(Tool.EDGE_TOOL);
-					graph.deselectAll();
+					addActionListener(new ActionListener()
+					{
+						public void actionPerformed(ActionEvent e)
+						{
+							setTool(Tool.EDGE_TOOL);
+							graph.deselectAll();
+						}
+					});
+					setToolTipText(StringBundle.get("edge_tool_tooltip"));
 				}
-			});
-			edgeToolButton.setToolTipText(StringBundle.get("edge_tool_tooltip"));
+			};
 			this.add(edgeToolButton);
 			
-			captionToolButton = new JButton(ImageIconBundle.get("caption_tool_icon"));
-			captionToolButton.addActionListener(new ActionListener()
+			captionToolButton = new JButton(ImageIconBundle.get("caption_tool_icon"))
 			{
-				public void actionPerformed(ActionEvent e)
 				{
-					setTool(Tool.CAPTION_TOOL);
-					graph.deselectAll();
+					addActionListener(new ActionListener()
+					{
+						public void actionPerformed(ActionEvent e)
+						{
+							setTool(Tool.CAPTION_TOOL);
+							graph.deselectAll();
+						}
+					});
+					setToolTipText(StringBundle.get("caption_tool_tooltip"));
 				}
-			});
-			captionToolButton.setToolTipText(StringBundle.get("caption_tool_tooltip"));
+			};
 			this.add(captionToolButton);
 			
-			cutToolButton = new JButton(ImageIconBundle.get("cut_tool_icon"));
-			cutToolButton.addActionListener(new ActionListener()
+			cutToolButton = new JButton(ImageIconBundle.get("cut_tool_icon"))
 			{
-				public void actionPerformed(ActionEvent e)
 				{
-					setTool(Tool.CUT_TOOL);
-					graph.deselectAll();
+					addActionListener(new ActionListener()
+					{
+						public void actionPerformed(ActionEvent e)
+						{
+							setTool(Tool.CUT_TOOL);
+							graph.deselectAll();
+						}
+					});
+					setToolTipText(StringBundle.get("cut_tool_tooltip"));
 				}
-			});
-			cutToolButton.setToolTipText(StringBundle.get("cut_tool_tooltip"));
+			};
 			this.add(cutToolButton);
 			
-			paintToolButton = new JButton(ImageIconBundle.get("paint_tool_icon"));
-			paintToolButton.addMouseListener(new MouseAdapter()
+			paintToolButton = new JButton(ImageIconBundle.get("paint_tool_icon"))
 			{
-				@Override
-				public void mouseExited(MouseEvent e)
 				{
-					isMouseDownOnPaintToolButton = false;
+					addMouseListener(new MouseAdapter()
+					{
+						@Override
+						public void mouseExited(MouseEvent e)
+						{
+							isMouseDownOnPaintToolButton = false;
+						}
+						
+						@Override
+						public void mousePressed(MouseEvent event)
+						{
+							graph.deselectAll();
+							setTool(Tool.PAINT_TOOL);
+							isMouseDownOnPaintToolButton = true;
+							paintMenuTimer.start();
+						}
+						
+						@Override
+						public void mouseReleased(MouseEvent event)
+						{
+							isMouseDownOnPaintToolButton = false;
+						}
+					});
+					setToolTipText(StringBundle.get("paint_tool_tooltip"));
 				}
-				
-				@Override
-				public void mousePressed(MouseEvent event)
-				{
-					graph.deselectAll();
-					setTool(Tool.PAINT_TOOL);
-					isMouseDownOnPaintToolButton = true;
-					paintMenuTimer.start();
-				}
-				
-				@Override
-				public void mouseReleased(MouseEvent event)
-				{
-					isMouseDownOnPaintToolButton = false;
-				}
-			});
+			};
 			paintMenuTimer = new Timer(userSettings.paintToolMenuDelay.get(), new ActionListener()
 			{
 				@Override
@@ -1320,7 +1298,6 @@ public class GraphDisplayController extends JPanel implements ClipboardOwner
 						paintMenu.show(paintToolButton, 0, paintToolButton.getHeight());
 				}
 			});
-			paintToolButton.setToolTipText(StringBundle.get("paint_tool_tooltip"));
 			this.add(paintToolButton);
 			
 			setTool(Tool.POINTER_TOOL);
@@ -1353,7 +1330,7 @@ public class GraphDisplayController extends JPanel implements ClipboardOwner
 		{
 			paintMenu.removeAll();
 			
-			ActionListener paintMenuItemActionListener = new ActionListener()
+			final ActionListener paintMenuItemActionListener = new ActionListener()
 			{
 				public void actionPerformed(ActionEvent e)
 				{
@@ -1368,9 +1345,13 @@ public class GraphDisplayController extends JPanel implements ClipboardOwner
 				}
 			};
 			
-			JCheckBoxMenuItem defaultPaintToolMenuItem = new JCheckBoxMenuItem(StringBundle.get("default_paint_tool_menu_item"));
-			defaultPaintToolMenuItem.addActionListener(paintMenuItemActionListener);
-			defaultPaintToolMenuItem.setSelected(true);
+			JCheckBoxMenuItem defaultPaintToolMenuItem = new JCheckBoxMenuItem(StringBundle.get("default_paint_tool_menu_item"))
+			{
+				{
+					addActionListener(paintMenuItemActionListener);
+					setSelected(true);
+				}
+			};
 			paintMenu.add(defaultPaintToolMenuItem);
 			
 			for (int i = 0; i < userSettings.elementColors.size(); ++i)
@@ -1402,612 +1383,668 @@ public class GraphDisplayController extends JPanel implements ClipboardOwner
 		
 		public ArrangeToolBar()
 		{
-			arrangeCircleButton = new JButton(ImageIconBundle.get("arrange_circle_icon"));
-			arrangeCircleButton.addActionListener(new ActionListener()
+			arrangeCircleButton = new JButton(ImageIconBundle.get("arrange_circle_icon"))
 			{
-				public void actionPerformed(ActionEvent e)
 				{
-					ArrayList<Vertex> selected = new ArrayList<Vertex>();
-					
-					for(Vertex vertex : graph.vertexes)
-						if(vertex.isSelected.get())
-							selected.add(vertex);
-					
-					if(selected.size() < 1)
-						selected.addAll(graph.vertexes);
-					
-					double centroidX = 0, centroidY = 0;
-					for(Vertex vertex : selected)
-					{
-						centroidX += vertex.x.get();
-						centroidY += vertex.y.get();
-					}
-					
-					centroidX /= selected.size();
-					centroidY /= selected.size();
-					
-					double radius = userSettings.arrangeCircleRadiusMultiplier.get() * selected.size();
-					double degreesPerVertex = 2 * Math.PI / selected.size();
-					
-					for (int i = 0; i < selected.size(); ++i)
-					{
-						selected.get(i).x.set(radius * Math.cos(degreesPerVertex * i - Math.PI / 2.0) + centroidX);
-						selected.get(i).y.set(radius * Math.sin(degreesPerVertex * i - Math.PI / 2.0) + centroidY);
-					}
-					
-					zoomFit();
-				}
-			});
-			arrangeCircleButton.setToolTipText(StringBundle.get("arrange_circle_button_tooltip"));
-			this.add(arrangeCircleButton);
-			
-			arrangeGridButton = new JButton(ImageIconBundle.get("arrange_grid_icon"));
-			arrangeGridButton.addActionListener(new ActionListener()
-			{
-				public void actionPerformed(ActionEvent e)
-				{
-					ArrayList<Vertex> selected = new ArrayList<Vertex>();
-					
-					for(Vertex vertex : graph.vertexes)
-						if(vertex.isSelected.get())
-							selected.add(vertex);
-					
-					if(selected.size() < 1)
-						selected.addAll(graph.vertexes);
-					
-					double centroidX = 0, centroidY = 0;
-					for(Vertex vertex : selected)
-					{
-						centroidX += vertex.x.get();
-						centroidY += vertex.y.get();
-					}
-					
-					centroidX /= selected.size();
-					centroidY /= selected.size();
-					
-					int n = selected.size();
-					int rows = (int) Math.round(Math.sqrt(n));
-					int columns = (int) Math.ceil(n / (double) rows);
-					Point2D.Double location = new Point2D.Double((columns / 2.0) * -userSettings.arrangeGridSpacing.get(), (rows / 2.0) * -userSettings.arrangeGridSpacing.get());
-					
-					for (int row = 0; row < rows; ++row)
-						for(int col = 0; (row < rows - 1 && col < columns) || (row == rows - 1 && col < (n % columns == 0 ? columns : n % columns)); ++col)
-						{
-							selected.get(row * columns + col).x.set(location.x + userSettings.arrangeGridSpacing.get() * col + centroidX);
-							selected.get(row * columns + col).y.set(location.y + userSettings.arrangeGridSpacing.get() * row + centroidY);
-						}
-					
-					zoomFit();
-				}
-			});
-			arrangeGridButton.setToolTipText(StringBundle.get("arrange_grid_button_tooltip"));
-			this.add(arrangeGridButton);
-			
-			arrangeTreeButton = new JButton(ImageIconBundle.get("arrange_tree_icon"));
-			arrangeTreeButton.addActionListener(new ActionListener()
-			{
-				public void actionPerformed(ActionEvent e)
-				{
-					Vector<Vertex> allNodes = new Vector<Vertex>();
-					Vector<Vector<Vertex>> levels = new Vector<Vector<Vertex>>();
-					
-					// First we need to add all selected vertexes to a root level of the tree
-					levels.add(new Vector<Vertex>());
-					for (Vertex vertex : graph.vertexes)
-						if (vertex.isSelected.get())
-						{
-							levels.get(0).add(vertex);
-							allNodes.add(vertex);
-						}
-					
-					// While the last level has vertexes, add all their neighbors to the next level that haven't yet been otherwise added
-					while (levels.lastElement().size() > 0)
-					{
-						levels.add(new Vector<Vertex>());
-						
-						for (Vertex vertex : levels.get(levels.size() - 2))
-							for (Vertex neighbor : graph.getNeighbors(vertex))
-								if (!allNodes.contains(neighbor))
-								{
-									levels.lastElement().add(neighbor);
-									allNodes.add(neighbor);
-								}
-					}
-					
-					// If there were any nodes that weren't added yet, give them their own level
-					if (allNodes.size() < graph.vertexes.size())
-						for (Vertex vertex : levels.get(levels.size() - 1))
-							if (!allNodes.contains(vertex))
-							{
-								levels.lastElement().add(vertex);
-								allNodes.add(vertex);
-							}
-					
-					// If the last level is empty, remove it
-					if (levels.lastElement().size() == 0)
-						levels.remove(levels.size() - 1);
-					
-					// Now for the layout!
-					double y = 0.0;
-					double largestWidth = 0;
-					for (Vector<Vertex> level : levels)
-						largestWidth = Math.max(largestWidth, level.size() * 150.0);
-					
-					for (int row = 0; row < levels.size(); ++row)
-					{
-						Vector<Vertex> level = levels.get(row);
-						y += 150;
-						double colSpace = largestWidth / (level.size());
-						
-						for (int col = 0; col < level.size(); ++col)
-						{
-							Vertex vertex = level.get(col);
-							double x = (col + .5) * colSpace - largestWidth / 2.0;
-							
-							vertex.x.set(x);
-							vertex.y.set(y);
-						}
-					}
-					
-					zoomFit();
-				}
-			});
-			arrangeTreeButton.setToolTipText(StringBundle.get("arrange_tree_button_tooltip"));
-			this.add(arrangeTreeButton);
-			
-			arrangeWebButton = new JButton(ImageIconBundle.get("arrange_web_icon"));
-			arrangeWebButton.addActionListener(new ActionListener()
-			{
-				public void actionPerformed(ActionEvent e)
-				{
-					new Timer(50, new ActionListener()
+					addActionListener(new ActionListener()
 					{
 						public void actionPerformed(ActionEvent e)
 						{
-							Timer timer = (Timer)e.getSource(); 
-							
-							timer.setDelay((int)(timer.getDelay() * userSettings.autoArrangeDecelerationFactor.get()));
-							
 							ArrayList<Vertex> selected = new ArrayList<Vertex>();
 							
 							for(Vertex vertex : graph.vertexes)
 								if(vertex.isSelected.get())
 									selected.add(vertex);
 							
-							boolean noneWereSelected = (selected.size() < 1);
-							
-							if(noneWereSelected)
+							if(selected.size() < 1)
 								selected.addAll(graph.vertexes);
 							
-							HashMap<Vertex, Point2D.Double> forces = new HashMap<Vertex, Point2D.Double>();
-						
-							// Initialize the hashmap of forces
-							for (int i = 0; i < selected.size(); ++i)
-								forces.put(selected.get(i), new Point2D.Double(0, 0));
-							
-							// Calculate all repulsive forces
-							for (int i = 0; i < selected.size(); ++i)
-								for (int j = i + 1; j < selected.size(); ++j)
-								{
-									Vertex v0 = selected.get(i);
-									Vertex v1 = selected.get(j);
-									
-									double xDiff = v1.x.get() - v0.x.get();
-									double yDiff = v1.y.get() - v0.y.get();
-									double distanceSquared = (xDiff * xDiff + yDiff * yDiff);
-									double xForce = userSettings.autoArrangeRepulsiveForce.get() * (xDiff / distanceSquared);
-									double yForce = userSettings.autoArrangeRepulsiveForce.get() * (yDiff / distanceSquared);
-									
-									Point2D.Double force0 = forces.get(v0);
-									force0.x += xForce; force0.y += yForce;
-									
-									// And because every action has an opposite and equal reaction
-									Point2D.Double force1 = forces.get(v1);
-									force1.x -= xForce; force1.y -= yForce;
-								}
-							
-							// Calculate all attractive forces
-							for (Edge edge : graph.edges)
-								if (edge.from != edge.to && (noneWereSelected || edge.from.isSelected.get() || edge.to.isSelected.get()))
-								{
-									double xDiff = edge.to.x.get() - edge.from.x.get();
-									double yDiff = edge.to.y.get() - edge.from.y.get();
-									double distanceSquared = (xDiff * xDiff + yDiff * yDiff);
-									double xForce = userSettings.autoArrangeAttractiveForce.get() * xDiff * distanceSquared;
-									double yForce = userSettings.autoArrangeAttractiveForce.get() * yDiff * distanceSquared;
-									
-									if(noneWereSelected || edge.from.isSelected.get())
-									{
-										Point2D.Double force = forces.get(edge.from);
-										force.x += xForce; force.y += yForce;
-									}
-									
-									// And because every action has an opposite and equal reaction
-									if(noneWereSelected || edge.to.isSelected.get())
-									{
-										Point2D.Double force = forces.get(edge.to);
-										force.x -= xForce; force.y -= yForce;
-									}
-								}
-							
-							double netForce = 0.0;
-							
-							// Apply all net forces
-							for (Vertex v : selected)
+							double centroidX = 0, centroidY = 0;
+							for(Vertex vertex : selected)
 							{
-								Point2D.Double force = forces.get(v);
-								v.x.set(v.x.get() + force.x);
-								v.y.set(v.y.get() + force.y);
-								
-								// And whilst I know I should be using the magnitude, this is quicker
-								netForce += Math.abs(force.x) + Math.abs(force.y);
+								centroidX += vertex.x.get();
+								centroidY += vertex.y.get();
 							}
 							
-							if(timer.getDelay() >= 500 || (!noneWereSelected && netForce / selected.size() < 0.1))
-								timer.stop(); 
-						} 
-					} ).start();	
+							centroidX /= selected.size();
+							centroidY /= selected.size();
+							
+							double radius = userSettings.arrangeCircleRadiusMultiplier.get() * selected.size();
+							double degreesPerVertex = 2 * Math.PI / selected.size();
+							
+							for (int i = 0; i < selected.size(); ++i)
+							{
+								selected.get(i).x.set(radius * Math.cos(degreesPerVertex * i - Math.PI / 2.0) + centroidX);
+								selected.get(i).y.set(radius * Math.sin(degreesPerVertex * i - Math.PI / 2.0) + centroidY);
+							}
+							
+							zoomFit();
+						}
+					});
+					setToolTipText(StringBundle.get("arrange_circle_button_tooltip"));
 				}
-			});
-			arrangeWebButton.setToolTipText(StringBundle.get("arrange_web_button_tooltip"));
+			};
+			this.add(arrangeCircleButton);
+			
+			arrangeGridButton = new JButton(ImageIconBundle.get("arrange_grid_icon"))
+			{
+				{
+					addActionListener(new ActionListener()
+					{
+						public void actionPerformed(ActionEvent e)
+						{
+							ArrayList<Vertex> selected = new ArrayList<Vertex>();
+							
+							for(Vertex vertex : graph.vertexes)
+								if(vertex.isSelected.get())
+									selected.add(vertex);
+							
+							if(selected.size() < 1)
+								selected.addAll(graph.vertexes);
+							
+							double centroidX = 0, centroidY = 0;
+							for(Vertex vertex : selected)
+							{
+								centroidX += vertex.x.get();
+								centroidY += vertex.y.get();
+							}
+							
+							centroidX /= selected.size();
+							centroidY /= selected.size();
+							
+							int n = selected.size();
+							int rows = (int) Math.round(Math.sqrt(n));
+							int columns = (int) Math.ceil(n / (double) rows);
+							Point2D.Double location = new Point2D.Double((columns / 2.0) * -userSettings.arrangeGridSpacing.get(), (rows / 2.0) * -userSettings.arrangeGridSpacing.get());
+							
+							for (int row = 0; row < rows; ++row)
+								for(int col = 0; (row < rows - 1 && col < columns) || (row == rows - 1 && col < (n % columns == 0 ? columns : n % columns)); ++col)
+								{
+									selected.get(row * columns + col).x.set(location.x + userSettings.arrangeGridSpacing.get() * col + centroidX);
+									selected.get(row * columns + col).y.set(location.y + userSettings.arrangeGridSpacing.get() * row + centroidY);
+								}
+							
+							zoomFit();
+						}
+					});
+					setToolTipText(StringBundle.get("arrange_grid_button_tooltip"));
+				}
+			};
+			this.add(arrangeGridButton);
+			
+			arrangeTreeButton = new JButton(ImageIconBundle.get("arrange_tree_icon"))
+			{
+				{
+					addActionListener(new ActionListener()
+					{
+						public void actionPerformed(ActionEvent e)
+						{
+							Vector<Vertex> allNodes = new Vector<Vertex>();
+							Vector<Vector<Vertex>> levels = new Vector<Vector<Vertex>>();
+							
+							// First we need to add all selected vertexes to a root level of the tree
+							levels.add(new Vector<Vertex>());
+							for (Vertex vertex : graph.vertexes)
+								if (vertex.isSelected.get())
+								{
+									levels.get(0).add(vertex);
+									allNodes.add(vertex);
+								}
+							
+							// While the last level has vertexes, add all their neighbors to the next level that haven't yet been otherwise added
+							while (levels.lastElement().size() > 0)
+							{
+								levels.add(new Vector<Vertex>());
+								
+								for (Vertex vertex : levels.get(levels.size() - 2))
+									for (Vertex neighbor : graph.getNeighbors(vertex))
+										if (!allNodes.contains(neighbor))
+										{
+											levels.lastElement().add(neighbor);
+											allNodes.add(neighbor);
+										}
+							}
+							
+							// If there were any nodes that weren't added yet, give them their own level
+							if (allNodes.size() < graph.vertexes.size())
+								for (Vertex vertex : levels.get(levels.size() - 1))
+									if (!allNodes.contains(vertex))
+									{
+										levels.lastElement().add(vertex);
+										allNodes.add(vertex);
+									}
+							
+							// If the last level is empty, remove it
+							if (levels.lastElement().size() == 0)
+								levels.remove(levels.size() - 1);
+							
+							// Now for the layout!
+							double y = 0.0;
+							double largestWidth = 0;
+							for (Vector<Vertex> level : levels)
+								largestWidth = Math.max(largestWidth, level.size() * 150.0);
+							
+							for (int row = 0; row < levels.size(); ++row)
+							{
+								Vector<Vertex> level = levels.get(row);
+								y += 150;
+								double colSpace = largestWidth / (level.size());
+								
+								for (int col = 0; col < level.size(); ++col)
+								{
+									Vertex vertex = level.get(col);
+									double x = (col + .5) * colSpace - largestWidth / 2.0;
+									
+									vertex.x.set(x);
+									vertex.y.set(y);
+								}
+							}
+							
+							zoomFit();
+						}
+					});
+					setToolTipText(StringBundle.get("arrange_tree_button_tooltip"));
+				}
+			};
+			this.add(arrangeTreeButton);
+			
+			arrangeWebButton = new JButton(ImageIconBundle.get("arrange_web_icon"))
+			{
+				{
+					addActionListener(new ActionListener()
+					{
+						public void actionPerformed(ActionEvent e)
+						{
+							new Timer(50, new ActionListener()
+							{
+								public void actionPerformed(ActionEvent e)
+								{
+									Timer timer = (Timer)e.getSource(); 
+									
+									timer.setDelay((int)(timer.getDelay() * userSettings.autoArrangeDecelerationFactor.get()));
+									
+									ArrayList<Vertex> selected = new ArrayList<Vertex>();
+									
+									for(Vertex vertex : graph.vertexes)
+										if(vertex.isSelected.get())
+											selected.add(vertex);
+									
+									boolean noneWereSelected = (selected.size() < 1);
+									
+									if(noneWereSelected)
+										selected.addAll(graph.vertexes);
+									
+									HashMap<Vertex, Point2D.Double> forces = new HashMap<Vertex, Point2D.Double>();
+								
+									// Initialize the hashmap of forces
+									for (int i = 0; i < selected.size(); ++i)
+										forces.put(selected.get(i), new Point2D.Double(0, 0));
+									
+									// Calculate all repulsive forces
+									for (int i = 0; i < selected.size(); ++i)
+										for (int j = i + 1; j < selected.size(); ++j)
+										{
+											Vertex v0 = selected.get(i);
+											Vertex v1 = selected.get(j);
+											
+											double xDiff = v1.x.get() - v0.x.get();
+											double yDiff = v1.y.get() - v0.y.get();
+											double distanceSquared = (xDiff * xDiff + yDiff * yDiff);
+											double xForce = userSettings.autoArrangeRepulsiveForce.get() * (xDiff / distanceSquared);
+											double yForce = userSettings.autoArrangeRepulsiveForce.get() * (yDiff / distanceSquared);
+											
+											Point2D.Double force0 = forces.get(v0);
+											force0.x += xForce; force0.y += yForce;
+											
+											// And because every action has an opposite and equal reaction
+											Point2D.Double force1 = forces.get(v1);
+											force1.x -= xForce; force1.y -= yForce;
+										}
+									
+									// Calculate all attractive forces
+									for (Edge edge : graph.edges)
+										if (edge.from != edge.to && (noneWereSelected || edge.from.isSelected.get() || edge.to.isSelected.get()))
+										{
+											double xDiff = edge.to.x.get() - edge.from.x.get();
+											double yDiff = edge.to.y.get() - edge.from.y.get();
+											double distanceSquared = (xDiff * xDiff + yDiff * yDiff);
+											double xForce = userSettings.autoArrangeAttractiveForce.get() * xDiff * distanceSquared;
+											double yForce = userSettings.autoArrangeAttractiveForce.get() * yDiff * distanceSquared;
+											
+											if(noneWereSelected || edge.from.isSelected.get())
+											{
+												Point2D.Double force = forces.get(edge.from);
+												force.x += xForce; force.y += yForce;
+											}
+											
+											// And because every action has an opposite and equal reaction
+											if(noneWereSelected || edge.to.isSelected.get())
+											{
+												Point2D.Double force = forces.get(edge.to);
+												force.x -= xForce; force.y -= yForce;
+											}
+										}
+									
+									double netForce = 0.0;
+									
+									// Apply all net forces
+									for (Vertex v : selected)
+									{
+										Point2D.Double force = forces.get(v);
+										v.x.set(v.x.get() + force.x);
+										v.y.set(v.y.get() + force.y);
+										
+										// And whilst I know I should be using the magnitude, this is quicker
+										netForce += Math.abs(force.x) + Math.abs(force.y);
+									}
+									
+									if(timer.getDelay() >= 500 || (!noneWereSelected && netForce / selected.size() < 0.1))
+										timer.stop(); 
+								} 
+							} ).start();	
+						}
+					});
+					setToolTipText(StringBundle.get("arrange_web_button_tooltip"));
+				}
+			};
 			this.add(arrangeWebButton);
 			
 			this.add(new JToolBar.Separator());
 			
-			alignHorizontallyButton = new JButton(ImageIconBundle.get("align_horizontally_icon"));
-			alignHorizontallyButton.addActionListener(new ActionListener()
+			alignHorizontallyButton = new JButton(ImageIconBundle.get("align_horizontally_icon"))
 			{
-				public void actionPerformed(ActionEvent e)
 				{
-					double centerY = 0.0, selectedCount = 0.0;
-					
-					for(int i = 0; i < graph.vertexes.size(); ++i)
-						if(graph.vertexes.get(i).isSelected.get())
+					addActionListener(new ActionListener()
+					{
+						public void actionPerformed(ActionEvent e)
 						{
-							centerY += graph.vertexes.get(i).y.get();
-							++selectedCount;
+							double centerY = 0.0, selectedCount = 0.0;
+							
+							for(int i = 0; i < graph.vertexes.size(); ++i)
+								if(graph.vertexes.get(i).isSelected.get())
+								{
+									centerY += graph.vertexes.get(i).y.get();
+									++selectedCount;
+								}
+							
+							centerY /= selectedCount;
+							
+							for(int i = 0; i < graph.vertexes.size(); ++i)
+								if(graph.vertexes.get(i).isSelected.get())
+									graph.vertexes.get(i).y.set(centerY);
 						}
-					
-					centerY /= selectedCount;
-					
-					for(int i = 0; i < graph.vertexes.size(); ++i)
-						if(graph.vertexes.get(i).isSelected.get())
-							graph.vertexes.get(i).y.set(centerY);
+					});
+					setToolTipText(StringBundle.get("align_horizontally_button_tooltip"));
 				}
-			});
-			alignHorizontallyButton.setToolTipText(StringBundle.get("align_horizontally_button_tooltip"));
+			};
 			this.add(alignHorizontallyButton);
 			
-			alignVerticallyButton = new JButton(ImageIconBundle.get("align_vertically_icon"));
-			alignVerticallyButton.addActionListener(new ActionListener()
+			alignVerticallyButton = new JButton(ImageIconBundle.get("align_vertically_icon"))
 			{
-				public void actionPerformed(ActionEvent e)
 				{
-					double centerX = 0.0, selectedCount = 0.0;
-					
-					for(int i = 0; i < graph.vertexes.size(); ++i)
-						if(graph.vertexes.get(i).isSelected.get())
+					addActionListener(new ActionListener()
+					{
+						public void actionPerformed(ActionEvent e)
 						{
-							centerX += graph.vertexes.get(i).x.get();
-							++selectedCount;
+							double centerX = 0.0, selectedCount = 0.0;
+							
+							for(int i = 0; i < graph.vertexes.size(); ++i)
+								if(graph.vertexes.get(i).isSelected.get())
+								{
+									centerX += graph.vertexes.get(i).x.get();
+									++selectedCount;
+								}
+							
+							centerX /= selectedCount;
+							
+							for(int i = 0; i < graph.vertexes.size(); ++i)
+								if(graph.vertexes.get(i).isSelected.get())
+									graph.vertexes.get(i).x.set(centerX);
 						}
-					
-					centerX /= selectedCount;
-					
-					for(int i = 0; i < graph.vertexes.size(); ++i)
-						if(graph.vertexes.get(i).isSelected.get())
-							graph.vertexes.get(i).x.set(centerX);
+					});
+					setToolTipText(StringBundle.get("align_vertically_button_tooltip"));
 				}
-			});
-			alignVerticallyButton.setToolTipText(StringBundle.get("align_vertically_button_tooltip"));
+			};
 			this.add(alignVerticallyButton);
 			
-			distributeHorizontallyButton = new JButton(ImageIconBundle.get("distribute_horizontally_icon"));
-			distributeHorizontallyButton.addActionListener(new ActionListener()
+			distributeHorizontallyButton = new JButton(ImageIconBundle.get("distribute_horizontally_icon"))
 			{
-				public void actionPerformed(ActionEvent e)
 				{
-					Vector<Vertex> selectedVertexes = new Vector<Vertex>();
-					
-					for(int i = 0; i < graph.vertexes.size(); ++i)
-						if(graph.vertexes.get(i).isSelected.get())
-							selectedVertexes.add(graph.vertexes.get(i));
-					
-					Collections.sort(selectedVertexes, new Comparator<Vertex>() { public int compare(Vertex v1, Vertex v2) { return new Double(Math.signum(v1.x.get() - v2.x.get())).intValue() ; } } );
-					double spacing = (selectedVertexes.lastElement().x.get() - selectedVertexes.firstElement().x.get()) / (double)(selectedVertexes.size() - 1); 
-					double currentX = selectedVertexes.firstElement().x.get() - spacing;
-					
-					for(Vertex vertex : selectedVertexes)
-						vertex.x.set(currentX += spacing);
+					addActionListener(new ActionListener()
+					{
+						public void actionPerformed(ActionEvent e)
+						{
+							Vector<Vertex> selectedVertexes = new Vector<Vertex>();
+							
+							for(int i = 0; i < graph.vertexes.size(); ++i)
+								if(graph.vertexes.get(i).isSelected.get())
+									selectedVertexes.add(graph.vertexes.get(i));
+							
+							Collections.sort(selectedVertexes, new Comparator<Vertex>() { public int compare(Vertex v1, Vertex v2) { return new Double(Math.signum(v1.x.get() - v2.x.get())).intValue() ; } } );
+							double spacing = (selectedVertexes.lastElement().x.get() - selectedVertexes.firstElement().x.get()) / (double)(selectedVertexes.size() - 1); 
+							double currentX = selectedVertexes.firstElement().x.get() - spacing;
+							
+							for(Vertex vertex : selectedVertexes)
+								vertex.x.set(currentX += spacing);
+						}
+					});
+					setToolTipText(StringBundle.get("distribute_horizontally_button_tooltip"));
 				}
-			});
-			distributeHorizontallyButton.setToolTipText(StringBundle.get("distribute_horizontally_button_tooltip"));
+			};
 			this.add(distributeHorizontallyButton);
 			
-			distributeVerticallyButton = new JButton(ImageIconBundle.get("distribute_vertically_icon"));
-			distributeVerticallyButton.addActionListener(new ActionListener()
+			distributeVerticallyButton = new JButton(ImageIconBundle.get("distribute_vertically_icon"))
 			{
-				public void actionPerformed(ActionEvent e)
 				{
-					Vector<Vertex> selectedVertexes = new Vector<Vertex>();
-					
-					for(int i = 0; i < graph.vertexes.size(); ++i)
-						if(graph.vertexes.get(i).isSelected.get())
-							selectedVertexes.add(graph.vertexes.get(i));
-					
-					Collections.sort(selectedVertexes, new Comparator<Vertex>() { public int compare(Vertex v1, Vertex v2) { return new Double(Math.signum(v1.y.get() - v2.y.get())).intValue() ; } } );
-					double spacing = (selectedVertexes.lastElement().y.get() - selectedVertexes.firstElement().y.get()) / (double)(selectedVertexes.size() - 1); 
-					double currentY = selectedVertexes.firstElement().y.get() - spacing;
-					
-					for(Vertex vertex : selectedVertexes)
-						vertex.y.set(currentY += spacing);
+					addActionListener(new ActionListener()
+					{
+						public void actionPerformed(ActionEvent e)
+						{
+							Vector<Vertex> selectedVertexes = new Vector<Vertex>();
+							
+							for(int i = 0; i < graph.vertexes.size(); ++i)
+								if(graph.vertexes.get(i).isSelected.get())
+									selectedVertexes.add(graph.vertexes.get(i));
+							
+							Collections.sort(selectedVertexes, new Comparator<Vertex>() { public int compare(Vertex v1, Vertex v2) { return new Double(Math.signum(v1.y.get() - v2.y.get())).intValue() ; } } );
+							double spacing = (selectedVertexes.lastElement().y.get() - selectedVertexes.firstElement().y.get()) / (double)(selectedVertexes.size() - 1); 
+							double currentY = selectedVertexes.firstElement().y.get() - spacing;
+							
+							for(Vertex vertex : selectedVertexes)
+								vertex.y.set(currentY += spacing);
+						}
+					});
+					setToolTipText(StringBundle.get("distribute_vertically_button_tooltip"));
 				}
-			});
-			distributeVerticallyButton.setToolTipText(StringBundle.get("distribute_vertically_button_tooltip"));
+			};
 			this.add(distributeVerticallyButton);
 			
 			this.add(new JToolBar.Separator());
 			
-			rotateLeft90Button = new JButton(ImageIconBundle.get("rotate_left_90_icon"));
-			rotateLeft90Button.addActionListener(new ActionListener()
+			rotateLeft90Button = new JButton(ImageIconBundle.get("rotate_left_90_icon"))
 			{
-				public void actionPerformed(ActionEvent e)
 				{
-					int selectedElementCount = 0;
-					Point2D.Double centroid = new Point2D.Double();
-					
-					for(Vertex vertex : graph.vertexes)
-						if(vertex.isSelected.get())
+					addActionListener(new ActionListener()
+					{
+						public void actionPerformed(ActionEvent e)
 						{
-							centroid.x += vertex.x.get();
-							centroid.y += vertex.y.get();
-							++selectedElementCount;
+							int selectedElementCount = 0;
+							Point2D.Double centroid = new Point2D.Double();
+							
+							for(Vertex vertex : graph.vertexes)
+								if(vertex.isSelected.get())
+								{
+									centroid.x += vertex.x.get();
+									centroid.y += vertex.y.get();
+									++selectedElementCount;
+								}
+							
+							for(Edge edge : graph.edges)
+								if(edge.isSelected.get())
+								{
+									centroid.x += edge.handleX.get();
+									centroid.y += edge.handleY.get();
+									++selectedElementCount;
+								}
+							
+							centroid.x /= (double)selectedElementCount;
+							centroid.y /= (double)selectedElementCount;
+							
+							for(Edge edge : graph.edges)
+								if(edge.isSelected.get())
+									edge.suspendNotifications(true);
+							
+							for(Vertex vertex : graph.vertexes)
+								if(vertex.isSelected.get())
+								{
+									double oldVertexX = vertex.x.get();
+									vertex.x.set(centroid.x - (centroid.y - vertex.y.get()));
+									vertex.y.set(centroid.y + (centroid.x - oldVertexX));
+								}
+							
+							for(Edge edge : graph.edges)
+								if(edge.isSelected.get())
+								{
+									double oldEdgeHandleX = edge.handleX.get();
+									edge.handleX.set(centroid.x - (centroid.y - edge.handleY.get()));
+									edge.handleY.set(centroid.y + (centroid.x - oldEdgeHandleX));
+									edge.suspendNotifications(false);
+									edge.refresh();
+								}
 						}
-					
-					for(Edge edge : graph.edges)
-						if(edge.isSelected.get())
-						{
-							centroid.x += edge.handleX.get();
-							centroid.y += edge.handleY.get();
-							++selectedElementCount;
-						}
-					
-					centroid.x /= (double)selectedElementCount;
-					centroid.y /= (double)selectedElementCount;
-					
-					for(Edge edge : graph.edges)
-						if(edge.isSelected.get())
-							edge.suspendNotifications(true);
-					
-					for(Vertex vertex : graph.vertexes)
-						if(vertex.isSelected.get())
-						{
-							double oldVertexX = vertex.x.get();
-							vertex.x.set(centroid.x - (centroid.y - vertex.y.get()));
-							vertex.y.set(centroid.y + (centroid.x - oldVertexX));
-						}
-					
-					for(Edge edge : graph.edges)
-						if(edge.isSelected.get())
-						{
-							double oldEdgeHandleX = edge.handleX.get();
-							edge.handleX.set(centroid.x - (centroid.y - edge.handleY.get()));
-							edge.handleY.set(centroid.y + (centroid.x - oldEdgeHandleX));
-							edge.suspendNotifications(false);
-							edge.refresh();
-						}
+					});
+					setToolTipText(StringBundle.get("rotate_left_90_button_tooltip"));
 				}
-			});
-			rotateLeft90Button.setToolTipText(StringBundle.get("rotate_left_90_button_tooltip"));
+			};
 			this.add(rotateLeft90Button);
 			
-			rotateRight90Button = new JButton(ImageIconBundle.get("rotate_right_90_icon"));
-			rotateRight90Button.addActionListener(new ActionListener()
+			rotateRight90Button = new JButton(ImageIconBundle.get("rotate_right_90_icon"))
 			{
-				public void actionPerformed(ActionEvent e)
 				{
-					int selectedElementCount = 0;
-					Point2D.Double centroid = new Point2D.Double();
-					
-					for(Vertex vertex : graph.vertexes)
-						if(vertex.isSelected.get())
+					addActionListener(new ActionListener()
+					{
+						public void actionPerformed(ActionEvent e)
 						{
-							centroid.x += vertex.x.get();
-							centroid.y += vertex.y.get();
-							++selectedElementCount;
+							int selectedElementCount = 0;
+							Point2D.Double centroid = new Point2D.Double();
+							
+							for(Vertex vertex : graph.vertexes)
+								if(vertex.isSelected.get())
+								{
+									centroid.x += vertex.x.get();
+									centroid.y += vertex.y.get();
+									++selectedElementCount;
+								}
+							
+							for(Edge edge : graph.edges)
+								if(edge.isSelected.get())
+								{
+									centroid.x += edge.handleX.get();
+									centroid.y += edge.handleY.get();
+									++selectedElementCount;
+								}
+							
+							centroid.x /= (double)selectedElementCount;
+							centroid.y /= (double)selectedElementCount;
+							
+							for(Edge edge : graph.edges)
+								if(edge.isSelected.get())
+									edge.suspendNotifications(true);
+							
+							for(Vertex vertex : graph.vertexes)
+								if(vertex.isSelected.get())
+								{
+									double oldVertexX = vertex.x.get();
+									vertex.x.set(centroid.x + (centroid.y - vertex.y.get()));
+									vertex.y.set(centroid.y - (centroid.x - oldVertexX));
+								}
+							
+							for(Edge edge : graph.edges)
+								if(edge.isSelected.get())
+								{
+									double oldEdgeHandleX = edge.handleX.get();
+									edge.handleX.set(centroid.x + (centroid.y - edge.handleY.get()));
+									edge.handleY.set(centroid.y - (centroid.x - oldEdgeHandleX));
+									edge.suspendNotifications(false);
+									edge.refresh();
+								}
 						}
-					
-					for(Edge edge : graph.edges)
-						if(edge.isSelected.get())
-						{
-							centroid.x += edge.handleX.get();
-							centroid.y += edge.handleY.get();
-							++selectedElementCount;
-						}
-					
-					centroid.x /= (double)selectedElementCount;
-					centroid.y /= (double)selectedElementCount;
-					
-					for(Edge edge : graph.edges)
-						if(edge.isSelected.get())
-							edge.suspendNotifications(true);
-					
-					for(Vertex vertex : graph.vertexes)
-						if(vertex.isSelected.get())
-						{
-							double oldVertexX = vertex.x.get();
-							vertex.x.set(centroid.x + (centroid.y - vertex.y.get()));
-							vertex.y.set(centroid.y - (centroid.x - oldVertexX));
-						}
-					
-					for(Edge edge : graph.edges)
-						if(edge.isSelected.get())
-						{
-							double oldEdgeHandleX = edge.handleX.get();
-							edge.handleX.set(centroid.x + (centroid.y - edge.handleY.get()));
-							edge.handleY.set(centroid.y - (centroid.x - oldEdgeHandleX));
-							edge.suspendNotifications(false);
-							edge.refresh();
-						}
+					});
+					setToolTipText(StringBundle.get("rotate_right_90_button_tooltip"));
 				}
-			});
-			rotateRight90Button.setToolTipText(StringBundle.get("rotate_right_90_button_tooltip"));
+			};
 			this.add(rotateRight90Button);
 			
-			flipHorizontallyButton = new JButton(ImageIconBundle.get("flip_horizontally_icon"));
-			flipHorizontallyButton.addActionListener(new ActionListener()
+			flipHorizontallyButton = new JButton(ImageIconBundle.get("flip_horizontally_icon"))
 			{
-				public void actionPerformed(ActionEvent e)
 				{
-					int selectedElementCount = 0;
-					double centerX = 0.0;
-					
-					for(Vertex vertex : graph.vertexes)
-						if(vertex.isSelected.get())
+					addActionListener(new ActionListener()
+					{
+						public void actionPerformed(ActionEvent e)
 						{
-							centerX += vertex.x.get();
-							++selectedElementCount;
+							int selectedElementCount = 0;
+							double centerX = 0.0;
+							
+							for(Vertex vertex : graph.vertexes)
+								if(vertex.isSelected.get())
+								{
+									centerX += vertex.x.get();
+									++selectedElementCount;
+								}
+							
+							for(Edge edge : graph.edges)
+								if(edge.isSelected.get())
+								{
+									centerX += edge.handleX.get();
+									++selectedElementCount;
+								}
+							
+							centerX /= (double)selectedElementCount;
+							
+							for(Edge edge : graph.edges)
+								if(edge.isSelected.get())
+									edge.suspendNotifications(true);
+							
+							for(Vertex vertex : graph.vertexes)
+								if(vertex.isSelected.get())
+									vertex.x.set(2.0 * centerX - vertex.x.get());
+							
+							for(Edge edge : graph.edges)
+								if(edge.isSelected.get())
+								{
+									edge.handleX.set(2.0 * centerX - edge.handleX.get());
+									edge.suspendNotifications(false);
+									edge.refresh();
+								}
 						}
-					
-					for(Edge edge : graph.edges)
-						if(edge.isSelected.get())
-						{
-							centerX += edge.handleX.get();
-							++selectedElementCount;
-						}
-					
-					centerX /= (double)selectedElementCount;
-					
-					for(Edge edge : graph.edges)
-						if(edge.isSelected.get())
-							edge.suspendNotifications(true);
-					
-					for(Vertex vertex : graph.vertexes)
-						if(vertex.isSelected.get())
-							vertex.x.set(2.0 * centerX - vertex.x.get());
-					
-					for(Edge edge : graph.edges)
-						if(edge.isSelected.get())
-						{
-							edge.handleX.set(2.0 * centerX - edge.handleX.get());
-							edge.suspendNotifications(false);
-							edge.refresh();
-						}
+					});
+					setToolTipText(StringBundle.get("flip_horizontally_button_tooltip"));
 				}
-			});
-			flipHorizontallyButton.setToolTipText(StringBundle.get("flip_horizontally_button_tooltip"));
+			};
 			this.add(flipHorizontallyButton);
 			
-			flipVerticallyButton = new JButton(ImageIconBundle.get("flip_vertically_icon"));
-			flipVerticallyButton.addActionListener(new ActionListener()
+			flipVerticallyButton = new JButton(ImageIconBundle.get("flip_vertically_icon"))
 			{
-				public void actionPerformed(ActionEvent e)
 				{
-					int selectedElementCount = 0;
-					double centerY = 0.0;
-					
-					for(Vertex vertex : graph.vertexes)
-						if(vertex.isSelected.get())
+					addActionListener(new ActionListener()
+					{
+						public void actionPerformed(ActionEvent e)
 						{
-							centerY += vertex.y.get();
-							++selectedElementCount;
+							int selectedElementCount = 0;
+							double centerY = 0.0;
+							
+							for(Vertex vertex : graph.vertexes)
+								if(vertex.isSelected.get())
+								{
+									centerY += vertex.y.get();
+									++selectedElementCount;
+								}
+							
+							for(Edge edge : graph.edges)
+								if(edge.isSelected.get())
+								{
+									centerY += edge.handleY.get();
+									++selectedElementCount;
+								}
+							
+							centerY /= (double)selectedElementCount;
+							
+							for(Edge edge : graph.edges)
+								if(edge.isSelected.get())
+									edge.suspendNotifications(true);
+							
+							for(Vertex vertex : graph.vertexes)
+								if(vertex.isSelected.get())
+									vertex.y.set(2.0 * centerY - vertex.y.get());
+							
+							for(Edge edge : graph.edges)
+								if(edge.isSelected.get())
+								{
+									edge.handleY.set(2.0 * centerY - edge.handleY.get());
+									edge.suspendNotifications(false);
+									edge.refresh();
+								}
 						}
-					
-					for(Edge edge : graph.edges)
-						if(edge.isSelected.get())
-						{
-							centerY += edge.handleY.get();
-							++selectedElementCount;
-						}
-					
-					centerY /= (double)selectedElementCount;
-					
-					for(Edge edge : graph.edges)
-						if(edge.isSelected.get())
-							edge.suspendNotifications(true);
-					
-					for(Vertex vertex : graph.vertexes)
-						if(vertex.isSelected.get())
-							vertex.y.set(2.0 * centerY - vertex.y.get());
-					
-					for(Edge edge : graph.edges)
-						if(edge.isSelected.get())
-						{
-							edge.handleY.set(2.0 * centerY - edge.handleY.get());
-							edge.suspendNotifications(false);
-							edge.refresh();
-						}
+					});
+					setToolTipText(StringBundle.get("flip_vertically_button_tooltip"));
 				}
-			});
-			flipVerticallyButton.setToolTipText(StringBundle.get("flip_vertically_button_tooltip"));
+			};
 			this.add(flipVerticallyButton);
 			
 			this.add(new JToolBar.Separator());
 			
-			contractButton = new JButton(ImageIconBundle.get("contract_icon"));
-			contractButton.addActionListener(new ActionListener()
+			contractButton = new JButton(ImageIconBundle.get("contract_icon"))
 			{
-				public void actionPerformed(ActionEvent e)
 				{
-					int selectedElementCount = 0;
-					Point2D.Double centroid = new Point2D.Double();
-					
-					for(Vertex vertex : graph.vertexes)
-						if(vertex.isSelected.get())
+					addActionListener(new ActionListener()
+					{
+						public void actionPerformed(ActionEvent e)
 						{
-							centroid.x += vertex.x.get();
-							centroid.y += vertex.y.get();
-							++selectedElementCount;
+							int selectedElementCount = 0;
+							Point2D.Double centroid = new Point2D.Double();
+							
+							for(Vertex vertex : graph.vertexes)
+								if(vertex.isSelected.get())
+								{
+									centroid.x += vertex.x.get();
+									centroid.y += vertex.y.get();
+									++selectedElementCount;
+								}
+							
+							if(selectedElementCount == 0)
+								return;
+							
+							centroid.x /= (double)selectedElementCount;
+							centroid.y /= (double)selectedElementCount;
+							
+							for(Vertex vertex : graph.vertexes)
+								if(vertex.isSelected.get())
+								{
+									vertex.x.set(userSettings.arrangeContractFactor.get() * (vertex.x.get() - centroid.x) + centroid.x);
+									vertex.y.set(userSettings.arrangeContractFactor.get() * (vertex.y.get() - centroid.y) + centroid.y);
+								}
 						}
-					
-					if(selectedElementCount == 0)
-						return;
-					
-					centroid.x /= (double)selectedElementCount;
-					centroid.y /= (double)selectedElementCount;
-					
-					for(Vertex vertex : graph.vertexes)
-						if(vertex.isSelected.get())
-						{
-							vertex.x.set(userSettings.arrangeContractFactor.get() * (vertex.x.get() - centroid.x) + centroid.x);
-							vertex.y.set(userSettings.arrangeContractFactor.get() * (vertex.y.get() - centroid.y) + centroid.y);
-						}
+					});
+					setToolTipText(StringBundle.get("contract_button_tooltip"));
 				}
-			});
-			contractButton.setToolTipText(StringBundle.get("contract_button_tooltip"));
+			};
 			this.add(contractButton);
 			
-			expandButton = new JButton(ImageIconBundle.get("expand_icon"));
-			expandButton.addActionListener(new ActionListener()
+			expandButton = new JButton(ImageIconBundle.get("expand_icon"))
 			{
-				public void actionPerformed(ActionEvent e)
 				{
-					int selectedElementCount = 0;
-					Point2D.Double centroid = new Point2D.Double();
-					
-					for(Vertex vertex : graph.vertexes)
-						if(vertex.isSelected.get())
+					addActionListener(new ActionListener()
+					{
+						public void actionPerformed(ActionEvent e)
 						{
-							centroid.x += vertex.x.get();
-							centroid.y += vertex.y.get();
-							++selectedElementCount;
+							int selectedElementCount = 0;
+							Point2D.Double centroid = new Point2D.Double();
+							
+							for(Vertex vertex : graph.vertexes)
+								if(vertex.isSelected.get())
+								{
+									centroid.x += vertex.x.get();
+									centroid.y += vertex.y.get();
+									++selectedElementCount;
+								}
+							
+							if(selectedElementCount == 0)
+								return;
+							
+							centroid.x /= (double)selectedElementCount;
+							centroid.y /= (double)selectedElementCount;
+							
+							for(Vertex vertex : graph.vertexes)
+								if(vertex.isSelected.get())
+								{
+									vertex.x.set(userSettings.arrangeExpandFactor.get() * (vertex.x.get() - centroid.x) + centroid.x);
+									vertex.y.set(userSettings.arrangeExpandFactor.get() * (vertex.y.get() - centroid.y) + centroid.y);
+								}
 						}
-					
-					if(selectedElementCount == 0)
-						return;
-					
-					centroid.x /= (double)selectedElementCount;
-					centroid.y /= (double)selectedElementCount;
-					
-					for(Vertex vertex : graph.vertexes)
-						if(vertex.isSelected.get())
-						{
-							vertex.x.set(userSettings.arrangeExpandFactor.get() * (vertex.x.get() - centroid.x) + centroid.x);
-							vertex.y.set(userSettings.arrangeExpandFactor.get() * (vertex.y.get() - centroid.y) + centroid.y);
-						}
+					});
+					setToolTipText(StringBundle.get("expand_button_tooltip"));
 				}
-			});
-			expandButton.setToolTipText(StringBundle.get("expand_button_tooltip"));
+			};
 			this.add(expandButton);
 		}
 	}
@@ -2024,81 +2061,109 @@ public class GraphDisplayController extends JPanel implements ClipboardOwner
 		
 		public ViewToolBar()
 		{
-			showVertexLabelsButton = new JButton(ImageIconBundle.get("show_vertex_labels_icon"));
-			showVertexLabelsButton.addActionListener(new ActionListener()
+			showVertexLabelsButton = new JButton(ImageIconBundle.get("show_vertex_labels_icon"))
 			{
-				public void actionPerformed(ActionEvent e)
 				{
-					settings.showVertexLabels.set(!settings.showVertexLabels.get());
+					addActionListener(new ActionListener()
+					{
+						public void actionPerformed(ActionEvent e)
+						{
+							settings.showVertexLabels.set(!settings.showVertexLabels.get());
+						}
+					});
+					setToolTipText(StringBundle.get("show_vertex_labels_button_tooltip"));
 				}
-			});
-			showVertexLabelsButton.setToolTipText(StringBundle.get("show_vertex_labels_button_tooltip"));
+			};
 			this.add(showVertexLabelsButton);
 			
-			showVertexWeightsButton = new JButton(ImageIconBundle.get("show_vertex_weights_icon"));
-			showVertexWeightsButton.addActionListener(new ActionListener()
+			showVertexWeightsButton = new JButton(ImageIconBundle.get("show_vertex_weights_icon"))
 			{
-				public void actionPerformed(ActionEvent e)
 				{
-					settings.showVertexWeights.set(!settings.showVertexWeights.get());
+					addActionListener(new ActionListener()
+					{
+						public void actionPerformed(ActionEvent e)
+						{
+							settings.showVertexWeights.set(!settings.showVertexWeights.get());
+						}
+					});
+					setToolTipText(StringBundle.get("show_vertex_weights_button_tooltip"));
 				}
-			});
-			showVertexWeightsButton.setToolTipText(StringBundle.get("show_vertex_weights_button_tooltip"));
+			};
 			this.add(showVertexWeightsButton);
 			
-			showEdgeHandlesButton = new JButton(ImageIconBundle.get("show_edge_handles_icon"));
-			showEdgeHandlesButton.addActionListener(new ActionListener()
+			showEdgeHandlesButton = new JButton(ImageIconBundle.get("show_edge_handles_icon"))
 			{
-				public void actionPerformed(ActionEvent e)
 				{
-					settings.showEdgeHandles.set(!settings.showEdgeHandles.get());
+					addActionListener(new ActionListener()
+					{
+						public void actionPerformed(ActionEvent e)
+						{
+							settings.showEdgeHandles.set(!settings.showEdgeHandles.get());
+						}
+					});
+					setToolTipText(StringBundle.get("show_edge_handles_button_tooltip"));
 				}
-			});
-			showEdgeHandlesButton.setToolTipText(StringBundle.get("show_edge_handles_button_tooltip"));
+			};
 			this.add(showEdgeHandlesButton);
 			
-			showEdgeLabelsButton = new JButton(ImageIconBundle.get("show_edge_labels_icon"));
-			showEdgeLabelsButton.addActionListener(new ActionListener()
+			showEdgeLabelsButton = new JButton(ImageIconBundle.get("show_edge_labels_icon"))
 			{
-				public void actionPerformed(ActionEvent e)
 				{
-					settings.showEdgeLabels.set(!settings.showEdgeLabels.get());
+					addActionListener(new ActionListener()
+					{
+						public void actionPerformed(ActionEvent e)
+						{
+							settings.showEdgeLabels.set(!settings.showEdgeLabels.get());
+						}
+					});
+					setToolTipText(StringBundle.get("show_edge_labels_button_tooltip"));
 				}
-			});
-			showEdgeLabelsButton.setToolTipText(StringBundle.get("show_edge_labels_button_tooltip"));
+			};
 			this.add(showEdgeLabelsButton);
 			
-			showEdgeWeightsButton = new JButton(ImageIconBundle.get("show_edge_weights_icon"));
-			showEdgeWeightsButton.addActionListener(new ActionListener()
+			showEdgeWeightsButton = new JButton(ImageIconBundle.get("show_edge_weights_icon"))
 			{
-				public void actionPerformed(ActionEvent e)
 				{
-					settings.showEdgeWeights.set(!settings.showEdgeWeights.get());
+					addActionListener(new ActionListener()
+					{
+						public void actionPerformed(ActionEvent e)
+						{
+							settings.showEdgeWeights.set(!settings.showEdgeWeights.get());
+						}
+					});
+					setToolTipText(StringBundle.get("show_edge_weights_button_tooltip"));
 				}
-			});
-			showEdgeWeightsButton.setToolTipText(StringBundle.get("show_edge_weights_button_tooltip"));
+			};
 			this.add(showEdgeWeightsButton);
 			
-			showCaptionHandlesButton = new JButton(ImageIconBundle.get("show_caption_handles_icon"));
-			showCaptionHandlesButton.addActionListener(new ActionListener()
+			showCaptionHandlesButton = new JButton(ImageIconBundle.get("show_caption_handles_icon"))
 			{
-				public void actionPerformed(ActionEvent e)
 				{
-					settings.showCaptionHandles.set(!settings.showCaptionHandles.get());
+					addActionListener(new ActionListener()
+					{
+						public void actionPerformed(ActionEvent e)
+						{
+							settings.showCaptionHandles.set(!settings.showCaptionHandles.get());
+						}
+					});
+					setToolTipText(StringBundle.get("show_caption_handles_button_tooltip"));
 				}
-			});
-			showCaptionHandlesButton.setToolTipText(StringBundle.get("show_caption_handles_button_tooltip"));
+			};
 			this.add(showCaptionHandlesButton);
 			
-			showCaptionEditorsButton = new JButton(ImageIconBundle.get("show_caption_editors_icon"));
-			showCaptionEditorsButton.addActionListener(new ActionListener()
+			showCaptionEditorsButton = new JButton(ImageIconBundle.get("show_caption_editors_icon"))
 			{
-				public void actionPerformed(ActionEvent e)
 				{
-					settings.showCaptionEditors.set(!settings.showCaptionEditors.get());
+					addActionListener(new ActionListener()
+					{
+						public void actionPerformed(ActionEvent e)
+						{
+							settings.showCaptionEditors.set(!settings.showCaptionEditors.get());
+						}
+					});
+					setToolTipText(StringBundle.get("show_caption_editors_button_tooltip"));
 				}
-			});
-			showCaptionEditorsButton.setToolTipText(StringBundle.get("show_caption_editors_button_tooltip"));
+			};
 			this.add(showCaptionEditorsButton);
 			
 			this.refresh();
@@ -2138,58 +2203,74 @@ public class GraphDisplayController extends JPanel implements ClipboardOwner
 		
 		public ZoomToolBar()
 		{
-			zoomGraphButton = new JButton(ImageIconBundle.get("zoom_graph_icon"));
-			zoomGraphButton.addActionListener(new ActionListener()
+			zoomGraphButton = new JButton(ImageIconBundle.get("zoom_graph_icon"))
 			{
-				public void actionPerformed(ActionEvent e)
 				{
-					zoomFit();
+					addActionListener(new ActionListener()
+					{
+						public void actionPerformed(ActionEvent e)
+						{
+							zoomFit();
+						}
+					});
+					setToolTipText(StringBundle.get("zoom_graph_button_tooltip"));
 				}
-			});
-			zoomGraphButton.setToolTipText(StringBundle.get("zoom_graph_button_tooltip"));
+			};
 			this.add(zoomGraphButton);
 			
-			zoomOneToOneButton = new JButton(ImageIconBundle.get("zoom_one_to_one_icon"));
-			zoomOneToOneButton.addActionListener(new ActionListener()
+			zoomOneToOneButton = new JButton(ImageIconBundle.get("zoom_one_to_one_icon"))
 			{
-				public void actionPerformed(ActionEvent e)
 				{
-					zoomOneToOne();
+					addActionListener(new ActionListener()
+					{
+						public void actionPerformed(ActionEvent e)
+						{
+							zoomOneToOne();
+						}
+					});
+					setToolTipText(StringBundle.get("zoom_one_to_one_button_tooltip"));
 				}
-			});
-			zoomOneToOneButton.setToolTipText(StringBundle.get("zoom_one_to_one_button_tooltip"));
+			};
 			this.add(zoomOneToOneButton);
 			
-			zoomInButton = new JButton(ImageIconBundle.get("zoom_in_icon"));
-			zoomInButton.addActionListener(new ActionListener()
+			zoomInButton = new JButton(ImageIconBundle.get("zoom_in_icon"))
 			{
-				public void actionPerformed(ActionEvent e)
 				{
-					Point2D.Double viewportCenter = new Point2D.Double(viewport.getWidth() / 2.0, viewport.getHeight() / 2.0);
-					Point2D.Double zoomCenter = new Point2D.Double();
-					try { transform.inverseTransform(viewportCenter, zoomCenter); }
-					catch (NoninvertibleTransformException ex) { DebugUtilities.logException("An exception occurred while inverting transformation.", ex); }
-					
-					zoomCenter(zoomCenter, userSettings.zoomInFactor.get());
+					addActionListener(new ActionListener()
+					{
+						public void actionPerformed(ActionEvent e)
+						{
+							Point2D.Double viewportCenter = new Point2D.Double(viewport.getWidth() / 2.0, viewport.getHeight() / 2.0);
+							Point2D.Double zoomCenter = new Point2D.Double();
+							try { transform.inverseTransform(viewportCenter, zoomCenter); }
+							catch (NoninvertibleTransformException ex) { DebugUtilities.logException("An exception occurred while inverting transformation.", ex); }
+							
+							zoomCenter(zoomCenter, userSettings.zoomInFactor.get());
+						}
+					});
+					setToolTipText(StringBundle.get("zoom_in_button_tooltip"));
 				}
-			});
-			zoomInButton.setToolTipText(StringBundle.get("zoom_in_button_tooltip"));
+			};
 			this.add(zoomInButton);
 			
-			zoomOutButton = new JButton(ImageIconBundle.get("zoom_out_icon"));
-			zoomOutButton.addActionListener(new ActionListener()
+			zoomOutButton = new JButton(ImageIconBundle.get("zoom_out_icon"))
 			{
-				public void actionPerformed(ActionEvent e)
 				{
-					Point2D.Double viewportCenter = new Point2D.Double(viewport.getWidth() / 2.0, viewport.getHeight() / 2.0);
-					Point2D.Double zoomCenter = new Point2D.Double();
-					try { transform.inverseTransform(viewportCenter, zoomCenter); }
-					catch (NoninvertibleTransformException ex) { DebugUtilities.logException("An exception occurred while inverting transformation.", ex); }
-					
-					zoomCenter(zoomCenter, userSettings.zoomOutFactor.get());
+					addActionListener(new ActionListener()
+					{
+						public void actionPerformed(ActionEvent e)
+						{
+							Point2D.Double viewportCenter = new Point2D.Double(viewport.getWidth() / 2.0, viewport.getHeight() / 2.0);
+							Point2D.Double zoomCenter = new Point2D.Double();
+							try { transform.inverseTransform(viewportCenter, zoomCenter); }
+							catch (NoninvertibleTransformException ex) { DebugUtilities.logException("An exception occurred while inverting transformation.", ex); }
+							
+							zoomCenter(zoomCenter, userSettings.zoomOutFactor.get());
+						}
+					});
+					setToolTipText(StringBundle.get("zoom_out_button_tooltip"));
 				}
-			});
-			zoomOutButton.setToolTipText(StringBundle.get("zoom_out_button_tooltip"));
+			};
 			this.add(zoomOutButton);
 		}
 	}
@@ -2206,26 +2287,34 @@ public class GraphDisplayController extends JPanel implements ClipboardOwner
 		
 		public FunctionToolBar()
 		{
-			oneTimeFunctionsButton = new JButton(ImageIconBundle.get("one_time_functions_icon"));
-			oneTimeFunctionsButton.addActionListener(new ActionListener()
+			oneTimeFunctionsButton = new JButton(ImageIconBundle.get("one_time_functions_icon"))
 			{
-				public void actionPerformed(ActionEvent e)
 				{
-					oneTimeFunctionsMenu.show(oneTimeFunctionsButton, 0, oneTimeFunctionsButton.getHeight());
+					addActionListener(new ActionListener()
+					{
+						public void actionPerformed(ActionEvent e)
+						{
+							oneTimeFunctionsMenu.show(oneTimeFunctionsButton, 0, oneTimeFunctionsButton.getHeight());
+						}
+					});
+					setToolTipText(StringBundle.get("one_time_functions_button_tooltip"));
 				}
-			});
-			oneTimeFunctionsButton.setToolTipText(StringBundle.get("one_time_functions_button_tooltip"));
+			};
 			this.add(oneTimeFunctionsButton);
 			
-			dynamicFunctionsButton = new JButton(ImageIconBundle.get("dynamic_functions_icon"));
-			dynamicFunctionsButton.addActionListener(new ActionListener()
+			dynamicFunctionsButton = new JButton(ImageIconBundle.get("dynamic_functions_icon"))
 			{
-				public void actionPerformed(ActionEvent e)
 				{
-					dynamicFunctionsMenu.show(dynamicFunctionsButton, 0, dynamicFunctionsButton.getHeight());
+					addActionListener(new ActionListener()
+					{
+						public void actionPerformed(ActionEvent e)
+						{
+							dynamicFunctionsMenu.show(dynamicFunctionsButton, 0, dynamicFunctionsButton.getHeight());
+						}
+					});
+					setToolTipText(StringBundle.get("dynamic_functions_button_tooltip"));
 				}
-			});
-			dynamicFunctionsButton.setToolTipText(StringBundle.get("dynamic_functions_button_tooltip"));
+			};
 			this.add(dynamicFunctionsButton);
 			
 			oneTimeFunctionsMenu = new JPopupMenu();
@@ -2248,18 +2337,18 @@ public class GraphDisplayController extends JPanel implements ClipboardOwner
 				dynamicFunctionMenuItems = new HashMap<JCheckBoxMenuItem, FunctionBase>();
 				ActionListener oneTimeFunctionMenuItemActionListener = new ActionListener()
 				{
-					public void actionPerformed(ActionEvent arg0)
+					public void actionPerformed(ActionEvent e)
 					{
-						JMenuItem oneTimeFunctionMenuItem = (JMenuItem) arg0.getSource();
+						JMenuItem oneTimeFunctionMenuItem = (JMenuItem) e.getSource();
 						functionsToBeRun.add(oneTimeFunctionMenuItems.get(oneTimeFunctionMenuItem));
 						isViewportInvalidated = true;
 					}
 				};
 				ActionListener dynamicFunctionMenuItemActionListener = new ActionListener()
 				{
-					public void actionPerformed(ActionEvent arg0)
+					public void actionPerformed(ActionEvent e)
 					{
-						JCheckBoxMenuItem dynamicFunctionMenuItem = (JCheckBoxMenuItem) arg0.getSource();
+						JCheckBoxMenuItem dynamicFunctionMenuItem = (JCheckBoxMenuItem) e.getSource();
 						
 						if (dynamicFunctionMenuItem.isSelected())
 						{
@@ -2320,143 +2409,175 @@ public class GraphDisplayController extends JPanel implements ClipboardOwner
 			vertexItem = new JMenu(StringBundle.get("properties_vertex_menu_text"));
 			this.add(vertexItem);
 			
-			vertexLabelItem = new JMenuItem(StringBundle.get("properties_vertex_label_menu_text"));
-			vertexLabelItem.addActionListener(new ActionListener()
+			vertexLabelItem = new JMenuItem(StringBundle.get("properties_vertex_label_menu_text"))
 			{
-				public void actionPerformed(ActionEvent e)
 				{
-					String value = JOptionPane.showInputDialog(viewport, StringBundle.get("new_vertex_label_dialog_text"), GlobalSettings.applicationName, JOptionPane.QUESTION_MESSAGE);
-					if (value != null)
-						for (Vertex vertex : graph.vertexes)
-							if (vertex.isSelected.get())
-								vertex.label.set(value);
+					addActionListener(new ActionListener()
+					{
+						public void actionPerformed(ActionEvent e)
+						{
+							String value = JOptionPane.showInputDialog(viewport, StringBundle.get("new_vertex_label_dialog_text"), GlobalSettings.applicationName, JOptionPane.QUESTION_MESSAGE);
+							if (value != null)
+								for (Vertex vertex : graph.vertexes)
+									if (vertex.isSelected.get())
+										vertex.label.set(value);
+						}
+					});
 				}
-			});
+			};
 			vertexItem.add(vertexLabelItem);
 			
-			vertexRadiusItem = new JMenuItem(StringBundle.get("properties_vertex_radius_menu_text"));
-			vertexRadiusItem.addActionListener(new ActionListener()
+			vertexRadiusItem = new JMenuItem(StringBundle.get("properties_vertex_radius_menu_text"))
 			{
-				public void actionPerformed(ActionEvent e)
 				{
-					String value = JOptionPane.showInputDialog(viewport, StringBundle.get("new_vertex_radius_dialog_text"), GlobalSettings.applicationName, JOptionPane.QUESTION_MESSAGE);
-					if (value != null)
+					addActionListener(new ActionListener()
 					{
-						double radius = Double.parseDouble(value);
-						
-						for (Vertex vertex : graph.vertexes)
-							if (vertex.isSelected.get())
-								vertex.radius.set(radius);
-					}
+						public void actionPerformed(ActionEvent e)
+						{
+							String value = JOptionPane.showInputDialog(viewport, StringBundle.get("new_vertex_radius_dialog_text"), GlobalSettings.applicationName, JOptionPane.QUESTION_MESSAGE);
+							if (value != null)
+							{
+								double radius = Double.parseDouble(value);
+								
+								for (Vertex vertex : graph.vertexes)
+									if (vertex.isSelected.get())
+										vertex.radius.set(radius);
+							}
+						}
+					});
 				}
-			});
+			};
 			vertexItem.add(vertexRadiusItem);
 			
-			vertexColorItem = new JMenuItem(StringBundle.get("properties_vertex_color_menu_text"));
-			vertexColorItem.addActionListener(new ActionListener()
+			vertexColorItem = new JMenuItem(StringBundle.get("properties_vertex_color_menu_text"))
 			{
-				public void actionPerformed(ActionEvent e)
 				{
-					String value = JOptionPane.showInputDialog(viewport, StringBundle.get("new_vertex_color_dialog_text"), GlobalSettings.applicationName, JOptionPane.QUESTION_MESSAGE);
-					if (value != null)
+					addActionListener(new ActionListener()
 					{
-						int color = Integer.parseInt(value);
-						
-						for (Vertex vertex : graph.vertexes)
-							if (vertex.isSelected.get())
-								vertex.color.set(color);
-					}
+						public void actionPerformed(ActionEvent e)
+						{
+							String value = JOptionPane.showInputDialog(viewport, StringBundle.get("new_vertex_color_dialog_text"), GlobalSettings.applicationName, JOptionPane.QUESTION_MESSAGE);
+							if (value != null)
+							{
+								int color = Integer.parseInt(value);
+								
+								for (Vertex vertex : graph.vertexes)
+									if (vertex.isSelected.get())
+										vertex.color.set(color);
+							}
+						}
+					});
 				}
-			});
+			};
 			vertexItem.add(vertexColorItem);
 			
-			vertexWeightItem = new JMenuItem(StringBundle.get("properties_vertex_weight_menu_text"));
-			vertexWeightItem.addActionListener(new ActionListener()
+			vertexWeightItem = new JMenuItem(StringBundle.get("properties_vertex_weight_menu_text"))
 			{
-				public void actionPerformed(ActionEvent e)
 				{
-					String value = JOptionPane.showInputDialog(viewport, StringBundle.get("new_vertex_weight_dialog_text"), GlobalSettings.applicationName, JOptionPane.QUESTION_MESSAGE);
-					if (value != null)
+					addActionListener(new ActionListener()
 					{
-						double weight = Double.parseDouble(value);
-						
-						for (Vertex vertex : graph.vertexes)
-							if (vertex.isSelected.get())
-								vertex.weight.set(weight);
-					}
+						public void actionPerformed(ActionEvent e)
+						{
+							String value = JOptionPane.showInputDialog(viewport, StringBundle.get("new_vertex_weight_dialog_text"), GlobalSettings.applicationName, JOptionPane.QUESTION_MESSAGE);
+							if (value != null)
+							{
+								double weight = Double.parseDouble(value);
+								
+								for (Vertex vertex : graph.vertexes)
+									if (vertex.isSelected.get())
+										vertex.weight.set(weight);
+							}
+						}
+					});
 				}
-			});
+			};
 			vertexItem.add(vertexWeightItem);
 			
 			edgeItem = new JMenu(StringBundle.get("properties_edge_menu_text"));
 			this.add(edgeItem);
 			
-			edgeLabelItem = new JMenuItem(StringBundle.get("properties_edge_label_menu_text"));
-			edgeLabelItem.addActionListener(new ActionListener()
+			edgeLabelItem = new JMenuItem(StringBundle.get("properties_edge_label_menu_text"))
 			{
-				public void actionPerformed(ActionEvent e)
 				{
-					String label = JOptionPane.showInputDialog(viewport, StringBundle.get("new_edge_label_dialog_text"), GlobalSettings.applicationName, JOptionPane.QUESTION_MESSAGE);
-					if (label != null)
-						for (Edge edge : graph.edges)
-							if (edge.isSelected.get())
-								edge.label.set(label);
+					addActionListener(new ActionListener()
+					{
+						public void actionPerformed(ActionEvent e)
+						{
+							String label = JOptionPane.showInputDialog(viewport, StringBundle.get("new_edge_label_dialog_text"), GlobalSettings.applicationName, JOptionPane.QUESTION_MESSAGE);
+							if (label != null)
+								for (Edge edge : graph.edges)
+									if (edge.isSelected.get())
+										edge.label.set(label);
+						}
+					});
 				}
-			});
+			};
 			edgeItem.add(edgeLabelItem);
 			
-			edgeThicknessItem = new JMenuItem(StringBundle.get("properties_edge_thickness_menu_text"));
-			edgeThicknessItem.addActionListener(new ActionListener()
+			edgeThicknessItem = new JMenuItem(StringBundle.get("properties_edge_thickness_menu_text"))
 			{
-				public void actionPerformed(ActionEvent e)
 				{
-					String value = JOptionPane.showInputDialog(viewport, StringBundle.get("new_edge_thickness_dialog_text"), GlobalSettings.applicationName, JOptionPane.QUESTION_MESSAGE);
-					if (value != null)
+					addActionListener(new ActionListener()
 					{
-						double thickness = Double.parseDouble(value);
-						
-						for (Edge edge : graph.edges)
-							if (edge.isSelected.get())
-								edge.thickness.set(thickness);
-					}
+						public void actionPerformed(ActionEvent e)
+						{
+							String value = JOptionPane.showInputDialog(viewport, StringBundle.get("new_edge_thickness_dialog_text"), GlobalSettings.applicationName, JOptionPane.QUESTION_MESSAGE);
+							if (value != null)
+							{
+								double thickness = Double.parseDouble(value);
+								
+								for (Edge edge : graph.edges)
+									if (edge.isSelected.get())
+										edge.thickness.set(thickness);
+							}
+						}
+					});
 				}
-			});
+			};
 			edgeItem.add(edgeThicknessItem);
 			
-			edgeColorItem = new JMenuItem(StringBundle.get("properties_edge_color_menu_text"));
-			edgeColorItem.addActionListener(new ActionListener()
+			edgeColorItem = new JMenuItem(StringBundle.get("properties_edge_color_menu_text"))
 			{
-				public void actionPerformed(ActionEvent e)
 				{
-					String value = JOptionPane.showInputDialog(viewport, StringBundle.get("new_edge_color_dialog_text"), GlobalSettings.applicationName, JOptionPane.QUESTION_MESSAGE);
-					if (value != null)
+					addActionListener(new ActionListener()
 					{
-						int color = Integer.parseInt(value);
-						
-						for (Edge edge : graph.edges)
-							if (edge.isSelected.get())
-								edge.color.set(color);
-					}
+						public void actionPerformed(ActionEvent e)
+						{
+							String value = JOptionPane.showInputDialog(viewport, StringBundle.get("new_edge_color_dialog_text"), GlobalSettings.applicationName, JOptionPane.QUESTION_MESSAGE);
+							if (value != null)
+							{
+								int color = Integer.parseInt(value);
+								
+								for (Edge edge : graph.edges)
+									if (edge.isSelected.get())
+										edge.color.set(color);
+							}
+						}
+					});
 				}
-			});
+			};
 			edgeItem.add(edgeColorItem);
 			
-			edgeWeightItem = new JMenuItem(StringBundle.get("properties_edge_weight_menu_text"));
-			edgeWeightItem.addActionListener(new ActionListener()
+			edgeWeightItem = new JMenuItem(StringBundle.get("properties_edge_weight_menu_text"))
 			{
-				public void actionPerformed(ActionEvent e)
 				{
-					String value = JOptionPane.showInputDialog(viewport, StringBundle.get("new_edge_weight_dialog_text"), GlobalSettings.applicationName, JOptionPane.QUESTION_MESSAGE);
-					if (value != null)
+					addActionListener(new ActionListener()
 					{
-						double weight = Double.parseDouble(value);
-						
-						for (Edge edge : graph.edges)
-							if (edge.isSelected.get())
-								edge.weight.set(weight);
-					}
+						public void actionPerformed(ActionEvent e)
+						{
+							String value = JOptionPane.showInputDialog(viewport, StringBundle.get("new_edge_weight_dialog_text"), GlobalSettings.applicationName, JOptionPane.QUESTION_MESSAGE);
+							if (value != null)
+							{
+								double weight = Double.parseDouble(value);
+								
+								for (Edge edge : graph.edges)
+									if (edge.isSelected.get())
+										edge.weight.set(weight);
+							}
+						}
+					});
 				}
-			});
+			};
 			edgeItem.add(edgeWeightItem);
 		}
 	

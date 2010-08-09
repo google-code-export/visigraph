@@ -96,5 +96,5 @@ public final static GeneratorService instance = new GeneratorService();
 					throw new Error("The \"" + generator + "\" generator's default rules are inconsistent: if cycles are disallowed by default, multiple edges must also be disallowed, either by force or by default.");
 			}
 		}
-}
+	}
 }
