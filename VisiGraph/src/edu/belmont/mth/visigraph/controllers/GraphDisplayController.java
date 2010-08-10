@@ -575,7 +575,7 @@ public class GraphDisplayController extends JPanel
 				
 				pasted.suspendNotifications(false);
 				
-				graph.deselectAll();
+				graph.selectAll(false);
 				graph.union(pasted);
 			}
 			catch (Exception ex) { DebugUtilities.logException("An exception occurred while painting the viewport.", ex); }
@@ -600,7 +600,7 @@ public class GraphDisplayController extends JPanel
 	
 	public void selectAll()
 	{
-		graph.selectAll();
+		graph.selectAll(true);
 	}
 	
 	public void selectAllEdges()
@@ -657,7 +657,7 @@ public class GraphDisplayController extends JPanel
 				}
 			case KeyEvent.VK_ESCAPE:
 				{
-					graph.deselectAll();
+					graph.selectAll(false);
 					break;
 				}
 			case KeyEvent.VK_UP:
@@ -685,10 +685,10 @@ public class GraphDisplayController extends JPanel
 					{
 						switch(event.getKeyCode())
 						{
-							case KeyEvent.VK_UP:    graph.moveSelected(0.0, -increment); break;
-							case KeyEvent.VK_RIGHT: graph.moveSelected(increment, 0.0);  break;
-							case KeyEvent.VK_DOWN:  graph.moveSelected(0.0, increment);  break;
-							case KeyEvent.VK_LEFT:  graph.moveSelected(-increment, 0.0); break;
+							case KeyEvent.VK_UP:    graph.translateSelected(0.0, -increment); break;
+							case KeyEvent.VK_RIGHT: graph.translateSelected(increment, 0.0);  break;
+							case KeyEvent.VK_DOWN:  graph.translateSelected(0.0, increment);  break;
+							case KeyEvent.VK_LEFT:  graph.translateSelected(-increment, 0.0); break;
 						}
 						
 						for (Edge edge : graph.edges)
@@ -707,7 +707,7 @@ public class GraphDisplayController extends JPanel
 		transform.inverseTransform(event.getPoint(), currentMousePoint);
 		
 		if (tool == Tool.POINTER_TOOL && pointerToolClickedObject)
-			graph.moveSelected(currentMousePoint.getX() - oldPoint.x, currentMousePoint.getY() - oldPoint.y);
+			graph.translateSelected(currentMousePoint.getX() - oldPoint.x, currentMousePoint.getY() - oldPoint.y);
 		
 		isViewportInvalidated = true;
 	}
@@ -734,7 +734,7 @@ public class GraphDisplayController extends JPanel
 						if (VertexDisplayView.wasClicked(vertex, currentMousePoint, transform.getScaleX()))
 						{
 							if (!vertex.isSelected.get() && !isShiftDown)
-								graph.deselectAll();
+								graph.selectAll(false);
 							
 							vertex.isSelected.set(true);
 							pointerToolClickedObject = true;
@@ -749,7 +749,7 @@ public class GraphDisplayController extends JPanel
 							if (EdgeDisplayView.wasClicked(edge, currentMousePoint, transform.getScaleX()))
 							{
 								if (!edge.isSelected.get() && !isShiftDown)
-									graph.deselectAll();
+									graph.selectAll(false);
 								
 								edge.isSelected.set(true);
 								pointerToolClickedObject = true;
@@ -764,7 +764,7 @@ public class GraphDisplayController extends JPanel
 							if (CaptionDisplayView.wasHandleClicked(caption, currentMousePoint, transform.getScaleX()))
 							{
 								if (!caption.isSelected.get() && !isShiftDown)
-									graph.deselectAll();
+									graph.selectAll(false);
 								
 								caption.isSelected.set(true);
 								pointerToolClickedObject = true;
@@ -779,7 +779,7 @@ public class GraphDisplayController extends JPanel
 							if (CaptionDisplayView.wasEditorClicked(caption, currentMousePoint, transform.getScaleX()))
 							{
 								if (!caption.isSelected.get() && !isShiftDown)
-									graph.deselectAll();
+									graph.selectAll(false);
 								
 								EditCaptionDialog.Value newValue = EditCaptionDialog.showDialog(this, this, caption.text.get(), caption.size.get());
 								if (newValue != null)
@@ -794,7 +794,7 @@ public class GraphDisplayController extends JPanel
 						}
 					
 					if (!pointerToolClickedObject && !isShiftDown)
-						graph.deselectAll();
+						graph.selectAll(false);
 					
 					break;
 				}
@@ -853,7 +853,7 @@ public class GraphDisplayController extends JPanel
 						if (!fromVertexClicked && (!toVertexClicked || userSettings.deselectVertexWithNewEdge.get()) && event.getButton() == MouseEvent.BUTTON1)
 						{
 							fromVertex = null;
-							graph.deselectAll();
+							graph.selectAll(false);
 						}
 					}
 					
@@ -1071,7 +1071,7 @@ public class GraphDisplayController extends JPanel
 					if (!cutToolClickedObject && !pastMousePoint.equals(currentMousePoint))
 					{
 						Rectangle selection = getSelectionRectangle();
-						graph.deselectAll();
+						graph.selectAll(false);
 						
 						for (Vertex vertex : graph.vertexes)
 							if (VertexDisplayView.wasSelected(vertex, selection))
@@ -1195,7 +1195,7 @@ public class GraphDisplayController extends JPanel
 						public void actionPerformed(ActionEvent e)
 						{
 							setTool(Tool.POINTER_TOOL);
-							graph.deselectAll();
+							graph.selectAll(false);
 						}
 					});
 					setToolTipText(StringBundle.get("pointer_tool_tooltip"));
@@ -1212,7 +1212,7 @@ public class GraphDisplayController extends JPanel
 						public void actionPerformed(ActionEvent e)
 						{
 							setTool(Tool.VERTEX_TOOL);
-							graph.deselectAll();
+							graph.selectAll(false);
 						}
 					});
 					setToolTipText(StringBundle.get("vertex_tool_tooltip"));
@@ -1228,7 +1228,7 @@ public class GraphDisplayController extends JPanel
 						public void actionPerformed(ActionEvent e)
 						{
 							setTool(Tool.EDGE_TOOL);
-							graph.deselectAll();
+							graph.selectAll(false);
 						}
 					});
 					setToolTipText(StringBundle.get("edge_tool_tooltip"));
@@ -1244,7 +1244,7 @@ public class GraphDisplayController extends JPanel
 						public void actionPerformed(ActionEvent e)
 						{
 							setTool(Tool.CAPTION_TOOL);
-							graph.deselectAll();
+							graph.selectAll(false);
 						}
 					});
 					setToolTipText(StringBundle.get("caption_tool_tooltip"));
@@ -1260,7 +1260,7 @@ public class GraphDisplayController extends JPanel
 						public void actionPerformed(ActionEvent e)
 						{
 							setTool(Tool.CUT_TOOL);
-							graph.deselectAll();
+							graph.selectAll(false);
 						}
 					});
 					setToolTipText(StringBundle.get("cut_tool_tooltip"));
@@ -1282,7 +1282,7 @@ public class GraphDisplayController extends JPanel
 						@Override
 						public void mousePressed(MouseEvent event)
 						{
-							graph.deselectAll();
+							graph.selectAll(false);
 							setTool(Tool.PAINT_TOOL);
 							isMouseDownOnPaintToolButton = true;
 							paintMenuTimer.start();
