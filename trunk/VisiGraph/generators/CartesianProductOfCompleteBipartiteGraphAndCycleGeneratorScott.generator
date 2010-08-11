@@ -25,16 +25,16 @@ import edu.belmont.mth.visigraph.models.generators.*;
 		{
 			// Add all the vertices of one bipartite graph (or end)
 			for(int j = 0; j < north; ++j)
-				graph.vertexes.add(new Vertex(graph.nextVertexId(), (j - north) * 50.0 + 25.0, (i == -1 || i == n ? 0.0 : j - north) * 50.0 + (linkHeight + 100) * i));
+				graph.vertexes.add(new Vertex((j - north) * 50.0 + 25.0, (i == -1 || i == n ? 0.0 : j - north) * 50.0 + (linkHeight + 100) * i));
 		
 			for(int j = 0; j < south; ++j)
-				graph.vertexes.add(new Vertex(graph.nextVertexId(), (j + 1)     * 50.0 - 25.0, (i == -1 || i == n ? 0.0 : j + 1)     * 50.0 + (linkHeight + 100) * i));
+				graph.vertexes.add(new Vertex((j + 1)     * 50.0 - 25.0, (i == -1 || i == n ? 0.0 : j + 1)     * 50.0 + (linkHeight + 100) * i));
 		
 			for(int j = 0; j < west; ++j)
-				graph.vertexes.add(new Vertex(graph.nextVertexId(), (j - west) * 50.0, (linkHeight + 100) * i));
+				graph.vertexes.add(new Vertex((j - west) * 50.0, (linkHeight + 100) * i));
 		
 			for(int j = 0; j < east; ++j)
-				graph.vertexes.add(new Vertex(graph.nextVertexId(), (j + 1)    * 50.0, (linkHeight + 100) * i));
+				graph.vertexes.add(new Vertex((j + 1)    * 50.0, (linkHeight + 100) * i));
 		
 			// Add all the edges for that bipartite graph
 			if(i != -1 && i != n)

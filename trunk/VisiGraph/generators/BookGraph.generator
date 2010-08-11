@@ -13,21 +13,21 @@ import edu.belmont.mth.visigraph.models.generators.*;
         double radius = UserSettings.instance.arrangeCircleRadiusMultiplier.get() * n;
         double degreesPerVertex = 2 * Math.PI / n;
         
-        Vertex hub = new Vertex(graph.nextVertexId(), 0.0, 0.0);
+        Vertex hub = new Vertex(0.0, 0.0);
         graph.vertexes.add(hub);
         
         for(int i = 0; i < n; ++i)
         {
-        	Vertex corner = new Vertex(graph.nextVertexId(), radius * Math.cos(degreesPerVertex * i - Math.PI / 2.0), radius * Math.sin(degreesPerVertex * i - Math.PI / 2.0));
+        	Vertex corner = new Vertex(radius * Math.cos(degreesPerVertex * i - Math.PI / 2.0), radius * Math.sin(degreesPerVertex * i - Math.PI / 2.0));
         	graph.vertexes.add(corner); graph.edges.add(new Edge(false, hub, corner));
         }
         
-        hub = new Vertex(graph.nextVertexId(), 50.0, 0.0);
+        hub = new Vertex(50.0, 0.0);
         graph.vertexes.add(hub);
         
 		for(int i = 0; i < n; ++i)
         {
-        	Vertex corner = new Vertex(graph.nextVertexId(), radius * Math.cos(degreesPerVertex * i - Math.PI / 2.0) + 50.0, radius * Math.sin(degreesPerVertex * i - Math.PI / 2.0));
+        	Vertex corner = new Vertex(radius * Math.cos(degreesPerVertex * i - Math.PI / 2.0) + 50.0, radius * Math.sin(degreesPerVertex * i - Math.PI / 2.0));
         	graph.vertexes.add(corner); graph.edges.add(new Edge(false, hub, corner));
         }
         

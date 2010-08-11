@@ -29,7 +29,7 @@ public class EmptyGraph implements GeneratorBase
 		
 		for (int row = 0; row < rows; ++row)
 			for(int col = 0; (row < rows - 1 && col < columns) || (row == rows - 1 && col < (n % columns == 0 ? columns : n % columns)); ++col)
-				graph.vertexes.add(new Vertex(graph.nextVertexId(), location.x + UserSettings.instance.arrangeGridSpacing.get() * col, location.y + UserSettings.instance.arrangeGridSpacing.get() * row));
+				graph.vertexes.add(new Vertex(location.x + UserSettings.instance.arrangeGridSpacing.get() * col, location.y + UserSettings.instance.arrangeGridSpacing.get() * row));
 		
 		return graph;
 	}

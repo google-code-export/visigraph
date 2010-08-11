@@ -13,10 +13,10 @@ import edu.belmont.mth.visigraph.models.generators.*;
 		int s = Integer.parseInt(matcher.group(2));
 
 		for(int j = 0; j < r; ++j)
-			graph.vertexes.add(new Vertex(graph.nextVertexId(), (j - (r / 2)) * UserSettings.instance.arrangeGridSpacing.get(), -UserSettings.instance.arrangeGridSpacing.get()));
+			graph.vertexes.add(new Vertex((j - (r / 2)) * UserSettings.instance.arrangeGridSpacing.get(), -UserSettings.instance.arrangeGridSpacing.get()));
 
 		for(int j = 0; j < s; ++j)
-			graph.vertexes.add(new Vertex(graph.nextVertexId(), (j - (s / 2)) * UserSettings.instance.arrangeGridSpacing.get(), UserSettings.instance.arrangeGridSpacing.get()));
+			graph.vertexes.add(new Vertex((j - (s / 2)) * UserSettings.instance.arrangeGridSpacing.get(), UserSettings.instance.arrangeGridSpacing.get()));
 
 		for(int j = 0; j < r; ++j)
 			for(int k = 0; k < s; ++k)

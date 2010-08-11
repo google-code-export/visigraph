@@ -802,7 +802,7 @@ public class GraphDisplayController extends JPanel
 				{
 					// Simply add a new vertex at the location left-clicked
 					if (event.getButton() == MouseEvent.BUTTON1)
-						graph.vertexes.add(new Vertex(graph.nextVertexId(), currentMousePoint.x, currentMousePoint.y));
+						graph.vertexes.add(new Vertex(currentMousePoint.x, currentMousePoint.y));
 					
 					break;
 				}

@@ -191,6 +191,8 @@ public class JsonUtilities
 			return formatColor((Color)o);
 		else if(o instanceof Iterable<?>)
 			return formatArray((Iterable<?>)o);
+		else if(o instanceof UUID)
+			return formatString(((UUID)o).toString());
 		else if(o == null)
 			return "null";
 		else
