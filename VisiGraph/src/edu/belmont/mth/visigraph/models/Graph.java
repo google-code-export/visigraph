@@ -11,20 +11,19 @@ import edu.belmont.mth.visigraph.utilities.*;
 import edu.belmont.mth.visigraph.views.*;
 
 /**
- * The <code>Graph</code> class represents the highest level data-structure in graph theory, containing—fundamentally and by definition—a list
- * of vertices and a corresponding list of edges connecting those vertices. Presently, this class supports not only simple, undirected graphs
- * but also graphs with loops (psuedographs), multi-edges (multigraphs), directed edges (digraphs), and every combination of the three. The
- * <code>Graph</code> class also supports acyclic graphs (trees), though multi-edges and loops must then be prohibited, as they inherently form
- * cycles.
+ * The {@code Graph} class represents the highest level data-structure in graph theory, containing—fundamentally and by definition—a list of vertices
+ * and a corresponding list of edges connecting those vertices. Presently, this class supports not only simple, undirected graphs but also graphs with
+ * loops (psuedographs), multi-edges (multigraphs), directed edges (digraphs), and every combination of the three. The {@code Graph} class also
+ * supports acyclic graphs (trees), though multi-edges and loops must then be prohibited, as they inherently form cycles.
  * <p/>
- * In addition to the mathematical properties of a graph, the <code>Graph</code> class also includes a name property to help the user distinguish one
- * graph from another, and a list of captions used to point out regions of interest from within the graph itself. In order for this class to be saved
- * to file or shared through the web it must be fully serializable, and indeed is: with the {@link #toString()} method used for serialization using
- * JSON and the {@link #Graph(String)} constructor used for deserialization.
+ * In addition to the mathematical properties of a graph, the {@code Graph} class also includes a name property to help the user distinguish one graph
+ * from another, and a list of captions used to point out regions of interest from within the graph itself. In order for this class to be saved to
+ * file or shared through the web it must be fully serializable, and indeed is: with the {@link #toString()} method used for serialization using JSON
+ * and the {@link #Graph(String)} constructor used for deserialization.
  * <p/>
  * As an {@link ObservableBase}, this class also supports multiple subscribing {@link ObserverBase}s. Whenever a change is made to any part of a
- * <code>Graph</code>, notification of that change is automatically propagated upwards until it hits the <code>Graph</code> level. Be it the addition
- * or removal of an edge or even a change to one of the properties of a single vertex, all changes below the graph will trigger a
+ * {@code Graph}, notification of that change is automatically propagated upwards until it hits the {@code Graph} level. Be it the addition or removal
+ * of an edge or even a change to one of the properties of a single vertex, all changes below the graph will trigger a
  * {@link #notifyObservers(Object)} call.
  * 
  * @author Cameron Behar
@@ -54,112 +53,56 @@ public class Graph extends ObservableBase
 	public final ObservableList<Caption> captions;
 	
 	/**
-	 * A <code>boolean</code> indicating whether or not loops are allowed in this graph. A loop is an edge from a vertex to itself, and are only
-	 * allowed in psuedographs.
+	 * A {@code boolean} indicating whether or not loops are allowed in this graph. A loop is an edge from a vertex to itself, and are only allowed in
+	 * psuedographs.
 	 */
 	public final boolean areLoopsAllowed;
 	
 	/**
-	 * A <code>boolean</code> indicating whether or not multi-edges are allowed in this graph. Multi-edges are distinct edges that connect connect the
-	 * same two vertices in the same direction, and are only allowed in multigraphs.
+	 * A {@code boolean} indicating whether or not multi-edges are allowed in this graph. Multi-edges are distinct edges that connect connect the same
+	 * two vertices in the same direction, and are only allowed in multigraphs.
 	 */
 	public final boolean areMultipleEdgesAllowed;
 	
 	/**
-	 * A <code>boolean</code> indicating whether or not this graph is a directed graph, or digraph. Digraphs are graphs whose edges may only go in one
+	 * A {@code boolean} indicating whether or not this graph is a directed graph, or digraph. Digraphs are graphs whose edges may only go in one
 	 * direction (i.e. from A to B, but not necessarily B to A).
 	 */
 	public final boolean areDirectedEdgesAllowed;
 	
 	/**
-	 * A <code>boolean</code> indicating whether or not cycles are allowed in this graph. Trees, for instance, are by definition acyclic.
+	 * A {@code boolean} indicating whether or not cycles are allowed in this graph. Trees, for instance, are by definition acyclic.
 	 */
 	public final boolean areCyclesAllowed;
 	
 	/**
-	 * A <code>boolean</code> flag indicating whether notifications are to be sent on to any of this graph's {@link ObserverBase}s, or merely caught
-	 * and handled internally
+	 * A {@code boolean} flag indicating whether notifications are to be sent on to any of this graph's subscribed {@link ObserverBase}s, or merely
+	 * caught and handled internally
 	 */
 	private boolean notificationsSuspended;
 	
 	/**
-	 * An <code>ObserverBase</code> used to notify this Graph's subscribed <code>ObserverBase</code>s of changes (e.g. after adding or removing a
-	 * vertex), and to ensure that no edge continues to exist once one of its vertices has been removed
+	 * An {@code ObserverBase} used to notify this Graph's subscribed {@code ObserverBase}s of changes (e.g. after adding or removing a vertex), and
+	 * to ensure that no edge continues to exist once one of its vertices has been removed
 	 */
 	private ObserverBase vertexListObserver;
 	
 	/**
-	 * An <code>ObserverBase</code> used to notify this Graph's subscribed <code>ObserverBase</code>s of changes (e.g. after adding or removing an
-	 * edge)
+	 * An {@code ObserverBase} used to notify this Graph's subscribed {@code ObserverBase}s of changes (e.g. after adding or removing an edge)
 	 */
 	private ObserverBase edgeListObserver;
 	
 	/**
-	 * An <code>ObserverBase</code> used to notify this Graph's subscribed <code>ObserverBase</code>s of changes (e.g. after adding or removing a
-	 * caption)
+	 * An {@code ObserverBase} used to notify this Graph's subscribed {@code ObserverBase}s of changes (e.g. after adding or removing a caption)
 	 */
 	private ObserverBase captionListObserver;
 	
 	/**
 	 * Constructs an empty undirected graph allowing loops, multi-edges, and cycles.
 	 */
-	public Graph()
+	public Graph ( )
 	{
-		this(UserSettings.instance.defaultGraphName.get(), true, false, true, true);
-	}
-	
-	/**
-	 * Constructs an empty graph with the name and settings specified. When not loading a graph from JSON string, this is the preferred constructor
-	 * form.
-	 */
-	public Graph(String name, boolean areLoopsAllowed, boolean areDirectedEdgesAllowed, boolean areMultipleEdgesAllowed, boolean areCyclesAllowed)
-	{
-		this.name = new Property<String>(name, "name");
-		
-		this.areLoopsAllowed = areLoopsAllowed;
-		this.areDirectedEdgesAllowed = areDirectedEdgesAllowed;
-		this.areMultipleEdgesAllowed = areMultipleEdgesAllowed;
-		this.areCyclesAllowed = areCyclesAllowed;
-		
-		this.notificationsSuspended = false;
-		this.vertexListObserver = new ObserverBase()
-		{
-			@Override
-			public void hasChanged(Object source)
-			{
-				if (edges != null)
-					fixEdges();
-				if (!notificationsSuspended)
-					notifyObservers(source);
-			}
-		};
-		this.edgeListObserver = new ObserverBase()
-		{
-			@Override
-			public void hasChanged(Object source)
-			{
-				if (!notificationsSuspended)
-					notifyObservers(source);
-			}
-		};
-		this.captionListObserver = new ObserverBase()
-		{
-			@Override
-			public void hasChanged(Object source)
-			{
-				if (!notificationsSuspended)
-					notifyObservers(source);
-			}
-		};
-		
-		this.vertexes = new ObservableList<Vertex>("vertexes");
-		this.vertexes.addObserver(vertexListObserver);
-		
-		this.edges = new ObservableList<Edge>("edges");
-		this.edges.addObserver(edgeListObserver);
-		
-		this.captions = new ObservableList<Caption>("captions");
-		this.captions.addObserver(captionListObserver);
+		this( UserSettings.instance.defaultGraphName.get( ), true, false, true, true );
 	}
 	
 	/**
@@ -167,184 +110,171 @@ public class Graph extends ObservableBase
 	 * 
 	 * @see #toString()
 	 */
-	@SuppressWarnings("unchecked")
-	public Graph(String json)
+	@SuppressWarnings( "unchecked" )
+	public Graph ( String json )
 	{
-		Map<String, Object> members = JsonUtilities.parseObject(json);
+		Map<String, Object> members = JsonUtilities.parseObject( json );
 		
-		this.name = new Property<String>((String) members.get("name"), "name");
+		this.name = new Property<String>( (String) members.get( "name" ), "name" );
 		
-		this.areLoopsAllowed = (Boolean) members.get("areLoopsAllowed");
-		this.areDirectedEdgesAllowed = (Boolean) members.get("areDirectedEdgesAllowed");
-		this.areMultipleEdgesAllowed = (Boolean) members.get("areMultipleEdgesAllowed");
-		this.areCyclesAllowed = (Boolean) members.get("areCyclesAllowed");
+		this.areLoopsAllowed = (Boolean) members.get( "areLoopsAllowed" );
+		this.areDirectedEdgesAllowed = (Boolean) members.get( "areDirectedEdgesAllowed" );
+		this.areMultipleEdgesAllowed = (Boolean) members.get( "areMultipleEdgesAllowed" );
+		this.areCyclesAllowed = (Boolean) members.get( "areCyclesAllowed" );
 		
 		this.notificationsSuspended = false;
-		this.vertexListObserver = new ObserverBase()
+		this.vertexListObserver = new ObserverBase( )
 		{
 			@Override
-			public void hasChanged(Object source)
+			public void hasChanged( Object source )
 			{
-				if (edges != null)
-					fixEdges();
+				if ( edges != null )
+					fixEdges( );
 				
-				if (!notificationsSuspended)
-					notifyObservers(source);
+				if ( !notificationsSuspended )
+					notifyObservers( source );
 			}
 		};
-		this.edgeListObserver = new ObserverBase()
+		this.edgeListObserver = new ObserverBase( )
 		{
 			@Override
-			public void hasChanged(Object source)
+			public void hasChanged( Object source )
 			{
-				if (!notificationsSuspended)
-					notifyObservers(source);
+				if ( !notificationsSuspended )
+					notifyObservers( source );
 			}
 		};
-		this.captionListObserver = new ObserverBase()
+		this.captionListObserver = new ObserverBase( )
 		{
 			@Override
-			public void hasChanged(Object source)
+			public void hasChanged( Object source )
 			{
-				if (!notificationsSuspended)
-					notifyObservers(source);
+				if ( !notificationsSuspended )
+					notifyObservers( source );
 			}
 		};
 		
-		Map<String, Vertex> idToVertexMap = new HashMap<String, Vertex>();
+		Map<String, Vertex> idToVertexMap = new HashMap<String, Vertex>( );
 		
-		this.vertexes = new ObservableList<Vertex>("vertexes");
-		for (Object vertex : (Iterable<?>) members.get("vertexes"))
-			if (vertex instanceof Map<?, ?>)
+		this.vertexes = new ObservableList<Vertex>( );
+		for ( Object vertex : (Iterable<?>) members.get( "vertexes" ) )
+			if ( vertex instanceof Map<?, ?> )
 			{
 				// This is the map of the vertex's properties
-				Map<String, Object> vertexPropertyMap = (Map<String, Object>)vertex;
+				Map<String, Object> vertexPropertyMap = (Map<String, Object>) vertex;
 				
 				// First we need to create the vertex from the map of properties
-				Vertex newVertex = new Vertex(vertexPropertyMap);
+				Vertex newVertex = new Vertex( vertexPropertyMap );
 				
 				// Then we need to add the vertex to this graph
-				this.vertexes.add(newVertex);
+				this.vertexes.add( newVertex );
 				
 				// And finally, we have to record the vertex's original id, so that we can match it up when adding the edges later
-				idToVertexMap.put((String)vertexPropertyMap.get("id"), newVertex);
+				idToVertexMap.put( (String) vertexPropertyMap.get( "id" ), newVertex );
 			}
-		this.vertexes.addObserver(vertexListObserver);
+		this.vertexes.addObserver( vertexListObserver );
 		
-		this.edges = new ObservableList<Edge>("edges");
-		for (Object edge : (Iterable<?>) members.get("edges"))
-			if (edge instanceof Map<?, ?>)
-				this.edges.add(new Edge((Map<String, Object>) edge, idToVertexMap));
-		this.edges.addObserver(edgeListObserver);
+		this.edges = new ObservableList<Edge>( );
+		for ( Object edge : (Iterable<?>) members.get( "edges" ) )
+			if ( edge instanceof Map<?, ?> )
+				this.edges.add( new Edge( (Map<String, Object>) edge, idToVertexMap ) );
+		this.edges.addObserver( edgeListObserver );
 		
-		this.captions = new ObservableList<Caption>("captions");
-		for (Object caption : (Iterable<?>) members.get("captions"))
-			if (caption instanceof Map<?, ?>)
-				this.captions.add(new Caption((Map<String, Object>) caption));
-		this.captions.addObserver(captionListObserver);
+		this.captions = new ObservableList<Caption>( );
+		for ( Object caption : (Iterable<?>) members.get( "captions" ) )
+			if ( caption instanceof Map<?, ?> )
+				this.captions.add( new Caption( (Map<String, Object>) caption ) );
+		this.captions.addObserver( captionListObserver );
 	}
 	
 	/**
-	 * Sets the <code>isSelected</code> property of all elements in this graph to <code>true</code> or <true>false</code>, depending upon the
-	 * parameter.
-	 * 
-	 * @param select
-	 *            a <code>boolean</code> indicating whether to select or deselect all graph elements
-	 * 
-	 * @see {@link Vertex}, {@link Edge}, {@link Caption}
+	 * Constructs an empty graph with the name and settings specified. When not loading a graph from JSON string, this is the preferred constructor
+	 * form.
 	 */
-	public void selectAll(boolean select)
+	public Graph ( String name, boolean areLoopsAllowed, boolean areDirectedEdgesAllowed, boolean areMultipleEdgesAllowed, boolean areCyclesAllowed )
 	{
-		for (Edge edge : edges)
-			edge.isSelected.set(select);
+		this.name = new Property<String>( name, "name" );
 		
-		for (Vertex vertex : vertexes)
-			vertex.isSelected.set(select);
+		this.areLoopsAllowed = areLoopsAllowed;
+		this.areDirectedEdgesAllowed = areDirectedEdgesAllowed;
+		this.areMultipleEdgesAllowed = areMultipleEdgesAllowed;
+		this.areCyclesAllowed = areCyclesAllowed;
 		
-		for (Caption caption : captions)
-			caption.isSelected.set(select);
-	}
-	
-	/**
-	 * Removes all elements from this graph that have their <code>isSelected</code> properties set to <code>true</code>.
-	 * 
-	 * @see {@link Vertex}, {@link Edge}, {@link Caption}
-	 */
-	public void removeSelected()
-	{
-		// Delete all selected vertexes
-		int i = 0;
-		while (i < vertexes.size())
+		this.notificationsSuspended = false;
+		this.vertexListObserver = new ObserverBase( )
 		{
-			if (vertexes.get(i).isSelected.get())
-				vertexes.remove(i);
-			else
-				++i;
-		}
-		
-		// Delete all selected edges
-		i = 0;
-		while (i < edges.size())
-		{
-			if (edges.get(i).isSelected.get())
-				edges.remove(i);
-			else
-				++i;
-		}
-		
-		// Delete all selected captions
-		i = 0;
-		while (i < captions.size())
-		{
-			if (captions.get(i).isSelected.get())
-				captions.remove(i);
-			else
-				++i;
-		}
-	}
-	
-	/**
-	 * Translates all elements in this graph with <code>isSelected</code> properties set to <code>true</code> by a specified offset.
-	 * 
-	 * @param x
-	 *            the horizontal offset to be added to each selected element's location
-	 * @param y
-	 *            the vertical offset to be added to each selected element's location
-	 * 
-	 * @see {@link Vertex}, {@link Edge}, {@link Caption}
-	 */
-	public void translateSelected(double x, double y)
-	{
-		HashMap<Edge, Point2D> edgeHandles = new HashMap<Edge, Point2D>();
-		
-		// We have to split setting the edge handles into two parts because when we move its vertices, the handle will be reset to the midpoint.
-		// If we are also moving adjacent vertices, we'll just let the handles of now linear edges be automatically reset (to maintain linearity).
-		for (Edge edge : edges)
-			if (edge.isSelected.get() && (!(edge.from.isSelected.get() || edge.to.isSelected.get()) || !edge.isLinear()))
-				edgeHandles.put(edge, new Point2D.Double(edge.handleX.get() + x, edge.handleY.get() + y));
-		
-		// Moves the vertices (resetting their edges to simple lines)
-		for (Vertex vertex : vertexes)
-			if (vertex.isSelected.get())
+			@Override
+			public void hasChanged( Object source )
 			{
-				vertex.x.set(vertex.x.get() + x);
-				vertex.y.set(vertex.y.get() + y);
+				if ( edges != null )
+					fixEdges( );
+				if ( !notificationsSuspended )
+					notifyObservers( source );
 			}
-		
-		// Now move the handles to where they should go
-		for (Entry<Edge, Point2D> entry : edgeHandles.entrySet())
+		};
+		this.edgeListObserver = new ObserverBase( )
 		{
-			entry.getKey().handleX.set(entry.getValue().getX());
-			entry.getKey().handleY.set(entry.getValue().getY());
+			@Override
+			public void hasChanged( Object source )
+			{
+				if ( !notificationsSuspended )
+					notifyObservers( source );
+			}
+		};
+		this.captionListObserver = new ObserverBase( )
+		{
+			@Override
+			public void hasChanged( Object source )
+			{
+				if ( !notificationsSuspended )
+					notifyObservers( source );
+			}
+		};
+		
+		this.vertexes = new ObservableList<Vertex>( );
+		this.vertexes.addObserver( vertexListObserver );
+		
+		this.edges = new ObservableList<Edge>( );
+		this.edges.addObserver( edgeListObserver );
+		
+		this.captions = new ObservableList<Caption>( );
+		this.captions.addObserver( captionListObserver );
+	}
+	
+	/**
+	 * Returns a {@code boolean} indicating whether or not there exists a path between the two vertices. Although implemented using a relatively fast
+	 * algorithm, the method still has a worst-case performance of O(|E| + |V|log|V|), where E is the set of all edges in the graph, and V is the set
+	 * of all vertices. Caution must therefore be used when calling this method, especially where performance is a consideration.
+	 * 
+	 * @param from the vertex from which the path begins
+	 * @param to the vertex at which the path ends
+	 * 
+	 * @return {@code true} if there exists a path between the two vertices in the specified direction; otherwise, {@code false}
+	 * 
+	 * @see {@link Vertex}, {@link Edge}
+	 */
+	public boolean areConnected( Vertex from, Vertex to )
+	{
+		Set<Vertex> visited = new HashSet<Vertex>( );
+		Stack<Vertex> toVisit = new Stack<Vertex>( );
+		
+		toVisit.push( to );
+		
+		while ( !toVisit.isEmpty( ) )
+		{
+			Vertex vertex = toVisit.pop( );
+			if ( vertex == from )
+				return true;
+			visited.add( vertex );
+			
+			Set<Vertex> neighbors = getNeighbors( vertex );
+			
+			for ( Vertex neighbor : neighbors )
+				if ( !visited.contains( neighbor ) )
+					toVisit.push( neighbor );
 		}
 		
-		// Move the captions
-		for (Caption caption : captions)
-			if (caption.isSelected.get())
-			{
-				caption.x.set(caption.x.get() + x);
-				caption.y.set(caption.y.get() + y);
-			}
+		return false;
 	}
 	
 	/**
@@ -352,66 +282,63 @@ public class Graph extends ObservableBase
 	 * 
 	 * @see {@link Vertex}, {@link Edge}
 	 */
-	private void fixEdges()
+	private void fixEdges( )
 	{
-		suspendNotifications(true);
+		suspendNotifications( true );
 		
-		int index = 0, originalSize = edges.size();
-		while (index < edges.size())
-			if (!vertexes.contains(edges.get(index).from) || !vertexes.contains(edges.get(index).to))
-				edges.remove(index);
+		int index = 0, originalSize = edges.size( );
+		while ( index < edges.size( ) )
+			if ( !vertexes.contains( edges.get( index ).from ) || !vertexes.contains( edges.get( index ).to ) )
+				edges.remove( index );
 			else
 				++index;
 		
-		suspendNotifications(false);
+		suspendNotifications( false );
 		
-		if (edges.size() != originalSize)
-			notifyObservers(edges);
+		if ( edges.size( ) != originalSize )
+			notifyObservers( edges );
 	}
 	
 	/**
 	 * Returns the set of all edges coincident to a given vertex. In an undirected graph this includes all edges, both from- and to-, the specified
 	 * vertex. In digraphs, this includes edges from the specified vertex, but not those to it.
 	 * 
-	 * @param vertex
-	 *            the vertex to which the edges are coincident
+	 * @param vertex the vertex to which the edges are coincident
 	 * 
 	 * @return the edges coincident to the specified vertex
 	 * 
 	 * @see {@link Vertex}, {@link Edge}
 	 */
-	public Set<Edge> getEdges(Vertex v)
+	public Set<Edge> getEdges( Vertex vertex )
 	{
-		HashSet<Edge> edgeSet = new HashSet<Edge>();
+		HashSet<Edge> edgeSet = new HashSet<Edge>( );
 		
-		for (Edge edge : edges)
-			if (edge.from == v || (edge.to == v && !edge.isDirected))
-				edgeSet.add(edge);
+		for ( Edge edge : edges )
+			if ( edge.from == vertex || ( edge.to == vertex && !edge.isDirected ) )
+				edgeSet.add( edge );
 		
 		return edgeSet;
 	}
 	
 	/**
 	 * Returns the set of all edges from one specified vertex to another. In a simple graph, this method will return at most one edge—in multigraphs,
-	 * possibly more. Note that for digraphs and multi-digraphs, the returned set will not include edges going in the opposite direction (from
-	 * <code>to</code> to <code>from</code>).
+	 * possibly more. Note that for digraphs and multi-digraphs, the returned set will not include edges going in the opposite direction (from {@code
+	 * to} to {@code from}).
 	 * 
-	 * @param from
-	 *            the vertex from which the edges begin
-	 * @param to
-	 *            the vertex with at the edges end
+	 * @param from the vertex from which the edges begin
+	 * @param to the vertex with at the edges end
 	 * 
 	 * @return the edges to and from the specified vertices
 	 * 
 	 * @see {@link Vertex}, {@link Edge}
 	 */
-	public Set<Edge> getEdges(Vertex from, Vertex to)
+	public Set<Edge> getEdges( Vertex from, Vertex to )
 	{
-		HashSet<Edge> edgeSet = new HashSet<Edge>();
+		HashSet<Edge> edgeSet = new HashSet<Edge>( );
 		
-		for (Edge edge : edges)
-			if ((edge.from == from && edge.to == to) || (edge.from == to && edge.to == from && !edge.isDirected))
-				edgeSet.add(edge);
+		for ( Edge edge : edges )
+			if ( ( edge.from == from && edge.to == to ) || ( edge.from == to && edge.to == from && !edge.isDirected ) )
+				edgeSet.add( edge );
 		
 		return edgeSet;
 	}
@@ -421,74 +348,85 @@ public class Graph extends ObservableBase
 	 * two share at least one common edge. In digraphs, vertex A is only vertex B's neighbor if there exists and edge from B to A, regardless of how
 	 * many edges exist from A to B.
 	 * 
-	 * @param v
-	 *            the vertex to which the returned vertices are neighbors
+	 * @param vertex the vertex to which the returned vertices are neighbors
 	 * 
 	 * @return the neighbors of the specified vertex
 	 * 
 	 * @see {@link Vertex}, {@link Edge}
 	 */
-	public Set<Vertex> getNeighbors(Vertex v)
+	public Set<Vertex> getNeighbors( Vertex vertex )
 	{
-		HashSet<Vertex> ret = new HashSet<Vertex>();
+		HashSet<Vertex> ret = new HashSet<Vertex>( );
 		
-		for (Edge edge : getEdges(v))
-			ret.add((edge.from == v) ? edge.to : edge.from);
+		for ( Edge edge : getEdges( vertex ) )
+			ret.add( ( edge.from == vertex ) ? edge.to : edge.from );
 		
 		return ret;
 	}
 	
 	/**
-	 * Returns a <code>boolean</code> indicating whether or not there exists a path between the two vertices. Although implemented using a relatively
-	 * fast algorithm, the method still has a worst-case performance of O(|E| + |V|log|V|), where E is the set of all edges in the graph, and V is the
-	 * set of all vertices. Caution must therefore be used when calling this method, especially where performance is a consideration.
+	 * Removes all elements from this graph that have their {@code isSelected} properties set to {@code true}.
 	 * 
-	 * @param from
-	 *            the vertex from which the path begins
-	 * @param to
-	 *            the vertex at which the path ends
-	 * 
-	 * @return <code>true</code> if there exists a path between the two vertices in the specified direction; otherwise, <code>false</code>
-	 * 
-	 * @see {@link Vertex}, {@link Edge}
+	 * @see {@link Vertex}, {@link Edge}, {@link Caption}
 	 */
-	public boolean areConnected(Vertex from, Vertex to)
+	public void removeSelected( )
 	{
-		Set<Vertex> visited = new HashSet<Vertex>();
-		Stack<Vertex> toVisit = new Stack<Vertex>();
+		// Delete all selected vertexes
+		int i = 0;
+		while ( i < vertexes.size( ) )
+			if ( vertexes.get( i ).isSelected.get( ) )
+				vertexes.remove( i );
+			else
+				++i;
 		
-		toVisit.push(to);
+		// Delete all selected edges
+		i = 0;
+		while ( i < edges.size( ) )
+			if ( edges.get( i ).isSelected.get( ) )
+				edges.remove( i );
+			else
+				++i;
 		
-		while (!toVisit.isEmpty())
-		{
-			Vertex vertex = toVisit.pop();
-			if (vertex == from)
-				return true;
-			visited.add(vertex);
-			
-			Set<Vertex> neighbors = getNeighbors(vertex);
-			
-			for (Vertex neighbor : neighbors)
-				if (!visited.contains(neighbor))
-					toVisit.push(neighbor);
-		}
+		// Delete all selected captions
+		i = 0;
+		while ( i < captions.size( ) )
+			if ( captions.get( i ).isSelected.get( ) )
+				captions.remove( i );
+			else
+				++i;
+	}
+	
+	/**
+	 * Sets the {@code isSelected} property of all elements in this graph to {@code true} or <true>false}, depending upon the parameter.
+	 * 
+	 * @param select a {@code boolean} indicating whether to select or deselect all graph elements
+	 * 
+	 * @see {@link Vertex}, {@link Edge}, {@link Caption}
+	 */
+	public void selectAll( boolean select )
+	{
+		for ( Edge edge : edges )
+			edge.isSelected.set( select );
 		
-		return false;
+		for ( Vertex vertex : vertexes )
+			vertex.isSelected.set( select );
+		
+		for ( Caption caption : captions )
+			caption.isSelected.set( select );
 	}
 	
 	/**
 	 * Temporarily suspends the notification all of property changes to subscribed {@link ObserverBase}s. Most often this method is called when
 	 * performing a large number of batch operations on a graph, so that subscribers are not overloaded with a multitude of notifications.
 	 * 
-	 * @param s
-	 *            a <code>boolean</code> indicating whether to suspend or reenable notifications to subscribed ObserverBases
+	 * @param suspend a {@code boolean} indicating whether to suspend or reenable notifications to subscribed ObserverBases
 	 * 
 	 * @see {@link ObservableBase}, {@link ObserverBase}, {@link ObservableList}
 	 */
-	public boolean suspendNotifications(boolean s)
+	public boolean suspendNotifications( boolean suspend )
 	{
 		boolean ret = notificationsSuspended;
-		notificationsSuspended = s;
+		notificationsSuspended = suspend;
 		return ret;
 	}
 	
@@ -500,56 +438,97 @@ public class Graph extends ObservableBase
 	 * @see #Graph(String)
 	 */
 	@Override
-	public String toString()
+	public String toString( )
 	{
-		HashMap<String, Object> members = new HashMap<String, Object>();
+		HashMap<String, Object> members = new HashMap<String, Object>( );
 		
-		members.put("name", name);
-		members.put("vertexes", vertexes);
-		members.put("edges", edges);
-		members.put("captions", captions);
-		members.put("areLoopsAllowed", areLoopsAllowed);
-		members.put("areDirectedEdgesAllowed", areDirectedEdgesAllowed);
-		members.put("areMultipleEdgesAllowed", areMultipleEdgesAllowed);
-		members.put("areCyclesAllowed", areCyclesAllowed);
+		members.put( "name", name );
+		members.put( "vertexes", vertexes );
+		members.put( "edges", edges );
+		members.put( "captions", captions );
+		members.put( "areLoopsAllowed", areLoopsAllowed );
+		members.put( "areDirectedEdgesAllowed", areDirectedEdgesAllowed );
+		members.put( "areMultipleEdgesAllowed", areMultipleEdgesAllowed );
+		members.put( "areCyclesAllowed", areCyclesAllowed );
 		
-		return JsonUtilities.formatObject(members);
+		return JsonUtilities.formatObject( members );
+	}
+	
+	/**
+	 * Translates all elements in this graph with {@code isSelected} properties set to {@code true} by a specified offset.
+	 * 
+	 * @param x the horizontal offset to be added to each selected element's location
+	 * @param y the vertical offset to be added to each selected element's location
+	 * 
+	 * @see {@link Vertex}, {@link Edge}, {@link Caption}
+	 */
+	public void translateSelected( double x, double y )
+	{
+		HashMap<Edge, Point2D> edgeHandles = new HashMap<Edge, Point2D>( );
+		
+		// We have to split setting the edge handles into two parts because when we move its vertices, the handle will be reset to the midpoint.
+		// If we are also moving adjacent vertices, we'll just let the handles of now linear edges be automatically reset (to maintain linearity).
+		for ( Edge edge : edges )
+			if ( edge.isSelected.get( ) && ( !( edge.from.isSelected.get( ) || edge.to.isSelected.get( ) ) || !edge.isLinear( ) ) )
+				edgeHandles.put( edge, new Point2D.Double( edge.handleX.get( ) + x, edge.handleY.get( ) + y ) );
+		
+		// Moves the vertices (resetting their edges to simple lines)
+		for ( Vertex vertex : vertexes )
+			if ( vertex.isSelected.get( ) )
+			{
+				vertex.x.set( vertex.x.get( ) + x );
+				vertex.y.set( vertex.y.get( ) + y );
+			}
+		
+		// Now move the handles to where they should go
+		for ( Entry<Edge, Point2D> entry : edgeHandles.entrySet( ) )
+		{
+			entry.getKey( ).handleX.set( entry.getValue( ).getX( ) );
+			entry.getKey( ).handleY.set( entry.getValue( ).getY( ) );
+		}
+		
+		// Move the captions
+		for ( Caption caption : captions )
+			if ( caption.isSelected.get( ) )
+			{
+				caption.x.set( caption.x.get( ) + x );
+				caption.y.set( caption.y.get( ) + y );
+			}
 	}
 	
 	/**
 	 * Performs a set-union with the specified graph, merging the two without conflicts. Note that the ids of the specified graph's vertices will be
 	 * re-assigned, so that they do not conflict with existing vertex ids.
 	 * 
-	 * @param g
-	 *            the graph with which to merge
+	 * @param graph the graph with which to merge
 	 */
-	public void union(Graph g)
+	public void union( Graph graph )
 	{
-		suspendNotifications(true);
+		suspendNotifications( true );
 		
-		Map<String, Vertex> newVertexes = new HashMap<String, Vertex>();
+		Map<String, Vertex> newVertexes = new HashMap<String, Vertex>( );
 		
-		for (Vertex vertex : g.vertexes)
+		for ( Vertex vertex : graph.vertexes )
 		{
-			Vertex newVertex = new Vertex(vertex.toString());
-			newVertexes.put(vertex.id.toString(), newVertex);
-			this.vertexes.add(newVertex);
+			Vertex newVertex = new Vertex( vertex.toString( ) );
+			newVertexes.put( vertex.id.toString( ), newVertex );
+			this.vertexes.add( newVertex );
 		}
 		
-		for (Edge edge : g.edges)
+		for ( Edge edge : graph.edges )
 		{
-			Edge newEdge = new Edge(edge.toString(), newVertexes);
-			this.edges.add(newEdge);
+			Edge newEdge = new Edge( edge.toString( ), newVertexes );
+			this.edges.add( newEdge );
 		}
 		
-		for (Caption caption : g.captions)
+		for ( Caption caption : graph.captions )
 		{
-			Caption newCaption = new Caption(caption.toString());
-			this.captions.add(newCaption);
+			Caption newCaption = new Caption( caption.toString( ) );
+			this.captions.add( newCaption );
 		}
 		
-		suspendNotifications(false);
+		suspendNotifications( false );
 		
-		notifyObservers(this);
+		notifyObservers( this );
 	}
 }

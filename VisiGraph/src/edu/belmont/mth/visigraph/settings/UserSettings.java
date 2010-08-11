@@ -1,5 +1,5 @@
 /**
- * UserSettings.java
+z * UserSettings.java
  */
 package edu.belmont.mth.visigraph.settings;
 
@@ -174,18 +174,18 @@ public class UserSettings extends ObservableBase
 		this.areCloseDistance				= new Property<Double> (GlobalSettings.defaultAreCloseDistance,					"areCloseDistance"				);
 		this.paintToolMenuDelay				= new Property<Integer>(GlobalSettings.defaultPaintToolMenuDelay,				"paintToolMenuDelay"			);
 		
-		this.elementColors = new ObservableList<Color>("elementColors");
-		this.elementColors.addAll(Arrays.asList(GlobalSettings.defaultElementColors));
-		this.elementColors.addObserver(new ObserverBase()
+		this.elementColors = new ObservableList<Color>( );
+		this.elementColors.addAll( Arrays.asList( GlobalSettings.defaultElementColors ) );
+		this.elementColors.addObserver( new ObserverBase( )
 		{
 			@Override
-			public void hasChanged(Object source)
+			public void hasChanged( Object source )
 			{
-				notifyObservers(source);
+				notifyObservers( source );
 			}
 		} );
-	
-		fromFile(new File("UserSettings.json"));
+		
+		fromFile( new File( "UserSettings.json" ) );
 	}
 	
 	public Color getElementColor(int i)

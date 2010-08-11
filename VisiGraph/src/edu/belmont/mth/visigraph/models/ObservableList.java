@@ -7,244 +7,508 @@ import java.util.*;
 import edu.belmont.mth.visigraph.views.*;
 
 /**
+ * An {@code ObservableList} is a collection which maintains an ordering for its elements. Every element in the {@code ObservableList} has an index.
+ * Each element can thus be accessed by its index, with the first index being zero. Normally, {@code ObservableList}s allow duplicate elements, as
+ * compared to Sets, where elements have to be unique.
+ * <p/>
+ * Where {@code ObservableList} differs from the standard Java {@code List} is is in its extension of {@link ObservableBase} so that subscribed
+ * {@link ObserverBase}s are notified of any changes to its structure, or to its {@code ObservableBase} elements' properties.
+ * 
  * @author Cameron Behar
- *
- */
+ * 
+ * @see List
+ * */
 public class ObservableList<T> extends ObservableBase implements List<T>
-{	
-	private String name;
+{
+	/**
+	 * The private data store backing this {@code ObservableList}
+	 */
 	private ArrayList<T> list;
+	
+	/**
+	 * A {@code boolean} flag indicating whether notifications are to be sent on to any of this {@code ObservableList}'s subscribed
+	 * {@link ObserverBase}s, or merely caught and handled internally
+	 */
 	private boolean notificationsSuspended;
+	
+	/**
+	 * An {@code ObserverBase} used to notify this {@code ObservableList}'s subscribed {@code ObserverBase}s of changes to any of its {@code
+	 * ObserverBase} elements' properties
+	 */
 	private ObserverBase elementObserver;
 	
- 	public ObservableList(String name)
+	/**
+	 * Constructs an empty {@code ObservableList} with an initial capacity of ten. 
+	 */
+	public ObservableList ( )
 	{
- 		this.name = name;
-		list = new ArrayList<T>();
+		list = new ArrayList<T>( );
 		notificationsSuspended = false;
-		elementObserver = new ObserverBase()
+		elementObserver = new ObserverBase( )
 		{
 			@Override
-			public void hasChanged(Object source)
+			public void hasChanged( Object source )
 			{
-				if(!notificationsSuspended)
-					notifyObservers(source);
-			}	
+				if ( !notificationsSuspended )
+					notifyObservers( source );
+			}
 		};
 	}
 	
-	public boolean add(T e)
+	/**
+	 * Inserts the specified object into this {@code ObservableList} at the specified location. The object is inserted before the current element at
+	 * the specified location. If the location is equal to the size of this {@code ObservableList}, the object is added at the end. If the location is
+	 * smaller than the size of this {@code ObservableList}, then all elements beyond the specified location are moved by one position towards the end
+	 * of the {@code ObservableList}.
+	 * 
+	 * @param location the index at which to insert
+	 * @param object the object to add
+	 * 
+	 * @throws UnsupportedOperationException if adding to this {@code ObservableList} is not supported
+	 * @throws ClassCastException if the class of the object is inappropriate for this {@code ObservableList}
+	 * @throws IllegalArgumentException if the object cannot be added to this {@code ObservableList}
+	 * @throws IndexOutOfBoundsException if {@code location < 0 || location > size()}
+	 */
+	public void add( int location, T object )
 	{
-		suspendNotifications(true);
-			boolean ret = list.add(e);
-			if(e instanceof ObservableBase)
-				((ObservableBase)e).addObserver(elementObserver);
-		suspendNotifications(false);
+		suspendNotifications( true );
 		
-		notifyObservers(this);
-		return ret;
-	}
-
-	public String getName()
-	{
-		return name;
+		list.add( location, object );
+		if ( object instanceof ObservableBase )
+			( (ObservableBase) object ).addObserver( elementObserver );
+		
+		suspendNotifications( false );
+		
+		notifyObservers( this );
 	}
 	
-	public void add(int index, T element)
+	/**
+	 * Adds the specified object at the end of this {@code ObservableList}.
+	 * 
+	 * @param object the object to add
+	 * 
+	 * @return always {@code true}
+	 * 
+	 * @throws UnsupportedOperationException if adding to this {@code ObservableList} is not supported
+	 * @throws ClassCastException if the class of the object is inappropriate for this {@code ObservableList}
+	 * @throws IllegalArgumentException if the object cannot be added to this {@code ObservableList}
+	 */
+	public boolean add( T object )
 	{
-		suspendNotifications(true);
-			list.add(index, element);
-			if(element instanceof ObservableBase)
-				((ObservableBase)element).addObserver(elementObserver);
-		suspendNotifications(false);
+		suspendNotifications( true );
 		
-		notifyObservers(this);
-	}
-
-	public boolean addAll(Collection<? extends T> c)
-	{
-		suspendNotifications(true);
-			boolean ret = list.addAll(c);
-			for(T element : c)
-				if(element instanceof ObservableBase)
-					((ObservableBase)element).addObserver(elementObserver);
-		suspendNotifications(false);
+		boolean ret = list.add( object );
+		if ( object instanceof ObservableBase )
+			( (ObservableBase) object ).addObserver( elementObserver );
 		
-		notifyObservers(this);
+		suspendNotifications( false );
+		
+		notifyObservers( this );
+		
 		return ret;
-	}
-
-	public boolean addAll(int index, Collection<? extends T> c)
-	{
-		suspendNotifications(true);
-			boolean ret = list.addAll(index, c);
-			for(T element : c)
-				if(element instanceof ObservableBase)
-					((ObservableBase)element).addObserver(elementObserver);
-		suspendNotifications(false);
-		
-		notifyObservers(this);
-		return ret;
-	}
-
-	public void clear()
-	{
-		suspendNotifications(true);
-			for(T element : list)
-				if(element instanceof ObservableBase)
-					((ObservableBase)element).deleteObserver(elementObserver);
-			list.clear();
-		suspendNotifications(false);
-		
-		notifyObservers(this);
-	}
-
-	public boolean contains(Object o)
-	{
-		return list.contains(o);
-	}
-
-	public boolean containsAll(Collection<?> c)
-	{
-		return list.containsAll(c);
-	}
-
-	public T get(int index)
-	{
-		return list.get(index);
-	}
-
-	public int indexOf(Object o)
-	{
-		return list.indexOf(o);
-	}
-
-	public boolean isEmpty()
-	{
-		return list.isEmpty();
-	}
-
-	public Iterator<T> iterator()
-	{
-		return list.iterator();
-	}
-
-	public int lastIndexOf(Object o)
-	{
-		return list.lastIndexOf(o);
-	}
-
-	public ListIterator<T> listIterator()
-	{
-		return list.listIterator();
-	}
-
-	public ListIterator<T> listIterator(int index)
-	{
-		return list.listIterator(index);
-	}
-
-	public boolean remove(Object o)
-	{
-		suspendNotifications(true);
-			boolean ret = list.remove(o);
-			if(o instanceof ObservableBase)
-				((ObservableBase)o).deleteObserver(elementObserver);
-		suspendNotifications(false);
-		
-		notifyObservers(this);
-		return ret;
-	}
-
-	public T remove(int index)
-	{
-		suspendNotifications(true);
-			T ret = list.remove(index);
-			if(ret instanceof ObservableBase)
-				((ObservableBase)ret).deleteObserver(elementObserver);
-		suspendNotifications(false);
-		
-		notifyObservers(this);
-		return ret;
-	}
-
-	public boolean removeAll(Collection<?> c)
-	{
-		suspendNotifications(true);
-			for(Object element : c)
-			{
-				int index = list.indexOf(element);
-				if(index > -1 && list.get(index) instanceof ObservableBase)
-					((ObservableBase)list.get(index)).deleteObserver(elementObserver);
-			}
-			boolean ret = list.removeAll(c);
-		suspendNotifications(false);
-		
-		notifyObservers(this);
-		return ret;
-	}
-
-	public boolean retainAll(Collection<?> c)
-	{
-		suspendNotifications(true);
-			for(T element : list)
-				if(!c.contains(element))
-					if(element instanceof ObservableBase)
-						((ObservableBase)element).deleteObserver(elementObserver);
-			boolean ret = list.retainAll(c);
-		suspendNotifications(false);
-		
-		notifyObservers(this);
-		return ret;
-	}
-
-	public T set(int index, T element)
-	{
-		suspendNotifications(true);
-			if(list.get(index) != element)
-			{
-				if(list.get(index) instanceof ObservableBase)
-					((ObservableBase)list.get(index)).deleteObserver(elementObserver);
-				
-				if(element instanceof ObservableBase)
-					((ObservableBase)element).addObserver(elementObserver);
-			}
-			T ret = list.set(index, element);
-		suspendNotifications(false);
-		
-		notifyObservers(this);
-		return ret;
-	}
-
-	public int size()
-	{
-		return list.size();
 	}
 	
-	public List<T> subList(int fromIndex, int toIndex)
+	/**
+	 * Adds the objects in the specified collection to the end of this {@code ObservableList}. The objects are added in the order in which they are
+	 * returned from the collection's iterator.
+	 * 
+	 * @param collection the collection of objects
+	 * 
+	 * @return {@code true} if this {@code ObservableList} is modified, {@code false} otherwise (i.e. if the passed collection was empty)
+	 * 
+	 * @throws UnsupportedOperationException if adding to this {@code ObservableList} is not supported
+	 * @throws ClassCastException if the class of an object is inappropriate for this {@code ObservableList}
+	 * @throws IllegalArgumentException if an object cannot be added to this {@code ObservableList}
+	 */
+	public boolean addAll( Collection<? extends T> collection )
 	{
-		return list.subList(fromIndex, toIndex);
+		suspendNotifications( true );
+		
+		boolean ret = list.addAll( collection );
+		for ( T element : collection )
+			if ( element instanceof ObservableBase )
+				( (ObservableBase) element ).addObserver( elementObserver );
+		
+		suspendNotifications( false );
+		
+		notifyObservers( this );
+		
+		return ret;
 	}
-
-	public Object[] toArray()
+	
+	/**
+	 * Inserts the objects in the specified collection at the specified location in this {@code ObservableList}. The objects are added in the order
+	 * they are returned from the collection's iterator.
+	 * 
+	 * @param location the index at which to insert
+	 * @param collection the collection of objects to be inserted
+	 * 
+	 * @return {@code true} if this {@code ObservableList} has been modified through the insertion, {@code false} otherwise (i.e. if the passed collection was empty)
+	 * 
+	 * @throws UnsupportedOperationException if adding to this {@code ObservableList} is not supported
+	 * @throws ClassCastException if the class of an object is inappropriate for this {@code ObservableList}
+	 * @throws IllegalArgumentException if an object cannot be added to this {@code ObservableList}
+	 * @throws IndexOutOfBoundsException if {@code location < 0 || > size()}
+	 */
+	public boolean addAll( int location, Collection<? extends T> collection )
 	{
-		return list.toArray();
+		suspendNotifications( true );
+		
+		boolean ret = list.addAll( location, collection );
+		for ( T element : collection )
+			if ( element instanceof ObservableBase )
+				( (ObservableBase) element ).addObserver( elementObserver );
+		
+		suspendNotifications( false );
+		
+		notifyObservers( this );
+		
+		return ret;
 	}
-
-	@SuppressWarnings("hiding")
-	public <T> T[] toArray(T[] a)
+	
+	/**
+	 * Removes all elements from this {@code ObservableList}, leaving it empty.
+	 * 
+	 * @throws UnsupportedOperationException if removing from this {@code ObservableList} is not supported
+	 * 
+	 * @see #isEmpty
+	 * @see #size
+	 */
+	public void clear( )
 	{
-		return (T[])list.toArray(a);
+		suspendNotifications( true );
+		
+		for ( T element : list )
+			if ( element instanceof ObservableBase )
+				( (ObservableBase) element ).deleteObserver( elementObserver );
+		list.clear( );
+		
+		suspendNotifications( false );
+		
+		notifyObservers( this );
 	}
-
-	public boolean suspendNotifications(boolean s)
+	
+	/**
+	 * Tests whether this {@code ObservableList} contains the specified object.
+	 * 
+	 * @param object the object to search for
+	 * 
+	 * @return {@code true} if object is an element of this {@code ObservableList}, {@code false} otherwise
+	 */
+	public boolean contains( Object object )
+	{
+		return list.contains( object );
+	}
+	
+	/**
+	 * Tests whether this {@code ObservableList} contains all objects contained in the specified collection.
+	 * 
+	 * @param collection the collection of objects
+	 * 
+	 * @return {@code true} if all objects in the specified collection are elements of this {@code ObservableList}, {@code false} otherwise
+	 */
+	public boolean containsAll( Collection<?> collection )
+	{
+		return list.containsAll( collection );
+	}
+	
+	/**
+	 * Returns the element at the specified location in this {@code ObservableList}.
+	 * 
+	 * @param location the index of the element to return
+	 * 
+	 * @return the element at the specified location
+	 * 
+	 * @throws IndexOutOfBoundsException if {@code location < 0 || >= size()}
+	 */
+	public T get( int location )
+	{
+		return list.get( location );
+	}
+	
+	/**
+	 * Searches this {@code ObservableList} for the specified object and returns the index of the first occurrence.
+	 * 
+	 * @param object the object to search for
+	 * 
+	 * @return the index of the first occurrence of the object or -1 if the object was not found
+	 */
+	public int indexOf( Object object )
+	{
+		return list.indexOf( object );
+	}
+	
+	/**
+	 * Returns whether this {@code ObservableList} contains no elements.
+	 * 
+	 * @return {@code true} if this {@code ObservableList} has no elements, {@code false} otherwise
+	 * 
+	 * @see #size
+	 */
+	public boolean isEmpty( )
+	{
+		return list.isEmpty( );
+	}
+	
+	/**
+	 * Returns an iterator on the elements of this {@code ObservableList}. The elements are iterated in the same order as they occur in the {@code
+	 * ObservableList}.
+	 * 
+	 * @return an iterator on the elements of this {@code ObservableList}
+	 * 
+	 * @see Iterator
+	 */
+	public Iterator<T> iterator( )
+	{
+		return list.iterator( );
+	}
+	
+	/**
+	 * Searches this {@code ObservableList} for the specified object and returns the index of the last occurrence.
+	 * 
+	 * @param object the object to search for
+	 * 
+	 * @return the index of the last occurrence of the object, or -1 if the object was not found
+	 */
+	public int lastIndexOf( Object object )
+	{
+		return list.lastIndexOf( object );
+	}
+	
+	/**
+	 * Returns an {@code ObservableList} iterator on the elements of this {@code ObservableList}. The elements are iterated in the same order that
+	 * they occur in the {@code ObservableList}.
+	 * 
+	 * @return an {@code ObservableList} iterator on the elements of this {@code ObservableList}
+	 * 
+	 * @see ListIterator
+	 */
+	public ListIterator<T> listIterator( )
+	{
+		return list.listIterator( );
+	}
+	
+	/**
+	 * Returns a list iterator on the elements of this {@code ObservableList}. The elements are iterated in the same order as they occur in the
+	 * {@code ObservableList}. The iteration starts at the specified location.
+	 * 
+	 * @param location the index at which to start the iteration
+	 * 
+	 * @return a list iterator on the elements of this {@code ObservableList}
+	 * 
+	 * @throws IndexOutOfBoundsException if {@code location < 0 || location > size()}
+	 * 
+	 * @see ListIterator
+	 */
+	public ListIterator<T> listIterator( int location )
+	{
+		return list.listIterator( location );
+	}
+	
+	/**
+	 * Removes the object at the specified location from this {@code ObservableList}.
+	 * 
+	 * @param location the index of the object to remove
+	 * 
+	 * @return the removed object
+	 * 
+	 * @throws UnsupportedOperationException if removing from this {@code ObservableList} is not supported
+	 * @throws IndexOutOfBoundsException if {@code location < 0 || >= size()}
+	 */
+	public T remove( int location )
+	{
+		suspendNotifications( true );
+		
+		T ret = list.remove( location );
+		if ( ret instanceof ObservableBase )
+			( (ObservableBase) ret ).deleteObserver( elementObserver );
+		
+		suspendNotifications( false );
+		
+		notifyObservers( this );
+		
+		return ret;
+	}
+	
+	/**
+	 * Removes the first occurrence of the specified object from this {@code ObservableList}.
+	 * 
+	 * @param object the object to remove
+	 * 
+	 * @return true if this {@code ObservableList} was modified by this operation, false otherwise
+	 * 
+	 * @throws UnsupportedOperationException if removing from this {@code ObservableList} is not supported
+	 */
+	public boolean remove( Object object )
+	{
+		suspendNotifications( true );
+		
+		boolean ret = list.remove( object );
+		if ( object instanceof ObservableBase )
+			( (ObservableBase) object ).deleteObserver( elementObserver );
+		
+		suspendNotifications( false );
+		
+		notifyObservers( this );
+		
+		return ret;
+	}
+	
+	/**
+	 * Removes all occurrences in this {@code ObservableList} of each object in the specified collection.
+	 * 
+	 * @param collection the collection of objects to remove
+	 * 
+	 * @return {@code true} if this {@code ObservableList} is modified, {@code false} otherwise
+	 * 
+	 * @throws UnsupportedOperationException if removing from this {@code ObservableList} is not supported
+	 */
+	public boolean removeAll( Collection<?> collection )
+	{
+		suspendNotifications( true );
+		
+		for ( Object element : collection )
+		{
+			int index = list.indexOf( element );
+			if ( index > -1 && list.get( index ) instanceof ObservableBase )
+				( (ObservableBase) list.get( index ) ).deleteObserver( elementObserver );
+		}
+		boolean ret = list.removeAll( collection );
+		
+		suspendNotifications( false );
+		
+		notifyObservers( this );
+		
+		return ret;
+	}
+	
+	/**
+	 * Removes all objects from this {@code ObservableList} that are not contained in the specified collection.
+	 * 
+	 * @param collection the collection of objects to retain
+	 * 
+	 * @return {@code true} if this {@code ObservableList} is modified, {@code false} otherwise
+	 * 
+	 * @throws UnsupportedOperationException if removing from this {@code ObservableList} is not supported
+	 */
+	public boolean retainAll( Collection<?> collection )
+	{
+		suspendNotifications( true );
+		
+		for ( T element : list )
+			if ( !collection.contains( element ) )
+				if ( element instanceof ObservableBase )
+					( (ObservableBase) element ).deleteObserver( elementObserver );
+		boolean ret = list.retainAll( collection );
+		
+		suspendNotifications( false );
+		
+		notifyObservers( this );
+		
+		return ret;
+	}
+	
+	/**
+	 * Replaces the element at the specified location in this {@code ObservableList} with the specified object. This operation does not change the
+	 * size of the {@code ObservableList}.
+	 * 
+	 * @param location the index at which to put the specified object
+	 * @param object the object to insert
+	 * 
+	 * @return the previous element at the index
+	 * 
+	 * @throws UnsupportedOperationException if replacing elements in this {@code ObservableList} is not supported
+	 * @throws ClassCastException if the class of an object is inappropriate for this {@code ObservableList}
+	 * @throws IllegalArgumentException if an object cannot be added to this {@code ObservableList}
+	 * @throws IndexOutOfBoundsException if {@code location < 0 || >= size()}
+	 */
+	public T set( int location, T object )
+	{
+		suspendNotifications( true );
+		
+		if ( list.get( location ) != object )
+		{
+			if ( list.get( location ) instanceof ObservableBase )
+				( (ObservableBase) list.get( location ) ).deleteObserver( elementObserver );
+			
+			if ( object instanceof ObservableBase )
+				( (ObservableBase) object ).addObserver( elementObserver );
+		}
+		T ret = list.set( location, object );
+		
+		suspendNotifications( false );
+		
+		notifyObservers( this );
+		
+		return ret;
+	}
+	
+	/**
+	 * Returns the number of elements in this {@code ObservableList}.
+	 * 
+	 * @return the number of elements in this {@code ObservableList}
+	 */
+	public int size( )
+	{
+		return list.size( );
+	}
+	
+	/**
+	 * Returns an {@code ObservableList} of the specified portion of this {@code ObservableList} from the given start index to the end index minus
+	 * one. The returned {@code ObservableList} is backed by this {@code ObservableList} so changes to it are reflected by the other.
+	 * 
+	 * @param start the index at which to start the sublist
+	 * @param end the index one past the end of the sublist
+	 * 
+	 * @return a list of a portion of this {@code ObservableList}
+	 * 
+	 * @throws IndexOutOfBoundsException if {@code start < 0, start > end} or {@code end > size()}
+	 */
+	public List<T> subList( int start, int end )
+	{
+		return list.subList( start, end );
+	}
+	
+	/**
+	 * Temporarily suspends the notification all of property changes to subscribed {@link ObserverBase}s. Most often this method is called when
+	 * performing a large number of batch operations on an {@code ObservableList}, so that subscribers are not overloaded with a multitude of
+	 * notifications.
+	 * 
+	 * @param suspend a {@code boolean} indicating whether to suspend or reenable notifications to subscribed ObserverBases
+	 * 
+	 * @see {@link ObservableBase}, {@link ObserverBase}, {@link ObservableList}
+	 */
+	public boolean suspendNotifications( boolean suspend )
 	{
 		boolean ret = notificationsSuspended;
-		notificationsSuspended = s;
+		notificationsSuspended = suspend;
 		return ret;
 	}
+	
+	/**
+	 * Returns an array containing all elements contained in this {@code ObservableList}.
+	 * 
+	 * @return an array of the elements from this {@code ObservableList}
+	 */
+	public Object[ ] toArray( )
+	{
+		return list.toArray( );
+	}
+	
+	/**
+	 * Returns an array containing all elements contained in this {@code ObservableList}. If the specified array is large enough to hold the elements,
+	 * the specified array is used, otherwise an array of the same type is created. If the specified array is used and is larger than this {@code
+	 * ObservableList}, the array element following the collection elements is set to null.
+	 * 
+	 * @param array the array
+	 * 
+	 * @return an array of the elements from this {@code ObservableList}
+	 * 
+	 * @throws ArrayStoreException if the type of an element in this {@code ObservableList} cannot be stored in the type of the specified array
+	 */
+	@SuppressWarnings( "hiding" )
+	public <T> T[ ] toArray( T[ ] array )
+	{
+		return list.toArray( array );
+	}
 }
-
-
-
-
