@@ -28,6 +28,8 @@ import edu.belmont.mth.visigraph.views.*;
  * {@link #notifyObservers(Object)} call.
  * 
  * @author Cameron Behar
+ * 
+ * @see {@link Vertex}, {@link Edge}, {@link Caption}
  */
 public class Graph extends ObservableBase
 {
@@ -209,20 +211,30 @@ public class Graph extends ObservableBase
 			}
 		};
 		
+		Map<String, Vertex> idToVertexMap = new HashMap<String, Vertex>();
+		
 		this.vertexes = new ObservableList<Vertex>("vertexes");
 		for (Object vertex : (Iterable<?>) members.get("vertexes"))
 			if (vertex instanceof Map<?, ?>)
-				this.vertexes.add(new Vertex((Map<String, Object>) vertex));
+			{
+				// This is the map of the vertex's properties
+				Map<String, Object> vertexPropertyMap = (Map<String, Object>)vertex;
+				
+				// First we need to create the vertex from the map of properties
+				Vertex newVertex = new Vertex(vertexPropertyMap);
+				
+				// Then we need to add the vertex to this graph
+				this.vertexes.add(newVertex);
+				
+				// And finally, we have to record the vertex's original id, so that we can match it up when adding the edges later
+				idToVertexMap.put((String)vertexPropertyMap.get("id"), newVertex);
+			}
 		this.vertexes.addObserver(vertexListObserver);
-		
-		Map<Integer, Vertex> vertexMap = new HashMap<Integer, Vertex>();
-		for (int i = 0; i < this.vertexes.size(); ++i)
-			vertexMap.put(this.vertexes.get(i).id.get(), this.vertexes.get(i));
 		
 		this.edges = new ObservableList<Edge>("edges");
 		for (Object edge : (Iterable<?>) members.get("edges"))
 			if (edge instanceof Map<?, ?>)
-				this.edges.add(new Edge((Map<String, Object>) edge, vertexMap));
+				this.edges.add(new Edge((Map<String, Object>) edge, idToVertexMap));
 		this.edges.addObserver(edgeListObserver);
 		
 		this.captions = new ObservableList<Caption>("captions");
@@ -465,31 +477,6 @@ public class Graph extends ObservableBase
 	}
 	
 	/**
-	 * Returns an id exactly one more than the highest id in this graph's set of vertices. This id can then be used by a new vertex, which when added,
-	 * will not conflict with other existing vertex ids.
-	 * <p/>
-	 * Note that this method does not guarantee that the id returned is the lowest available id, only that it is unique and will not cause future
-	 * collision when this graph is serialized and then deserialized. This means that if an id has been skipped, it will not be returned until there
-	 * are no higher ids in this graph's list. Also, when looking at performance, it is important to consider that this method operates in O(|V|),
-	 * where V is the set of all vertices in the graph. Caution must therefore be used when using this method to generate large graphs, as the sum
-	 * impact of all calls to this method may seriously inhibit performance.
-	 * 
-	 * @return an <code>int</code> containing the new vertex's id
-	 * 
-	 * @see {@link Vertex}
-	 */
-	public int nextVertexId()
-	{
-		int maxInt = -1;
-		
-		for (Vertex vertex : vertexes)
-			if (vertex.id.get() > maxInt)
-				maxInt = vertex.id.get();
-		
-		return maxInt + 1;
-	}
-	
-	/**
 	 * Temporarily suspends the notification all of property changes to subscribed {@link ObserverBase}s. Most often this method is called when
 	 * performing a large number of batch operations on a graph, so that subscribers are not overloaded with a multitude of notifications.
 	 * 
@@ -535,20 +522,17 @@ public class Graph extends ObservableBase
 	 * 
 	 * @param g
 	 *            the graph with which to merge
-	 * 
-	 * @return the edges coincident to the specified vertex
 	 */
 	public void union(Graph g)
 	{
 		suspendNotifications(true);
 		
-		Map<Integer, Vertex> newVertexes = new HashMap<Integer, Vertex>();
+		Map<String, Vertex> newVertexes = new HashMap<String, Vertex>();
 		
 		for (Vertex vertex : g.vertexes)
 		{
 			Vertex newVertex = new Vertex(vertex.toString());
-			newVertexes.put(newVertex.id.get(), newVertex);
-			newVertex.id.set(this.nextVertexId());
+			newVertexes.put(vertex.id.toString(), newVertex);
 			this.vertexes.add(newVertex);
 		}
 		

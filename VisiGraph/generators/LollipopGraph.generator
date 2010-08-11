@@ -15,7 +15,7 @@ import edu.belmont.mth.visigraph.models.generators.*;
         double degreesPerVertex = 2 * Math.PI / m;
         
         for(int i = 0; i < m; ++i)
-        	graph.vertexes.add(new Vertex(i, radius * Math.cos(degreesPerVertex * i - Math.PI / 2.0), radius * Math.sin(degreesPerVertex * i - Math.PI / 2.0)));
+        	graph.vertexes.add(new Vertex(radius * Math.cos(degreesPerVertex * i - Math.PI / 2.0), radius * Math.sin(degreesPerVertex * i - Math.PI / 2.0)));
         
         for(int i = 0; i < m; ++i)
 			for(int j = i + 1; j < m; ++j)
@@ -25,7 +25,7 @@ import edu.belmont.mth.visigraph.models.generators.*;
         
         for(int i = 1; i < n + 1; ++i)
         {
-        	graph.vertexes.add(new Vertex(graph.nextVertexId(), previousVertex.x.get(), previousVertex.y.get() - 50.0));
+        	graph.vertexes.add(new Vertex(previousVertex.x.get(), previousVertex.y.get() - 50.0));
         	graph.edges.add(new Edge(false, previousVertex, graph.vertexes.get(graph.vertexes.size() - 1)));
         	previousVertex = graph.vertexes.get(graph.vertexes.size() - 1);
         }

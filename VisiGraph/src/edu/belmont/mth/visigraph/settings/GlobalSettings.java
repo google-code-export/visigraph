@@ -13,7 +13,7 @@ public class GlobalSettings
 {
 	public static final String					 applicationName							= "VisiGraph";
 	public static final String					 applicationAuthor							= "Cameron Behar";
-	public static final String					 applicationVersion							= "1.04.01";
+	public static final String					 applicationVersion							= "1.05.00";
 	public static final String					 applicationWebsite							= "http://code.google.com/p/visigraph";
 	public static final String					 applicationDescription						= "A flexible cross-platform application for modeling graph theory problems and solutions.";
 	public static final String					 applicationJarDirectoryUrl					= "http://visigraph.googlecode.com/svn/trunk/VisiGraph/jar/";
@@ -54,7 +54,7 @@ public class GlobalSettings
 	public static final boolean					 defaultShowEdgeWeights						= false;
 	public static final boolean					 defaultShowEdgeLabels						= false;
 	public static final boolean					 defaultShowVertexWeights					= false;
-	public static final boolean					 defaultShowVertexLabels					= true;
+	public static final boolean					 defaultShowVertexLabels					= false;
 	public static final boolean					 defaultShowCaptions						= true;
 	public static final boolean					 defaultShowCaptionHandles					= true;
 	public static final boolean					 defaultShowCaptionEditors					= true;

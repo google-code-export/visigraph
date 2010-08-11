@@ -25,7 +25,7 @@ import java.awt.event.*;
     
     public Vertex buildTree(Graph g, int level, int fanOut, double x, double y)
     {
-        Vertex root = new Vertex(g.nextVertexId(), x, y);
+        Vertex root = new Vertex(x, y);
         g.vertexes.add(root);
         
         if(level > 0)

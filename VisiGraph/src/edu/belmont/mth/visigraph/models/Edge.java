@@ -148,16 +148,16 @@ public class Edge extends ObservableBase
 		refresh();
 	}
 	
-	public Edge(Map<String, Object> members, Map<Integer, Vertex> vertexes)
+	public Edge(Map<String, Object> members, Map<String, Vertex> vertexes)
 	{
 		notificationsSuspended = true;
 		
 		this.isDirected = (Boolean)members.get("isDirected");
 		
-		this.from = vertexes.get((Integer)members.get("from.id"));
+		this.from = vertexes.get((String)members.get("from.id"));
 		this.from.addObserver(vertexObserver);
 		
-		this.to = vertexes.get((Integer)members.get("to.id"));
+		this.to = vertexes.get((String)members.get("to.id"));
 		this.to.addObserver(vertexObserver);
 		
 		this.weight = new Property<Double>((Double)members.get("weight"), "weight");
@@ -202,7 +202,7 @@ public class Edge extends ObservableBase
 		refresh();
 	}
 	
-	public Edge(String json, Map<Integer, Vertex> vertexes)
+	public Edge(String json, Map<String, Vertex> vertexes)
 	{
 		this(JsonUtilities.parseObject(json), vertexes);
 	}
