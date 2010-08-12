@@ -20,10 +20,10 @@ import edu.belmont.mth.visigraph.views.ObserverBase;
  * 
  * @author Cameron Behar
  * 
- * @see {@link Graph}
+ * @see {@link Graph}, {@link Vertex}, {@link Edge}
  */
 public class Caption extends ObservableBase
-{	
+{
 	/**
 	 * The location of this {@code Caption}'s upper-left-hand corner along the horizontal (x) axis
 	 */
@@ -45,7 +45,7 @@ public class Caption extends ObservableBase
 	public final Property<Double> size;
 	
 	/**
-	 * A {@code boolean} indicating whether or not this {@code Caption} is selected
+	 * A {@code Boolean} indicating whether or not this {@code Caption} is selected
 	 */
 	public final Property<Boolean> isSelected;
 	
@@ -55,9 +55,9 @@ public class Caption extends ObservableBase
 	 * @param x the location of this {@code Caption}'s upper-left-hand corner along the horizontal (x) axis
 	 * @param y the location of this {@code Caption}'s upper-left-hand corner along the inverted vertical (-y) axis
 	 */
-	public Caption(double x, double y)
+	public Caption ( double x, double y )
 	{
-		this(x, y, UserSettings.instance.defaultCaptionText.get());
+		this( x, y, UserSettings.instance.defaultCaptionText.get( ) );
 	}
 	
 	/**
@@ -67,9 +67,9 @@ public class Caption extends ObservableBase
 	 * @param y the location of this {@code Caption}'s upper-left-hand corner along the inverted vertical (-y) axis
 	 * @param text a {@code String} containing this {@code Caption}'s text
 	 */
-	public Caption(double x, double y, String text)
+	public Caption ( double x, double y, String text )
 	{
-		this(x, y, text, UserSettings.instance.defaultCaptionFontSize.get());
+		this( x, y, text, UserSettings.instance.defaultCaptionFontSize.get( ) );
 	}
 	
 	/**
@@ -80,9 +80,9 @@ public class Caption extends ObservableBase
 	 * @param text a {@code String} containing this {@code Caption}'s text
 	 * @param size the font size, in pixels, of this {@code Caption}'s text
 	 */
-	public Caption(double x, double y, String text, double size)
+	public Caption ( double x, double y, String text, double size )
 	{
-		this(x, y, text, size, UserSettings.instance.defaultCaptionIsSelected.get());
+		this( x, y, text, size, UserSettings.instance.defaultCaptionIsSelected.get( ) );
 	}
 	
 	/**
@@ -94,39 +94,39 @@ public class Caption extends ObservableBase
 	 * @param size the font size, in pixels, of this {@code Caption}'s text
 	 * @param isSelected a {@code boolean} indicating whether or not this {@code Caption} will be initialized selected
 	 */
-	public Caption(double x, double y, String text, double size, boolean isSelected)
+	public Caption ( double x, double y, String text, double size, boolean isSelected )
 	{
-		this.x = new Property<Double>(x, "x");
-		this.y = new Property<Double>(y, "y");
-		this.text = new Property<String>(text, "text");
-		this.size = new Property<Double>(size, "size");
-		this.isSelected = new Property<Boolean>(isSelected, "isSelected");
+		this.x          = new Property<Double> ( x,          "x"          );
+		this.y          = new Property<Double> ( y,          "y"          );
+		this.text       = new Property<String> ( text,       "text"       );
+		this.size       = new Property<Double> ( size,       "size"       );
+		this.isSelected = new Property<Boolean>( isSelected, "isSelected" );
 	}
-
+	
 	/**
 	 * Constructs a {@code Caption} from the specified map of properties
 	 * 
 	 * @param members a {@code Map} of property names to values
 	 */
-	public Caption(Map<String, Object> members)
+	public Caption ( Map<String, Object> members )
 	{
-		this.x = new Property<Double>((Double)members.get("x"), "x");
-		this.y = new Property<Double>((Double)members.get("y"), "y");
-		this.text = new Property<String>((String)members.get("text"), "text");
-		this.size = new Property<Double>((Double)members.get("size"), "size");
-		this.isSelected = new Property<Boolean>((Boolean)members.get("isSelected"), "isSelected");
+		this.x          = new Property<Double> ( (Double)  members.get( "x"          ), "x"          );
+		this.y          = new Property<Double> ( (Double)  members.get( "y"          ), "y"          );
+		this.text       = new Property<String> ( (String)  members.get( "text"       ), "text"       );
+		this.size       = new Property<Double> ( (Double)  members.get( "size"       ), "size"       );
+		this.isSelected = new Property<Boolean>( (Boolean) members.get( "isSelected" ), "isSelected" );
 	}
 	
 	/**
 	 * Constructs a {@code Caption} from the specified JSON text
 	 * 
-	 * @param json the json text from which to construct this caption
+	 * @param json the JSON text from which to construct this caption
 	 * 
 	 * @see #toString()
 	 */
-	public Caption(String json)
+	public Caption ( String json )
 	{
-		this(JsonUtilities.parseObject(json));
+		this( JsonUtilities.parseObject( json ) );
 	}
 	
 	/**
@@ -137,16 +137,16 @@ public class Caption extends ObservableBase
 	 * @see #Caption(String)
 	 */
 	@Override
-	public String toString()
+	public String toString( )
 	{
-		HashMap<String, Object> members = new HashMap<String, Object>();
+		HashMap<String, Object> members = new HashMap<String, Object>( );
 		
-		members.put("x",          x         );
-		members.put("y",          y         );
-		members.put("text",       text      );
-		members.put("size",       size      );
-		members.put("isSelected", isSelected);
+		members.put( "x",          x          );
+		members.put( "y",          y          );
+		members.put( "text",       text       );
+		members.put( "size",       size       );
+		members.put( "isSelected", isSelected );
 		
-		return JsonUtilities.formatObject(members);
+		return JsonUtilities.formatObject( members );
 	}
 }
