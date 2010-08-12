@@ -24,7 +24,7 @@ import edu.belmont.mth.visigraph.views.*;
  * As an {@link ObservableBase}, this class also supports multiple subscribing {@link ObserverBase}s. Whenever a change is made to any part of a
  * {@code Graph}, notification of that change is automatically propagated upwards until it hits the {@code Graph} level. Be it the addition or removal
  * of an edge or even a change to one of the properties of a single vertex, all changes below the graph will trigger a
- * {@link #notifyObservers(Object)} call.
+ * {@link ObservableBase#notifyObservers(Object)} call.
  * 
  * @author Cameron Behar
  * 
@@ -108,6 +108,8 @@ public class Graph extends ObservableBase
 	/**
 	 * Constructs a graph from the specified JSON string. This constructor can be used to deserialize a graph serialized by Graph's toString method.
 	 * 
+	 * @param json the json text from which to construct this graph
+	 * 
 	 * @see #toString()
 	 */
 	@SuppressWarnings( "unchecked" )
@@ -190,6 +192,12 @@ public class Graph extends ObservableBase
 	/**
 	 * Constructs an empty graph with the name and settings specified. When not loading a graph from JSON string, this is the preferred constructor
 	 * form.
+	 * 
+	 * @param name a {@code String} identifying this graph
+	 * @param areLoopsAllowed a {@code boolean} indicating whether or not to allow loops in this graph
+	 * @param areDirectedEdgesAllowed a {@code boolean} indicating whether or not this graph is a directed graph
+	 * @param areMultipleEdgesAllowed a {@code boolean} indicating whether or not to allow multi-edges in this graph
+	 * @param areCyclesAllowed a {@code boolean} indicating whether or not to allow cycles in this graph
 	 */
 	public Graph ( String name, boolean areLoopsAllowed, boolean areDirectedEdgesAllowed, boolean areMultipleEdgesAllowed, boolean areCyclesAllowed )
 	{
