@@ -87,7 +87,7 @@ public class ObservableList<T> extends ObservableBase implements List<T>
 	 * 
 	 * @param object the object to add
 	 * 
-	 * @return always {@code true}
+	 * @return {@code true} (as specified by {@link Collection#add(E)})
 	 * 
 	 * @throws UnsupportedOperationException if adding to this {@code ObservableList} is not supported
 	 * @throws ClassCastException if the class of the object is inappropriate for this {@code ObservableList}
@@ -475,6 +475,8 @@ public class ObservableList<T> extends ObservableBase implements List<T>
 	 * notifications.
 	 * 
 	 * @param suspend a {@code boolean} indicating whether to suspend or reenable notifications to subscribed ObserverBases
+	 * 
+	 * @return {@code true} if notifications were previously suspended, {@code false} otherwise
 	 * 
 	 * @see {@link ObservableBase}, {@link ObserverBase}, {@link ObservableList}
 	 */

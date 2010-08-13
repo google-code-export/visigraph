@@ -134,6 +134,8 @@ public class Caption extends ObservableBase
 	 * using the class's string constructor. For more information on the JSON format (used throughout VisiGraph for serialization), visit <a
 	 * href="http://www.json.org/">here</a>.
 	 * 
+	 * @return this {@code Caption} serialized as a {@code String}
+	 * 
 	 * @see #Caption(String)
 	 */
 	@Override
