@@ -257,7 +257,7 @@ public class Graph extends ObservableBase
 	 * @param from the vertex from which the path begins
 	 * @param to the vertex at which the path ends
 	 * 
-	 * @return {@code true} if there exists a path between the two vertices in the specified direction; otherwise, {@code false}
+	 * @return {@code true} if there exists a path between the two vertices in the specified direction, {@code false} otherwise
 	 * 
 	 * @see {@link Vertex}, {@link Edge}
 	 */
@@ -429,6 +429,8 @@ public class Graph extends ObservableBase
 	 * 
 	 * @param suspend a {@code boolean} indicating whether to suspend or reenable notifications to subscribed ObserverBases
 	 * 
+	 * @return {@code true} if notifications were previously suspended, {@code false} otherwise
+	 * 
 	 * @see {@link ObservableBase}, {@link ObserverBase}, {@link ObservableList}
 	 */
 	public boolean suspendNotifications( boolean suspend )
@@ -442,6 +444,8 @@ public class Graph extends ObservableBase
 	 * Returns a string representation of this graph in JSON format. This method can be used to serialize a graph, which may later be deserialized
 	 * using the class's string constructor. For more information on the JSON format (used throughout VisiGraph for serialization), visit <a
 	 * href="http://www.json.org/">here</a>.
+	 * 
+	 * @return this {@code Graph} serialized as a {@code String}
 	 * 
 	 * @see #Graph(String)
 	 */

@@ -29,12 +29,12 @@ public class Vertex extends ObservableBase
 	public final UUID id;
 	
 	/**
-	 * The location of this {@code Vertex}'s along the horizontal (x) axis
+	 * The location of this {@code Vertex} along the horizontal (x) axis
 	 */
 	public final Property<Double> x;
 	
 	/**
-	 * The location of this {@code Vertex}'s along the inverted vertical (-y) axis
+	 * The location of this {@code Vertex} along the inverted vertical (-y) axis
 	 */
 	public final Property<Double> y;
 	
@@ -144,7 +144,7 @@ public class Vertex extends ObservableBase
 	}
 	
 	/**
-	 * Constructs a {@code Vertex} from the specified map of properties
+	 * Constructs a {@code Vertex} from the specified {@code Map} of properties
 	 * 
 	 * @param members a {@code Map} of property names to values
 	 */
@@ -173,7 +173,9 @@ public class Vertex extends ObservableBase
 	}
 	
 	/**
-	 * Gets this {@code Vertex}'s location as a {@link Point2D}
+	 * Returns this {@code Vertex}'s location as a {@link Point2D} in (x, -y) coordinate space
+	 * 
+	 * @return this {@code Vertex}'s location
 	 */
 	public Point2D getPoint2D( )
 	{
@@ -184,6 +186,8 @@ public class Vertex extends ObservableBase
 	 * Returns a string representation of this vertex in JSON format. This method can be used to serialize a vertex, which may later be deserialized
 	 * using the class's string constructor. For more information on the JSON format (used throughout VisiGraph for serialization), visit <a
 	 * href="http://www.json.org/">here</a>.
+	 * 
+	 * @return this {@code Vertex} serialized as a {@code String}
 	 * 
 	 * @see #Vertex(String)
 	 */
