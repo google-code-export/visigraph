@@ -8,7 +8,6 @@ import java.util.*;
 import java.util.Map.*;
 import edu.belmont.mth.visigraph.settings.*;
 import edu.belmont.mth.visigraph.utilities.*;
-import edu.belmont.mth.visigraph.views.*;
 
 /**
  * The {@code Graph} class represents the highest level data-structure in graph theory, containing—fundamentally and by definition—a list of vertices
@@ -21,16 +20,16 @@ import edu.belmont.mth.visigraph.views.*;
  * file or shared through the web it must be fully serializable, and indeed is: with the {@link #toString()} method used for serialization using JSON
  * and the {@link #Graph(String)} constructor used for deserialization.
  * <p/>
- * As an {@link ObservableBase}, this class also supports multiple subscribing {@link ObserverBase}s. Whenever a change is made to any part of a
- * {@code Graph}, notification of that change is automatically propagated upwards until it hits the {@code Graph} level. Be it the addition or removal
- * of an edge or even a change to one of the properties of a single vertex, all changes below the graph will trigger a
- * {@link ObservableBase#notifyObservers(Object)} call.
+ * As an {@link ObservableModel}, this class also supports multiple subscribing {@link Observer}s. Whenever a change is made to any part of a {@code
+ * Graph}, notification of that change is automatically propagated upwards until it hits the {@code Graph} level. Be it the addition or removal of an
+ * edge or even a change to one of the properties of a single vertex, all changes below the graph will trigger a
+ * {@link ObservableModel#notifyObservers(Object)} call.
  * 
  * @author Cameron Behar
  * 
  * @see {@link Vertex}, {@link Edge}, {@link Caption}
  */
-public class Graph extends ObservableBase
+public class Graph extends ObservableModel
 {
 	/**
 	 * The name of this graph used for identification and serialization
@@ -76,26 +75,26 @@ public class Graph extends ObservableBase
 	public final boolean areCyclesAllowed;
 	
 	/**
-	 * A {@code boolean} flag indicating whether notifications are to be sent on to any of this graph's subscribed {@link ObserverBase}s, or merely
-	 * caught and handled internally
+	 * A {@code boolean} flag indicating whether notifications are to be sent on to any of this graph's subscribed {@link Observer}s, or merely caught
+	 * and handled internally
 	 */
 	private boolean notificationsSuspended;
 	
 	/**
-	 * An {@code ObserverBase} used to notify this Graph's subscribed {@code ObserverBase}s of changes (e.g. after adding or removing a vertex), and
-	 * to ensure that no edge continues to exist once one of its vertices has been removed
+	 * An {@code Observer} used to notify this Graph's subscribed {@code Observer}s of changes (e.g. after adding or removing a vertex), and to ensure
+	 * that no edge continues to exist once one of its vertices has been removed
 	 */
-	private ObserverBase vertexListObserver;
+	private Observer vertexListObserver;
 	
 	/**
-	 * An {@code ObserverBase} used to notify this Graph's subscribed {@code ObserverBase}s of changes (e.g. after adding or removing an edge)
+	 * An {@code Observer} used to notify this Graph's subscribed {@code Observer}s of changes (e.g. after adding or removing an edge)
 	 */
-	private ObserverBase edgeListObserver;
+	private Observer edgeListObserver;
 	
 	/**
-	 * An {@code ObserverBase} used to notify this Graph's subscribed {@code ObserverBase}s of changes (e.g. after adding or removing a caption)
+	 * An {@code Observer} used to notify this Graph's subscribed {@code Observer}s of changes (e.g. after adding or removing a caption)
 	 */
-	private ObserverBase captionListObserver;
+	private Observer captionListObserver;
 	
 	/**
 	 * Constructs an empty undirected graph allowing loops, multi-edges, and cycles.
@@ -125,34 +124,43 @@ public class Graph extends ObservableBase
 		this.areCyclesAllowed        = (Boolean) members.get( "areCyclesAllowed" );
 		
 		this.notificationsSuspended = false;
-		this.vertexListObserver  = new ObserverBase( )
+		this.vertexListObserver  = new Observer( )
 		{
 			@Override
-			public void hasChanged( Object source )
+			public void update( Observable o, Object arg )
 			{
 				if ( edges != null )
 					fixEdges( );
 				
 				if ( !notificationsSuspended )
-					notifyObservers( source );
+				{
+					setChanged( );
+					notifyObservers( arg );
+				}
 			}
 		};
-		this.edgeListObserver    = new ObserverBase( )
+		this.edgeListObserver    = new Observer( )
 		{
 			@Override
-			public void hasChanged( Object source )
+			public void update( Observable o, Object arg )
 			{
 				if ( !notificationsSuspended )
-					notifyObservers( source );
+				{
+					setChanged( );
+					notifyObservers( arg );
+				}
 			}
 		};
-		this.captionListObserver = new ObserverBase( )
+		this.captionListObserver = new Observer( )
 		{
 			@Override
-			public void hasChanged( Object source )
+			public void update( Observable o, Object arg )
 			{
 				if ( !notificationsSuspended )
-					notifyObservers( source );
+				{
+					setChanged( );
+					notifyObservers( arg );
+				}
 			}
 		};
 		
@@ -209,33 +217,43 @@ public class Graph extends ObservableBase
 		this.areCyclesAllowed = areCyclesAllowed;
 		
 		this.notificationsSuspended = false;
-		this.vertexListObserver = new ObserverBase( )
+		this.vertexListObserver  = new Observer( )
 		{
 			@Override
-			public void hasChanged( Object source )
+			public void update( Observable o, Object arg )
 			{
 				if ( edges != null )
 					fixEdges( );
+				
 				if ( !notificationsSuspended )
-					notifyObservers( source );
+				{
+					setChanged( );
+					notifyObservers( arg );
+				}
 			}
 		};
-		this.edgeListObserver = new ObserverBase( )
+		this.edgeListObserver    = new Observer( )
 		{
 			@Override
-			public void hasChanged( Object source )
+			public void update( Observable o, Object arg )
 			{
 				if ( !notificationsSuspended )
-					notifyObservers( source );
+				{
+					setChanged( );
+					notifyObservers( arg );
+				}
 			}
 		};
-		this.captionListObserver = new ObserverBase( )
+		this.captionListObserver = new Observer( )
 		{
 			@Override
-			public void hasChanged( Object source )
+			public void update( Observable o, Object arg )
 			{
 				if ( !notificationsSuspended )
-					notifyObservers( source );
+				{
+					setChanged( );
+					notifyObservers( arg );
+				}
 			}
 		};
 		
@@ -304,7 +322,10 @@ public class Graph extends ObservableBase
 		suspendNotifications( false );
 		
 		if ( edges.size( ) != originalSize )
+		{
+			setChanged( );
 			notifyObservers( edges );
+		}
 	}
 	
 	/**
@@ -424,14 +445,14 @@ public class Graph extends ObservableBase
 	}
 	
 	/**
-	 * Temporarily suspends the notification all of property changes to subscribed {@link ObserverBase}s. Most often this method is called when
-	 * performing a large number of batch operations on a graph, so that subscribers are not overloaded with a multitude of notifications.
+	 * Temporarily suspends the notification all of property changes to subscribed {@link Observer}s. Most often this method is called when performing
+	 * a large number of batch operations on a graph, so that subscribers are not overloaded with a multitude of notifications.
 	 * 
-	 * @param suspend a {@code boolean} indicating whether to suspend or reenable notifications to subscribed ObserverBases
+	 * @param suspend a {@code boolean} indicating whether to suspend or reenable notifications to subscribed Observers
 	 * 
 	 * @return {@code true} if notifications were previously suspended, {@code false} otherwise
 	 * 
-	 * @see {@link ObservableBase}, {@link ObserverBase}, {@link ObservableList}
+	 * @see {@link ObservableModel}, {@link Observer}, {@link ObservableList}
 	 */
 	public boolean suspendNotifications( boolean suspend )
 	{
@@ -541,6 +562,7 @@ public class Graph extends ObservableBase
 		
 		suspendNotifications( false );
 		
+		setChanged( );
 		notifyObservers( this );
 	}
 }

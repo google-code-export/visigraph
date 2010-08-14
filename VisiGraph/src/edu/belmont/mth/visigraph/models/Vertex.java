@@ -7,21 +7,20 @@ import java.awt.geom.*;
 import java.util.*;
 import edu.belmont.mth.visigraph.settings.*;
 import edu.belmont.mth.visigraph.utilities.*;
-import edu.belmont.mth.visigraph.views.ObserverBase;
 
 /**
  * The {@code Vertex} class represents one of the two fundamental mathematical elements in a graph along with edges. When used together with edges,
  * vertices can be related to each other to form a graph.
  * <p/>
- * As an {@link ObservableBase}, this class supports multiple subscribing {@link ObserverBase}s. Whenever a change is made to any of its properties,
+ * As an {@link ObservableModel}, this class supports multiple subscribing {@link Observer}s. Whenever a change is made to any of its properties,
  * notification of that change is automatically propagated upwards until it hits the {@code Graph} level and triggers a
- * {@link ObservableBase#notifyObservers(Object)} call.
+ * {@link ObservableModel#notifyObservers(Object)} call.
  * 
  * @author Cameron Behar
  * 
  * @see {@link Graph}, {@link Vertex}, {@link Edge}
  */
-public class Vertex extends ObservableBase
+public class Vertex extends ObservableModel
 {
 	/**
 	 * The universally unique identifier of this {@code Vertex}, used in the serialization and deserialization of edges

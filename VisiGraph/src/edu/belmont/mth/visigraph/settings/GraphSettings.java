@@ -12,7 +12,7 @@ import edu.belmont.mth.visigraph.utilities.JsonUtilities;
  * @author Cameron Behar
  *
  */
-public class GraphSettings extends ObservableBase
+public class GraphSettings extends ObservableModel
 {	
 	public final Property<Boolean> showEdgeHandles;
 	public final Property<Boolean> showEdgeWeights;

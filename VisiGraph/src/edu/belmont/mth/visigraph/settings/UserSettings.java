@@ -4,20 +4,16 @@ z * UserSettings.java
 package edu.belmont.mth.visigraph.settings;
 
 import java.awt.*;
-import java.io.File;
-import java.io.IOException;
+import java.io.*;
 import java.util.*;
-
 import edu.belmont.mth.visigraph.models.*;
-import edu.belmont.mth.visigraph.utilities.DebugUtilities;
-import edu.belmont.mth.visigraph.utilities.JsonUtilities;
-import edu.belmont.mth.visigraph.views.ObserverBase;
+import edu.belmont.mth.visigraph.utilities.*;
 
 /**
  * @author Cameron Behar
  *
  */
-public class UserSettings extends ObservableBase
+public class UserSettings extends ObservableModel
 {
 	public final static UserSettings instance = new UserSettings();
 	
@@ -176,12 +172,13 @@ public class UserSettings extends ObservableBase
 		
 		this.elementColors = new ObservableList<Color>( );
 		this.elementColors.addAll( Arrays.asList( GlobalSettings.defaultElementColors ) );
-		this.elementColors.addObserver( new ObserverBase( )
+		this.elementColors.addObserver( new Observer( )
 		{
 			@Override
-			public void hasChanged( Object source )
+			public void update( Observable o, Object arg )
 			{
-				notifyObservers( source );
+				setChanged( );
+				notifyObservers( arg );
 			}
 		} );
 		

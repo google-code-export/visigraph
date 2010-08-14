@@ -6,7 +6,6 @@ package edu.belmont.mth.visigraph.models;
 import java.util.*;
 import edu.belmont.mth.visigraph.settings.*;
 import edu.belmont.mth.visigraph.utilities.*;
-import edu.belmont.mth.visigraph.views.ObserverBase;
 
 /**
  * The {@code Caption} class is used to insert basic textual annotations into the graph itself in order to highlight points of interest. Although not
@@ -14,15 +13,15 @@ import edu.belmont.mth.visigraph.views.ObserverBase;
  * into the graph's structure that might otherwise be unclear. Along with {@code Vertex}es and {@code Edge}s, a list of these classes is maintained
  * in each {@code Graph} object, and so persists through serialization and deserialization.
  * <p/>
- * As an {@link ObservableBase}, this class also supports multiple subscribing {@link ObserverBase}s. Whenever a change is made to any of its
- * properties, notification of that change is automatically propagated upwards until it hits the {@code Graph} level and triggers a
- * {@link ObservableBase#notifyObservers(Object)} call.
+ * As an {@link ObservableModel}, this class also supports multiple subscribing {@link Observer}s. Whenever a change is made to any of its properties,
+ * notification of that change is automatically propagated upwards until it hits the {@code Graph} level and triggers a
+ * {@link ObservableModel#notifyObservers(Object)} call.
  * 
  * @author Cameron Behar
  * 
  * @see {@link Graph}, {@link Vertex}, {@link Edge}
  */
-public class Caption extends ObservableBase
+public class Caption extends ObservableModel
 {
 	/**
 	 * The location of this {@code Caption}'s upper-left-hand corner along the horizontal (x) axis

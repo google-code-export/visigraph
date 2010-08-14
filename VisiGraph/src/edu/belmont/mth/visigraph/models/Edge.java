@@ -7,22 +7,21 @@ import java.awt.geom.*;
 import java.util.*;
 import edu.belmont.mth.visigraph.settings.*;
 import edu.belmont.mth.visigraph.utilities.*;
-import edu.belmont.mth.visigraph.views.*;
 import static edu.belmont.mth.visigraph.utilities.GeometryUtilities.*;
 
 /**
  * The {@code Edge} class represents the second of the two fundamental mathematical elements in a graph along with vertices. Edges can be used to
  * define relationships between vertices, which together join to form a graph.
  * <p/>
- * As an {@link ObservableBase}, this class supports multiple subscribing {@link ObserverBase}s. Whenever a change is made to any of its properties,
+ * As an {@link ObservableModel}, this class supports multiple subscribing {@link Observer}s. Whenever a change is made to any of its properties,
  * notification of that change is automatically propagated upwards until it hits the {@code Graph} level and triggers a
- * {@link ObservableBase#notifyObservers(Object)} call.
+ * {@link ObservableModel#notifyObservers(Object)} call.
  * 
  * @author Cameron Behar
  * 
  * @see {@link Graph}, {@link Vertex}, {@link Caption}
  */
-public class Edge extends ObservableBase
+public class Edge extends ObservableModel
 {
 	/**
 	 * A {@code Boolean} indicating whether or not this {@code Edge} is directed
@@ -101,24 +100,24 @@ public class Edge extends ObservableBase
 	private boolean isLinear;
 	
 	/**
-	 * A {@code boolean} flag indicating whether notifications are to be sent on to any of this edge's subscribed {@link ObserverBase}s, or merely
-	 * caught and handled internally
+	 * A {@code boolean} flag indicating whether notifications are to be sent on to any of this edge's subscribed {@link Observer}s, or merely caught
+	 * and handled internally
 	 */
 	private boolean notificationsSuspended;
 	
 	/**
-	 * An {@code ObserverBase} used to notify this {@code Edge} of changes to either of its vertices (specifically, in order to recalculate the
-	 * {@code arc}, {@code line}, and handle when one of them moves)
+	 * An {@code Observer} used to notify this {@code Edge} of changes to either of its vertices (specifically, in order to recalculate the {@code
+	 * arc}, {@code line}, and handle when one of them moves)
 	 */
-	private ObserverBase vertexObserver = new ObserverBase( )
+	private Observer vertexObserver = new Observer( )
 	{
 		@Override
-		public void hasChanged( Object source )
+		public void update( Observable o, Object arg )
 		{
 			// Only reset the edge if the one of the vertexes moved
-			if ( !notificationsSuspended && from != null && to != null && handleX != null && handleY != null && source instanceof Property<?> )
+			if ( !notificationsSuspended && from != null && to != null && handleX != null && handleY != null && arg instanceof Property<?> )
 			{
-				Property<?> propertyChanged = (Property<?>) source;
+				Property<?> propertyChanged = (Property<?>) arg;
 				
 				if ( propertyChanged == from.x || propertyChanged == from.y || propertyChanged == to.x || propertyChanged == to.y )
 				{
@@ -466,14 +465,14 @@ public class Edge extends ObservableBase
 	}
 	
 	/**
-	 * Temporarily suspends the notification all of property changes to subscribed {@link ObserverBase}s. Most often this method is called when
-	 * performing a large number of batch operations on an edge, so that subscribers are not overloaded with a multitude of notifications.
+	 * Temporarily suspends the notification all of property changes to subscribed {@link Observer}s. Most often this method is called when performing
+	 * a large number of batch operations on an edge, so that subscribers are not overloaded with a multitude of notifications.
 	 * 
-	 * @param suspend a {@code boolean} indicating whether to suspend or reenable notifications to subscribed ObserverBases
+	 * @param suspend a {@code boolean} indicating whether to suspend or reenable notifications to subscribed {@code Observer}s
 	 * 
 	 * @return {@code true} if notifications were previously suspended, {@code false} otherwise
 	 * 
-	 * @see {@link ObservableBase}, {@link ObserverBase}, {@link ObservableList}
+	 * @see {@link ObservableModel}, {@link Observer}, {@link ObservableList}
 	 */
 	public boolean suspendNotifications( boolean suspend )
 	{
