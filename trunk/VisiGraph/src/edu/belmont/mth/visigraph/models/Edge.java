@@ -230,13 +230,13 @@ public class Edge extends ObservableBase
 		this.to = to;
 		this.to.addObserver( vertexObserver );
 		
-		this.weight     = new Property<Double> ( weight,     "weight"     );
-		this.color      = new Property<Integer>( color,      "color"      );
-		this.label      = new Property<String> ( label,      "label"      );
-		this.isSelected = new Property<Boolean>( isSelected, "isSelected" );
-		this.thickness  = new Property<Double> ( UserSettings.instance.defaultEdgeThickness.get( ), "thickness" );
+		this.weight     = new Property<Double> ( weight     );
+		this.color      = new Property<Integer>( color      );
+		this.label      = new Property<String> ( label      );
+		this.isSelected = new Property<Boolean>( isSelected );
+		this.thickness  = new Property<Double> ( UserSettings.instance.defaultEdgeThickness.get( ) );
 		
-		this.handleX = new Property<Double>( 0.0, "handleX" )
+		this.handleX = new Property<Double>( 0.0 )
 		{
 			@Override
 			public void set( final Double value )
@@ -248,7 +248,7 @@ public class Edge extends ObservableBase
 				}
 			}
 		};
-		this.handleY = new Property<Double>( 0.0, "handleY" )
+		this.handleY = new Property<Double>( 0.0 )
 		{
 			@Override
 			public void set( final Double value )
@@ -290,14 +290,14 @@ public class Edge extends ObservableBase
 		this.to = vertexes.get( (String) members.get( "to.id" ) );
 		this.to.addObserver( vertexObserver );
 		
-		this.weight     = new Property<Double> ( (Double)  members.get( "weight"     ), "weight"     );
-		this.color      = new Property<Integer>( (Integer) members.get( "color"      ), "color"      );
-		this.label      = new Property<String> ( (String)  members.get( "label"      ), "label"      );
-		this.isSelected = new Property<Boolean>( (Boolean) members.get( "isSelected" ), "isSelected" );
-		this.thickness  = new Property<Double> ( (Double)  members.get( "thickness"  ), "thickness"  );
+		this.weight     = new Property<Double> ( (Double)  members.get( "weight"     ) );
+		this.color      = new Property<Integer>( (Integer) members.get( "color"      ) );
+		this.label      = new Property<String> ( (String)  members.get( "label"      ) );
+		this.isSelected = new Property<Boolean>( (Boolean) members.get( "isSelected" ) );
+		this.thickness  = new Property<Double> ( (Double)  members.get( "thickness"  ) );
 		
 		this.isLinear = members.containsKey( "isLinear" ) ? (Boolean) members.get( "isLinear" ) : false;
-		this.handleX = new Property<Double>( this.isLinear ? 0.0 : (Double) members.get( "handleX" ), "handleX" )
+		this.handleX = new Property<Double>( this.isLinear ? 0.0 : (Double) members.get( "handleX" ) )
 		{
 			@Override
 			public void set( final Double value )
@@ -309,7 +309,7 @@ public class Edge extends ObservableBase
 				}
 			}
 		};
-		this.handleY = new Property<Double>( this.isLinear ? 0.0 : (Double) members.get( "handleY" ), "handleY" )
+		this.handleY = new Property<Double>( this.isLinear ? 0.0 : (Double) members.get( "handleY" ) )
 		{
 			@Override
 			public void set( final Double value )

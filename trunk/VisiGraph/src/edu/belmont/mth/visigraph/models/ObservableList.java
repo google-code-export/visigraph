@@ -16,8 +16,8 @@ import edu.belmont.mth.visigraph.views.*;
  * 
  * @author Cameron Behar
  * 
- * @see List
- * */
+ * @see {@link List}, {@link ObservableBase}
+ */
 public class ObservableList<T> extends ObservableBase implements List<T>
 {
 	/**
@@ -33,7 +33,7 @@ public class ObservableList<T> extends ObservableBase implements List<T>
 	
 	/**
 	 * An {@code ObserverBase} used to notify this {@code ObservableList}'s subscribed {@code ObserverBase}s of changes to any of its {@code
-	 * ObserverBase} elements' properties
+	 * ObservableBase} elements' properties
 	 */
 	private ObserverBase elementObserver;
 	
