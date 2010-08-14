@@ -15,9 +15,7 @@ import javax.swing.*;
 import javax.swing.Timer;
 import javax.swing.border.*;
 import javax.swing.event.*;
-
-import edu.belmont.mth.visigraph.utilities.DebugUtilities;
-import edu.belmont.mth.visigraph.views.*;
+import edu.belmont.mth.visigraph.utilities.*;
 import edu.belmont.mth.visigraph.models.*;
 import edu.belmont.mth.visigraph.resources.*;
 import edu.belmont.mth.visigraph.settings.*;
@@ -81,27 +79,27 @@ public class GraphDisplayController extends JPanel
 		undoHistory = new SnapshotList(graph.toString());
 		
 		// Add/bind palette
-		userSettings.addObserver(new ObserverBase()
+		userSettings.addObserver( new Observer( )
 		{
 			@Override
-			public void hasChanged(Object source)
+			public void update( Observable o, Object arg )
 			{
-				hasSettingChanged(source);
+				onSettingChanged( arg );
 			}
-		});
-				
+		} );
+		
 		// Add/bind display settings
-		settings = new GraphSettings()
+		settings = new GraphSettings( )
 		{
 			{
-				addObserver(new ObserverBase()
+				addObserver( new Observer( )
 				{
 					@Override
-					public void hasChanged(Object source)
+					public void update( Observable o, Object arg )
 					{
-						hasSettingChanged(source);
+						onSettingChanged( arg );
 					}
-				}); 
+				} );
 			}
 		};
 		
@@ -254,13 +252,13 @@ public class GraphDisplayController extends JPanel
 		};
 	}
 	
-	public void hasGraphChanged(Object source)
+	public void onGraphChanged(Object source)
 	{
 		isViewportInvalidated = true;
 		fireGraphChangeEvent(new GraphChangeEvent(graph));
 	}
 	
-	public void hasSettingChanged(Object source)
+	public void onSettingChanged(Object source)
 	{
 		isViewportInvalidated = true;
 
@@ -401,22 +399,22 @@ public class GraphDisplayController extends JPanel
 		undoTimer.start();
 	}
 	
-	public void loadGraph(Graph graph)
+	public void loadGraph( Graph graph )
 	{
 		this.graph = graph;
-		graph.addObserver(new ObserverBase()
+		graph.addObserver( new Observer( )
 		{
 			@Override
-			public void hasChanged(Object source)
+			public void update( Observable o, Object arg )
 			{
-				hasGraphChanged(source);
+				onGraphChanged( arg );
 			}
-		});
+		} );
 		
 		isMouseDownOnCanvas = false;
-		currentMousePoint = new Point(0, 0);
-		pastMousePoint = new Point(0, 0);
-		pastPanPoint = new Point(0, 0);
+		currentMousePoint = new Point( 0, 0 );
+		pastMousePoint = new Point( 0, 0 );
+		pastPanPoint = new Point( 0, 0 );
 		pointerToolClickedObject = false;
 		cutToolClickedObject = false;
 		paintToolClickedObject = false;

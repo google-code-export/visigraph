@@ -13,7 +13,7 @@ public class GlobalSettings
 {
 	public static final String					 applicationName							= "VisiGraph";
 	public static final String					 applicationAuthor							= "Cameron Behar";
-	public static final String					 applicationVersion							= "1.05.00";
+	public static final String					 applicationVersion							= "1.06.00";
 	public static final String					 applicationWebsite							= "http://code.google.com/p/visigraph";
 	public static final String					 applicationDescription						= "A flexible cross-platform application for modeling graph theory problems and solutions.";
 	public static final String					 applicationJarDirectoryUrl					= "http://visigraph.googlecode.com/svn/trunk/VisiGraph/jar/";
@@ -46,7 +46,6 @@ public class GlobalSettings
 	public static final Color					 defaultCaptionButtonLine					= new Color(193, 193, 193);
 	public static final Color					 defaultSelectedCaptionLineColor			= Color.blue;
 	
-	// Initialized with black, gray, and 6 colors--past 6 hues with no saturation or brightness difference, some of the colors become difficult to distinguish.
 	public static final Color[]					 defaultElementColors						= new Color[] { Color.black, new Color(185, 122, 27), Color.getHSBColor(0, .95f, .95f), Color.getHSBColor(1/6f, .95f, .95f), Color.getHSBColor(2/6f, .95f, .95f), Color.getHSBColor(3/6f, .95f, .95f), Color.getHSBColor(4/6f, .95f, .95f), Color.getHSBColor(5/6f, .95f, .95f) };
 	public static final Color					 defaultUncoloredElementFill				= new Color(193, 193, 193);
 	

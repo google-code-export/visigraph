@@ -10,7 +10,7 @@ import java.util.List;
 import java.util.Map.*;
 import java.util.regex.*;
 
-import edu.belmont.mth.visigraph.models.ObservableBase.*;
+import edu.belmont.mth.visigraph.models.ObservableModel.*;
 
 /**
  * @author Cameron Behar

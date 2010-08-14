@@ -4,21 +4,20 @@
 package edu.belmont.mth.visigraph.models;
 
 import java.util.*;
-import edu.belmont.mth.visigraph.views.*;
 
 /**
  * An {@code ObservableList} is a collection which maintains an ordering for its elements. Every element in the {@code ObservableList} has an index.
  * Each element can thus be accessed by its index, with the first index being zero. Normally, {@code ObservableList}s allow duplicate elements, as
  * compared to Sets, where elements have to be unique.
  * <p/>
- * Where {@code ObservableList} differs from the standard Java {@code List} is is in its extension of {@link ObservableBase} so that subscribed
- * {@link ObserverBase}s are notified of any changes to its structure, or to its {@code ObservableBase} elements' properties.
+ * Where {@code ObservableList} differs from the standard Java {@code List} is is in its extension of Java's {@link Observable} so that subscribed
+ * {@link Observer}s are notified of any changes to its structure, or to its {@code Observable} elements' properties.
  * 
  * @author Cameron Behar
  * 
- * @see {@link List}, {@link ObservableBase}
+ * @see {@link List}, {@link Observable}
  */
-public class ObservableList<T> extends ObservableBase implements List<T>
+public class ObservableList<T> extends Observable implements List<T>
 {
 	/**
 	 * The private data store backing this {@code ObservableList}
@@ -27,15 +26,15 @@ public class ObservableList<T> extends ObservableBase implements List<T>
 	
 	/**
 	 * A {@code boolean} flag indicating whether notifications are to be sent on to any of this {@code ObservableList}'s subscribed
-	 * {@link ObserverBase}s, or merely caught and handled internally
+	 * {@link Observer}s, or merely caught and handled internally
 	 */
 	private boolean notificationsSuspended;
 	
 	/**
-	 * An {@code ObserverBase} used to notify this {@code ObservableList}'s subscribed {@code ObserverBase}s of changes to any of its {@code
-	 * ObservableBase} elements' properties
+	 * An {@code Observer} used to notify this {@code ObservableList}'s subscribed {@code Observer}s of changes to any of its {@code
+	 * Observable} elements' properties
 	 */
-	private ObserverBase elementObserver;
+	private Observer elementObserver;
 	
 	/**
 	 * Constructs an empty {@code ObservableList} with an initial capacity of ten. 
@@ -44,13 +43,16 @@ public class ObservableList<T> extends ObservableBase implements List<T>
 	{
 		list = new ArrayList<T>( );
 		notificationsSuspended = false;
-		elementObserver = new ObserverBase( )
+		elementObserver = new Observer( )
 		{
 			@Override
-			public void hasChanged( Object source )
+			public void update( Observable o, Object arg )
 			{
 				if ( !notificationsSuspended )
-					notifyObservers( source );
+				{
+					setChanged( );
+					notifyObservers( arg );
+				}
 			}
 		};
 	}
@@ -74,11 +76,12 @@ public class ObservableList<T> extends ObservableBase implements List<T>
 		suspendNotifications( true );
 		
 		list.add( location, object );
-		if ( object instanceof ObservableBase )
-			( (ObservableBase) object ).addObserver( elementObserver );
+		if ( object instanceof Observable )
+			( (Observable) object ).addObserver( elementObserver );
 		
 		suspendNotifications( false );
 		
+		setChanged( );
 		notifyObservers( this );
 	}
 	
@@ -98,11 +101,12 @@ public class ObservableList<T> extends ObservableBase implements List<T>
 		suspendNotifications( true );
 		
 		boolean ret = list.add( object );
-		if ( object instanceof ObservableBase )
-			( (ObservableBase) object ).addObserver( elementObserver );
+		if ( object instanceof Observable )
+			( (Observable) object ).addObserver( elementObserver );
 		
 		suspendNotifications( false );
 		
+		setChanged( );
 		notifyObservers( this );
 		
 		return ret;
@@ -126,11 +130,12 @@ public class ObservableList<T> extends ObservableBase implements List<T>
 		
 		boolean ret = list.addAll( collection );
 		for ( T element : collection )
-			if ( element instanceof ObservableBase )
-				( (ObservableBase) element ).addObserver( elementObserver );
+			if ( element instanceof Observable )
+				( (Observable) element ).addObserver( elementObserver );
 		
 		suspendNotifications( false );
 		
+		setChanged( );
 		notifyObservers( this );
 		
 		return ret;
@@ -156,11 +161,12 @@ public class ObservableList<T> extends ObservableBase implements List<T>
 		
 		boolean ret = list.addAll( location, collection );
 		for ( T element : collection )
-			if ( element instanceof ObservableBase )
-				( (ObservableBase) element ).addObserver( elementObserver );
+			if ( element instanceof Observable )
+				( (Observable) element ).addObserver( elementObserver );
 		
 		suspendNotifications( false );
 		
+		setChanged( );
 		notifyObservers( this );
 		
 		return ret;
@@ -179,12 +185,13 @@ public class ObservableList<T> extends ObservableBase implements List<T>
 		suspendNotifications( true );
 		
 		for ( T element : list )
-			if ( element instanceof ObservableBase )
-				( (ObservableBase) element ).deleteObserver( elementObserver );
+			if ( element instanceof Observable )
+				( (Observable) element ).deleteObserver( elementObserver );
 		list.clear( );
 		
 		suspendNotifications( false );
 		
+		setChanged( );
 		notifyObservers( this );
 	}
 	
@@ -320,11 +327,12 @@ public class ObservableList<T> extends ObservableBase implements List<T>
 		suspendNotifications( true );
 		
 		T ret = list.remove( location );
-		if ( ret instanceof ObservableBase )
-			( (ObservableBase) ret ).deleteObserver( elementObserver );
+		if ( ret instanceof Observable )
+			( (Observable) ret ).deleteObserver( elementObserver );
 		
 		suspendNotifications( false );
 		
+		setChanged( );
 		notifyObservers( this );
 		
 		return ret;
@@ -344,11 +352,12 @@ public class ObservableList<T> extends ObservableBase implements List<T>
 		suspendNotifications( true );
 		
 		boolean ret = list.remove( object );
-		if ( object instanceof ObservableBase )
-			( (ObservableBase) object ).deleteObserver( elementObserver );
+		if ( object instanceof Observable )
+			( (Observable) object ).deleteObserver( elementObserver );
 		
 		suspendNotifications( false );
 		
+		setChanged( );
 		notifyObservers( this );
 		
 		return ret;
@@ -370,13 +379,14 @@ public class ObservableList<T> extends ObservableBase implements List<T>
 		for ( Object element : collection )
 		{
 			int index = list.indexOf( element );
-			if ( index > -1 && list.get( index ) instanceof ObservableBase )
-				( (ObservableBase) list.get( index ) ).deleteObserver( elementObserver );
+			if ( index > -1 && list.get( index ) instanceof Observable )
+				( (Observable) list.get( index ) ).deleteObserver( elementObserver );
 		}
 		boolean ret = list.removeAll( collection );
 		
 		suspendNotifications( false );
 		
+		setChanged( );
 		notifyObservers( this );
 		
 		return ret;
@@ -397,12 +407,13 @@ public class ObservableList<T> extends ObservableBase implements List<T>
 		
 		for ( T element : list )
 			if ( !collection.contains( element ) )
-				if ( element instanceof ObservableBase )
-					( (ObservableBase) element ).deleteObserver( elementObserver );
+				if ( element instanceof Observable )
+					( (Observable) element ).deleteObserver( elementObserver );
 		boolean ret = list.retainAll( collection );
 		
 		suspendNotifications( false );
 		
+		setChanged( );
 		notifyObservers( this );
 		
 		return ret;
@@ -428,16 +439,17 @@ public class ObservableList<T> extends ObservableBase implements List<T>
 		
 		if ( list.get( location ) != object )
 		{
-			if ( list.get( location ) instanceof ObservableBase )
-				( (ObservableBase) list.get( location ) ).deleteObserver( elementObserver );
+			if ( list.get( location ) instanceof Observable )
+				( (Observable) list.get( location ) ).deleteObserver( elementObserver );
 			
-			if ( object instanceof ObservableBase )
-				( (ObservableBase) object ).addObserver( elementObserver );
+			if ( object instanceof Observable )
+				( (Observable) object ).addObserver( elementObserver );
 		}
 		T ret = list.set( location, object );
 		
 		suspendNotifications( false );
 		
+		setChanged( );
 		notifyObservers( this );
 		
 		return ret;
@@ -470,15 +482,15 @@ public class ObservableList<T> extends ObservableBase implements List<T>
 	}
 	
 	/**
-	 * Temporarily suspends the notification all of property changes to subscribed {@link ObserverBase}s. Most often this method is called when
+	 * Temporarily suspends the notification all of property changes to subscribed {@link Observer}s. Most often this method is called when
 	 * performing a large number of batch operations on an {@code ObservableList}, so that subscribers are not overloaded with a multitude of
 	 * notifications.
 	 * 
-	 * @param suspend a {@code boolean} indicating whether to suspend or reenable notifications to subscribed ObserverBases
+	 * @param suspend a {@code boolean} indicating whether to suspend or reenable notifications to subscribed {@code Observer}s
 	 * 
 	 * @return {@code true} if notifications were previously suspended, {@code false} otherwise
 	 * 
-	 * @see {@link ObservableBase}, {@link ObserverBase}, {@link ObservableList}
+	 * @see {@link Observable}, {@link Observer}, {@link ObservableList}
 	 */
 	public boolean suspendNotifications( boolean suspend )
 	{
