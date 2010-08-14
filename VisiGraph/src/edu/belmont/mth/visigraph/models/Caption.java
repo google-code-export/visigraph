@@ -96,11 +96,11 @@ public class Caption extends ObservableBase
 	 */
 	public Caption ( double x, double y, String text, double size, boolean isSelected )
 	{
-		this.x          = new Property<Double> ( x,          "x"          );
-		this.y          = new Property<Double> ( y,          "y"          );
-		this.text       = new Property<String> ( text,       "text"       );
-		this.size       = new Property<Double> ( size,       "size"       );
-		this.isSelected = new Property<Boolean>( isSelected, "isSelected" );
+		this.x          = new Property<Double> ( x          );
+		this.y          = new Property<Double> ( y          );
+		this.text       = new Property<String> ( text       );
+		this.size       = new Property<Double> ( size       );
+		this.isSelected = new Property<Boolean>( isSelected );
 	}
 	
 	/**
@@ -110,11 +110,11 @@ public class Caption extends ObservableBase
 	 */
 	public Caption ( Map<String, Object> members )
 	{
-		this.x          = new Property<Double> ( (Double)  members.get( "x"          ), "x"          );
-		this.y          = new Property<Double> ( (Double)  members.get( "y"          ), "y"          );
-		this.text       = new Property<String> ( (String)  members.get( "text"       ), "text"       );
-		this.size       = new Property<Double> ( (Double)  members.get( "size"       ), "size"       );
-		this.isSelected = new Property<Boolean>( (Boolean) members.get( "isSelected" ), "isSelected" );
+		this.x          = new Property<Double> ( (Double)  members.get( "x"          ) );
+		this.y          = new Property<Double> ( (Double)  members.get( "y"          ) );
+		this.text       = new Property<String> ( (String)  members.get( "text"       ) );
+		this.size       = new Property<Double> ( (Double)  members.get( "size"       ) );
+		this.isSelected = new Property<Boolean>( (Boolean) members.get( "isSelected" ) );
 	}
 	
 	/**

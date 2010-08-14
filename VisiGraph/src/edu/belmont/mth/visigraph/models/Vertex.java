@@ -134,13 +134,13 @@ public class Vertex extends ObservableBase
 	public Vertex ( double x, double y, String label, double radius, int color, boolean isSelected )
 	{
 		this.id         = UUID.randomUUID( );
-		this.x          = new Property<Double> ( x,          "x"          );
-		this.y          = new Property<Double> ( y,          "y"          );
-		this.label      = new Property<String> ( label,      "label"      );
-		this.radius     = new Property<Double> ( radius,     "radius"     );
-		this.color      = new Property<Integer>( color,      "color"      );
-		this.isSelected = new Property<Boolean>( isSelected, "isSelected" );
-		this.weight     = new Property<Double> ( UserSettings.instance.defaultVertexWeight.get( ), "weight" );
+		this.x          = new Property<Double> ( x          );
+		this.y          = new Property<Double> ( y          );
+		this.label      = new Property<String> ( label      );
+		this.radius     = new Property<Double> ( radius     );
+		this.color      = new Property<Integer>( color      );
+		this.isSelected = new Property<Boolean>( isSelected );
+		this.weight     = new Property<Double> ( UserSettings.instance.defaultVertexWeight.get( ) );
 	}
 	
 	/**
@@ -151,13 +151,13 @@ public class Vertex extends ObservableBase
 	public Vertex ( Map<String, Object> members )
 	{
 		this.id         = UUID.randomUUID( );
-		this.x          = new Property<Double> ( (Double)  members.get( "x"          ), "x"          );
-		this.y          = new Property<Double> ( (Double)  members.get( "y"          ), "y"          );
-		this.label      = new Property<String> ( (String)  members.get( "label"      ), "label"      );
-		this.radius     = new Property<Double> ( (Double)  members.get( "radius"     ), "radius"     );
-		this.color      = new Property<Integer>( (Integer) members.get( "color"      ), "color"      );
-		this.isSelected = new Property<Boolean>( (Boolean) members.get( "isSelected" ), "isSelected" );
-		this.weight     = new Property<Double> ( (Double)  members.get( "weight"     ), "weight"     );
+		this.x          = new Property<Double> ( (Double)  members.get( "x"          ) );
+		this.y          = new Property<Double> ( (Double)  members.get( "y"          ) );
+		this.label      = new Property<String> ( (String)  members.get( "label"      ) );
+		this.radius     = new Property<Double> ( (Double)  members.get( "radius"     ) );
+		this.color      = new Property<Integer>( (Integer) members.get( "color"      ) );
+		this.isSelected = new Property<Boolean>( (Boolean) members.get( "isSelected" ) );
+		this.weight     = new Property<Double> ( (Double)  members.get( "weight"     ) );
 	}
 	
 	/**

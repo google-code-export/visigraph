@@ -117,15 +117,15 @@ public class Graph extends ObservableBase
 	{
 		Map<String, Object> members = JsonUtilities.parseObject( json );
 		
-		this.name = new Property<String>( (String) members.get( "name" ), "name" );
+		this.name = new Property<String>( (String) members.get( "name" ) );
 		
-		this.areLoopsAllowed = (Boolean) members.get( "areLoopsAllowed" );
+		this.areLoopsAllowed         = (Boolean) members.get( "areLoopsAllowed" );
 		this.areDirectedEdgesAllowed = (Boolean) members.get( "areDirectedEdgesAllowed" );
 		this.areMultipleEdgesAllowed = (Boolean) members.get( "areMultipleEdgesAllowed" );
-		this.areCyclesAllowed = (Boolean) members.get( "areCyclesAllowed" );
+		this.areCyclesAllowed        = (Boolean) members.get( "areCyclesAllowed" );
 		
 		this.notificationsSuspended = false;
-		this.vertexListObserver = new ObserverBase( )
+		this.vertexListObserver  = new ObserverBase( )
 		{
 			@Override
 			public void hasChanged( Object source )
@@ -137,7 +137,7 @@ public class Graph extends ObservableBase
 					notifyObservers( source );
 			}
 		};
-		this.edgeListObserver = new ObserverBase( )
+		this.edgeListObserver    = new ObserverBase( )
 		{
 			@Override
 			public void hasChanged( Object source )
@@ -201,7 +201,7 @@ public class Graph extends ObservableBase
 	 */
 	public Graph ( String name, boolean areLoopsAllowed, boolean areDirectedEdgesAllowed, boolean areMultipleEdgesAllowed, boolean areCyclesAllowed )
 	{
-		this.name = new Property<String>( name, "name" );
+		this.name = new Property<String>( name );
 		
 		this.areLoopsAllowed = areLoopsAllowed;
 		this.areDirectedEdgesAllowed = areDirectedEdgesAllowed;
@@ -454,14 +454,14 @@ public class Graph extends ObservableBase
 	{
 		HashMap<String, Object> members = new HashMap<String, Object>( );
 		
-		members.put( "name", name );
-		members.put( "vertexes", vertexes );
-		members.put( "edges", edges );
-		members.put( "captions", captions );
-		members.put( "areLoopsAllowed", areLoopsAllowed );
+		members.put( "name",                    name                    );
+		members.put( "vertexes",                vertexes                );
+		members.put( "edges",                   edges                   );
+		members.put( "captions",                captions                );
+		members.put( "areLoopsAllowed",         areLoopsAllowed         );
 		members.put( "areDirectedEdgesAllowed", areDirectedEdgesAllowed );
 		members.put( "areMultipleEdgesAllowed", areMultipleEdgesAllowed );
-		members.put( "areCyclesAllowed", areCyclesAllowed );
+		members.put( "areCyclesAllowed",        areCyclesAllowed        );
 		
 		return JsonUtilities.formatObject( members );
 	}
