@@ -186,35 +186,19 @@ public class MainWindow extends JFrame
 						
 						while(!success)
 						{ 
+							success = false;
+							
 							if(fileChooser.showOpenDialog(thisFrame) == JFileChooser.APPROVE_OPTION)
 							{
 					            try
 								{
-					            	File selectedFile = fileChooser.getSelectedFile();    	
-									Scanner scanner = new Scanner(selectedFile);
-									StringBuilder sb = new StringBuilder();
-									while(scanner.hasNextLine())
-										sb.append(scanner.nextLine());
-		
-									scanner.close();
-									
-									Graph newGraph = new Graph(sb.toString());
-									if (newGraph != null)
-									{
-										graphWindow = new GraphWindow(newGraph);
-										graphWindow.setFile(selectedFile);
-										desktopPane.add(graphWindow);
-										try
-										{
-											graphWindow.setMaximum(true);
-											graphWindow.setSelected(true);
-										}
-										catch (PropertyVetoException ex) { DebugUtilities.logException("An exception occurred while loading the graph window.", ex); }
-									}
-									
+									openFile( fileChooser.getSelectedFile( ) );
 									success = true;
 								}
-								catch (IOException ex) { DebugUtilities.logException("An exception occurred while loading a graph from file.", ex); success = false; }
+								catch ( IOException ex )
+								{
+									DebugUtilities.logException( "An exception occurred while loading a graph from file.", ex );
+								}
 							}
 							else
 								success = true;
@@ -661,24 +645,51 @@ public class MainWindow extends JFrame
 		this.setVisible(true);
 	}
 
-	public void closingWindow(WindowEvent e)
+	public void openFile( File file ) throws IOException
 	{
-		JInternalFrame[] frames = desktopPane.getAllFrames();
+		Scanner scanner = new Scanner( file );
+		StringBuilder sb = new StringBuilder( );
+		while ( scanner.hasNextLine( ) )
+			sb.append( scanner.nextLine( ) );
 		
-		for(JInternalFrame frame : frames)
+		scanner.close( );
+		
+		Graph newGraph = new Graph( sb.toString( ) );
+		if ( newGraph != null )
 		{
-			GraphWindow window = (GraphWindow)frame;
+			GraphWindow graphWindow = new GraphWindow( newGraph );
+			graphWindow.setFile( file );
+			desktopPane.add( graphWindow );
+			try
+			{
+				graphWindow.setMaximum( true );
+				graphWindow.setSelected( true );
+			}
+			catch ( PropertyVetoException ex )
+			{
+				DebugUtilities.logException( "An exception occurred while loading the graph window.", ex );
+			}
+		}
+	}
+	
+	public void closingWindow( WindowEvent e )
+	{
+		JInternalFrame[ ] frames = desktopPane.getAllFrames( );
+		
+		for ( JInternalFrame frame : frames )
+		{
+			GraphWindow window = (GraphWindow) frame;
 			
-			window.closingWindow(new InternalFrameEvent(frame,0));
+			window.closingWindow( new InternalFrameEvent( frame, 0 ) );
 			
-			if(!window.isClosed())
+			if ( !window.isClosed( ) )
 				break;
 		}
 		
-		if(desktopPane.getAllFrames().length == 0)
+		if ( desktopPane.getAllFrames( ).length == 0 )
 		{
-			dispose();
-			System.exit(0);
+			dispose( );
+			System.exit( 0 );
 		}
 	}
 }

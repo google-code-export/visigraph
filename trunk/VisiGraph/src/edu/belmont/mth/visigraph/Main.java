@@ -4,11 +4,10 @@
 package edu.belmont.mth.visigraph;
 
 import java.io.*;
-import java.util.*;
 import javax.swing.*;
 import edu.belmont.mth.visigraph.gui.windows.*;
 import edu.belmont.mth.visigraph.settings.*;
-import edu.belmont.mth.visigraph.utilities.DebugUtilities;
+import edu.belmont.mth.visigraph.utilities.*;
 
 /**
  * @author Cameron Behar
@@ -16,52 +15,33 @@ import edu.belmont.mth.visigraph.utilities.DebugUtilities;
  */
 public class Main
 {
-	public static void main(String[] args)
+	public static void main( final String[ ] args )
+	{
+		initializeLookAndFeel( );
+		
+		SwingUtilities.invokeLater( new Runnable( )
+		{
+			public void run( )
+			{
+				MainWindow window = new MainWindow( );
+				for ( String arg : args )
+					try { window.openFile( new File( arg ) ); }
+					catch ( IOException ex ) { DebugUtilities.logException( "An exception occurred while loading a graph from file.", ex ); }
+			}
+		} );
+	}
+	
+	private static void initializeLookAndFeel( )
 	{
 		try
 		{
-			System.setProperty("apple.laf.useScreenMenuBar", "true");
-			System.setProperty("com.apple.mrj.application.apple.menu.about.name", GlobalSettings.applicationName);
-			UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+			System.setProperty( "apple.laf.useScreenMenuBar", "true" );
+			System.setProperty( "com.apple.mrj.application.apple.menu.about.name", GlobalSettings.applicationName );
+			UIManager.setLookAndFeel( UIManager.getSystemLookAndFeelClassName( ) );
 		}
-		catch (Exception ex) { DebugUtilities.logException("An exception occurred while setting the system look and feel.", ex); }
-		
-		LoadPreferences();
-		
-		new MainWindow();
-	}
-	
-	private static void LoadPreferences()
-	{
-		File userSettingsFile = new File("UserSettings.json");
-		if(userSettingsFile.exists())
+		catch ( Exception ex )
 		{
-			try
-			{
-				Scanner in = new Scanner(userSettingsFile);
-				
-				StringBuilder sb = new StringBuilder();
-				while(in.hasNextLine())
-					sb.append(in.nextLine());
-				
-				UserSettings.instance.fromString(sb.toString());
-				
-				in.close();
-			}
-			catch (IOException ex)
-			{
-				DebugUtilities.logException("An exception occurred while loading user settings.", ex);
-			}
+			DebugUtilities.logException( "An exception occurred while setting the system look and feel.", ex );
 		}
 	}
 }
-
-
-
-
-
-
-
-
-
-
