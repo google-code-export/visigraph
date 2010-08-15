@@ -9,15 +9,27 @@ import edu.belmont.mth.visigraph.utilities.DebugUtilities;
 import bsh.Interpreter;
 
 /**
- * @author Cameron Behar
+ * The {@code FunctionService} class provides universal access to a Singleton list of functions compiled using BeanShell from the functions folder of
+ * the application's local directory.
  * 
+ * @author Cameron Behar
  */
 public class FunctionService
 {
+	/**
+	 * The Singleton instance of {@code FunctionService}
+	 */
 	public final static FunctionService instance = new FunctionService( );
 	
+	/**
+	 * The {@code ObservableList} of available functions, compiled at runtime
+	 */
 	public final ObservableList<FunctionBase> functions;
 	
+	/**
+	 * Constructs the Singleton instance of {@code FunctionService}, populating the list of functions with scripts compiled using BeanShell from the
+	 * functions folder of the application's local directory
+	 */
 	private FunctionService ( )
 	{
 		functions = new ObservableList<FunctionBase>( );

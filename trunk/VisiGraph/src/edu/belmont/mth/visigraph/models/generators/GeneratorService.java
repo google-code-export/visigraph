@@ -9,15 +9,26 @@ import edu.belmont.mth.visigraph.utilities.DebugUtilities;
 import bsh.Interpreter;
 
 /**
- * @author Cameron Behar
+ * The {@code GeneratorService} class provides universal access to a Singleton list of graph generators compiled using BeanShell from the generators
+ * folder of the application's local directory.
  * 
+ * @author Cameron Behar
  */
 public class GeneratorService
 {
-	public final static GeneratorService		instance	= new GeneratorService( );
+	/**
+	 * The Singleton instance of {@code GeneratorService}
+	 */
+	public final static GeneratorService instance = new GeneratorService( );
 	
-	public final ObservableList<GeneratorBase>	generators;
+	/**
+	 * The {@code ObservableList} of available generators, compiled at runtime
+	 */
+	public final ObservableList<GeneratorBase> generators;
 	
+	/**
+	 * Constructs the Singleton instance of {@code GeneratorService}, populating the list of graph generators with scripts compiled using BeanShell from the generators folder of the application's local directory
+	 */
 	private GeneratorService ( )
 	{
 		generators = new ObservableList<GeneratorBase>( );
