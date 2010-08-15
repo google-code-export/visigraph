@@ -149,7 +149,7 @@ public class Vertex extends ObservableModel
 	 */
 	public Vertex ( Map<String, Object> members )
 	{
-		this.id         = UUID.randomUUID( );
+		this.id         = UUID.fromString      ( (String)  members.get( "id"         ) );
 		this.x          = new Property<Double> ( (Double)  members.get( "x"          ) );
 		this.y          = new Property<Double> ( (Double)  members.get( "y"          ) );
 		this.label      = new Property<String> ( (String)  members.get( "label"      ) );
