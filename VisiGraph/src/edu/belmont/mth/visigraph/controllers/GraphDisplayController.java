@@ -419,6 +419,8 @@ public class GraphDisplayController extends JPanel
 		cutToolClickedObject = false;
 		paintToolClickedObject = false;
 		fromVertex = null;
+		
+		isViewportInvalidated = true;
 	}
 	
 	public void paintSelectionRectangle(Graphics2D g2D)
