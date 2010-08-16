@@ -482,7 +482,7 @@ public class GraphDisplayController extends JPanel
 			{
 				case POINTER_TOOL: if (!pointerToolClickedObject) paintSelectionRectangle(g2D); break;
 				case CUT_TOOL: if (!cutToolClickedObject) paintSelectionRectangle(g2D); break;
-				case EDGE_TOOL:
+				case GRAPH_TOOL:
 					{
 						// For the edge tool we might need to paint the temporary drag-edge
 						if (fromVertex != null)
@@ -626,8 +626,7 @@ public class GraphDisplayController extends JPanel
 		switch (this.tool)
 		{
 			case POINTER_TOOL: cursor = CursorBundle.get("pointer_tool_cursor"); break;
-			case VERTEX_TOOL:  cursor = CursorBundle.get("vertex_tool_cursor");  break;
-			case EDGE_TOOL:    cursor = CursorBundle.get("edge_tool_cursor");    break;
+			case GRAPH_TOOL:   cursor = CursorBundle.get("graph_tool_cursor");   break;
 			case CUT_TOOL:	   cursor = CursorBundle.get("cut_tool_cursor");	 break;
 			case CAPTION_TOOL: cursor = CursorBundle.get("caption_tool_cursor"); break;
 			case PAINT_TOOL:   cursor = CursorBundle.get("paint_tool_cursor");   break;
@@ -635,6 +634,9 @@ public class GraphDisplayController extends JPanel
 		}
 		
 		setCursor(cursor);
+		
+		fromVertex = null;
+		graph.selectAll(false);
 	}
 	
 	public void undo()
@@ -798,63 +800,57 @@ public class GraphDisplayController extends JPanel
 					
 					break;
 				}
-			case VERTEX_TOOL:
+			case GRAPH_TOOL:
 				{
-					// Simply add a new vertex at the location left-clicked
-					if (event.getButton() == MouseEvent.BUTTON1)
-						graph.vertexes.add(new Vertex(currentMousePoint.x, currentMousePoint.y));
-					
-					break;
-				}
-			case EDGE_TOOL:
-				{
-					if (event.getButton() == MouseEvent.BUTTON1)
+					if ( event.getButton( ) == MouseEvent.BUTTON1 )
 					{
 						// The procedure for adding an edge using the edge tool is to click a vertex the edge will come from and subsequently a vertex
 						// the edge will go to
 						boolean fromVertexClicked = false;
-						boolean toVertexClicked   = false;
+						boolean toVertexClicked = false;
 						
-						for (Vertex vertex : graph.vertexes)
-							if (VertexDisplayView.wasClicked(vertex, currentMousePoint, transform.getScaleX()))
-								if (fromVertex == null)
+						for ( Vertex vertex : graph.vertexes )
+							if ( VertexDisplayView.wasClicked( vertex, currentMousePoint, transform.getScaleX( ) ) )
+								if ( fromVertex == null )
 								{
 									// If the user has not yet defined a from Vertex, make this one so
-									vertex.isSelected.set(true);
+									vertex.isSelected.set( true );
 									fromVertex = vertex;
 									fromVertexClicked = true;
 									break;
 								}
-								else // If the user has already defined a from Vertex, try to add an edge between it and this one
+								else
 								{
+									// If the user has already defined a from Vertex, try to add an edge between it and this one
+									
 									// Only allow loops if the graph specifies to
-									if(graph.areLoopsAllowed || vertex != fromVertex)
+									if ( graph.areLoopsAllowed || vertex != fromVertex )
 									{
 										// Only allow multiple edges if the graph specifies to
-										if(graph.areMultipleEdgesAllowed || graph.getEdges(fromVertex, vertex).size() == 0)
+										if ( graph.areMultipleEdgesAllowed || graph.getEdges( fromVertex, vertex ).size( ) == 0 )
 										{
 											// Only allow a cycle if the graph specifies to
-											if(graph.areCyclesAllowed || !graph.areConnected(fromVertex, vertex))
+											if ( graph.areCyclesAllowed || !graph.areConnected( fromVertex, vertex ) )
 											{
-												graph.edges.add(new Edge(graph.areDirectedEdgesAllowed, fromVertex, vertex));
-												fromVertex.isSelected.set(false);
-												if(!userSettings.deselectVertexWithNewEdge.get())
-												{
-													vertex.isSelected.set(true);
-													fromVertex = vertex;
-												}
+												graph.edges.add( new Edge( graph.areDirectedEdgesAllowed, fromVertex, vertex ) );
+												fromVertex.isSelected.set( false );
+												fromVertex = !userSettings.deselectVertexWithNewEdge.get( ) ? vertex : null;
+												if(fromVertex != null) fromVertex.isSelected.set(true);
 												toVertexClicked = true;
 											}
 										}
 									}
+
+									if ( !toVertexClicked )
+									{
+										fromVertex.isSelected.set( false );
+										fromVertex = null;
+										fromVertexClicked = true;
+									}
 								}
 						
-						// If the user didn't click a from vertex (clicked a to Vertex or nothing), reset and deselect all
-						if (!fromVertexClicked && (!toVertexClicked || userSettings.deselectVertexWithNewEdge.get()) && event.getButton() == MouseEvent.BUTTON1)
-						{
-							fromVertex = null;
-							graph.selectAll(false);
-						}
+						if ( !fromVertexClicked && !toVertexClicked )
+							graph.vertexes.add( new Vertex( currentMousePoint.x, currentMousePoint.y ) );
 					}
 					
 					break;
@@ -1039,7 +1035,7 @@ public class GraphDisplayController extends JPanel
 					
 					break;
 				}
-			case EDGE_TOOL:
+			case GRAPH_TOOL:
 				{
 					if (fromVertex != null)
 					{
@@ -1054,10 +1050,9 @@ public class GraphDisplayController extends JPanel
 									if(graph.areCyclesAllowed || !graph.areConnected(fromVertex, vertex))
 									{
 										graph.edges.add(new Edge(graph.areDirectedEdgesAllowed, fromVertex, vertex));
-										fromVertex.isSelected.set(false);
-										fromVertex = userSettings.deselectVertexWithNewEdge.get() ? null : vertex;
-										if(fromVertex != null)
-											fromVertex.isSelected.set(true);
+										fromVertex.isSelected.set( false );
+										fromVertex = !userSettings.deselectVertexWithNewEdge.get( ) ? vertex : null;
+										if(fromVertex != null) fromVertex.isSelected.set(true);
 									}
 								}
 								break;
@@ -1168,14 +1163,13 @@ public class GraphDisplayController extends JPanel
 
 	public enum Tool
 	{
-		POINTER_TOOL, VERTEX_TOOL, EDGE_TOOL, CAPTION_TOOL, CUT_TOOL, PAINT_TOOL
+		POINTER_TOOL, GRAPH_TOOL, CAPTION_TOOL, CUT_TOOL, PAINT_TOOL
 	}
 	
 	private class ToolToolBar extends JToolBar
 	{
 		private JButton pointerToolButton;
-		private JButton vertexToolButton;
-		private JButton edgeToolButton;
+		private JButton graphToolButton;
 		private JButton captionToolButton;
 		private JButton cutToolButton;
 		private JButton paintToolButton;
@@ -1195,7 +1189,6 @@ public class GraphDisplayController extends JPanel
 						public void actionPerformed(ActionEvent e)
 						{
 							setTool(Tool.POINTER_TOOL);
-							graph.selectAll(false);
 						}
 					});
 					setToolTipText(StringBundle.get("pointer_tool_tooltip"));
@@ -1204,37 +1197,20 @@ public class GraphDisplayController extends JPanel
 			};
 			this.add(pointerToolButton);
 			
-			vertexToolButton = new JButton(ImageIconBundle.get("vertex_tool_icon"))
+			graphToolButton = new JButton(ImageIconBundle.get("graph_tool_icon"))
 			{
 				{			
 					addActionListener(new ActionListener()
 					{
 						public void actionPerformed(ActionEvent e)
 						{
-							setTool(Tool.VERTEX_TOOL);
-							graph.selectAll(false);
+							setTool(Tool.GRAPH_TOOL);
 						}
 					});
-					setToolTipText(StringBundle.get("vertex_tool_tooltip"));
+					setToolTipText(StringBundle.get("graph_tool_tooltip"));
 				}
 			};
-			this.add(vertexToolButton);
-			
-			edgeToolButton = new JButton(ImageIconBundle.get("edge_tool_icon"))
-			{
-				{
-					addActionListener(new ActionListener()
-					{
-						public void actionPerformed(ActionEvent e)
-						{
-							setTool(Tool.EDGE_TOOL);
-							graph.selectAll(false);
-						}
-					});
-					setToolTipText(StringBundle.get("edge_tool_tooltip"));
-				}
-			};
-			this.add(edgeToolButton);
+			this.add(graphToolButton);
 			
 			captionToolButton = new JButton(ImageIconBundle.get("caption_tool_icon"))
 			{
@@ -1244,7 +1220,6 @@ public class GraphDisplayController extends JPanel
 						public void actionPerformed(ActionEvent e)
 						{
 							setTool(Tool.CAPTION_TOOL);
-							graph.selectAll(false);
 						}
 					});
 					setToolTipText(StringBundle.get("caption_tool_tooltip"));
@@ -1260,7 +1235,6 @@ public class GraphDisplayController extends JPanel
 						public void actionPerformed(ActionEvent e)
 						{
 							setTool(Tool.CUT_TOOL);
-							graph.selectAll(false);
 						}
 					});
 					setToolTipText(StringBundle.get("cut_tool_tooltip"));
@@ -1282,7 +1256,6 @@ public class GraphDisplayController extends JPanel
 						@Override
 						public void mousePressed(MouseEvent event)
 						{
-							graph.selectAll(false);
 							setTool(Tool.PAINT_TOOL);
 							isMouseDownOnPaintToolButton = true;
 							paintMenuTimer.start();
@@ -1328,8 +1301,7 @@ public class GraphDisplayController extends JPanel
 			switch (tool)
 			{
 				case POINTER_TOOL: pointerToolButton.setSelected(true); break;
-				case VERTEX_TOOL:  vertexToolButton.setSelected(true);	break;
-				case EDGE_TOOL:	   edgeToolButton.setSelected(true);	break;
+				case GRAPH_TOOL:   graphToolButton.setSelected(true);	break;
 				case CUT_TOOL:	   cutToolButton.setSelected(true);		break;
 				case CAPTION_TOOL: captionToolButton.setSelected(true);	break;
 				case PAINT_TOOL:   paintToolButton.setSelected(true);	break;
