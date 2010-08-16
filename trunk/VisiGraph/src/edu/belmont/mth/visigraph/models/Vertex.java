@@ -25,7 +25,7 @@ public class Vertex extends ObservableModel
 	/**
 	 * The universally unique identifier of this {@code Vertex}, used in the serialization and deserialization of edges
 	 */
-	public final UUID id;
+	public final Property<UUID> id;
 	
 	/**
 	 * The location of this {@code Vertex} along the horizontal (x) axis
@@ -132,7 +132,7 @@ public class Vertex extends ObservableModel
 	 */
 	public Vertex ( double x, double y, String label, double radius, int color, boolean isSelected )
 	{
-		this.id         = UUID.randomUUID( );
+		this.id         = new Property<UUID>   ( UUID.randomUUID( ) );
 		this.x          = new Property<Double> ( x          );
 		this.y          = new Property<Double> ( y          );
 		this.label      = new Property<String> ( label      );
@@ -149,7 +149,7 @@ public class Vertex extends ObservableModel
 	 */
 	public Vertex ( Map<String, Object> members )
 	{
-		this.id         = UUID.fromString      ( (String)  members.get( "id"         ) );
+		this.id         = new Property<UUID>   ( UUID.fromString( (String) members.get( "id" ) ) );
 		this.x          = new Property<Double> ( (Double)  members.get( "x"          ) );
 		this.y          = new Property<Double> ( (Double)  members.get( "y"          ) );
 		this.label      = new Property<String> ( (String)  members.get( "label"      ) );

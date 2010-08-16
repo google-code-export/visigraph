@@ -544,7 +544,8 @@ public class Graph extends ObservableModel
 		for ( Vertex vertex : graph.vertexes )
 		{
 			Vertex newVertex = new Vertex( vertex.toString( ) );
-			newVertexes.put( vertex.id.toString( ), newVertex );
+			newVertexes.put( vertex.id.get().toString( ), newVertex );
+			newVertex.id.set( UUID.randomUUID( ) );
 			this.vertexes.add( newVertex );
 		}
 		
