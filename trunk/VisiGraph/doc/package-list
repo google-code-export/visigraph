@@ -1,0 +1,14 @@
+edu.belmont.mth.visigraph
+edu.belmont.mth.visigraph.controllers
+edu.belmont.mth.visigraph.gui.controls
+edu.belmont.mth.visigraph.gui.dialogs
+edu.belmont.mth.visigraph.gui.layouts
+edu.belmont.mth.visigraph.gui.windows
+edu.belmont.mth.visigraph.models
+edu.belmont.mth.visigraph.models.functions
+edu.belmont.mth.visigraph.models.generators
+edu.belmont.mth.visigraph.resources
+edu.belmont.mth.visigraph.settings
+edu.belmont.mth.visigraph.utilities
+edu.belmont.mth.visigraph.views.display
+edu.belmont.mth.visigraph.views.svg
