@@ -465,6 +465,19 @@ public class Edge extends ObservableModel
 	}
 	
 	/**
+	 * Repositions this {@code Edge}'s handle so that the edge is a straight line segment between its two vertices, provided they are not the same
+	 * (i.e. the edge is a loop).
+	 */
+	public void straighten( )
+	{
+		if ( from != to )
+		{
+			isLinear = true;
+			fixHandle( );
+		}
+	}
+	
+	/**
 	 * Temporarily suspends the notification all of property changes to subscribed {@link Observer}s. Most often this method is called when performing
 	 * a large number of batch operations on an edge, so that subscribers are not overloaded with a multitude of notifications.
 	 * 
