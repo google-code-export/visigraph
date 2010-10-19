@@ -458,7 +458,7 @@ public class GraphDisplayController extends JPanel
 		{
 			String result = function.evaluate(g2D, graph);
 			if(result != null && result.trim().length() > 0)
-				JOptionPane.showInternalMessageDialog(viewport, function +": " + result, GlobalSettings.applicationName, JOptionPane.OK_OPTION + JOptionPane.INFORMATION_MESSAGE);
+				JOptionPane.showInternalMessageDialog(viewport, function + ": " + result, GlobalSettings.applicationName, JOptionPane.OK_OPTION + JOptionPane.INFORMATION_MESSAGE);
 		}
 		
 		// Clear everything
