@@ -38,7 +38,7 @@ public class FunctionService
 		
 		File folder = new File( "functions" );
 		if ( folder.exists( ) )
-			for ( String filename : folder.list( new FilenameFilter( ) { public boolean accept( File dir, String name ) { return name.endsWith( ".function" ); } } ) )
+			for ( String filename : folder.list( new FilenameFilter( ) { public boolean accept( File dir, String name ) { return name.endsWith( ".function" ) || name.endsWith( ".java" ); } } ) )
 				try { functions.add( (FunctionBase) new Interpreter( ).source( "functions/" + filename ) );	}
 				catch ( Exception ex ) { DebugUtilities.logException( String.format( "An exception occurred while compiling %s.", filename ), ex ); }
 	}
