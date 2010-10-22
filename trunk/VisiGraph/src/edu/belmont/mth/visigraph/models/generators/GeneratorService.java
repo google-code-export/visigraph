@@ -38,13 +38,7 @@ public class GeneratorService
 		File folder = new File( "generators" );
 		if ( folder.exists( ) )
 		{
-			for ( String filename : folder.list( new FilenameFilter( )
-			{
-				public boolean accept( File dir, String name )
-				{
-					return name.endsWith( ".generator" );
-				}
-			} ) )
+			for ( String filename : folder.list( new FilenameFilter( ) { public boolean accept( File dir, String name ) { return name.endsWith( ".generator" ) || name.endsWith( ".java" ); } } ) )
 			{
 				try
 				{
