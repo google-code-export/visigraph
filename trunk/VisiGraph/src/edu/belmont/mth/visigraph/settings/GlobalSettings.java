@@ -18,9 +18,9 @@ public class GlobalSettings
 	public static final String					 applicationDescription						= "A flexible cross-platform application for modeling graph theory problems and solutions.";
 	public static final String					 applicationJarDirectoryUrl					= "http://visigraph.googlecode.com/svn/trunk/VisiGraph/jar/";
 	public static final String					 applicationGeneratorDirectoryUrl			= "http://visigraph.googlecode.com/svn/trunk/VisiGraph/generators/";
-	public static final String					 applicationGeneratorFileUrl				= applicationGeneratorDirectoryUrl + "%s.generator";
+	public static final String					 applicationGeneratorFileUrl				= applicationGeneratorDirectoryUrl + "%s.java";
 	public static final String					 applicationFunctionDirectoryUrl			= "http://visigraph.googlecode.com/svn/trunk/VisiGraph/functions/";
-	public static final String					 applicationFunctionFileUrl					= applicationFunctionDirectoryUrl + "%s.function";
+	public static final String					 applicationFunctionFileUrl					= applicationFunctionDirectoryUrl + "%s.java";
 	
 	public static final String					 defaultGraphName							= "Untitled";
 	

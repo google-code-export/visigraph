@@ -4,8 +4,9 @@
 package edu.belmont.mth.visigraph.models.functions;
 
 import java.io.*;
+
 import edu.belmont.mth.visigraph.models.*;
-import edu.belmont.mth.visigraph.utilities.DebugUtilities;
+import edu.belmont.mth.visigraph.utilities.*;
 import bsh.Interpreter;
 
 /**
@@ -34,11 +35,23 @@ public class FunctionService
 	{
 		functions = new ObservableList<FunctionBase>( );
 		
-		functions.add( new CountCrossings( ) );
+		// Load standard library functions
+		try
+		{
+			for ( Class<FunctionBase> function : ReflectionUtilities.getClasses( "edu.belmont.mth.visigraph.models.functions" ) )
+				try
+				{
+					if ( !function.isInterface( ) && FunctionBase.class.isAssignableFrom( function ) )
+						functions.add( function.newInstance( ) );
+				}
+				catch ( Exception ex ) { DebugUtilities.logException( String.format( "An exception occurred while instantiating/casting %s.", function.getName( ) ), ex ); }
+		}
+		catch ( Exception ex ) { DebugUtilities.logException( "An exception occurred while loading standard library functions.", ex ); }
 		
+		// Load external scripted functions
 		File folder = new File( "functions" );
 		if ( folder.exists( ) )
-			for ( String filename : folder.list( new FilenameFilter( ) { public boolean accept( File dir, String name ) { return name.endsWith( ".function" ) || name.endsWith( ".java" ); } } ) )
+			for ( String filename : folder.list( new FilenameFilter( ) { public boolean accept( File dir, String name ) { return name.endsWith( ".java" ); } } ) )
 				try { functions.add( (FunctionBase) new Interpreter( ).source( "functions/" + filename ) );	}
 				catch ( Exception ex ) { DebugUtilities.logException( String.format( "An exception occurred while compiling %s.", filename ), ex ); }
 	}

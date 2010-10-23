@@ -5,7 +5,7 @@ package edu.belmont.mth.visigraph.models.generators;
 
 import java.io.*;
 import edu.belmont.mth.visigraph.models.*;
-import edu.belmont.mth.visigraph.utilities.DebugUtilities;
+import edu.belmont.mth.visigraph.utilities.*;
 import bsh.Interpreter;
 
 /**
@@ -33,25 +33,30 @@ public class GeneratorService
 	{
 		generators = new ObservableList<GeneratorBase>( );
 		
-		generators.add( new EmptyGraph( ) );
+		// Load standard library generators
+		try
+		{
+			for ( Class<GeneratorBase> generator : ReflectionUtilities.getClasses( "edu.belmont.mth.visigraph.models.generators" ) )
+				try
+				{
+					if ( !generator.isInterface( ) && GeneratorBase.class.isAssignableFrom( generator ) )
+						generators.add( generator.newInstance( ) );
+				}
+				catch ( Exception ex ) { DebugUtilities.logException( String.format( "An exception occurred while instantiating/casting %s.", generator.getName( ) ), ex ); }
+		}
+		catch ( Exception ex ) { DebugUtilities.logException( "An exception occurred while loading standard library generators.", ex ); }
 		
+		// Load external scripted generators
 		File folder = new File( "generators" );
 		if ( folder.exists( ) )
-		{
-			for ( String filename : folder.list( new FilenameFilter( ) { public boolean accept( File dir, String name ) { return name.endsWith( ".generator" ) || name.endsWith( ".java" ); } } ) )
-			{
+			for ( String filename : folder.list( new FilenameFilter( ) { public boolean accept( File dir, String name ) { return name.endsWith( ".java" ); } } ) )
 				try
 				{
 					GeneratorBase generator = (GeneratorBase) new Interpreter( ).source( "generators/" + filename );
 					ValidateGraphGenerator( generator );
 					generators.add( generator );
 				}
-				catch ( Throwable ex )
-				{
-					DebugUtilities.logException( String.format( "An exception occurred while compiling %s.", filename ), ex );
-				}
-			}
-		}
+				catch ( Throwable ex ) { DebugUtilities.logException( String.format( "An exception occurred while compiling %s.", filename ), ex ); }
 	}
 	
 	/**
