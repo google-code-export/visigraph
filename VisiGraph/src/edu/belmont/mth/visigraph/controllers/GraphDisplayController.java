@@ -450,15 +450,28 @@ public class GraphDisplayController extends JPanel
 			g2D.setRenderingHint(RenderingHints.KEY_FRACTIONALMETRICS, RenderingHints.VALUE_FRACTIONALMETRICS_ON);
 		
 		// Apply any one-time functions
-		Set<FunctionBase> run = new TreeSet<FunctionBase>();
-		run.addAll(functionsToBeRun);
-		functionsToBeRun.clear();
-		
-		for (FunctionBase function : run)
+		if(!functionsToBeRun.isEmpty( ))
 		{
-			String result = function.evaluate(g2D, graph);
-			if(result != null && result.trim().length() > 0)
-				JOptionPane.showInternalMessageDialog(viewport, function + ": " + result, GlobalSettings.applicationName, JOptionPane.OK_OPTION + JOptionPane.INFORMATION_MESSAGE);
+			// For some reason we have to operate on a copy of the set so the message box doesn't lose focus...
+			Set<FunctionBase> functionsToBeRunCopy = new TreeSet<FunctionBase>();
+			functionsToBeRunCopy.addAll( functionsToBeRun);
+			functionsToBeRun.clear();
+			
+			// See Issue #90 (Run-once functions lock up on XP and macs)
+			String os = System.getProperty("os.name");
+			boolean showExternally = os.startsWith("Mac") || os.equals("Windows NT") || os.equals("Windows XP");
+			
+			for (FunctionBase function : functionsToBeRunCopy)
+			{
+				String result = function.evaluate(g2D, graph);
+				if(result != null && !result.isEmpty( ))
+				{
+					if(showExternally)
+						JOptionPane.showMessageDialog(viewport, function + ": " + result, GlobalSettings.applicationName, JOptionPane.OK_OPTION + JOptionPane.INFORMATION_MESSAGE);
+					else
+						JOptionPane.showInternalMessageDialog(viewport, function + ": " + result, GlobalSettings.applicationName, JOptionPane.OK_OPTION + JOptionPane.INFORMATION_MESSAGE);
+				}
+			}
 		}
 		
 		// Clear everything
