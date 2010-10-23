@@ -128,7 +128,7 @@ public class DownloadsDialog extends JDialog implements ActionListener
 			
 			while ((line = in.readLine()) != null) 
 			{
-				Pattern pattern = Pattern.compile("^.*<li><a\\shref=\"([^\\r\\n]+?)\\.generator\">([^\\r\\n]+?)\\.generator</a></li>.*$");
+				Pattern pattern = Pattern.compile("^.*<li><a\\shref=\"([^\\r\\n]+?)\\.java\">([^\\r\\n]+?)\\.java</a></li>.*$");
 				Matcher matcher = pattern.matcher(line); matcher.find();
 				
 				if(matcher.matches() && matcher.group(1).equals(matcher.group(2)))
@@ -153,7 +153,7 @@ public class DownloadsDialog extends JDialog implements ActionListener
 			
 			while ((line = in.readLine()) != null) 
 			{
-				Pattern pattern = Pattern.compile("^.*<li><a\\shref=\"([^\\r\\n]+?)\\.function\">([^\\r\\n]+?)\\.function</a></li>.*$");
+				Pattern pattern = Pattern.compile("^.*<li><a\\shref=\"([^\\r\\n]+?)\\.java\">([^\\r\\n]+?)\\.java</a></li>.*$");
 				Matcher matcher = pattern.matcher(line); matcher.find();
 				
 				if(matcher.matches() && matcher.group(1).equals(matcher.group(2)))
@@ -178,7 +178,7 @@ public class DownloadsDialog extends JDialog implements ActionListener
 			JCheckBox checkBox = (JCheckBox)component;
 			
 			if(checkBox.isSelected())
-				WebUtilities.downloadFile(String.format(GlobalSettings.applicationGeneratorFileUrl, checkBox.getText()), String.format("generators/%s.generator", checkBox.getText()));
+				WebUtilities.downloadFile(String.format(GlobalSettings.applicationGeneratorFileUrl, checkBox.getText()), String.format("generators/%s.java", checkBox.getText()));
 		}
 	}
 	
@@ -194,7 +194,7 @@ public class DownloadsDialog extends JDialog implements ActionListener
 			JCheckBox checkBox = (JCheckBox)component;
 			
 			if(checkBox.isSelected())
-				WebUtilities.downloadFile(String.format(GlobalSettings.applicationFunctionFileUrl, checkBox.getText()), String.format("functions/%s.function", checkBox.getText()));
+				WebUtilities.downloadFile(String.format(GlobalSettings.applicationFunctionFileUrl, checkBox.getText()), String.format("functions/%s.java", checkBox.getText()));
 		}
 	}
 	
