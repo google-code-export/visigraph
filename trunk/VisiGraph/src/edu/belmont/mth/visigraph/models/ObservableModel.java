@@ -120,8 +120,6 @@ public class ObservableModel extends Observable
 			if ( value instanceof Number )
 			{
 				Number num = (Number) value;
-				if ( num.doubleValue( ) < -Integer.MIN_VALUE || num.doubleValue( ) > Integer.MAX_VALUE )
-					return;
 				if ( Double.isInfinite( num.doubleValue( ) ) || Double.isNaN( num.doubleValue( ) ) )
 					return;
 			}

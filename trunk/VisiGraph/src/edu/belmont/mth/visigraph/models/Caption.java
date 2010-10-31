@@ -4,6 +4,7 @@
 package edu.belmont.mth.visigraph.models;
 
 import java.util.*;
+
 import edu.belmont.mth.visigraph.settings.*;
 import edu.belmont.mth.visigraph.utilities.*;
 
@@ -47,6 +48,11 @@ public class Caption extends ObservableModel
 	 * A {@code Boolean} indicating whether or not this {@code Caption} is selected
 	 */
 	public final Property<Boolean> isSelected;
+	
+	/**
+	 * A catch-all {@code String} that can be used to store this {@code Caption}'s metadata
+	 */
+	public final Property<String> tag;
 	
 	/**
 	 * Constructs an empty {@code Caption} at the specified location
@@ -100,6 +106,7 @@ public class Caption extends ObservableModel
 		this.text       = new Property<String> ( text       );
 		this.size       = new Property<Double> ( size       );
 		this.isSelected = new Property<Boolean>( isSelected );
+		this.tag        = new Property<String> ( null );
 	}
 	
 	/**
@@ -114,6 +121,7 @@ public class Caption extends ObservableModel
 		this.text       = new Property<String> ( (String)  members.get( "text"       ) );
 		this.size       = new Property<Double> ( (Double)  members.get( "size"       ) );
 		this.isSelected = new Property<Boolean>( (Boolean) members.get( "isSelected" ) );
+		this.tag        = new Property<String> ( members.containsKey( "tag" ) ? (String) members.get( "tag" ) : null );
 	}
 	
 	/**
