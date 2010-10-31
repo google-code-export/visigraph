@@ -63,6 +63,11 @@ public class Vertex extends ObservableModel
 	public final Property<Double> weight;
 	
 	/**
+	 * A catch-all {@code String} that can be used to store this {@code Vertex}'s metadata
+	 */
+	public final Property<String> tag;
+	
+	/**
 	 * Constructs a {@code Vertex} at (0.0, 0.0) with the user's default properties
 	 */
 	public Vertex ( )
@@ -140,6 +145,7 @@ public class Vertex extends ObservableModel
 		this.color      = new Property<Integer>( color      );
 		this.isSelected = new Property<Boolean>( isSelected );
 		this.weight     = new Property<Double> ( UserSettings.instance.defaultVertexWeight.get( ) );
+		this.tag        = new Property<String> ( null );
 	}
 	
 	/**
@@ -157,6 +163,7 @@ public class Vertex extends ObservableModel
 		this.color      = new Property<Integer>( (Integer) members.get( "color"      ) );
 		this.isSelected = new Property<Boolean>( (Boolean) members.get( "isSelected" ) );
 		this.weight     = new Property<Double> ( (Double)  members.get( "weight"     ) );
+		this.tag        = new Property<String> ( members.containsKey( "tag" ) ? (String) members.get( "tag" ) : null );
 	}
 	
 	/**

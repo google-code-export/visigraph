@@ -6,6 +6,7 @@ package edu.belmont.mth.visigraph.models;
 import java.awt.geom.*;
 import java.util.*;
 import java.util.Map.*;
+
 import edu.belmont.mth.visigraph.settings.*;
 import edu.belmont.mth.visigraph.utilities.*;
 
@@ -50,6 +51,11 @@ public class Graph extends ObservableModel
 	 * An unordered list of this graph's captions, used only for presentation purposes
 	 */
 	public final ObservableList<Caption> captions;
+	
+	/**
+	 * A catch-all {@code String} that can be used to store this {@code Graph}'s metadata
+	 */
+	public final Property<String> tag;
 	
 	/**
 	 * A {@code boolean} indicating whether or not loops are allowed in this graph. A loop is an edge from a vertex to itself, and are only allowed in
@@ -117,6 +123,7 @@ public class Graph extends ObservableModel
 		Map<String, Object> members = JsonUtilities.parseObject( json );
 		
 		this.name = new Property<String>( (String) members.get( "name" ) );
+		this.tag  = new Property<String>( members.containsKey( "tag" ) ? (String) members.get( "tag" ) : null );
 		
 		this.areLoopsAllowed         = (Boolean) members.get( "areLoopsAllowed" );
 		this.areDirectedEdgesAllowed = (Boolean) members.get( "areDirectedEdgesAllowed" );
@@ -133,7 +140,7 @@ public class Graph extends ObservableModel
 					fixEdges( );
 				
 				if ( !notificationsSuspended )
-				{
+				{	
 					setChanged( );
 					notifyObservers( arg );
 				}
@@ -210,6 +217,7 @@ public class Graph extends ObservableModel
 	public Graph ( String name, boolean areLoopsAllowed, boolean areDirectedEdgesAllowed, boolean areMultipleEdgesAllowed, boolean areCyclesAllowed )
 	{
 		this.name = new Property<String>( name );
+		this.tag  = new Property<String>( null );
 		
 		this.areLoopsAllowed = areLoopsAllowed;
 		this.areDirectedEdgesAllowed = areDirectedEdgesAllowed;

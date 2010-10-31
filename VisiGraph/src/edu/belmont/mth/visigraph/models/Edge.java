@@ -5,6 +5,7 @@ package edu.belmont.mth.visigraph.models;
 
 import java.awt.geom.*;
 import java.util.*;
+
 import edu.belmont.mth.visigraph.settings.*;
 import edu.belmont.mth.visigraph.utilities.*;
 import static edu.belmont.mth.visigraph.utilities.GeometryUtilities.*;
@@ -72,6 +73,11 @@ public class Edge extends ObservableModel
 	 * The location of this {@code Edge}'s handle along the inverted vertical (-y) axis
 	 */
 	public final Property<Double> handleY;
+	
+	/**
+	 * A catch-all {@code String} that can be used to store this {@code Edge}'s metadata
+	 */
+	public final Property<String> tag;
 	
 	/**
 	 * An {@code Arc2D} representing this {@code Edge}'s arc
@@ -150,6 +156,7 @@ public class Edge extends ObservableModel
 			}
 		}
 	};
+	
 	
 	/**
 	 * Constructs a directed or undirected {@code Edge} between the two specified vertices
@@ -259,6 +266,7 @@ public class Edge extends ObservableModel
 				}
 			}
 		};
+		this.tag     = new Property<String>( null );
 		
 		this.arc    = new Arc2D.Double( );
 		this.line   = new Line2D.Double( );
@@ -320,6 +328,7 @@ public class Edge extends ObservableModel
 				}
 			}
 		};
+		this.tag     = new Property<String>( members.containsKey( "tag" ) ? (String) members.get( "tag" ) : null );
 		
 		this.arc    = new Arc2D.Double( );
 		this.line   = new Line2D.Double( );
