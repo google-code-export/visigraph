@@ -136,11 +136,11 @@ public class Graph extends ObservableModel
 			@Override
 			public void update( Observable o, Object arg )
 			{
-				if ( edges != null )
-					fixEdges( );
-				
 				if ( !notificationsSuspended )
-				{	
+				{
+					if ( edges != null )
+						fixEdges( );
+					
 					setChanged( );
 					notifyObservers( arg );
 				}
@@ -229,12 +229,12 @@ public class Graph extends ObservableModel
 		{
 			@Override
 			public void update( Observable o, Object arg )
-			{
-				if ( edges != null )
-					fixEdges( );
-				
+			{	
 				if ( !notificationsSuspended )
 				{
+					if ( edges != null )
+						fixEdges( );
+					
 					setChanged( );
 					notifyObservers( arg );
 				}

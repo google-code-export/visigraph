@@ -4,6 +4,7 @@
 package edu.belmont.mth.visigraph.models.functions;
 
 import java.io.*;
+import java.util.*;
 
 import edu.belmont.mth.visigraph.models.*;
 import edu.belmont.mth.visigraph.utilities.*;
@@ -54,5 +55,15 @@ public class FunctionService
 			for ( String filename : folder.list( new FilenameFilter( ) { public boolean accept( File dir, String name ) { return name.endsWith( ".java" ); } } ) )
 				try { functions.add( (FunctionBase) new Interpreter( ).source( "functions/" + filename ) );	}
 				catch ( Exception ex ) { DebugUtilities.logException( String.format( "An exception occurred while compiling %s.", filename ), ex ); }
+		
+		// Sort functions lexicographically by name
+		Collections.sort( functions, new Comparator<FunctionBase>( )
+		{
+			@Override
+			public int compare( FunctionBase arg0, FunctionBase arg1 )
+			{
+				return arg0.toString( ).compareTo( arg1.toString( ) );
+			}
+		} );
 	}
 }
