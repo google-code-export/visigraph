@@ -19,7 +19,7 @@ public class VertexDisplayView
 	{
 		// Draw vertex center
 		Ellipse2D.Double center = new Ellipse2D.Double( v.x.get( ) - v.radius.get( ), v.y.get( ) - v.radius.get( ), v.radius.get( ) * 2, v.radius.get( ) * 2 );
-		g2D.setColor( v.isSelected.get( ) ? ColorUtilities.blend( UserSettings.instance.getElementColor( v.color.get( ) ), UserSettings.instance.selectedVertexFill.get( ) ) : UserSettings.instance.getElementColor( v.color.get( ) ) );
+		g2D.setColor( v.isSelected.get( ) ? ColorUtilities.blend( UserSettings.instance.getVertexColor( v.color.get( ) ), UserSettings.instance.selectedVertexFill.get( ) ) : UserSettings.instance.getVertexColor( v.color.get( ) ) );
 		g2D.fill( center );
 		
 		// Draw vertex outline
