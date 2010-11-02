@@ -28,7 +28,7 @@ public class EdgeSvgView
 			sb.append( "y1=\"" + ( e.from.y.get( ) + yOffset ) + "\" " );
 			sb.append( "x2=\"" + ( e.to.x.get( ) + xOffset ) + "\" " );
 			sb.append( "y2=\"" + ( e.to.y.get( ) + yOffset ) + "\" " );
-			sb.append( "style=\"stroke:" + SvgUtilities.formatColor( ( e.isSelected.get( ) ? ColorUtilities.blend( UserSettings.instance.getElementColor( e.color.get( ) ), UserSettings.instance.selectedEdge.get( ) ) : UserSettings.instance.getElementColor( e.color.get( ) ) ) ) + ";stroke-width:" + e.thickness.get( ) + "\"/>\r\n" );
+			sb.append( "style=\"stroke:" + SvgUtilities.formatColor( ( e.isSelected.get( ) ? ColorUtilities.blend( UserSettings.instance.getEdgeColor( e.color.get( ) ), UserSettings.instance.selectedEdge.get( ) ) : UserSettings.instance.getEdgeColor( e.color.get( ) ) ) ) + ";stroke-width:" + e.thickness.get( ) + "\"/>\r\n" );
 		}
 		else
 		{
@@ -52,7 +52,7 @@ public class EdgeSvgView
 			else
 				sb.append( ( e.from.x.get( ) + xOffset ) + "," + ( e.from.y.get( ) + yOffset ) + "\" " );
 			
-			sb.append( "style=\"fill:none;stroke:" + SvgUtilities.formatColor( ( e.isSelected.get( ) ? ColorUtilities.blend( UserSettings.instance.getElementColor( e.color.get( ) ), UserSettings.instance.selectedEdge.get( ) ) : UserSettings.instance.getElementColor( e.color.get( ) ) ) ) + ";stroke-width:" + e.thickness.get( ) + "\"/>\r\n" );
+			sb.append( "style=\"fill:none;stroke:" + SvgUtilities.formatColor( ( e.isSelected.get( ) ? ColorUtilities.blend( UserSettings.instance.getEdgeColor( e.color.get( ) ), UserSettings.instance.selectedEdge.get( ) ) : UserSettings.instance.getEdgeColor( e.color.get( ) ) ) ) + ";stroke-width:" + e.thickness.get( ) + "\"/>\r\n" );
 		}
 		
 		if ( s.showEdgeHandles.get( ) )
@@ -66,7 +66,7 @@ public class EdgeSvgView
 			if ( e.color.get( ) == -1 )
 				handleColor = SvgUtilities.formatColor( e.isSelected.get( ) ? ColorUtilities.blend( UserSettings.instance.edgeHandle.get( ), UserSettings.instance.selectedEdgeHandle.get( ) ) : UserSettings.instance.edgeHandle.get( ) );
 			else
-				handleColor = SvgUtilities.formatColor( e.isSelected.get( ) ? ColorUtilities.blend( UserSettings.instance.getElementColor( e.color.get( ) ), UserSettings.instance.selectedEdgeHandle.get( ) ) : UserSettings.instance.getElementColor( e.color.get( ) ) );
+				handleColor = SvgUtilities.formatColor( e.isSelected.get( ) ? ColorUtilities.blend( UserSettings.instance.getEdgeColor( e.color.get( ) ), UserSettings.instance.selectedEdgeHandle.get( ) ) : UserSettings.instance.getEdgeColor( e.color.get( ) ) );
 			
 			sb.append( "stroke=\"" + handleColor + "\" " );
 			sb.append( "stroke-width=\"1\" " );
@@ -115,7 +115,7 @@ public class EdgeSvgView
 			sb.append( "<text " );
 			sb.append( "x=\"" + ( apparentHandleLocation.getX( ) + 2.0 * handleRadius + xOffset ) + "\" " );
 			sb.append( "y=\"" + ( apparentHandleLocation.getY( ) + 2.0 * handleRadius + yOffset ) + "\" " );
-			sb.append( "fill=\"" + SvgUtilities.formatColor( ( e.isSelected.get( ) ? ColorUtilities.blend( UserSettings.instance.getElementColor( e.color.get( ) ), UserSettings.instance.selectedEdge.get( ) ) : UserSettings.instance.getElementColor( e.color.get( ) ) ) ) + "</text>\r\n" );
+			sb.append( "fill=\"" + SvgUtilities.formatColor( ( e.isSelected.get( ) ? ColorUtilities.blend( UserSettings.instance.getEdgeColor( e.color.get( ) ), UserSettings.instance.selectedEdge.get( ) ) : UserSettings.instance.getEdgeColor( e.color.get( ) ) ) ) + "</text>\r\n" );
 		}
 		
 		if ( s.showEdgeWeights.get( ) )
@@ -123,7 +123,7 @@ public class EdgeSvgView
 			sb.append( "<text " );
 			sb.append( "x=\"" + ( apparentHandleLocation.getX( ) - 1.5 * handleRadius + xOffset ) + "\" " );
 			sb.append( "y=\"" + ( apparentHandleLocation.getY( ) + 9.0 * handleRadius + yOffset ) + "\" " );
-			sb.append( "fill=\"" + SvgUtilities.formatColor( ( e.isSelected.get( ) ? ColorUtilities.blend( UserSettings.instance.getElementColor( e.color.get( ) ), UserSettings.instance.selectedEdge.get( ) ) : UserSettings.instance.getElementColor( e.color.get( ) ) ) ) + "</text>\r\n" );
+			sb.append( "fill=\"" + SvgUtilities.formatColor( ( e.isSelected.get( ) ? ColorUtilities.blend( UserSettings.instance.getEdgeColor( e.color.get( ) ), UserSettings.instance.selectedEdge.get( ) ) : UserSettings.instance.getEdgeColor( e.color.get( ) ) ) ) + "</text>\r\n" );
 		}
 		
 		return sb.toString( );

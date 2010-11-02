@@ -1416,7 +1416,7 @@ public class GraphDisplayController extends JPanel
 			for ( int i = 0; i < userSettings.elementColors.size( ); ++i )
 			{
 				JCheckBoxMenuItem paintToolMenuItem = new JCheckBoxMenuItem( "\u2588\u2588\u2588\u2588\u2588\u2588  (" + i + ")" );
-				paintToolMenuItem.setForeground( userSettings.getElementColor( i ) );
+				paintToolMenuItem.setForeground( userSettings.getVertexColor( i ) );
 				paintToolMenuItem.addActionListener( paintMenuItemActionListener );
 				paintMenu.add( paintToolMenuItem );
 			}

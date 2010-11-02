@@ -25,7 +25,7 @@ public class EdgeDisplayView
 		
 		// Set the edge-specific stroke
 		g2D.setStroke( new BasicStroke( e.thickness.get( ).floatValue( ) ) );
-		g2D.setColor( e.isSelected.get( ) ? ColorUtilities.blend( UserSettings.instance.getElementColor( e.color.get( ) ), UserSettings.instance.selectedEdge.get( ) ) : UserSettings.instance.getElementColor( e.color.get( ) ) );
+		g2D.setColor( e.isSelected.get( ) ? ColorUtilities.blend( UserSettings.instance.getEdgeColor( e.color.get( ) ), UserSettings.instance.selectedEdge.get( ) ) : UserSettings.instance.getEdgeColor( e.color.get( ) ) );
 		
 		// Draw the edge
 		if ( e.isLinear( ) )
@@ -40,7 +40,7 @@ public class EdgeDisplayView
 		if ( e.color.get( ) == -1 )
 			g2D.setColor( e.isSelected.get( ) ? ColorUtilities.blend( UserSettings.instance.edgeHandle.get( ), UserSettings.instance.selectedEdgeHandle.get( ) ) : UserSettings.instance.edgeHandle.get( ) );
 		else
-			g2D.setColor( e.isSelected.get( ) ? ColorUtilities.blend( UserSettings.instance.getElementColor( e.color.get( ) ), UserSettings.instance.selectedEdgeHandle.get( ) ) : UserSettings.instance.getElementColor( e.color.get( ) ) );
+			g2D.setColor( e.isSelected.get( ) ? ColorUtilities.blend( UserSettings.instance.getEdgeColor( e.color.get( ) ), UserSettings.instance.selectedEdgeHandle.get( ) ) : UserSettings.instance.getEdgeColor( e.color.get( ) ) );
 		
 		// Draw handle
 		if ( s.showEdgeHandles.get( ) )
@@ -84,7 +84,7 @@ public class EdgeDisplayView
 		}
 		
 		// Set the label color to the edge's
-		g2D.setColor( e.isSelected.get( ) ? ColorUtilities.blend( UserSettings.instance.getElementColor( e.color.get( ) ), UserSettings.instance.selectedEdge.get( ) ) : UserSettings.instance.getElementColor( e.color.get( ) ) );
+		g2D.setColor( e.isSelected.get( ) ? ColorUtilities.blend( UserSettings.instance.getEdgeColor( e.color.get( ) ), UserSettings.instance.selectedEdge.get( ) ) : UserSettings.instance.getEdgeColor( e.color.get( ) ) );
 		
 		// Draw edge label
 		if ( s.showEdgeLabels.get( ) )

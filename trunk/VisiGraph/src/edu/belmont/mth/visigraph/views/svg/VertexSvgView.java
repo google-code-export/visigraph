@@ -23,7 +23,7 @@ public class VertexSvgView
 		sb.append( "r=\"" + v.radius.get( ) + "\" " );
 		sb.append( "stroke=\"" + SvgUtilities.formatColor( v.isSelected.get( ) ? ColorUtilities.blend( UserSettings.instance.vertexLine.get( ), UserSettings.instance.selectedVertexLine.get( ) ) : UserSettings.instance.vertexLine.get( ) ) + "\" " );
 		sb.append( "stroke-width=\"1\" " );
-		sb.append( "fill=\"" + SvgUtilities.formatColor( v.isSelected.get( ) ? ColorUtilities.blend( UserSettings.instance.getElementColor( v.color.get( ) ), UserSettings.instance.selectedVertexFill.get( ) ) : UserSettings.instance.getElementColor( v.color.get( ) ) ) + "\" />\r\n" );
+		sb.append( "fill=\"" + SvgUtilities.formatColor( v.isSelected.get( ) ? ColorUtilities.blend( UserSettings.instance.getVertexColor( v.color.get( ) ), UserSettings.instance.selectedVertexFill.get( ) ) : UserSettings.instance.getVertexColor( v.color.get( ) ) ) + "\" />\r\n" );
 		
 		if ( s.showVertexLabels.get( ) )
 		{

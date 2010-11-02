@@ -54,7 +54,8 @@ public class UserSettings extends ObservableModel
 	public final Property<Color>   captionButtonFill;
 	public final Property<Color>   captionButtonLine;
 	public final Property<Color>   selectedCaptionLine;
-	public final Property<Color>   uncoloredElementFill;
+	public final Property<Color>   uncoloredEdgeLine;
+	public final Property<Color>   uncoloredVertexFill;
 	public final ObservableList<Color> elementColors;
 	public final Property<Double>  vertexClickMargin;
 	public final Property<Double>  edgeHandleClickMargin;
@@ -132,7 +133,8 @@ public class UserSettings extends ObservableModel
 		this.captionButtonFill				= new Property<Color>  (GlobalSettings.defaultCaptionButtonFill             );
 		this.captionButtonLine				= new Property<Color>  (GlobalSettings.defaultCaptionButtonLine             );
 		this.selectedCaptionLine			= new Property<Color>  (GlobalSettings.defaultSelectedCaptionLineColor      );
-		this.uncoloredElementFill			= new Property<Color>  (GlobalSettings.defaultUncoloredElementFill          );
+		this.uncoloredEdgeLine				= new Property<Color>  (GlobalSettings.defaultUncoloredEdgeLine             );
+		this.uncoloredVertexFill			= new Property<Color>  (GlobalSettings.defaultUncoloredVertexFill           );
 		this.vertexClickMargin				= new Property<Double> (GlobalSettings.defaultVertexClickMargin             );
 		this.edgeHandleClickMargin			= new Property<Double> (GlobalSettings.defaultEdgeHandleClickMargin         );
 		this.captionHandleClickMargin		= new Property<Double> (GlobalSettings.defaultCaptionHandleClickMargin      );
@@ -185,9 +187,14 @@ public class UserSettings extends ObservableModel
 		fromFile( new File( "UserSettings.json" ) );
 	}
 	
-	public Color getElementColor(int i)
+	public Color getVertexColor( int i )
 	{
-		return (i < 0 || i >= elementColors.size() ? uncoloredElementFill.get() : elementColors.get(i));
+		return ( i < 0 || i >= elementColors.size( ) ? uncoloredVertexFill.get( ) : elementColors.get( i ) );
+	}
+	
+	public Color getEdgeColor( int i )
+	{
+		return ( i < 0 || i >= elementColors.size( ) ? uncoloredEdgeLine.get( ) : elementColors.get( i ) );
 	}
 	
 	public void fromFile(File file)
@@ -254,7 +261,8 @@ public class UserSettings extends ObservableModel
 		if(members.containsKey("captionButtonFill"))			captionButtonFill			 .set( (Color)   members.get( "captionButtonFill"				) );
 		if(members.containsKey("captionButtonLine"))			captionButtonLine			 .set( (Color)   members.get( "captionButtonLine"				) );
 		if(members.containsKey("selectedCaptionLine"))			selectedCaptionLine			 .set( (Color)   members.get( "selectedCaptionLine"				) );
-		if(members.containsKey("uncoloredElementFill"))			uncoloredElementFill		 .set( (Color)   members.get( "uncoloredElementFill"			) );
+		if(members.containsKey("uncoloredEdgeLine"))			uncoloredEdgeLine			 .set( (Color)   members.get( "uncoloredEdgeLine"				) );
+		if(members.containsKey("uncoloredVertexFill"))			uncoloredVertexFill		 	 .set( (Color)   members.get( "uncoloredVertexFill"				) );
 		if(members.containsKey("vertexClickMargin"))			vertexClickMargin			 .set( (Double)  members.get( "vertexClickMargin"				) );
 		if(members.containsKey("edgeHandleClickMargin"))		edgeHandleClickMargin		 .set( (Double)  members.get( "edgeHandleClickMargin"			) );
 		if(members.containsKey("captionHandleClickMargin"))		captionHandleClickMargin	 .set( (Double)  members.get( "captionHandleClickMargin"		) );
@@ -340,7 +348,8 @@ public class UserSettings extends ObservableModel
 		members.put("captionButtonFill",			captionButtonFill				);
 		members.put("captionButtonLine",			captionButtonLine				);
 		members.put("selectedCaptionLine",			selectedCaptionLine				);
-		members.put("uncoloredElementFill",			uncoloredElementFill			);
+		members.put("uncoloredEdgeLine",			uncoloredEdgeLine				);
+		members.put("uncoloredVertexFill",			uncoloredVertexFill				);
 		members.put("elementColors",				elementColors					);
 		members.put("vertexClickMargin",			vertexClickMargin				);
 		members.put("edgeHandleClickMargin",		edgeHandleClickMargin			);

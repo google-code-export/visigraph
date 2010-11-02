@@ -53,17 +53,18 @@ public class PreferencesDialog extends JDialog implements ActionListener
 	private static ColorPicker 		   selectionBoxFillColorPicker;
 	private static ColorPicker 		   selectionBoxLineColorPicker;
 	private static ColorPicker		   vertexLineColorPicker;
+	private static ColorPicker 		   uncoloredVertexFillColorPicker;
 	private static ColorPicker		   selectedVertexFillColorPicker;
 	private static ColorPicker		   selectedVertexLineColorPicker;
 	private static ColorPicker 		   draggingEdgeColorPicker;
 	private static ColorPicker 		   edgeHandleColorPicker;
+	private static ColorPicker 		   uncoloredEdgeLineColorPicker;
 	private static ColorPicker 		   selectedEdgeColorPicker;
 	private static ColorPicker 	   	   selectedEdgeHandleColorPicker;
 	private static ColorPicker 		   captionTextColorPicker;
 	private static ColorPicker 		   captionButtonFillColorPicker;
 	private static ColorPicker 		   captionButtonLineColorPicker;
 	private static ColorPicker 		   selectedCaptionLineColorPicker;
-	private static ColorPicker 		   uncoloredElementColorPicker;
 	private static JPanel              elementColorsPanel;
 	private static JButton			   addButton;
 	private static JButton			   removeButton;
@@ -340,13 +341,15 @@ public class PreferencesDialog extends JDialog implements ActionListener
 		FieldLabel selectionBoxLineLabel    = new FieldLabel(StringBundle.get("preferences_dialog_graph_selection_box_line_label")); selectionBoxLineColorPicker = new ColorPicker();
 		
 		Header     vertexColorsHeader       = new Header    (StringBundle.get("preferences_dialog_vertex_colors_heading"));
-		FieldLabel vertexLineLabel          = new FieldLabel(StringBundle.get("preferences_dialog_vertex_line_label"));          vertexLineColorPicker         = new ColorPicker();
-		FieldLabel selectedVertexFillLabel  = new FieldLabel(StringBundle.get("preferences_dialog_vertex_selected_fill_label")); selectedVertexFillColorPicker = new ColorPicker();
-		FieldLabel selectedVertexLineLabel  = new FieldLabel(StringBundle.get("preferences_dialog_vertex_selected_line_label")); selectedVertexLineColorPicker = new ColorPicker();
+		FieldLabel vertexLineLabel          = new FieldLabel(StringBundle.get("preferences_dialog_vertex_line_label"));           vertexLineColorPicker          = new ColorPicker();
+		FieldLabel uncoloredVertexFillLabel = new FieldLabel(StringBundle.get("preferences_dialog_vertex_uncolored_fill_label")); uncoloredVertexFillColorPicker = new ColorPicker();
+		FieldLabel selectedVertexFillLabel  = new FieldLabel(StringBundle.get("preferences_dialog_vertex_selected_fill_label"));  selectedVertexFillColorPicker  = new ColorPicker();
+		FieldLabel selectedVertexLineLabel  = new FieldLabel(StringBundle.get("preferences_dialog_vertex_selected_line_label"));  selectedVertexLineColorPicker  = new ColorPicker();
 			
 		Header     edgeColorsHeader         = new Header    (StringBundle.get("preferences_dialog_edge_colors_heading"));
 		FieldLabel draggingEdgeLabel        = new FieldLabel(StringBundle.get("preferences_dialog_edge_dragging_label"));         draggingEdgeColorPicker       = new ColorPicker();
 		FieldLabel edgeHandleLabel 			= new FieldLabel(StringBundle.get("preferences_dialog_edge_uncolored_handle_label")); edgeHandleColorPicker		    = new ColorPicker();
+		FieldLabel uncoloredEdgeLineLabel   = new FieldLabel(StringBundle.get("preferences_dialog_edge_uncolored_line_label"));   uncoloredEdgeLineColorPicker  = new ColorPicker();
 		FieldLabel selectedEdgeLabel        = new FieldLabel(StringBundle.get("preferences_dialog_edge_selected_label"));         selectedEdgeColorPicker       = new ColorPicker();
 		FieldLabel selectedEdgeHandleLabel  = new FieldLabel(StringBundle.get("preferences_dialog_edge_selected_handle_label"));  selectedEdgeHandleColorPicker = new ColorPicker();
 			
@@ -357,7 +360,6 @@ public class PreferencesDialog extends JDialog implements ActionListener
 		FieldLabel selectedCaptionLineLabel = new FieldLabel(StringBundle.get("preferences_dialog_caption_selected_line_label")); selectedCaptionLineColorPicker = new ColorPicker();
 			
 		Header     sharedColorsHeader    = new Header    (StringBundle.get("preferences_dialog_shared_colors_heading"));
-		FieldLabel uncoloredElementLabel = new FieldLabel(StringBundle.get("preferences_dialog_shared_uncolored_element_label")); uncoloredElementColorPicker = new ColorPicker();
 		FieldLabel elementColorsLabel    = new FieldLabel(StringBundle.get("preferences_dialog_shared_colored_elements_label"));
 		
 		elementColorsPanel = new JPanel(new VerticalFlowLayout(VerticalFlowLayout.TOP, 0, 6)) { { setBackground(panel.getBackground()); setBorder(BorderFactory.createEmptyBorder(-6, 0, 0, 0)); } };
@@ -437,17 +439,18 @@ public class PreferencesDialog extends JDialog implements ActionListener
 					.addComponent(selectionBoxFillLabel)
 					.addComponent(selectionBoxLineLabel)
 					.addComponent(vertexLineLabel)
+					.addComponent(uncoloredVertexFillLabel)
 					.addComponent(selectedVertexFillLabel)
 					.addComponent(selectedVertexLineLabel)
 					.addComponent(draggingEdgeLabel)
 					.addComponent(edgeHandleLabel)
+					.addComponent(uncoloredEdgeLineLabel)
 					.addComponent(selectedEdgeLabel)
 					.addComponent(selectedEdgeHandleLabel)
 					.addComponent(captionTextLabel)
 					.addComponent(captionButtonFillLabel)
 					.addComponent(captionButtonLineLabel)
 					.addComponent(selectedCaptionLineLabel)
-					.addComponent(uncoloredElementLabel)
 					.addComponent(elementColorsLabel)
 					.addComponent(col1Padding))
 				.addGroup(layout.createParallelGroup(GroupLayout.Alignment.LEADING)
@@ -455,17 +458,18 @@ public class PreferencesDialog extends JDialog implements ActionListener
 					.addComponent(selectionBoxFillColorPicker)
 					.addComponent(selectionBoxLineColorPicker)
 					.addComponent(vertexLineColorPicker)
+					.addComponent(uncoloredVertexFillColorPicker)
 					.addComponent(selectedVertexFillColorPicker)
 					.addComponent(selectedVertexLineColorPicker)
 					.addComponent(draggingEdgeColorPicker)
 					.addComponent(edgeHandleColorPicker)
+					.addComponent(uncoloredEdgeLineColorPicker)
 					.addComponent(selectedEdgeColorPicker)
 					.addComponent(selectedEdgeHandleColorPicker)
 					.addComponent(captionTextColorPicker)
 					.addComponent(captionButtonFillColorPicker)
 					.addComponent(captionButtonLineColorPicker)
 					.addComponent(selectedCaptionLineColorPicker)
-					.addComponent(uncoloredElementColorPicker)
 					.addComponent(elementColorsPanel)
 					.addComponent(buttonPanel)
 					.addComponent(col2Padding)));
@@ -478,11 +482,13 @@ public class PreferencesDialog extends JDialog implements ActionListener
 				.addGroup(layout.createParallelGroup(GroupLayout.Alignment.CENTER).addComponent(selectionBoxLineLabel).addComponent(selectionBoxLineColorPicker))
 				.addComponent(vertexColorsHeader)
 				.addGroup(layout.createParallelGroup(GroupLayout.Alignment.CENTER).addComponent(vertexLineLabel).addComponent(vertexLineColorPicker))
+				.addGroup(layout.createParallelGroup(GroupLayout.Alignment.CENTER).addComponent(uncoloredVertexFillLabel).addComponent(uncoloredVertexFillColorPicker))
 				.addGroup(layout.createParallelGroup(GroupLayout.Alignment.CENTER).addComponent(selectedVertexFillLabel).addComponent(selectedVertexFillColorPicker))
 				.addGroup(layout.createParallelGroup(GroupLayout.Alignment.CENTER).addComponent(selectedVertexLineLabel).addComponent(selectedVertexLineColorPicker))
 				.addComponent(edgeColorsHeader)
 				.addGroup(layout.createParallelGroup(GroupLayout.Alignment.CENTER).addComponent(draggingEdgeLabel).addComponent(draggingEdgeColorPicker))
 				.addGroup(layout.createParallelGroup(GroupLayout.Alignment.CENTER).addComponent(edgeHandleLabel).addComponent(edgeHandleColorPicker))
+				.addGroup(layout.createParallelGroup(GroupLayout.Alignment.CENTER).addComponent(uncoloredEdgeLineLabel).addComponent(uncoloredEdgeLineColorPicker))
 				.addGroup(layout.createParallelGroup(GroupLayout.Alignment.CENTER).addComponent(selectedEdgeLabel).addComponent(selectedEdgeColorPicker))
 				.addGroup(layout.createParallelGroup(GroupLayout.Alignment.CENTER).addComponent(selectedEdgeHandleLabel).addComponent(selectedEdgeHandleColorPicker))
 				.addComponent(captionColorsHeader)
@@ -491,7 +497,6 @@ public class PreferencesDialog extends JDialog implements ActionListener
 				.addGroup(layout.createParallelGroup(GroupLayout.Alignment.CENTER).addComponent(captionButtonLineLabel).addComponent(captionButtonLineColorPicker))
 				.addGroup(layout.createParallelGroup(GroupLayout.Alignment.CENTER).addComponent(selectedCaptionLineLabel).addComponent(selectedCaptionLineColorPicker))
 				.addComponent(sharedColorsHeader)
-				.addGroup(layout.createParallelGroup(GroupLayout.Alignment.CENTER).addComponent(uncoloredElementLabel).addComponent(uncoloredElementColorPicker))
 				.addGroup(layout.createParallelGroup(GroupLayout.Alignment.LEADING).addComponent(elementColorsLabel).addComponent(elementColorsPanel))
 				.addGroup(layout.createParallelGroup(GroupLayout.Alignment.CENTER).addComponent(buttonPanel))
 				.addGroup(layout.createParallelGroup(GroupLayout.Alignment.CENTER).addComponent(col0Padding).addComponent(col1Padding).addComponent(col2Padding)));
@@ -502,11 +507,11 @@ public class PreferencesDialog extends JDialog implements ActionListener
 		return scrollPane;
 	}
 	
-	private JScrollPane initializeUnderTheHoodPanel()
+	private JScrollPane initializeUnderTheHoodPanel( )
 	{
-		final JPanel panel = new JPanel(new GridBagLayout());
-		if(System.getProperty("os.name").startsWith("Windows"))
-			panel.setBackground(Color.white);
+		final JPanel panel = new JPanel( new GridBagLayout( ) );
+		if ( System.getProperty( "os.name" ).startsWith( "Windows" ) )
+			panel.setBackground( Color.white );
 		
 		Header     clickingBehaviorHeader             = new Header    (StringBundle.get("preferences_dialog_clicking_behavior_heading"));
 		FieldLabel vertexClickMarginLabel             = new FieldLabel(StringBundle.get("preferences_dialog_vertex_click_margin_label"));              vertexClickMarginTextField             = new ValidatingTextField(8, "(?:\\d+\\.?\\d*|\\d*\\.?\\d+)(?:[eE][+\\-\\x20]?\\d+)?")  { { setMargin(fieldMargin); setMaximumSize(new Dimension(70, 100)); } };
@@ -556,15 +561,15 @@ public class PreferencesDialog extends JDialog implements ActionListener
 		FieldLabel areCloseDistanceLabel              = new FieldLabel(StringBundle.get("preferences_dialog_are_close_distance_label"));               areCloseDistanceTextField              = new ValidatingTextField(8, "(?:\\d+\\.?\\d*|\\d*\\.?\\d+)(?:[eE][+\\-\\x20]?\\d+)?") { { setMargin(fieldMargin); setMaximumSize(new Dimension(70, 100)); } };
 		FieldLabel paintToolMenuDelayLabel            = new FieldLabel(StringBundle.get("preferences_dialog_paint_tool_menu_delay_label"));            paintToolMenuDelayTextField            = new ValidatingTextField(8, "\\d+")                                                   { { setMargin(fieldMargin); setMaximumSize(new Dimension(70, 100)); } };
 		
-		Component col0Padding = Box.createRigidArea(new Dimension(columnWidths[0], 7));
-		Component col1Padding = Box.createRigidArea(new Dimension(columnWidths[1], 7));
-		Component col2Padding = Box.createRigidArea(new Dimension(columnWidths[2], 7));
+		Component col0Padding = Box.createRigidArea( new Dimension( columnWidths[0], 7 ) );
+		Component col1Padding = Box.createRigidArea( new Dimension( columnWidths[1], 7 ) );
+		Component col2Padding = Box.createRigidArea( new Dimension( columnWidths[2], 7 ) );
 		
-		GroupLayout layout = new GroupLayout(panel);
-		panel.setLayout(layout);
+		GroupLayout layout = new GroupLayout( panel );
+		panel.setLayout( layout );
 		
-		layout.setAutoCreateGaps(true);
-		layout.setAutoCreateContainerGaps(true);
+		layout.setAutoCreateGaps( true );
+		layout.setAutoCreateContainerGaps( true );
 
 		layout.setHorizontalGroup(
 			layout.createSequentialGroup()
@@ -701,23 +706,21 @@ public class PreferencesDialog extends JDialog implements ActionListener
 		return scrollPane;
 	}
 	
-	public void actionPerformed(ActionEvent e)
+	public void actionPerformed( ActionEvent e )
 	{
-		if (e.getActionCommand().equals("Ok"))
+		if ( e.getActionCommand( ).equals( "Ok" ) )
 		{
-			if(!validatePreferences( ))
-			{
-				JOptionPane.showMessageDialog(this, StringBundle.get("preferences_dialog_invalid_values_error_message"), StringBundle.get("preferences_dialog_invalid_values_error_title"), JOptionPane.ERROR_MESSAGE);
-			}
+			if ( !validatePreferences( ) )
+				JOptionPane.showMessageDialog( this, StringBundle.get( "preferences_dialog_invalid_values_error_message" ), StringBundle.get( "preferences_dialog_invalid_values_error_title" ), JOptionPane.ERROR_MESSAGE );
 			else
 			{
 				savePreferences( );
 				value = "saved";
-				PreferencesDialog.dialog.setVisible(false);
+				PreferencesDialog.dialog.setVisible( false );
 			}
 		}
 		else
-			PreferencesDialog.dialog.setVisible(false);
+			PreferencesDialog.dialog.setVisible( false );
 	}
 	
 	public boolean validatePreferences()
@@ -789,17 +792,18 @@ public class PreferencesDialog extends JDialog implements ActionListener
 		selectionBoxFillColorPicker				.setColor( userSettings.selectionBoxFill.get( ) );
 		selectionBoxLineColorPicker				.setColor( userSettings.selectionBoxLine.get( ) );
 		vertexLineColorPicker					.setColor( userSettings.vertexLine.get( ) );
+		uncoloredVertexFillColorPicker			.setColor( userSettings.uncoloredVertexFill.get( ) );
 		selectedVertexFillColorPicker			.setColor( userSettings.selectedVertexFill.get( ) );
 		selectedVertexLineColorPicker			.setColor( userSettings.selectedVertexLine.get( ) );
 		draggingEdgeColorPicker					.setColor( userSettings.draggingEdge.get( ) );
 		edgeHandleColorPicker					.setColor( userSettings.edgeHandle.get( ) );
+		uncoloredEdgeLineColorPicker			.setColor( userSettings.uncoloredEdgeLine.get( ) );
 		selectedEdgeColorPicker					.setColor( userSettings.selectedEdge.get( ) );
 		selectedEdgeHandleColorPicker			.setColor( userSettings.selectedEdgeHandle.get( ) );
 		captionTextColorPicker					.setColor( userSettings.captionText.get( ) );
 		captionButtonFillColorPicker			.setColor( userSettings.captionButtonFill.get( ) );
 		captionButtonLineColorPicker			.setColor( userSettings.captionButtonLine.get( ) );
 		selectedCaptionLineColorPicker			.setColor( userSettings.selectedCaptionLine.get( ) );
-		uncoloredElementColorPicker				.setColor( userSettings.uncoloredElementFill.get( ) );
 		vertexClickMarginTextField				.setText( userSettings.vertexClickMargin.get( ).toString( ) );
 		edgeHandleClickMarginTextField			.setText( userSettings.edgeHandleClickMargin.get( ).toString( ) );
 		captionHandleClickMarginTextField		.setText( userSettings.captionHandleClickMargin.get( ).toString( ) );
@@ -872,17 +876,18 @@ public class PreferencesDialog extends JDialog implements ActionListener
 		selectionBoxFillColorPicker				.setColor( userSettings.selectionBoxFill.getDefault( ) );
 		selectionBoxLineColorPicker				.setColor( userSettings.selectionBoxLine.getDefault( ) );
 		vertexLineColorPicker					.setColor( userSettings.vertexLine.getDefault( ) );
+		uncoloredVertexFillColorPicker			.setColor( userSettings.uncoloredVertexFill.getDefault( ) );
 		selectedVertexFillColorPicker			.setColor( userSettings.selectedVertexFill.getDefault( ) );
 		selectedVertexLineColorPicker			.setColor( userSettings.selectedVertexLine.getDefault( ) );
 		draggingEdgeColorPicker					.setColor( userSettings.draggingEdge.getDefault( ) );
 		edgeHandleColorPicker					.setColor( userSettings.edgeHandle.getDefault( ) );
+		uncoloredEdgeLineColorPicker			.setColor( userSettings.uncoloredEdgeLine.getDefault( ) );
 		selectedEdgeColorPicker					.setColor( userSettings.selectedEdge.getDefault( ) );
 		selectedEdgeHandleColorPicker			.setColor( userSettings.selectedEdgeHandle.getDefault( ) );
 		captionTextColorPicker					.setColor( userSettings.captionText.getDefault( ) );
 		captionButtonFillColorPicker			.setColor( userSettings.captionButtonFill.getDefault( ) );
 		captionButtonLineColorPicker			.setColor( userSettings.captionButtonLine.getDefault( ) );
 		selectedCaptionLineColorPicker			.setColor( userSettings.selectedCaptionLine.getDefault( ) );
-		uncoloredElementColorPicker				.setColor( userSettings.uncoloredElementFill.getDefault( ) );
 		vertexClickMarginTextField				.setText( userSettings.vertexClickMargin.getDefault( ).toString( ) );
 		edgeHandleClickMarginTextField			.setText( userSettings.edgeHandleClickMargin.getDefault( ).toString( ) );
 		captionHandleClickMarginTextField		.setText( userSettings.captionHandleClickMargin.getDefault( ).toString( ) );
@@ -956,17 +961,18 @@ public class PreferencesDialog extends JDialog implements ActionListener
 		userSettings.selectionBoxFill				.set( 			   selectionBoxFillColorPicker.getColor( ) );
 		userSettings.selectionBoxLine				.set( 			   selectionBoxLineColorPicker.getColor( ) );
 		userSettings.vertexLine						.set( 			   vertexLineColorPicker.getColor( ) );
+		userSettings.uncoloredVertexFill			.set( 			   uncoloredVertexFillColorPicker.getColor( ) );
 		userSettings.selectedVertexFill				.set( 			   selectedVertexFillColorPicker.getColor( ) );
 		userSettings.selectedVertexLine				.set( 			   selectedVertexLineColorPicker.getColor( ) );
 		userSettings.draggingEdge					.set( 			   draggingEdgeColorPicker.getColor( ) );
 		userSettings.edgeHandle						.set( 			   edgeHandleColorPicker.getColor( ) );
+		userSettings.uncoloredEdgeLine				.set( 			   uncoloredEdgeLineColorPicker.getColor( ) );
 		userSettings.selectedEdge					.set( 			   selectedEdgeColorPicker.getColor( ) );
 		userSettings.selectedEdgeHandle				.set( 			   selectedEdgeHandleColorPicker.getColor( ) );
 		userSettings.captionText					.set( 			   captionTextColorPicker.getColor( ) );
 		userSettings.captionButtonFill				.set( 			   captionButtonFillColorPicker.getColor( ) );
 		userSettings.captionButtonLine				.set( 			   captionButtonLineColorPicker.getColor( ) );
 		userSettings.selectedCaptionLine			.set( 			   selectedCaptionLineColorPicker.getColor( ) );
-		userSettings.uncoloredElementFill			.set( 			   uncoloredElementColorPicker.getColor( ) );
 		userSettings.vertexClickMargin				.set( new Double ( vertexClickMarginTextField.getText( ) ) );
 		userSettings.edgeHandleClickMargin			.set( new Double ( edgeHandleClickMarginTextField.getText( ) ) );
 		userSettings.captionHandleClickMargin		.set( new Double ( captionHandleClickMarginTextField.getText( ) ) );
