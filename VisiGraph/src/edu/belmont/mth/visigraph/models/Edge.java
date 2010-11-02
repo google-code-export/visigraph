@@ -157,7 +157,6 @@ public class Edge extends ObservableModel
 		}
 	};
 	
-	
 	/**
 	 * Constructs a directed or undirected {@code Edge} between the two specified vertices
 	 * 
@@ -530,9 +529,7 @@ public class Edge extends ObservableModel
 	private void updateCenter( )
 	{
 		if ( from == to )
-		{
 			center.setLocation( midpoint( from.x.get( ), from.y.get( ), handleX.get( ), handleY.get( ) ) );
-		}
 		else
 		{
 			double x0 = from.x. get( ), y0 = from.y. get( );

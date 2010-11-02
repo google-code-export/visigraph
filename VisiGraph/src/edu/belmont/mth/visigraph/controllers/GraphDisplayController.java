@@ -267,6 +267,15 @@ public class GraphDisplayController extends JPanel
 		
 		if ( viewToolBar != null )
 			viewToolBar.refresh( );
+		
+		if ( undoTimer != null )
+			undoTimer.setDelay( userSettings.undoLoggingInterval.get( ) );
+		
+		if ( undoHistory != null && undoHistory.getCapacity( ) != userSettings.undoLoggingMaximum.get( ) )
+		{
+			undoHistory.setCapacity( userSettings.undoLoggingMaximum.get( ) );
+			undoHistory.clear( );
+		}
 	}
 	
 	public void initializeComponents( )
@@ -419,12 +428,12 @@ public class GraphDisplayController extends JPanel
 			
 			public void keyReleased( KeyEvent e )
 			{
-			// Do nothing
+				// Do nothing
 			}
 			
 			public void keyTyped( KeyEvent e )
 			{
-			// Do nothing
+				// Do nothing
 			}
 		} );
 		viewportPanel.add( viewport, BorderLayout.CENTER );
@@ -443,7 +452,8 @@ public class GraphDisplayController extends JPanel
 			@Override
 			public void actionPerformed( ActionEvent e )
 			{
-				undoHistory.add( graph.toString( ) );
+				if ( undoHistory.getCapacity( ) > 0 )
+					undoHistory.add( graph.toString( ) );
 			}
 		} );
 		undoTimer.start( );
@@ -2290,6 +2300,13 @@ public class GraphDisplayController extends JPanel
 			}
 		}
 		
+		public void clear( )
+		{
+			newest = oldest = current;
+			current.previous = current;
+			current.next = current;
+		}
+		
 		public String previous( )
 		{
 			if ( current == oldest )
@@ -2313,6 +2330,16 @@ public class GraphDisplayController extends JPanel
 			current = current.next;
 			
 			return current.value;
+		}
+		
+		public int getCapacity( )
+		{
+			return capacity;
+		}
+		
+		public void setCapacity( int capacity )
+		{
+			this.capacity = capacity;
 		}
 		
 		private class Snapshot

@@ -2,7 +2,7 @@ import java.awt.*;
 import edu.belmont.mth.visigraph.models.*;
 import edu.belmont.mth.visigraph.models.functions.*;
 
-	public Object evaluate(Graphics2D g2D, Graph g)
+	public String evaluate(Graphics2D g2D, Graph g)
 	{
 		int selectedEdgeCount = 0;
 		
