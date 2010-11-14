@@ -1,12 +1,12 @@
+import java.awt.*;
 import java.io.*;
 import java.util.*;
 import javax.swing.*;
 import java.util.regex.*;
-
 import edu.belmont.mth.visigraph.models.*;
 import edu.belmont.mth.visigraph.models.generators.*;
 
-	public Graph generate(String params, boolean areLoopsAllowed, boolean areDirectedEdgesAllowed, boolean areMultipleEdgesAllowed, boolean areCyclesAllowed)
+	public Graph generate(String params, boolean areLoopsAllowed, boolean areDirectedEdgesAllowed, boolean areMultipleEdgesAllowed, boolean areCyclesAllowed, Component owner)
 	{
 		Graph graph = null;
 		Pattern pattern = Pattern.compile( getParametersValidatingExpression( ) );
@@ -18,7 +18,7 @@ import edu.belmont.mth.visigraph.models.generators.*;
 			
 			if ( !file.exists( ) )
 			{
-				JOptionPane.showMessageDialog( null, "No such file as \"" + file.getPath( ) + "\" exists!", "Invalid file path!", JOptionPane.ERROR_MESSAGE );
+				JOptionPane.showMessageDialog( null, "The specified file, \"" + file.getPath( ) + "\", does not exist!", "Invalid file path!", JOptionPane.ERROR_MESSAGE );
 				return null;
 			}
 			else if ( !file.isFile( ) )
@@ -91,14 +91,14 @@ import edu.belmont.mth.visigraph.models.generators.*;
     }
     
     public String toString                          ( ) { return "Complement of (another graph)"; }
-    public String getParametersDescription          ( ) { return "\"[*.vsg file path]\""; }
-    public String getParametersValidatingExpression ( ) { return "^\\s*\"(.+\\.vsg)?\"\\s*$"; }
+    public String getParametersDescription          ( ) { return "[*.vsg file path]"; }
+    public String getParametersValidatingExpression ( ) { return "^\\s*(.+\\.vsg)\\s*$"; }
     
 	public GeneratorBase.BooleanRule areLoopsAllowed         ( ) { return GeneratorBase.BooleanRule.ForcedFalse; }
-	public GeneratorBase.BooleanRule areDirectedEdgesAllowed ( ) { return GeneratorBase.BooleanRule.ForcedFalse;  }
+	public GeneratorBase.BooleanRule areDirectedEdgesAllowed ( ) { return GeneratorBase.BooleanRule.ForcedFalse; }
 	public GeneratorBase.BooleanRule areMultipleEdgesAllowed ( ) { return GeneratorBase.BooleanRule.ForcedFalse; }
-	public GeneratorBase.BooleanRule areCyclesAllowed        ( ) { return GeneratorBase.BooleanRule.ForcedFalse;   }
-	public GeneratorBase.BooleanRule areParametersAllowed    ( ) { return GeneratorBase.BooleanRule.ForcedTrue;   }
+	public GeneratorBase.BooleanRule areCyclesAllowed        ( ) { return GeneratorBase.BooleanRule.ForcedFalse; }
+	public GeneratorBase.BooleanRule areParametersAllowed    ( ) { return GeneratorBase.BooleanRule.ForcedTrue;  }
         
 return (GeneratorBase)this;
 

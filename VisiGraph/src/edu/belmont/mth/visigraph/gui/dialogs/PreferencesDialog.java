@@ -7,6 +7,7 @@ import java.io.*;
 import java.util.regex.*;
 import java.awt.*;
 import javax.swing.*;
+
 import java.awt.event.*;
 
 import javax.swing.border.*;
@@ -107,17 +108,16 @@ public class PreferencesDialog extends JDialog implements ActionListener
 	private final int[] columnWidths = new int[] { 175, 165, 160 };
 	private final Insets fieldMargin = new Insets(2, 2, 2, 7);
 	
-	public static String showDialog(Component frameComp, Component locationComp)
+	public static String showDialog(Component owner)
 	{
-		Frame frame = JOptionPane.getFrameForComponent(frameComp);
-		dialog = new PreferencesDialog(frame, locationComp);
+		dialog = new PreferencesDialog(JOptionPane.getFrameForComponent(owner));
 		dialog.setVisible(true);
 		return value;
 	}
 	
-	private PreferencesDialog(Frame frame, Component locationComp)
+	private PreferencesDialog(Frame owner)
 	{
-		super(frame, StringBundle.get("preferences_dialog_title"), true);
+		super(owner, StringBundle.get("preferences_dialog_title"), true);
 		this.setResizable(false);
 		
 		JPanel inputPanel = new JPanel(new BorderLayout());
@@ -182,7 +182,7 @@ public class PreferencesDialog extends JDialog implements ActionListener
 		setPreferredSize(size);
 		
 		pack();
-		setLocationRelativeTo(locationComp);
+		setLocationRelativeTo(owner);
 		value = null;
 	}
 	
@@ -197,7 +197,7 @@ public class PreferencesDialog extends JDialog implements ActionListener
 		FieldLabel defaultVertexColorLabel        = new FieldLabel(StringBundle.get("preferences_dialog_default_vertex_color_label"));	      defaultVertexColorTextField       = new ValidatingTextField(8, "-1|\\d+")													 { { setMargin(fieldMargin); setMaximumSize(new Dimension(70, 100)); } };
 		FieldLabel defaultVertexPrefixLabel       = new FieldLabel(StringBundle.get("preferences_dialog_default_vertex_prefix_label"));	      defaultVertexPrefixTextField      = new JTextField(8)																		 { { setMargin(fieldMargin); setMaximumSize(new Dimension(70, 100)); } };
 		FieldLabel defaultVertexRadiusLabel       = new FieldLabel(StringBundle.get("preferences_dialog_default_vertex_radius_label"));	      defaultVertexRadiusTextField      = new ValidatingTextField(8, "(?:\\d+\\.?\\d*|\\d*\\.?\\d+)(?:[eE][+\\-\\x20]?\\d+)?")	 { { setMargin(fieldMargin); setMaximumSize(new Dimension(70, 100)); } };
-		FieldLabel defaultVertexIsSelectedLabel   = new FieldLabel(StringBundle.get("preferences_dialog_default_vertex_is_selected_label"));   defaultVertexIsSelectedCheckBox  = new JCheckBox() 																		 { { setBackground(panel.getBackground()); setMinimumSize(new Dimension(32, 26)); } };
+		FieldLabel defaultVertexIsSelectedLabel   = new FieldLabel(StringBundle.get("preferences_dialog_default_vertex_is_selected_label"));  defaultVertexIsSelectedCheckBox   = new JCheckBox() 																		 { { setBackground(panel.getBackground()); setMinimumSize(new Dimension(32, 26)); } };
 		
 		Header 	   edgeDefaultsHeader 		      = new Header    (StringBundle.get("preferences_dialog_default_edge_properties_heading"));
 		FieldLabel defaultEdgeWeightLabel         = new FieldLabel(StringBundle.get("preferences_dialog_default_edge_weight_label"));          defaultEdgeWeightTextField        = new ValidatingTextField(8, "-?(?:\\d+\\.?\\d*|\\d*\\.?\\d+)(?:[eE][+\\-\\x20]?\\d+)?") { { setMargin(fieldMargin); setMaximumSize(new Dimension(70, 100)); } };

@@ -3,7 +3,7 @@ import java.util.*;
 import edu.belmont.mth.visigraph.models.*;
 import edu.belmont.mth.visigraph.models.functions.*;
 
-	public String evaluate(Graphics2D g2D, Graph g)
+	public String evaluate(Graphics2D g2D, Graph g, Component owner)
 	{
 		if(g.vertexes.size() < 1)
 			return "No vertices found!";

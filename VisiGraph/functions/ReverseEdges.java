@@ -1,10 +1,11 @@
 import java.util.*;
+import java.awt.Frame;
 import java.awt.Graphics2D;
 
 import edu.belmont.mth.visigraph.models.*;
 import edu.belmont.mth.visigraph.models.functions.*;
 
-	public String evaluate( Graphics2D g2D, Graph g )
+	public String evaluate( Graphics2D g2D, Graph g, Component owner )
 	{
 		if ( !g.areDirectedEdgesAllowed )
 			return "Cannot reverse undirected edges!";

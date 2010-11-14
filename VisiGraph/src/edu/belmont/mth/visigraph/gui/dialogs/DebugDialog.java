@@ -21,17 +21,16 @@ public class DebugDialog extends JDialog implements ActionListener
 {	
 	private static DebugDialog dialog;
 	
-	public static void showDialog(Component frameComp, Component locationComp)
+	public static void showDialog(Component owner)
 	{
-		Frame frame = JOptionPane.getFrameForComponent(frameComp);
-		dialog = new DebugDialog(frame, locationComp);
+		dialog = new DebugDialog(JOptionPane.getFrameForComponent(owner));
 		dialog.setVisible(true);
 		return;
 	}
 	
-	private DebugDialog(Frame frame, Component locationComp)
+	private DebugDialog(Frame owner)
 	{
-		super(frame, GlobalSettings.applicationName + " debug console", true);
+		super(owner, GlobalSettings.applicationName + " debug console", true);
 		this.setResizable(false);
 		
 		JPanel inputPanel = new JPanel(new GridBagLayout());
@@ -73,7 +72,7 @@ public class DebugDialog extends JDialog implements ActionListener
 		setPreferredSize(size);
 		
 		pack();
-		setLocationRelativeTo(locationComp);
+		setLocationRelativeTo(owner);
 	}
 
 	public void actionPerformed(ActionEvent e)

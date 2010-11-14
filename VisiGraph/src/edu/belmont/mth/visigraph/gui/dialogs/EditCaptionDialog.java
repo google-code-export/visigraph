@@ -22,17 +22,16 @@ public class EditCaptionDialog extends JDialog implements ActionListener
 	private static JSlider				  captionFontSizeSlider;
 	private static Value                  value;
 	
-	public static Value showDialog(Component frameComp, Component locationComp, String defaultText, double defaultSize)
+	public static Value showDialog(Component owner, String defaultText, double defaultSize)
 	{
-		Frame frame = JOptionPane.getFrameForComponent(frameComp);
-		dialog = new EditCaptionDialog(frame, locationComp, defaultText, defaultSize);
+		dialog = new EditCaptionDialog(JOptionPane.getFrameForComponent(owner), defaultText, defaultSize);
 		dialog.setVisible(true);
 		return value;
 	}
 	
-	private EditCaptionDialog(Frame frame, Component locationComp, String defaultText, final double defaultSize)
+	private EditCaptionDialog(Frame owner, String defaultText, final double defaultSize)
 	{
-		super(frame, StringBundle.get("edit_caption_dialog_title"), true);
+		super(owner, StringBundle.get("edit_caption_dialog_title"), true);
 		
 		JPanel inputPanel = new JPanel( new GridBagLayout( ) );
 		
@@ -103,7 +102,7 @@ public class EditCaptionDialog extends JDialog implements ActionListener
 		this.setPreferredSize(size);
 		
 		this.pack();
-		this.setLocationRelativeTo(locationComp);
+		this.setLocationRelativeTo(owner);
 		this.setResizable(false);
 		value = null;
 	}
