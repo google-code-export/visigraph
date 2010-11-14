@@ -523,7 +523,7 @@ public class GraphDisplayController extends JPanel
 			
 			for ( FunctionBase function : functionsToBeRunCopy )
 			{
-				String result = function.evaluate( g2D, graph );
+				String result = function.evaluate( g2D, graph, (Component) this );
 				if ( result != null && !result.isEmpty( ) )
 				{
 					if ( showExternally )
@@ -547,7 +547,7 @@ public class GraphDisplayController extends JPanel
 		
 		// Apply any selected functions
 		for ( Entry<FunctionBase, JLabel> entry : selectedFunctionLabels.entrySet( ) )
-			entry.getValue( ).setText( entry.getKey( ) + ": " + entry.getKey( ).evaluate( g2D, graph ) );
+			entry.getValue( ).setText( entry.getKey( ) + ": " + entry.getKey( ).evaluate( g2D, graph, (Component) this ) );
 		
 		// Paint controller-specific stuff
 		if ( isMouseDownOnCanvas )
@@ -859,7 +859,7 @@ public class GraphDisplayController extends JPanel
 								if ( !caption.isSelected.get( ) && !isShiftDown )
 									graph.selectAll( false );
 								
-								EditCaptionDialog.Value newValue = EditCaptionDialog.showDialog( this, this, caption.text.get( ), caption.size.get( ) );
+								EditCaptionDialog.Value newValue = EditCaptionDialog.showDialog( this, caption.text.get( ), caption.size.get( ) );
 								if ( newValue != null )
 								{
 									caption.text.set( newValue.getText( ) );
@@ -939,7 +939,7 @@ public class GraphDisplayController extends JPanel
 						Caption caption = new Caption( currentMousePoint.x, currentMousePoint.y, "" );
 						graph.captions.add( caption );
 						
-						EditCaptionDialog.Value newValue = EditCaptionDialog.showDialog( this, this, userSettings.defaultCaptionText.get( ), userSettings.defaultCaptionFontSize.get( ) );
+						EditCaptionDialog.Value newValue = EditCaptionDialog.showDialog( this, userSettings.defaultCaptionText.get( ), userSettings.defaultCaptionFontSize.get( ) );
 						if ( newValue != null )
 						{
 							caption.text.set( newValue.getText( ) );

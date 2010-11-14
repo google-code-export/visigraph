@@ -9,6 +9,7 @@ import java.io.*;
 import java.net.*;
 import java.util.regex.*;
 import javax.swing.*;
+
 import edu.belmont.mth.visigraph.gui.layouts.*;
 import edu.belmont.mth.visigraph.resources.*;
 import edu.belmont.mth.visigraph.settings.*;
@@ -28,17 +29,16 @@ public class DownloadsDialog extends JDialog implements ActionListener
 	
 	private static DownloadsDialog dialog;
 	
-	public static void showDialog(Component frameComp, Component locationComp)
+	public static void showDialog(Component owner)
 	{
-		Frame frame = JOptionPane.getFrameForComponent(frameComp);
-		dialog = new DownloadsDialog(frame, locationComp);
+		dialog = new DownloadsDialog(JOptionPane.getFrameForComponent(owner));
 		dialog.setVisible(true);
 		return;
 	}
 	
-	private DownloadsDialog(Frame frame, Component locationComp)
+	private DownloadsDialog(Frame owner)
 	{
-		super(frame, StringBundle.get("downloads_dialog_title"), true);
+		super(owner, StringBundle.get("downloads_dialog_title"), true);
 		this.setResizable(false);
 		
 		getLatestCheckBox = new JCheckBox(String.format(StringBundle.get("downloads_dialog_download_latest_label"), GlobalSettings.applicationName));
@@ -110,7 +110,7 @@ public class DownloadsDialog extends JDialog implements ActionListener
 		setPreferredSize(size);
 		
 		pack();
-		setLocationRelativeTo(locationComp);
+		setLocationRelativeTo(owner);
 		
 		new Thread("generatorsLoader") { @Override public void run( ) { loadGenerators( ); } }.start( );
 		new Thread("functionsLoader" ) { @Override public void run( ) { loadFunctions ( ); } }.start( );

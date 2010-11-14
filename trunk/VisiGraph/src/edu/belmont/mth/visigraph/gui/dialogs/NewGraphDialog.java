@@ -30,17 +30,16 @@ public class NewGraphDialog extends JDialog implements ActionListener
 	private static JButton				cancelButton;
 	private static Graph				value;
 	
-	public static Graph showDialog(Component frameComp, Component locationComp)
+	public static Graph showDialog(Component owner)
 	{
-		Frame frame = JOptionPane.getFrameForComponent(frameComp);
-		dialog = new NewGraphDialog(frame, locationComp);
+		dialog = new NewGraphDialog(JOptionPane.getFrameForComponent(owner));
 		dialog.setVisible(true);
 		return value;
 	}
 	
-	private NewGraphDialog(Frame frame, Component locationComp)
+	private NewGraphDialog(Frame owner)
 	{
-		super(frame, StringBundle.get("new_graph_dialog_title"), true);
+		super(owner, StringBundle.get("new_graph_dialog_title"), true);
 		
 		JPanel inputPanel = new JPanel( new GridBagLayout() { { rowHeights = new int[] { 9, 28, 28, 28, 28 }; } } );
 		
@@ -215,7 +214,7 @@ public class NewGraphDialog extends JDialog implements ActionListener
 		
 		this.pack();
 		this.setResizable(false);
-		setLocationRelativeTo(locationComp);
+		setLocationRelativeTo(owner);
 		generatorChanged(generatorComboBox.getSelectedObjects()[0]);
 		value = null;
 	}
@@ -228,7 +227,7 @@ public class NewGraphDialog extends JDialog implements ActionListener
 				return;
 			
 			GeneratorBase generator = (GeneratorBase)generatorComboBox.getSelectedObjects()[0];
-			value = generator.generate(generatorParametersField.getText(), allowLoopsCheckBox.isSelected(), allowDirectedEdgesCheckBox.isSelected(), allowMultipleEdgesCheckBox.isSelected(), allowCyclesCheckBox.isSelected());
+			value = generator.generate(generatorParametersField.getText(), allowLoopsCheckBox.isSelected(), allowDirectedEdgesCheckBox.isSelected(), allowMultipleEdgesCheckBox.isSelected(), allowCyclesCheckBox.isSelected(), this);
 		}
 		
 		NewGraphDialog.dialog.setVisible(false);

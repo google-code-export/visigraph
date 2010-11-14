@@ -116,7 +116,7 @@ public class MainWindow extends JFrame
 					@Override
 					public void actionPerformed(ActionEvent e)
 					{
-						Graph newGraph = NewGraphDialog.showDialog(thisFrame, thisFrame);
+						Graph newGraph = NewGraphDialog.showDialog(thisFrame);
 						if (newGraph != null)
 						{
 							GraphWindow graphWindow = new GraphWindow(newGraph);
@@ -601,7 +601,7 @@ public class MainWindow extends JFrame
 					@Override
 					public void actionPerformed(ActionEvent e)
 					{
-						DownloadsDialog.showDialog(thisFrame, thisFrame);
+						DownloadsDialog.showDialog(thisFrame);
 					}
 				});
 			}
@@ -616,7 +616,7 @@ public class MainWindow extends JFrame
 					@Override
 					public void actionPerformed(ActionEvent arg0)
 					{
-						PreferencesDialog.showDialog(thisFrame, thisFrame);
+						PreferencesDialog.showDialog(thisFrame);
 					}
 				});
 			}
@@ -633,7 +633,7 @@ public class MainWindow extends JFrame
 					@Override
 					public void actionPerformed(ActionEvent arg0)
 					{
-						AboutDialog.showDialog(thisFrame, thisFrame);
+						AboutDialog.showDialog(thisFrame);
 					}
 				});
 			}

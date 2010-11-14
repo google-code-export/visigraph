@@ -18,10 +18,11 @@ public interface FunctionBase
 	 * 
 	 * @param g2D the {@code Graphics2D} context onto which the graph has been rendered
 	 * @param g the {@code Graph} on which to evaluate this {@code Function} 
+	 * @param owner a {@code Component} used to show modal dialogs requesting more parameters from the user, if necessary
 	 * 
 	 * @return a {@code String} representing this {@code Function}'s result
 	 */
-	public String evaluate(Graphics2D g2D, Graph g);
+	public String evaluate(Graphics2D g2D, Graph g, Component owner);
 	
 	/**
 	 * Returns a {@code boolean} indicating whether or not this function may be evaluated dynamically. For subclasses that modify the graph in any

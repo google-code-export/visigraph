@@ -1,17 +1,12 @@
-import java.util.regex.*;
-import edu.belmont.mth.visigraph.models.*;
-import javax.swing.*;
-import edu.belmont.mth.visigraph.gui.controls.ValidatingTextField;
-import edu.belmont.mth.visigraph.models.*;
-import edu.belmont.mth.visigraph.models.generators.*;
-import edu.belmont.mth.visigraph.settings.*;
 import java.awt.*;
 import java.util.regex.*;
-import java.awt.event.*;
+import edu.belmont.mth.visigraph.models.*;
+import edu.belmont.mth.visigraph.settings.*;
+import edu.belmont.mth.visigraph.models.generators.*;
 
-	public Graph generate(String params, boolean areLoopsAllowed, boolean areDirectedEdgesAllowed, boolean areMultipleEdgesAllowed, boolean areCyclesAllowed)
+	public Graph generate(String params, boolean areLoopsAllowed, boolean areDirectedEdgesAllowed, boolean areMultipleEdgesAllowed, boolean areCyclesAllowed, Component owner)
 	{
-		Graph graph = new Graph(UserSettings.instance.defaultGraphName.get() + " " + toString(), areLoopsAllowed,areDirectedEdgesAllowed,areMultipleEdgesAllowed,areCyclesAllowed);
+		Graph graph = new Graph(UserSettings.instance.defaultGraphName.get() + " " + toString(), areLoopsAllowed, areDirectedEdgesAllowed, areMultipleEdgesAllowed, areCyclesAllowed);
 		Pattern pattern = Pattern.compile(getParametersValidatingExpression());
 		Matcher matcher = pattern.matcher(params); matcher.find();
 

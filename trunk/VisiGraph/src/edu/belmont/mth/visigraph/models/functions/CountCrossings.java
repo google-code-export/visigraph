@@ -4,11 +4,11 @@
 package edu.belmont.mth.visigraph.models.functions;
 
 import java.awt.*;
-import java.awt.geom.Ellipse2D;
-import java.awt.geom.Point2D;
 import java.util.*;
+import java.util.List;
+import java.awt.geom.*;
 import edu.belmont.mth.visigraph.models.*;
-import edu.belmont.mth.visigraph.utilities.GeometryUtilities;
+import edu.belmont.mth.visigraph.utilities.*;
 
 /**
  * @author Cameron Behar
@@ -20,9 +20,9 @@ public class CountCrossings implements FunctionBase
 	/*###########################################################################################*/
 	
 	@Override
-	public String evaluate( Graphics2D g2D, Graph g )
+	public String evaluate( Graphics2D g2D, Graph g, Component owner )
 	{
-		Vector<Edge> edges = new Vector<Edge>( );
+		List<Edge> edges = new ArrayList<Edge>( );
 		
 		for ( Edge edge : g.edges )
 			if ( edge.isSelected.get( ) )
@@ -40,7 +40,7 @@ public class CountCrossings implements FunctionBase
 		for ( int i = 0; i < edges.size( ); ++i )
 			for ( int j = i + 1; j < edges.size( ); ++j )
 			{
-				Vector<Point2D> crossings = getCrossings( edges.get( i ), edges.get( j ) );
+				List<Point2D> crossings = getCrossings( edges.get( i ), edges.get( j ) );
 				crossingsCount += crossings.size( );
 				
 				if ( crossings.size( ) > 0 && g2D != null )

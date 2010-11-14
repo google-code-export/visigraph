@@ -3,6 +3,8 @@
  */
 package edu.belmont.mth.visigraph.models.generators;
 
+import java.awt.*;
+
 import edu.belmont.mth.visigraph.models.*;
 
 /**
@@ -69,10 +71,11 @@ public interface GeneratorBase
 	 * @param areDirectedEdgesAllowed a {@code boolean} indicating whether the graph is to be directed or undirected
 	 * @param areMultipleEdgesAllowed a {@code boolean} indicating whether or not multi-edges are to be allowed in the graph
 	 * @param areCyclesAllowed a {@code boolean} indicating whether or not cycles are to be allowed in the graph
+	 * @param owner a {@code Component} used to show modal dialogs requesting more parameters from the user, if necessary
 	 * 
 	 * @return the newly generated {@code Graph} object
 	 */
-	public Graph generate( String params, boolean areLoopsAllowed, boolean areDirectedEdgesAllowed, boolean areMultipleEdgesAllowed, boolean areCyclesAllowed );
+	public Graph generate( String params, boolean areLoopsAllowed, boolean areDirectedEdgesAllowed, boolean areMultipleEdgesAllowed, boolean areCyclesAllowed, Component owner );
 	
 	/**
 	 * A boolean rule indicating whether an action should be allowed or prohibited, and whether or not this rule can be overridden

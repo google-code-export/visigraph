@@ -19,17 +19,16 @@ public class AboutDialog extends JDialog implements ActionListener
 {
 	private static AboutDialog dialog;
 	
-	public static void showDialog(Component frameComp, Component locationComp)
+	public static void showDialog(Component owner)
 	{
-		Frame frame = JOptionPane.getFrameForComponent(frameComp);
-		dialog = new AboutDialog(frame, locationComp);
+		dialog = new AboutDialog(JOptionPane.getFrameForComponent(owner));
 		dialog.setVisible(true);
 		return;
 	}
 	
-	private AboutDialog(final Frame frame, final Component locationComp)
+	private AboutDialog(Frame owner)
 	{
-		super(frame, StringBundle.get("about_dialog_title"), true);
+		super(owner, StringBundle.get("about_dialog_title"), true);
 		this.setResizable(false);
 		
 		JPanel inputPanel = new JPanel(new GridBagLayout());
@@ -72,6 +71,7 @@ public class AboutDialog extends JDialog implements ActionListener
 		inputPanel.add( appIncludesLine1Label, new GridBagConstraints() { { fill = GridBagConstraints.HORIZONTAL; gridx = 1; gridy = 12; } } );
 		
 		//Create and initialize the buttons
+		final Frame finalOwner = owner; 
 		final JButton debugButton = new JButton(StringBundle.get("debug_button_text"))
 		{
 			{
@@ -81,7 +81,7 @@ public class AboutDialog extends JDialog implements ActionListener
 					@Override
 					public void actionPerformed(ActionEvent e)
 					{
-						DebugDialog.showDialog(frame, locationComp);
+						DebugDialog.showDialog(finalOwner);
 					}
 				});
 			}
@@ -121,7 +121,7 @@ public class AboutDialog extends JDialog implements ActionListener
 		setPreferredSize(size);
 		
 		pack();
-		setLocationRelativeTo(locationComp);
+		setLocationRelativeTo(owner);
 	}
 
 	public void actionPerformed(ActionEvent e)
