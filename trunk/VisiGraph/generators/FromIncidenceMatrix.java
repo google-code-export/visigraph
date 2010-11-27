@@ -101,7 +101,7 @@ import edu.belmont.mth.visigraph.models.generators.*;
 	}
 
 	public String toString                          ( ) { return "From incidence matrix..."; }
-    public String getParametersDescription          ( ) { return "[vertices] [edges] [0,0] [0,1] [0,2] [...] [1,0] [1,1] [1,2] [...] [2,0] [2,1] [2,2] [... etc.]"; }
+    public String getParametersDescription          ( ) { return "[vertices] [edges] : [0,0] [0,1] [0,2] [...] [1,0] [1,1] [1,2] [...] [2,0] [2,1] [2,2] [... etc.]"; }
     public String getParametersValidatingExpression ( ) { return "^\\s*(\\d+)\\s+(\\d+)\\s*:\\s*\\d+(\\s+\\d+)*\\s*$"; }
     
 	public GeneratorBase.BooleanRule areLoopsAllowed         ( ) { return GeneratorBase.BooleanRule.ForcedTrue; }
