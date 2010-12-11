@@ -18,22 +18,11 @@ import edu.belmont.mth.visigraph.models.functions.*;
 		for ( Edge e : edges )
 			e.isSelected.set( true );
 		
-		return edges.size( ) > 0 ? edges.size( ) + " edges selected" : "No vertices selected!";
+		return ( edges.isEmpty( ) ? "No vertices selected!" : edges.size( ) + " edges selected" );
 	}
 	
-	public boolean allowsDynamicEvaluation( )
-	{
-		return false;
-	}
+	public boolean allowsDynamicEvaluation( ) { return false;                   }
+	public boolean allowsOneTimeEvaluation( ) { return true;                    }
+	public String  toString               ( ) { return "Select adjacent edges"; }
 	
-	public boolean allowsOneTimeEvaluation( )
-	{
-		return true;
-	}
-	
-	public String toString( )
-	{
-		return "Select adjacent edges";
-	}
-	
-return (FunctionBase)this;
+return (FunctionBase) this;

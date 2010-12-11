@@ -12,17 +12,17 @@ import edu.belmont.mth.visigraph.models.*;
  * @author Cameron Behar
  */
 public interface FunctionBase
-{	
+{
 	/**
 	 * Evaluates the function on the specified graph and returns its result as a {@code String}
 	 * 
 	 * @param g2D the {@code Graphics2D} context onto which the graph has been rendered
-	 * @param g the {@code Graph} on which to evaluate this {@code Function} 
+	 * @param g the {@code Graph} on which to evaluate this {@code Function}
 	 * @param owner a {@code Component} used to show modal dialogs requesting more parameters from the user, if necessary
 	 * 
 	 * @return a {@code String} representing this {@code Function}'s result
 	 */
-	public String evaluate(Graphics2D g2D, Graph g, Component owner);
+	public String evaluate( Graphics2D g2D, Graph g, Component owner );
 	
 	/**
 	 * Returns a {@code boolean} indicating whether or not this function may be evaluated dynamically. For subclasses that modify the graph in any
@@ -30,7 +30,7 @@ public interface FunctionBase
 	 * 
 	 * @return {@code true} if dynamic evaluation is allowed, {@code false} otherwise
 	 */
-	public boolean allowsDynamicEvaluation();
+	public boolean allowsDynamicEvaluation( );
 	
 	/**
 	 * Returns a {@code boolean} indicating whether or not this function may be evaluated statically. For subclasses designed to evaluate graphs
@@ -38,5 +38,5 @@ public interface FunctionBase
 	 * 
 	 * @return {@code true} if one-time evaluation is allowed, {@code false} otherwise
 	 */
-	public boolean allowsOneTimeEvaluation();
+	public boolean allowsOneTimeEvaluation( );
 }

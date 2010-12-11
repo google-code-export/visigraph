@@ -101,12 +101,12 @@ public class Caption extends ObservableModel
 	 */
 	public Caption ( double x, double y, String text, double size, boolean isSelected )
 	{
-		this.x          = new Property<Double> ( x          );
-		this.y          = new Property<Double> ( y          );
-		this.text       = new Property<String> ( text       );
-		this.size       = new Property<Double> ( size       );
+		this.x = new Property<Double>( x );
+		this.y = new Property<Double>( y );
+		this.text = new Property<String>( text );
+		this.size = new Property<Double>( size );
 		this.isSelected = new Property<Boolean>( isSelected );
-		this.tag        = new Property<String> ( null );
+		this.tag = new Property<String>( null );
 	}
 	
 	/**
@@ -116,12 +116,12 @@ public class Caption extends ObservableModel
 	 */
 	public Caption ( Map<String, Object> members )
 	{
-		this.x          = new Property<Double> ( (Double)  members.get( "x"          ) );
-		this.y          = new Property<Double> ( (Double)  members.get( "y"          ) );
-		this.text       = new Property<String> ( (String)  members.get( "text"       ) );
-		this.size       = new Property<Double> ( (Double)  members.get( "size"       ) );
+		this.x = new Property<Double>( (Double) members.get( "x" ) );
+		this.y = new Property<Double>( (Double) members.get( "y" ) );
+		this.text = new Property<String>( (String) members.get( "text" ) );
+		this.size = new Property<Double>( (Double) members.get( "size" ) );
 		this.isSelected = new Property<Boolean>( (Boolean) members.get( "isSelected" ) );
-		this.tag        = new Property<String> ( members.containsKey( "tag" ) ? (String) members.get( "tag" ) : null );
+		this.tag = new Property<String>( members.containsKey( "tag" ) ? (String) members.get( "tag" ) : null );
 	}
 	
 	/**
@@ -150,10 +150,10 @@ public class Caption extends ObservableModel
 	{
 		HashMap<String, Object> members = new HashMap<String, Object>( );
 		
-		members.put( "x",          x          );
-		members.put( "y",          y          );
-		members.put( "text",       text       );
-		members.put( "size",       size       );
+		members.put( "x", x );
+		members.put( "y", y );
+		members.put( "text", text );
+		members.put( "size", size );
 		members.put( "isSelected", isSelected );
 		
 		return JsonUtilities.formatObject( members );

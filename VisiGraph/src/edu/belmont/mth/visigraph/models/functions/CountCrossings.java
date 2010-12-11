@@ -7,6 +7,7 @@ import java.awt.*;
 import java.util.*;
 import java.util.List;
 import java.awt.geom.*;
+
 import edu.belmont.mth.visigraph.models.*;
 import edu.belmont.mth.visigraph.utilities.*;
 
@@ -15,10 +16,10 @@ import edu.belmont.mth.visigraph.utilities.*;
  */
 public class CountCrossings implements FunctionBase
 {
-	/*###########################################################################################*/
-	/*#  Note: This class should always be compiled; when scripted, it simply runs too slowly.  #*/
-	/*###########################################################################################*/
-	
+	/* ########################################################################################### */
+	/* #  Note: This class should always be compiled; when scripted, it simply runs too slowly.  # */
+	/* ########################################################################################### */
+
 	@Override
 	public String evaluate( Graphics2D g2D, Graph g, Component owner )
 	{
@@ -60,9 +61,7 @@ public class CountCrossings implements FunctionBase
 	{
 		// Note: we do not count crossings between adjacent (coincident) edges as they are unnecessary
 		if ( e0.isAdjacent( e1 ) )
-		{
 			return new Vector<Point2D>( );
-		}
 		else if ( e0.isLinear( ) )
 		{
 			if ( e1.isLinear( ) )
@@ -75,7 +74,7 @@ public class CountCrossings implements FunctionBase
 		else
 			return GeometryUtilities.getCrossings( e0.getArc( ), e0.getCenter( ), e1.getArc( ), e1.getCenter( ) );
 	}
-
+	
 	public boolean allowsDynamicEvaluation( )
 	{
 		return true;
@@ -92,4 +91,3 @@ public class CountCrossings implements FunctionBase
 		return "Count crossings";
 	}
 }
-

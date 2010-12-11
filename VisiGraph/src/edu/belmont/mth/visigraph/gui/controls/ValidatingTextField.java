@@ -9,58 +9,65 @@ import javax.swing.event.*;
 
 /**
  * @author Cameron Behar
- *
+ * 
  */
-@SuppressWarnings("serial")
+@SuppressWarnings( "serial" )
 public class ValidatingTextField extends JTextField
-{	
+{
 	public String validatingExpression;
 	
 	private final Color successColor;
 	private final Color failColor;
 	
-	public ValidatingTextField(int columns, String validatingExpression)
+	public ValidatingTextField ( int columns, String validatingExpression )
 	{
-		super(columns);
+		super( columns );
 		this.validatingExpression = validatingExpression;
-		super.getDocument().addDocumentListener(new DocumentListener()
+		super.getDocument( ).addDocumentListener( new DocumentListener( )
 		{
 			@Override
-			public void changedUpdate(DocumentEvent e) { /* ignore ? */ }
-
+			public void changedUpdate( DocumentEvent e )
+			{ /* ignore ? */}
+			
 			@Override
-			public void insertUpdate(DocumentEvent e) { validate(); }
-
+			public void insertUpdate( DocumentEvent e )
+			{
+				validate( );
+			}
+			
 			@Override
-			public void removeUpdate(DocumentEvent e) { validate(); }
+			public void removeUpdate( DocumentEvent e )
+			{
+				validate( );
+			}
 		} );
 		
-		successColor = new Color(getBackground().getRGB());
-		failColor = new Color(255, 209, 209);
+		successColor = new Color( getBackground( ).getRGB( ) );
+		failColor = new Color( 255, 209, 209 );
 		
-		validate();
+		validate( );
 	}
 	
 	@Override
-	public void validate()
+	public void validate( )
 	{
-		setBackground(isValid( ) ? successColor : failColor);
+		setBackground( isValid( ) ? successColor : failColor );
 	}
 	
 	@Override
-	public boolean isValid()
+	public boolean isValid( )
 	{
-		return (validatingExpression == null ? true : getText().matches(validatingExpression));
+		return ( validatingExpression == null ? true : getText( ).matches( validatingExpression ) );
 	}
 	
-	public String getValidatingExpression()
+	public String getValidatingExpression( )
 	{
 		return validatingExpression;
 	}
 	
-	public void setValidatingExpression(String validatingExpression)
+	public void setValidatingExpression( String validatingExpression )
 	{
 		this.validatingExpression = validatingExpression;
-		validate();
+		validate( );
 	}
 }

@@ -11,10 +11,12 @@ import edu.belmont.mth.visigraph.settings.*;
 
 /**
  * @author Cameron Behar
- *
+ * 
  */
 public class GraphUtilities
-{	
+{
+	// Layout methods
+	
 	public static void arrangeCircle( Graph graph )
 	{
 		ArrayList<Vertex> selected = new ArrayList<Vertex>( );
@@ -144,7 +146,9 @@ public class GraphUtilities
 		}
 	}
 	
-	public static boolean arrangeTensors( Graph graph )
+	private static HashMap<Vertex, Point2D.Double> velocities = new HashMap<Vertex, Point2D.Double>( );
+	
+	public static boolean arrangeTensors( Graph graph, double speed )
 	{
 		ArrayList<Vertex> selected = new ArrayList<Vertex>( );
 		
@@ -152,76 +156,113 @@ public class GraphUtilities
 			if ( vertex.isSelected.get( ) )
 				selected.add( vertex );
 		
-		boolean noneWereSelected = ( selected.size( ) < 1 );
-		
-		if ( noneWereSelected )
+		if ( selected.size( ) == 0 )
 			selected.addAll( graph.vertexes );
 		
-		HashMap<Vertex, Point2D.Double> forces = new HashMap<Vertex, Point2D.Double>( );
+		double charge = 0.0005;
+		double spring = 0.01;
+		double damping = 0.85;
 		
-		// Initialize the hashmap of forces
+		double totalKineticEnergy = 0;
+		
 		for ( Vertex v : selected )
-			forces.put( v, new Point2D.Double( 0, 0 ) );
+		{
+			Point2D.Double netForce = new Point2D.Double( 0, 0 );
+			
+			for ( Vertex w : selected )
+				if ( v != w )
+				{
+					double xDiff = w.x.get( ) - v.x.get( );
+					double yDiff = w.y.get( ) - v.y.get( );
+					double distanceSquared = ( xDiff * xDiff + yDiff * yDiff );
+					double force = 8987551787.0 * ( ( charge * v.weight.get( ) ) * ( charge * w.weight.get( ) ) / distanceSquared );
+					double angle = Math.atan2( yDiff, xDiff );
+					
+					netForce.setLocation( netForce.x - force * Math.cos( angle ), netForce.y - force * Math.sin( angle ) );
+				}
+			
+			for ( Edge e : graph.getEdges( v ) )
+				if ( !e.isLoop )
+				{
+					double xDiff = e.from.x.get( ) - e.to.x.get( );
+					double yDiff = e.from.y.get( ) - e.to.y.get( );
+					double distance = Math.sqrt( xDiff * xDiff + yDiff * yDiff );
+					double force = spring * ( distance /*- e.weight.get( ) * 100*/);
+					double angle = Math.atan2( yDiff, xDiff );
+					
+					if ( e.from == v )
+						force = -force;
+					
+					netForce.setLocation( netForce.x + force * Math.cos( angle ), netForce.y + force * Math.sin( angle ) );
+				}
+			
+			if ( !velocities.containsKey( v ) )
+				velocities.put( v, new Point2D.Double( 0, 0 ) );
+			
+			Point2D.Double velocity = velocities.get( v );
+			velocity.setLocation( ( velocity.x + netForce.x ) * damping, ( velocity.y + netForce.y ) * damping );
+			totalKineticEnergy += v.weight.get( ) * velocity.distanceSq( 0, 0 );
+		}
 		
-		// Calculate all repulsive forces
-		for ( int i = 0; i < selected.size( ); ++i )
-			for ( int j = i + 1; j < selected.size( ); ++j )
-			{
-				Vertex v0 = selected.get( i );
-				Vertex v1 = selected.get( j );
-				
-				double xDiff = v1.x.get( ) - v0.x.get( );
-				double yDiff = v1.y.get( ) - v0.y.get( );
-				double distanceSquared = ( xDiff * xDiff + yDiff * yDiff );
-				double xForce = UserSettings.instance.autoArrangeRepulsiveForce.get( ) * ( xDiff / distanceSquared );
-				double yForce = UserSettings.instance.autoArrangeRepulsiveForce.get( ) * ( yDiff / distanceSquared );
-				
-				Point2D.Double force0 = forces.get( v0 );
-				force0.x += xForce; force0.y += yForce;
-				
-				// And because every action has an opposite and equal reaction
-				Point2D.Double force1 = forces.get( v1 );
-				force1.x -= xForce; force1.y -= yForce;
-			}
+		/*
+		 * // Initialize the hashmap of forces
+		 * for ( Vertex v : selected )
+		 * forces.put( v, new Point2D.Double( 0, 0 ) );
+		 * 
+		 * // Calculate all repulsive forces
+		 * for ( int i = 0; i < selected.size( ); ++i )
+		 * for ( int j = i + 1; j < selected.size( ); ++j )
+		 * {
+		 * Vertex v0 = selected.get( i );
+		 * Vertex v1 = selected.get( j );
+		 * 
+		 * double xDiff = v1.x.get( ) - v0.x.get( );
+		 * double yDiff = v1.y.get( ) - v0.y.get( );
+		 * double distanceSquared = ( xDiff * xDiff + yDiff * yDiff );
+		 * double xForce = UserSettings.instance.autoArrangeRepulsiveForce.get( ) * ( xDiff / distanceSquared );
+		 * double yForce = UserSettings.instance.autoArrangeRepulsiveForce.get( ) * ( yDiff / distanceSquared );
+		 * 
+		 * Point2D.Double force0 = forces.get( v0 );
+		 * force0.x += xForce; force0.y += yForce;
+		 * 
+		 * // And because every action has an opposite and equal reaction
+		 * Point2D.Double force1 = forces.get( v1 );
+		 * force1.x -= xForce; force1.y -= yForce;
+		 * }
+		 * 
+		 * // Calculate all attractive forces
+		 * for ( Edge edge : graph.edges )
+		 * if ( edge.from != edge.to && ( noneWereSelected || edge.from.isSelected.get( ) || edge.to.isSelected.get( ) ) )
+		 * {
+		 * double xDiff = edge.to.x.get( ) - edge.from.x.get( );
+		 * double yDiff = edge.to.y.get( ) - edge.from.y.get( );
+		 * double distanceSquared = ( xDiff * xDiff + yDiff * yDiff );
+		 * double xForce = UserSettings.instance.autoArrangeAttractiveForce.get( ) * xDiff * distanceSquared;
+		 * double yForce = UserSettings.instance.autoArrangeAttractiveForce.get( ) * yDiff * distanceSquared;
+		 * 
+		 * if ( noneWereSelected || edge.from.isSelected.get( ) )
+		 * {
+		 * Point2D.Double force = forces.get( edge.from );
+		 * force.x += xForce; force.y += yForce;
+		 * }
+		 * 
+		 * // And because every action has an opposite and equal reaction
+		 * if ( noneWereSelected || edge.to.isSelected.get( ) )
+		 * {
+		 * Point2D.Double force = forces.get( edge.to );
+		 * force.x -= xForce; force.y -= yForce;
+		 * }
+		 * }
+		 */
 
-		// Calculate all attractive forces
-		for ( Edge edge : graph.edges )
-			if ( edge.from != edge.to && ( noneWereSelected || edge.from.isSelected.get( ) || edge.to.isSelected.get( ) ) )
-			{
-				double xDiff = edge.to.x.get( ) - edge.from.x.get( );
-				double yDiff = edge.to.y.get( ) - edge.from.y.get( );
-				double distanceSquared = ( xDiff * xDiff + yDiff * yDiff );
-				double xForce = UserSettings.instance.autoArrangeAttractiveForce.get( ) * xDiff * distanceSquared;
-				double yForce = UserSettings.instance.autoArrangeAttractiveForce.get( ) * yDiff * distanceSquared;
-				
-				if ( noneWereSelected || edge.from.isSelected.get( ) )
-				{
-					Point2D.Double force = forces.get( edge.from );
-					force.x += xForce; force.y += yForce;
-				}
-				
-				// And because every action has an opposite and equal reaction
-				if ( noneWereSelected || edge.to.isSelected.get( ) )
-				{
-					Point2D.Double force = forces.get( edge.to );
-					force.x -= xForce; force.y -= yForce;
-				}
-			}
-		
-		double netForce = 0.0;
-		
 		// Apply all net forces
 		for ( Vertex v : selected )
 		{
-			Point2D.Double force = forces.get( v );
-			v.x.set( v.x.get( ) + force.x );
-			v.y.set( v.y.get( ) + force.y );
-			
-			// And whilst I know I should be using the magnitude, this is quicker
-			netForce += Math.abs( force.x ) + Math.abs( force.y );
+			v.x.set( v.x.get( ) + speed * velocities.get( v ).x );
+			v.y.set( v.y.get( ) + speed * velocities.get( v ).y );
 		}
 		
-		return !noneWereSelected && netForce / selected.size( ) < 0.1;
+		return totalKineticEnergy >= 0.01;
 	}
 	
 	public static void alignHorizontally( Graph graph )
@@ -242,7 +283,7 @@ public class GraphUtilities
 			for ( Caption c : graph.captions )
 				if ( c.isSelected.get( ) )
 					return;
-
+			
 			selectedVertexes.addAll( graph.vertexes );
 		}
 		
@@ -273,7 +314,7 @@ public class GraphUtilities
 			for ( Caption c : graph.captions )
 				if ( c.isSelected.get( ) )
 					return;
-
+			
 			selectedVertexes.addAll( graph.vertexes );
 		}
 		
@@ -291,7 +332,7 @@ public class GraphUtilities
 		List<Vertex> selectedVertexes = new ArrayList<Vertex>( );
 		
 		for ( Vertex v : graph.vertexes )
-			if (v.isSelected.get( ) )
+			if ( v.isSelected.get( ) )
 				selectedVertexes.add( v );
 		
 		if ( selectedVertexes.size( ) < 1 )
@@ -303,7 +344,7 @@ public class GraphUtilities
 			for ( Caption c : graph.captions )
 				if ( c.isSelected.get( ) )
 					return;
-
+			
 			selectedVertexes.addAll( graph.vertexes );
 		}
 		
@@ -339,7 +380,7 @@ public class GraphUtilities
 			for ( Caption c : graph.captions )
 				if ( c.isSelected.get( ) )
 					return;
-
+			
 			selectedVertexes.addAll( graph.vertexes );
 		}
 		
@@ -364,7 +405,7 @@ public class GraphUtilities
 		
 		List<Vertex> selectedVertexes = new ArrayList<Vertex>( );
 		for ( Vertex v : graph.vertexes )
-			if (v.isSelected.get( ) )
+			if ( v.isSelected.get( ) )
 				selectedVertexes.add( v );
 		
 		if ( selectedVertexes.size( ) < 1 )
@@ -376,13 +417,13 @@ public class GraphUtilities
 			for ( Caption c : graph.captions )
 				if ( c.isSelected.get( ) )
 					return;
-
+			
 			selectedVertexes.addAll( graph.vertexes );
 		}
 		
 		List<Edge> selectedEdges = new ArrayList<Edge>( );
 		for ( Edge e : graph.edges )
-			if (e.isSelected.get( ) )
+			if ( e.isSelected.get( ) )
 				selectedEdges.add( e );
 		
 		for ( Vertex v : selectedVertexes )
@@ -426,7 +467,7 @@ public class GraphUtilities
 		
 		List<Vertex> selectedVertexes = new ArrayList<Vertex>( );
 		for ( Vertex v : graph.vertexes )
-			if (v.isSelected.get( ) )
+			if ( v.isSelected.get( ) )
 				selectedVertexes.add( v );
 		
 		if ( selectedVertexes.size( ) < 1 )
@@ -438,13 +479,13 @@ public class GraphUtilities
 			for ( Caption c : graph.captions )
 				if ( c.isSelected.get( ) )
 					return;
-
+			
 			selectedVertexes.addAll( graph.vertexes );
 		}
 		
 		List<Edge> selectedEdges = new ArrayList<Edge>( );
 		for ( Edge e : graph.edges )
-			if (e.isSelected.get( ) )
+			if ( e.isSelected.get( ) )
 				selectedEdges.add( e );
 		
 		for ( Vertex v : selectedVertexes )
@@ -499,7 +540,7 @@ public class GraphUtilities
 			for ( Caption c : graph.captions )
 				if ( c.isSelected.get( ) )
 					return;
-
+			
 			selectedVertexes.addAll( graph.vertexes );
 		}
 		
@@ -547,7 +588,7 @@ public class GraphUtilities
 			for ( Caption c : graph.captions )
 				if ( c.isSelected.get( ) )
 					return;
-
+			
 			selectedVertexes.addAll( graph.vertexes );
 		}
 		
@@ -577,7 +618,7 @@ public class GraphUtilities
 			e.refresh( );
 		}
 	}
-		
+	
 	public static void scale( Graph graph, double factor )
 	{
 		Point2D.Double centroid = new Point2D.Double( );
@@ -596,7 +637,7 @@ public class GraphUtilities
 			for ( Caption c : graph.captions )
 				if ( c.isSelected.get( ) )
 					return;
-
+			
 			selectedVertexes.addAll( graph.vertexes );
 		}
 		
@@ -615,15 +656,91 @@ public class GraphUtilities
 			v.y.set( factor * ( v.y.get( ) - centroid.y ) + centroid.y );
 		}
 	}
+	
+	// countConnectedComponents method + supporting class and methods
+	
+	private static Random random = new Random( );
+	
+	public static int countConnectedComponents( Graph graph )
+	{
+		if ( graph.vertexes.size( ) < 1 )
+			return 0;
+		
+		HashMap<Vertex, Node> vertexNodes = new HashMap<Vertex, Node>( );
+		
+		// Add all selected vertices
+		for ( Vertex v : graph.vertexes )
+			if ( v.isSelected.get( ) )
+				vertexNodes.put( v, new Node( ) );
+		
+		// If no vertices were selected, add them all
+		if ( vertexNodes.isEmpty( ) )
+			for ( Vertex v : graph.vertexes )
+				vertexNodes.put( v, new Node( ) );
+		
+		// Union vertex sets using selected edges
+		boolean foundSelectedEdges = false;
+		for ( Edge e : graph.edges )
+			if ( e.isSelected.get( ) )
+			{
+				foundSelectedEdges = true;
+				if ( !e.isLoop )
+					union( vertexNodes.get( e.from ), vertexNodes.get( e.to ) );
+			}
+		
+		// If no edges were selected, union vertex sets using all edges
+		if ( !foundSelectedEdges )
+			for ( Edge e : graph.edges )
+				if ( !e.isLoop )
+					union( vertexNodes.get( e.from ), vertexNodes.get( e.to ) );
+		
+		int connectedComponentCount = 0;
+		
+		for ( Node node : vertexNodes.values( ) )
+			if ( node.parent == null )
+				++connectedComponentCount;
+		
+		return connectedComponentCount;
+	}
+	
+	private static Node find( Node node )
+	{
+		Node root = node;
+		
+		while ( root.parent != null )
+			root = root.parent;
+		
+		Node nextNode;
+		while ( node.parent != null )
+		{
+			nextNode = node.parent;
+			node.parent = root;
+			node = nextNode;
+		}
+		
+		return root;
+	}
+	
+	private static void union( Node a, Node b )
+	{
+		if ( a != null && b != null )
+		{
+			Node rootA = find( a );
+			Node rootB = find( b );
+			
+			if ( rootA != rootB )
+			{
+				if ( rootA.rank > rootB.rank || random.nextBoolean( ) )
+					rootA.parent = rootB;
+				else
+					rootB.parent = rootA;
+			}
+		}
+	}
+	
+	private static class Node
+	{
+		public Node parent = null;
+		public int rank = 0;
+	}
 }
-
-
-
-
-
-
-
-
-
-
-

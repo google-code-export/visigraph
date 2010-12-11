@@ -1,45 +1,46 @@
 import java.awt.*;
 import java.util.*;
+import java.util.List;
+
 import edu.belmont.mth.visigraph.models.*;
 import edu.belmont.mth.visigraph.models.functions.*;
 
-	public String evaluate(Graphics2D g2D, Graph g, Component owner)
+	public String evaluate( Graphics2D g2D, Graph g, Component owner )
 	{
-		int maxDegreeAll = 0;
-		int maxDegreeSelected = 0;
-		boolean anySelected = false;
+		HashMap vertexDegrees = new HashMap( );
 		
-		for(Vertex v : g.vertexes)
+		for ( Vertex v : g.vertexes )
+			if ( v.isSelected.get( ) )
+				vertexDegrees.put( v, 0 );
+		
+		if ( vertexDegrees.isEmpty( ) )
+			for ( Vertex v : g.vertexes )
+				vertexDegrees.put( v, 0 );
+		
+		for ( Edge e : g.edges )
 		{
-			int degree = g.getNeighbors(v).size();
+			Integer outDegrees = vertexDegrees.get( e.from );
+			if ( outDegrees != null )
+				vertexDegrees.put( e.from, outDegrees + 1 );
 			
-			if(degree > maxDegreeAll)
-				maxDegreeAll = degree;
-			
-			if(v.isSelected.get())
+			if ( !e.isLoop )
 			{
-				anySelected = true;
-				if(degree > maxDegreeSelected)
-					maxDegreeSelected = degree;
+				Integer inDegrees = vertexDegrees.get( e.to );
+				if ( inDegrees != null )
+					vertexDegrees.put( e.to  , inDegrees  + 1 );
 			}
 		}
 		
-		return (anySelected ? maxDegreeSelected : maxDegreeAll).toString();
+		int maxDegrees = 0;
+		for ( Integer degrees : vertexDegrees.values( ) )
+			if ( degrees > maxDegrees )
+				maxDegrees = degrees;
+		
+		return Integer.toString( maxDegrees );
 	}
 	
-	public boolean allowsDynamicEvaluation()
-	{
-		return true;
-	}
-	
-	public boolean allowsOneTimeEvaluation()
-	{
-		return true;
-	}
-	
-	public String toString()
-	{
-		return "Get maximum degree";
-	}
+	public boolean allowsDynamicEvaluation( ) { return true;                 }
+	public boolean allowsOneTimeEvaluation( ) { return true;                 }
+	public String  toString               ( ) { return "Get maximum degree"; }
 
-return (FunctionBase)this;
+return (FunctionBase) this;

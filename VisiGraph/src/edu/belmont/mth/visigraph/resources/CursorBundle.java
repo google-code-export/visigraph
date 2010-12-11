@@ -15,44 +15,51 @@ import edu.belmont.mth.visigraph.utilities.DebugUtilities;
  */
 public class CursorBundle extends ResourceBundle
 {
-	private static HashMap<String, Cursor> map = new HashMap<String, Cursor>();																									
-	private static final ResourceBundle	   instance = ResourceBundle.getBundle("edu.belmont.mth.visigraph.resources.CursorBundle");
+	private static HashMap<String, Cursor> map = new HashMap<String, Cursor>( );
+	private static final ResourceBundle instance = ResourceBundle.getBundle( "edu.belmont.mth.visigraph.resources.CursorBundle" );
 	
-	public static Cursor get(String key)
+	public static Cursor get( String key )
 	{
-		try { return (Cursor) instance.getObject(key); }
-		catch (MissingResourceException ex) { DebugUtilities.logException(String.format("An exception occurred while trying to load resource %s.", key), ex); return null; }
+		try
+		{
+			return (Cursor) instance.getObject( key );
+		}
+		catch ( MissingResourceException ex )
+		{
+			DebugUtilities.logException( String.format( "An exception occurred while trying to load resource %s.", key ), ex );
+			return null;
+		}
 	}
 	
 	@Override
-	public Enumeration<String> getKeys()
+	public Enumeration<String> getKeys( )
 	{
-		return (new Vector<String>(map.keySet())).elements();
+		return ( new Vector<String>( map.keySet( ) ) ).elements( );
 	}
 	
 	@Override
-	protected final Object handleGetObject(String key)
+	protected final Object handleGetObject( String key )
 	{
-		return loadCursor(key, ".gif");
+		return loadCursor( key, ".gif" );
 	}
 	
-	private Cursor loadCursor(String filename, String extension)
+	private Cursor loadCursor( String filename, String extension )
 	{
 		String imageName = filename + extension;
 		
-		Cursor cursor = map.get(imageName);
+		Cursor cursor = map.get( imageName );
 		
-		if (cursor != null)
+		if ( cursor != null )
 			return cursor;
 		
-		URL url = getClass().getResource("cursors/" + imageName);
+		URL url = getClass( ).getResource( "cursors/" + imageName );
 		
-		if (url == null)
+		if ( url == null )
 			return null;
 		
-		Toolkit toolkit = Toolkit.getDefaultToolkit();
-		cursor = toolkit.createCustomCursor(toolkit.getImage(url), new Point(1, 1), "");
-		map.put(imageName, cursor);
+		Toolkit toolkit = Toolkit.getDefaultToolkit( );
+		cursor = toolkit.createCustomCursor( toolkit.getImage( url ), new Point( 1, 1 ), "" );
+		map.put( imageName, cursor );
 		
 		return cursor;
 	}

@@ -4,6 +4,7 @@
 package edu.belmont.mth.visigraph.models.generators;
 
 import java.io.*;
+
 import edu.belmont.mth.visigraph.models.*;
 import edu.belmont.mth.visigraph.utilities.*;
 import bsh.Interpreter;
@@ -27,7 +28,8 @@ public class GeneratorService
 	public final ObservableList<GeneratorBase> generators;
 	
 	/**
-	 * Constructs the Singleton instance of {@code GeneratorService}, populating the list of graph generators with scripts compiled using BeanShell from the generators folder of the application's local directory
+	 * Constructs the Singleton instance of {@code GeneratorService}, populating the list of graph generators with scripts compiled using BeanShell
+	 * from the generators folder of the application's local directory
 	 */
 	private GeneratorService ( )
 	{
@@ -37,11 +39,7 @@ public class GeneratorService
 		try
 		{
 			for ( Class<GeneratorBase> generator : ReflectionUtilities.getClasses( "edu.belmont.mth.visigraph.models.generators" ) )
-				try
-				{
-					if ( !generator.isInterface( ) && GeneratorBase.class.isAssignableFrom( generator ) )
-						generators.add( generator.newInstance( ) );
-				}
+				try { if ( !generator.isInterface( ) && GeneratorBase.class.isAssignableFrom( generator ) ) generators.add( generator.newInstance( ) ); }
 				catch ( Exception ex ) { DebugUtilities.logException( String.format( "An exception occurred while instantiating/casting %s.", generator.getName( ) ), ex ); }
 		}
 		catch ( Exception ex ) { DebugUtilities.logException( "An exception occurred while loading standard library generators.", ex ); }

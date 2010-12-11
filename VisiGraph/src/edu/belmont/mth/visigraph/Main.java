@@ -5,9 +5,10 @@ package edu.belmont.mth.visigraph;
 
 import java.io.*;
 import javax.swing.*;
-import edu.belmont.mth.visigraph.gui.windows.*;
+
 import edu.belmont.mth.visigraph.settings.*;
 import edu.belmont.mth.visigraph.utilities.*;
+import edu.belmont.mth.visigraph.gui.windows.*;
 
 /**
  * @author Cameron Behar

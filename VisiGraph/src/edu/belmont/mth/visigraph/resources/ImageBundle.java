@@ -15,43 +15,50 @@ import edu.belmont.mth.visigraph.utilities.DebugUtilities;
  */
 public class ImageBundle extends ResourceBundle
 {
-	private static HashMap<String, Image> map      = new HashMap<String, Image>();
-	private static final ResourceBundle	  instance = ResourceBundle.getBundle("edu.belmont.mth.visigraph.resources.ImageBundle");
+	private static HashMap<String, Image> map = new HashMap<String, Image>( );
+	private static final ResourceBundle instance = ResourceBundle.getBundle( "edu.belmont.mth.visigraph.resources.ImageBundle" );
 	
-	public static Image get(String key)
+	public static Image get( String key )
 	{
-		try { return (Image) instance.getObject(key); }
-		catch (MissingResourceException ex) { DebugUtilities.logException(String.format("An exception occurred while trying to load resource %s.", key), ex); return null; }
+		try
+		{
+			return (Image) instance.getObject( key );
+		}
+		catch ( MissingResourceException ex )
+		{
+			DebugUtilities.logException( String.format( "An exception occurred while trying to load resource %s.", key ), ex );
+			return null;
+		}
 	}
 	
 	@Override
-	public Enumeration<String> getKeys()
+	public Enumeration<String> getKeys( )
 	{
-		return (new Vector<String>(map.keySet())).elements();
+		return ( new Vector<String>( map.keySet( ) ) ).elements( );
 	}
 	
 	@Override
-	protected final Object handleGetObject(String key)
+	protected final Object handleGetObject( String key )
 	{
-		return loadImage(key, ".png");
+		return loadImage( key, ".png" );
 	}
 	
-	private Image loadImage(String filename, String extension)
+	private Image loadImage( String filename, String extension )
 	{
 		String imageName = filename + extension;
 		
-		Image image = map.get(imageName);
+		Image image = map.get( imageName );
 		
-		if (image != null)
+		if ( image != null )
 			return image;
 		
-		URL url = getClass().getResource("images/" + imageName);
+		URL url = getClass( ).getResource( "images/" + imageName );
 		
-		if (url == null)
+		if ( url == null )
 			return null;
 		
-		image = Toolkit.getDefaultToolkit().createImage(url);
-		map.put(imageName, image);
+		image = Toolkit.getDefaultToolkit( ).createImage( url );
+		map.put( imageName, image );
 		
 		return image;
 	}
