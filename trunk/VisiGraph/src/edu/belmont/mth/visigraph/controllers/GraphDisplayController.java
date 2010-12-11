@@ -68,6 +68,7 @@ public class GraphDisplayController extends JPanel
 	private UserSettings			  userSettings = UserSettings.instance;
 	private boolean					  isViewportInvalidated;
 	private Timer					  viewportValidationTimer;
+	private double					  arrangeWebSpeed;
 	
 	public GraphDisplayController ( Graph graph )
 	{
@@ -733,6 +734,10 @@ public class GraphDisplayController extends JPanel
 			case KeyEvent.VK_ESCAPE:
 				{
 					graph.selectAll( false );
+					fromVertex = null;
+					if ( panTimer != null )
+						panTimer.stop( );
+					
 					break;
 				}
 			case KeyEvent.VK_UP:
@@ -1497,15 +1502,18 @@ public class GraphDisplayController extends JPanel
 					{
 						public void actionPerformed( ActionEvent e )
 						{
+							arrangeWebButton.setEnabled( false );
+							arrangeWebSpeed = 3.0;
+							
 							new Timer( 50, new ActionListener( )
 							{
 								public void actionPerformed( ActionEvent e )
 								{
-									Timer timer = (Timer) e.getSource( );
-									timer.setDelay( (int) ( timer.getDelay( ) * userSettings.autoArrangeDecelerationFactor.get( ) ) );
-									
-									if ( GraphUtilities.arrangeTensors( graph ) || timer.getDelay( ) >= 500 )
-										timer.stop( );
+									if ( !GraphUtilities.arrangeTensors( graph, arrangeWebSpeed ) || ( arrangeWebSpeed *= 0.95 ) < 0.15 )
+									{
+										arrangeWebButton.setEnabled( true );
+										( (Timer) e.getSource( ) ).stop( );
+									}
 								}
 							} ).start( );
 						}

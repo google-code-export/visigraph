@@ -5,156 +5,154 @@ package edu.belmont.mth.visigraph.gui.windows;
 
 import java.io.*;
 import java.awt.*;
-
-import javax.imageio.ImageIO;
 import javax.swing.*;
+import javax.imageio.*;
 import javax.swing.event.*;
-import javax.swing.filechooser.FileNameExtensionFilter;
+import javax.swing.filechooser.*;
 
 import edu.belmont.mth.visigraph.controllers.*;
-import edu.belmont.mth.visigraph.controllers.GraphDisplayController.GraphChangeEvent;
-import edu.belmont.mth.visigraph.controllers.GraphDisplayController.GraphChangeEventListener;
 import edu.belmont.mth.visigraph.models.*;
-import edu.belmont.mth.visigraph.resources.StringBundle;
 import edu.belmont.mth.visigraph.settings.*;
-import edu.belmont.mth.visigraph.utilities.DebugUtilities;
-import edu.belmont.mth.visigraph.views.svg.GraphSvgView;
+import edu.belmont.mth.visigraph.resources.*;
+import edu.belmont.mth.visigraph.utilities.*;
+import edu.belmont.mth.visigraph.views.svg.*;
+import edu.belmont.mth.visigraph.controllers.GraphDisplayController.*;
 
 /**
  * @author Cameron Behar
  * 
  */
-@SuppressWarnings("serial")
+@SuppressWarnings( "serial" )
 public class GraphWindow extends JInternalFrame implements GraphChangeEventListener
 {
-	private JFileChooser			fileChooser;
-	private GraphDisplayController	gdc;
-	private File					file;
-	private UserSettings			userSettings = UserSettings.instance;
-	private boolean					hasChanged;
-	private boolean					hasLoaded;
+	private JFileChooser 		   fileChooser;
+	private GraphDisplayController gdc;
+	private File 				   file;
+	private UserSettings 		   userSettings = UserSettings.instance;
+	private boolean 			   hasChanged;
+	private boolean 			   hasLoaded;
 	
-	public GraphWindow(Graph g)
+	public GraphWindow ( Graph g )
 	{
-		super("", true, true, true, true);
+		super( "", true, true, true, true );
 		this.file = null;
-		this.setSize(new Dimension(userSettings.graphWindowWidth.get(), userSettings.graphWindowHeight.get()));
-		this.add(setGdc(new GraphDisplayController(g)));
-		this.setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
+		this.setSize( new Dimension( userSettings.graphWindowWidth.get( ), userSettings.graphWindowHeight.get( ) ) );
+		this.add( setGdc( new GraphDisplayController( g ) ) );
+		this.setDefaultCloseOperation( DO_NOTHING_ON_CLOSE );
 		this.hasChanged = true;
 		this.hasLoaded = false;
-		this.addInternalFrameListener(new InternalFrameListener()
+		this.addInternalFrameListener( new InternalFrameListener( )
 		{
-			public void internalFrameActivated(InternalFrameEvent e)
+			public void internalFrameActivated( InternalFrameEvent e )
 			{
-				if (!hasLoaded)
+				if ( !hasLoaded )
 				{
-					gdc.zoomFit();
+					gdc.zoomFit( );
 					hasLoaded = true;
 				}
 			}
 			
-			public void internalFrameClosed(InternalFrameEvent e)
-			{ }
+			public void internalFrameClosed( InternalFrameEvent e )
+			{}
 			
-			public void internalFrameClosing(InternalFrameEvent e)
+			public void internalFrameClosing( InternalFrameEvent e )
 			{
-				closingWindow(e);
+				closingWindow( e );
 			}
 			
-			public void internalFrameDeactivated(InternalFrameEvent e)
-			{ }
+			public void internalFrameDeactivated( InternalFrameEvent e )
+			{}
 			
-			public void internalFrameDeiconified(InternalFrameEvent e)
-			{ }
+			public void internalFrameDeiconified( InternalFrameEvent e )
+			{}
 			
-			public void internalFrameIconified(InternalFrameEvent e)
-			{ }
+			public void internalFrameIconified( InternalFrameEvent e )
+			{}
 			
-			public void internalFrameOpened(InternalFrameEvent e)
-			{ }
-		});
-		this.updateTitle();
-		this.fileChooser = new JFileChooser();
-		this.setVisible(true);
-		this.requestFocus();
-		this.toFront();
+			public void internalFrameOpened( InternalFrameEvent e )
+			{}
+		} );
+		this.updateTitle( );
+		this.fileChooser = new JFileChooser( );
+		this.setVisible( true );
+		this.requestFocus( );
+		this.toFront( );
 	}
 	
-	public void updateTitle()
+	public void updateTitle( )
 	{
-		this.setTitle(String.format("%1$s - %2$s%3$s", GlobalSettings.applicationName, getGdc().getGraph().name.get(), (hasChanged ? "*" : "")));
+		this.setTitle( String.format( "%1$s - %2$s%3$s", GlobalSettings.applicationName, getGdc( ).getGraph( ).name.get( ), ( hasChanged ? "*" : "" ) ) );
 	}
 	
-	public void graphChangeEventOccurred(GraphChangeEvent e)
+	public void graphChangeEventOccurred( GraphChangeEvent e )
 	{
-		setHasChanged(true);
+		setHasChanged( true );
 	}
 	
-	public File getFile()
+	public File getFile( )
 	{
 		return this.file;
 	}
 	
-	public void setFile(File file)
+	public void setFile( File file )
 	{
 		this.file = file;
 	}
 	
-	public GraphDisplayController setGdc(GraphDisplayController gdc)
+	public GraphDisplayController setGdc( GraphDisplayController gdc )
 	{
-		if (gdc != null)
-			gdc.removeGraphChangeListener(this);
+		if ( gdc != null )
+			gdc.removeGraphChangeListener( this );
 		
 		this.gdc = gdc;
-		this.gdc.addGraphChangeListener(this);
+		this.gdc.addGraphChangeListener( this );
 		
 		return gdc;
 	}
 	
-	public GraphDisplayController getGdc()
+	public GraphDisplayController getGdc( )
 	{
 		return gdc;
 	}
 	
-	public boolean getHasChanged()
+	public boolean getHasChanged( )
 	{
 		return hasChanged;
 	}
 	
-	public void setHasChanged(boolean hasChanged)
+	public void setHasChanged( boolean hasChanged )
 	{
-		if (this.hasChanged != hasChanged)
+		if ( this.hasChanged != hasChanged )
 		{
 			this.hasChanged = hasChanged;
-			updateTitle();
+			updateTitle( );
 		}
 	}
 	
-	public void closingWindow(InternalFrameEvent e)
+	public void closingWindow( InternalFrameEvent e )
 	{
-		if (hasChanged)
+		if ( hasChanged )
 		{
-			int result = JOptionPane.showInternalConfirmDialog(this, String.format(StringBundle.get("do_you_want_to_save_changes_dialog_message"), gdc.getGraph().name.get()), GlobalSettings.applicationName, JOptionPane.YES_NO_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE);
+			int result = JOptionPane.showInternalConfirmDialog( this, String.format( StringBundle.get( "do_you_want_to_save_changes_dialog_message" ), gdc.getGraph( ).name.get( ) ), GlobalSettings.applicationName, JOptionPane.YES_NO_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE );
 			
-			switch (result)
+			switch ( result )
 			{
 				case JOptionPane.YES_OPTION:
 					try
 					{
-						save();
-						gdc.dispose();
-						dispose();
+						save( );
+						gdc.dispose( );
+						dispose( );
 					}
-					catch (IOException ex)
+					catch ( IOException ex )
 					{
-						DebugUtilities.logException("An exception occurred while saving graph.", ex);
-						JOptionPane.showInternalMessageDialog(this, String.format(StringBundle.get("an_exception_occurred_while_saving_graph_dialog_message"), gdc.getGraph().name.get()));
+						DebugUtilities.logException( "An exception occurred while saving graph.", ex );
+						JOptionPane.showInternalMessageDialog( this, String.format( StringBundle.get( "an_exception_occurred_while_saving_graph_dialog_message" ), gdc.getGraph( ).name.get( ) ) );
 					}
 					break;
 				case JOptionPane.NO_OPTION:
-					gdc.dispose();
-					dispose();
+					gdc.dispose( );
+					dispose( );
 					break;
 				case JOptionPane.CANCEL_OPTION:
 					break;
@@ -162,44 +160,44 @@ public class GraphWindow extends JInternalFrame implements GraphChangeEventListe
 		}
 		else
 		{
-			gdc.dispose();
-			dispose();
+			gdc.dispose( );
+			dispose( );
 		}
 	}
 	
-	public void saveAs()
+	public void saveAs( )
 	{
-		fileChooser.resetChoosableFileFilters();
-		fileChooser.setAcceptAllFileFilterUsed(false);
-		fileChooser.addChoosableFileFilter(new FileNameExtensionFilter(StringBundle.get("portable_network_graphics_file_description"), "png"));
-		fileChooser.addChoosableFileFilter(new FileNameExtensionFilter(StringBundle.get("scalable_vector_graphics_file_description"), "svg"));
-		fileChooser.addChoosableFileFilter(new FileNameExtensionFilter(StringBundle.get("visigraph_file_description"), "vsg"));
-		fileChooser.setMultiSelectionEnabled(false);
+		fileChooser.resetChoosableFileFilters( );
+		fileChooser.setAcceptAllFileFilterUsed( false );
+		fileChooser.addChoosableFileFilter( new FileNameExtensionFilter( StringBundle.get( "portable_network_graphics_file_description" ), "png" ) );
+		fileChooser.addChoosableFileFilter( new FileNameExtensionFilter( StringBundle.get( "scalable_vector_graphics_file_description" ), "svg" ) );
+		fileChooser.addChoosableFileFilter( new FileNameExtensionFilter( StringBundle.get( "visigraph_file_description" ), "vsg" ) );
+		fileChooser.setMultiSelectionEnabled( false );
 		
 		boolean success = false;
 		
-		while (!success)
+		while ( !success )
 		{
-			if (fileChooser.showSaveDialog(this) == JFileChooser.APPROVE_OPTION)
+			if ( fileChooser.showSaveDialog( this ) == JFileChooser.APPROVE_OPTION )
 			{
 				try
 				{
-					File selectedFile = fileChooser.getSelectedFile();
+					File selectedFile = fileChooser.getSelectedFile( );
 					
-					if (fileChooser.getFileFilter().getDescription().equals(StringBundle.get("visigraph_file_description")) && !selectedFile.getName().endsWith(".vsg"))
-						selectedFile = new File(selectedFile.getAbsolutePath() + ".vsg");
-					else if (fileChooser.getFileFilter().getDescription().equals(StringBundle.get("scalable_vector_graphics_file_description")) && !selectedFile.getName().endsWith(".svg"))
-						selectedFile = new File(selectedFile.getAbsolutePath() + ".svg");
-					else if (fileChooser.getFileFilter().getDescription().equals(StringBundle.get("portable_network_graphics_file_description")) && !selectedFile.getName().endsWith(".png"))
-						selectedFile = new File(selectedFile.getAbsolutePath() + ".png");
+					if ( fileChooser.getFileFilter( ).getDescription( ).equals( StringBundle.get( "visigraph_file_description" ) ) && !selectedFile.getName( ).endsWith( ".vsg" ) )
+						selectedFile = new File( selectedFile.getAbsolutePath( ) + ".vsg" );
+					else if ( fileChooser.getFileFilter( ).getDescription( ).equals( StringBundle.get( "scalable_vector_graphics_file_description" ) ) && !selectedFile.getName( ).endsWith( ".svg" ) )
+						selectedFile = new File( selectedFile.getAbsolutePath( ) + ".svg" );
+					else if ( fileChooser.getFileFilter( ).getDescription( ).equals( StringBundle.get( "portable_network_graphics_file_description" ) ) && !selectedFile.getName( ).endsWith( ".png" ) )
+						selectedFile = new File( selectedFile.getAbsolutePath( ) + ".png" );
 					
-					saveFile(selectedFile);
+					saveFile( selectedFile );
 					
 					success = true;
 				}
-				catch (IOException ex)
+				catch ( IOException ex )
 				{
-					DebugUtilities.logException("An exception occurred while saving as.", ex);
+					DebugUtilities.logException( "An exception occurred while saving as.", ex );
 					success = false;
 				}
 			}
@@ -208,40 +206,40 @@ public class GraphWindow extends JInternalFrame implements GraphChangeEventListe
 		}
 	}
 	
-	public void save() throws IOException
+	public void save( ) throws IOException
 	{
-		if (file == null)
-			saveAs();
+		if ( file == null )
+			saveAs( );
 		else
-			saveFile(file);
+			saveFile( file );
 	}
 	
-	public void saveFile(File file) throws IOException
+	public void saveFile( File file ) throws IOException
 	{
-		Graph graph = gdc.getGraph();
-		GraphSettings settings = gdc.getSettings();
+		Graph graph = gdc.getGraph( );
+		GraphSettings settings = gdc.getSettings( );
 		
-		if (file.getName().endsWith(".vsg"))
+		if ( file.getName( ).endsWith( ".vsg" ) )
 		{
-			graph.name.set(file.getName().substring(0, file.getName().length() - 4));
-			updateTitle();
+			graph.name.set( file.getName( ).substring( 0, file.getName( ).length( ) - 4 ) );
+			updateTitle( );
 			
-			FileWriter fw = new FileWriter(file);
-			fw.write(graph.toString());
-			fw.close();
+			FileWriter fw = new FileWriter( file );
+			fw.write( graph.toString( ) );
+			fw.close( );
 			
-			setFile(file);
-			setHasChanged(false);
+			setFile( file );
+			setHasChanged( false );
 		}
-		else if (file.getName().endsWith(".svg"))
+		else if ( file.getName( ).endsWith( ".svg" ) )
 		{
-			FileWriter fw = new FileWriter(file);
-			fw.write(GraphSvgView.format(graph, settings));
-			fw.close();
+			FileWriter fw = new FileWriter( file );
+			fw.write( GraphSvgView.format( graph, settings ) );
+			fw.close( );
 		}
-		else if (file.getName().endsWith(".png"))
+		else if ( file.getName( ).endsWith( ".png" ) )
 		{
-			ImageIO.write(gdc.getImage(), "png", file);
+			ImageIO.write( gdc.getImage( ), "png", file );
 		}
 	}
 }

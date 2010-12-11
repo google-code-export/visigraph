@@ -53,8 +53,8 @@ public class ObservableModel extends Observable
 		private T defaultValue;
 		
 		/**
-		 * A {@code boolean} flag indicating whether notifications are to be sent on to any of this {@code Property}'s subscribed 
-		 * {@link Observer}s, or merely caught and handled internally
+		 * A {@code boolean} flag indicating whether notifications are to be sent on to any of this {@code Property}'s subscribed {@link Observer}s,
+		 * or merely caught and handled internally
 		 */
 		private boolean notificationsSuspended;
 		

@@ -21,7 +21,17 @@ public class EdgeSvgView
 		Point2D apparentHandleLocation = e.isLinear( ) ? GeometryUtilities.midpoint( e.from, e.to ) : e.getHandlePoint2D( );
 		double handleRadius = e.thickness.get( ) * UserSettings.instance.defaultEdgeHandleRadiusRatio.get( );
 		
-		if ( e.isLinear( ) )
+		if ( e.isLoop )
+		{
+			Point2D center = GeometryUtilities.midpoint( e.from.x.get( ), e.from.y.get( ), apparentHandleLocation.getX( ), apparentHandleLocation.getY( ) );
+			
+			sb.append( "<circle " );
+			sb.append( "cx=\"" + ( center.getX( ) + xOffset ) + "\" " );
+			sb.append( "cy=\"" + ( center.getY( ) + yOffset ) + "\" " );
+			sb.append( "r=\"" + center.distance( apparentHandleLocation ) + "\" " );
+			sb.append( "style=\"fill:none;stroke:" + SvgUtilities.formatColor( ( e.isSelected.get( ) ? ColorUtilities.blend( UserSettings.instance.getEdgeColor( e.color.get( ) ), UserSettings.instance.selectedEdge.get( ) ) : UserSettings.instance.getEdgeColor( e.color.get( ) ) ) ) + ";stroke-width:" + e.thickness.get( ) + "\"/>\r\n" );
+		}
+		else if ( e.isLinear( ) )
 		{
 			sb.append( "<line " );
 			sb.append( "x1=\"" + ( e.from.x.get( ) + xOffset ) + "\" " );
@@ -98,8 +108,7 @@ public class EdgeSvgView
 			for ( int i = 0; i < 3; ++i )
 			{
 				double theta = tangentAngle + i * 2.0 * Math.PI / 3.0;
-				arrowPoint[i] = new Point2D.Double( e.thickness.get( ) * UserSettings.instance.directedEdgeArrowRatio.get( ) * Math.cos( theta ) + apparentHandleLocation.getX( ), 
-													e.thickness.get( ) * UserSettings.instance.directedEdgeArrowRatio.get( ) * Math.sin( theta ) + apparentHandleLocation.getY( ) );
+				arrowPoint[i] = new Point2D.Double( e.thickness.get( ) * UserSettings.instance.directedEdgeArrowRatio.get( ) * Math.cos( theta ) + apparentHandleLocation.getX( ), e.thickness.get( ) * UserSettings.instance.directedEdgeArrowRatio.get( ) * Math.sin( theta ) + apparentHandleLocation.getY( ) );
 			}
 			
 			sb.append( "<path d=\"" );

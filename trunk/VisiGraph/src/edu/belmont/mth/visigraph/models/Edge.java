@@ -40,6 +40,11 @@ public class Edge extends ObservableModel
 	public final Vertex to;
 	
 	/**
+	 * A {@code Boolean} indicating whether or not this {@code Edge} is a loop
+	 */
+	public final boolean isLoop;
+	
+	/**
 	 * A {@code Double} representing this {@code Edge}'s numeric weight
 	 */
 	public final Property<Double> weight;
@@ -235,11 +240,13 @@ public class Edge extends ObservableModel
 		this.to = to;
 		this.to.addObserver( vertexObserver );
 		
-		this.weight     = new Property<Double> ( weight     );
-		this.color      = new Property<Integer>( color      );
-		this.label      = new Property<String> ( label      );
+		this.isLoop = ( this.from == this.to );
+		
+		this.weight = new Property<Double>( weight );
+		this.color = new Property<Integer>( color );
+		this.label = new Property<String>( label );
 		this.isSelected = new Property<Boolean>( isSelected );
-		this.thickness  = new Property<Double> ( UserSettings.instance.defaultEdgeThickness.get( ) );
+		this.thickness = new Property<Double>( UserSettings.instance.defaultEdgeThickness.get( ) );
 		
 		this.handleX = new Property<Double>( 0.0 )
 		{
@@ -265,10 +272,10 @@ public class Edge extends ObservableModel
 				}
 			}
 		};
-		this.tag     = new Property<String>( null );
+		this.tag = new Property<String>( null );
 		
-		this.arc    = new Arc2D.Double( );
-		this.line   = new Line2D.Double( );
+		this.arc = new Arc2D.Double( );
+		this.line = new Line2D.Double( );
 		this.center = new Point2D.Double( );
 		
 		notificationsSuspended = false;
@@ -296,11 +303,13 @@ public class Edge extends ObservableModel
 		this.to = vertexes.get( (String) members.get( "to.id" ) );
 		this.to.addObserver( vertexObserver );
 		
-		this.weight     = new Property<Double> ( (Double)  members.get( "weight"     ) );
-		this.color      = new Property<Integer>( (Integer) members.get( "color"      ) );
-		this.label      = new Property<String> ( (String)  members.get( "label"      ) );
+		this.isLoop = ( this.from == this.to );
+		
+		this.weight = new Property<Double>( (Double) members.get( "weight" ) );
+		this.color = new Property<Integer>( (Integer) members.get( "color" ) );
+		this.label = new Property<String>( (String) members.get( "label" ) );
 		this.isSelected = new Property<Boolean>( (Boolean) members.get( "isSelected" ) );
-		this.thickness  = new Property<Double> ( (Double)  members.get( "thickness"  ) );
+		this.thickness = new Property<Double>( (Double) members.get( "thickness" ) );
 		
 		this.isLinear = members.containsKey( "isLinear" ) ? (Boolean) members.get( "isLinear" ) : false;
 		this.handleX = new Property<Double>( this.isLinear ? 0.0 : (Double) members.get( "handleX" ) )
@@ -327,10 +336,10 @@ public class Edge extends ObservableModel
 				}
 			}
 		};
-		this.tag     = new Property<String>( members.containsKey( "tag" ) ? (String) members.get( "tag" ) : null );
+		this.tag = new Property<String>( members.containsKey( "tag" ) ? (String) members.get( "tag" ) : null );
 		
-		this.arc    = new Arc2D.Double( );
-		this.line   = new Line2D.Double( );
+		this.arc = new Arc2D.Double( );
+		this.line = new Line2D.Double( );
 		this.center = new Point2D.Double( );
 		
 		notificationsSuspended = false;
@@ -432,11 +441,24 @@ public class Edge extends ObservableModel
 	 * 
 	 * @param edge the {@code Edge} to which to compare vertices for coincidence
 	 * 
-	 * @return {@code true} the specified {@code Edge} is adjacent to this {@code Edge}, {@code false} otherwise
+	 * @return {@code true} if the specified {@code Vertex} is adjacent to this {@code Edge}, {@code false} otherwise
 	 */
 	public boolean isAdjacent( Edge edge )
 	{
-		return from == edge.from || from == edge.to || to == edge.from || to == edge.to;
+		return isIncident( edge.from ) || isIncident( edge.to );
+	}
+	
+	/**
+	 * Returns a {@code boolean} indicating whether or not the specified {@code Vertex} is adjacent to this {@code Edge}. A vertex is said to be
+	 * incident to an edge if and only if the edge goes from- or to- the vertex.
+	 * 
+	 * @param vertex the {@code Vertex} to which to this edge for incidence
+	 * 
+	 * @return {@code true} if the specified {@code Vertex} is incident to this {@code Edge}, {@code false} otherwise
+	 */
+	public boolean isIncident( Vertex vertex )
+	{
+		return from == vertex || to == vertex;
 	}
 	
 	/**
@@ -513,9 +535,9 @@ public class Edge extends ObservableModel
 		
 		// We need to calculate these angles so that we know in which order to pass the from and to points because the sector will always be drawn
 		// counter-clockwise
-		double fromAngle   = angle( -( from.y. get( ) - center.y ), from.x. get( ) - center.x );
+		double fromAngle = angle( -( from.y.get( ) - center.y ), from.x.get( ) - center.x );
 		double handleAngle = angle( -( handleY.get( ) - center.y ), handleX.get( ) - center.x );
-		double toAngle     = angle( -( to.y.   get( ) - center.y ), to.x.   get( ) - center.x );
+		double toAngle = angle( -( to.y.get( ) - center.y ), to.x.get( ) - center.x );
 		
 		if ( angleBetween( fromAngle, handleAngle ) < angleBetween( fromAngle, toAngle ) )
 			arc.setAngles( from.getPoint2D( ), to.getPoint2D( ) );
@@ -532,9 +554,9 @@ public class Edge extends ObservableModel
 			center.setLocation( midpoint( from.x.get( ), from.y.get( ), handleX.get( ), handleY.get( ) ) );
 		else
 		{
-			double x0 = from.x. get( ), y0 = from.y. get( );
+			double x0 = from.x.get( ), y0 = from.y.get( );
 			double x1 = handleX.get( ), y1 = handleY.get( );
-			double x2 = to.x.   get( ), y2 = to.y.   get( );
+			double x2 = to.x.get( ), y2 = to.y.get( );
 			
 			double h = determinant( new double[ ][ ] { { x0 * x0 + y0 * y0, y0, 1 }, { x1 * x1 + y1 * y1, y1, 1 }, { x2 * x2 + y2 * y2, y2, 1 } } ) / ( 2.0 * determinant( new double[ ][ ] { { x0, y0, 1 }, { x1, y1, 1 }, { x2, y2, 1 } } ) );
 			double k = determinant( new double[ ][ ] { { x0, x0 * x0 + y0 * y0, 1 }, { x1, x1 * x1 + y1 * y1, 1 }, { x2, x2 * x2 + y2 * y2, 1 } } ) / ( 2.0 * determinant( new double[ ][ ] { { x0, y0, 1 }, { x1, y1, 1 }, { x2, y2, 1 } } ) );
@@ -556,14 +578,14 @@ public class Edge extends ObservableModel
 		HashMap<String, Object> members = new HashMap<String, Object>( );
 		
 		members.put( "isDirected", isDirected );
-		members.put( "from.id",    from.id    );
-		members.put( "to.id",      to.id      );
-		members.put( "weight",     weight     );
-		members.put( "color",      color      );
-		members.put( "label",      label      );
+		members.put( "from.id", from.id );
+		members.put( "to.id", to.id );
+		members.put( "weight", weight );
+		members.put( "color", color );
+		members.put( "label", label );
 		members.put( "isSelected", isSelected );
-		members.put( "thickness",  thickness  );
-		members.put( "isLinear",   isLinear   );
+		members.put( "thickness", thickness );
+		members.put( "isLinear", isLinear );
 		
 		if ( !isLinear )
 		{

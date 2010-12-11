@@ -51,4 +51,4 @@ import edu.belmont.mth.visigraph.models.generators.*;
 	public GeneratorBase.BooleanRule areCyclesAllowed        ( ) { return GeneratorBase.BooleanRule.DefaultFalse; }
 	public GeneratorBase.BooleanRule areParametersAllowed    ( ) { return GeneratorBase.BooleanRule.ForcedTrue;   }
         
-return (GeneratorBase)this;
+return (GeneratorBase) this;

@@ -6,6 +6,7 @@ package edu.belmont.mth.visigraph.models.generators;
 import java.awt.*;
 import java.awt.geom.*;
 import java.util.regex.*;
+
 import edu.belmont.mth.visigraph.models.*;
 import edu.belmont.mth.visigraph.settings.*;
 
@@ -20,7 +21,8 @@ public class EmptyGraph implements GeneratorBase
 	{
 		Graph graph = new Graph( UserSettings.instance.defaultGraphName.get( ) + " " + toString( ), areLoopsAllowed, areDirectedEdgesAllowed, areMultipleEdgesAllowed, areCyclesAllowed );
 		Pattern pattern = Pattern.compile( getParametersValidatingExpression( ) );
-		Matcher matcher = pattern.matcher( params ); matcher.find( );
+		Matcher matcher = pattern.matcher( params );
+		matcher.find( );
 		
 		int n = ( matcher.group( 0 ).trim( ).length( ) > 0 ? Integer.parseInt( matcher.group( 1 ) ) : 0 );
 		

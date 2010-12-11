@@ -18,22 +18,11 @@ import edu.belmont.mth.visigraph.models.functions.*;
 		for ( Vertex v : neighbors )
 			v.isSelected.set( true );
 		
-		return neighbors.size( ) > 0 ? neighbors.size( ) + " neighbors selected" : "No vertices selected!";
+		return ( neighbors.isEmpty( ) ? "No vertices selected!" : neighbors.size( ) + " neighbors selected" );
 	}
 	
-	public boolean allowsDynamicEvaluation( )
-	{
-		return false;
-	}
+	public boolean allowsDynamicEvaluation( ) { return false;              }
+	public boolean allowsOneTimeEvaluation( ) { return true;               }
+	public String  toString               ( ) { return "Select neighbors"; }
 	
-	public boolean allowsOneTimeEvaluation( )
-	{
-		return true;
-	}
-	
-	public String toString( )
-	{
-		return "Select neighbors";
-	}
-	
-return (FunctionBase)this;
+return (FunctionBase) this;

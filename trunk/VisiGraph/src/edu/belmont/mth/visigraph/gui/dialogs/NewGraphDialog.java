@@ -21,19 +21,19 @@ import edu.belmont.mth.visigraph.utilities.DebugUtilities;
 @SuppressWarnings( "serial" )
 public class NewGraphDialog extends JDialog implements ActionListener
 {
-	private static NewGraphDialog      dialog;
-	private static JComboBox           generatorComboBox;
-	private static JLabel              generatorParametersLabel;
-	private static ValidatingTextField generatorParametersField;
-	private static JButton             browseFilesButton;
-	private static JCheckBox           allowLoopsCheckBox;
-	private static JCheckBox           allowDirectedEdgesCheckBox;
-	private static JCheckBox           allowMultipleEdgesCheckBox;
-	private static JCheckBox           allowCyclesCheckBox;
-	private static JButton             okButton;
-	private static JButton             cancelButton;
-	private static Graph               value;
-	private static JFileChooser        fileChooser;
+	private static NewGraphDialog 		dialog;
+	private static JComboBox 			generatorComboBox;
+	private static JLabel 				generatorParametersLabel;
+	private static ValidatingTextField 	generatorParametersField;
+	private static JButton 				loadParametersFromFileButton;
+	private static JCheckBox 			allowLoopsCheckBox;
+	private static JCheckBox 			allowDirectedEdgesCheckBox;
+	private static JCheckBox 			allowMultipleEdgesCheckBox;
+	private static JCheckBox 			allowCyclesCheckBox;
+	private static JButton 				okButton;
+	private static JButton 				cancelButton;
+	private static Graph 				value;
+	private static JFileChooser 		fileChooser;
 	
 	public static Graph showDialog( Component owner )
 	{
@@ -46,7 +46,7 @@ public class NewGraphDialog extends JDialog implements ActionListener
 	{
 		super( owner, StringBundle.get( "new_graph_dialog_title" ), true );
 		
-		fileChooser = new JFileChooser();
+		fileChooser = new JFileChooser( );
 		
 		JPanel inputPanel = new JPanel( new GridBagLayout( )
 		{
@@ -113,7 +113,7 @@ public class NewGraphDialog extends JDialog implements ActionListener
 			}
 		};
 		parametersPanel.add( generatorParametersField );
-		browseFilesButton = new JButton( "..." )
+		loadParametersFromFileButton = new JButton( "..." )
 		{
 			{
 				setPreferredSize( new Dimension( 25, generatorParametersField.getPreferredSize( ).height + 2 ) );
@@ -151,7 +151,7 @@ public class NewGraphDialog extends JDialog implements ActionListener
 				} );
 			}
 		};
-		parametersPanel.add( browseFilesButton );
+		parametersPanel.add( loadParametersFromFileButton );
 		
 		inputPanel.add( parametersPanel, new GridBagConstraints( )
 		{
@@ -392,7 +392,7 @@ public class NewGraphDialog extends JDialog implements ActionListener
 			
 			generatorParametersLabel.setEnabled( generator.areParametersAllowed( ).isTrue( ) );
 			generatorParametersField.setEnabled( generator.areParametersAllowed( ).isTrue( ) );
-			browseFilesButton.setEnabled( generator.areParametersAllowed( ).isTrue( ) );
+			loadParametersFromFileButton.setEnabled( generator.areParametersAllowed( ).isTrue( ) );
 			
 			allowLoopsCheckBox.setSelected( generator.areLoopsAllowed( ).isTrue( ) );
 			allowLoopsCheckBox.setEnabled( !generator.areLoopsAllowed( ).isForced( ) );

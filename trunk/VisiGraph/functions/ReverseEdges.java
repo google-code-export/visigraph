@@ -10,55 +10,36 @@ import edu.belmont.mth.visigraph.models.functions.*;
 		if ( !g.areDirectedEdgesAllowed )
 			return "Cannot reverse undirected edges!";
 		
-		Set selectedEdges = new HashSet( g.edges.size( ) );
+		List selectedEdges = new LinkedList( );
 		
-		for(Edge e : g.edges)
-			if(e.isSelected.get( ) && e.from != e.to)
-				selectedEdges.add(e);
+		for ( Edge e : g.edges )
+			if ( e.isSelected.get( ) && e.from != e.to )
+				selectedEdges.add( e );
 		
-		if(selectedEdges.size() < 1)
-		{
-			for ( Vertex v : g.vertexes )
-				if ( v.isSelected.get( ) )
-					return null;
-
-			for ( Caption c : g.captions )
-				if ( c.isSelected.get( ) )
-					return null;
-
-			selectedEdges.addAll(g.edges);
-		}
-			
-		for(Edge e : selectedEdges)
+		if ( selectedEdges.isEmpty( ) )
+			selectedEdges.addAll( g.edges );
+		
+		g.suspendNotifications( true );
+		
+		for ( Edge e : selectedEdges )
 		{
 			g.edges.remove( e );
 			Edge reversedE = new Edge( e.isDirected, e.to, e.from, e.weight.get( ), e.color.get( ), e.label.get( ), e.isSelected.get( ) );
 			reversedE.thickness.set( e.thickness.get( ) );
-			reversedE.suspendNotifications( true );
 			reversedE.handleX.set( e.handleX.get( ) );
 			reversedE.handleY.set( e.handleY.get( ) );
-			reversedE.suspendNotifications( false );
 			reversedE.tag.set( e.tag.get( ) );
 			g.edges.add( reversedE );
 			reversedE.refresh( );
 		}
 		
+		g.suspendNotifications( false );
+		
 		return null;
 	}
 	
-	public boolean allowsDynamicEvaluation( )
-	{
-		return false;
-	}
-	
-	public boolean allowsOneTimeEvaluation( )
-	{
-		return true;
-	}
-	
-	public String toString( )
-	{
-		return "Reverse edges";
-	}
+	public boolean allowsDynamicEvaluation( ) { return false;           }
+	public boolean allowsOneTimeEvaluation( ) { return true;            }
+	public String  toString               ( ) { return "Reverse edges"; }
 	
 return (FunctionBase)this;

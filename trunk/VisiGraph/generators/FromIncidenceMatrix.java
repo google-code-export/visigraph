@@ -1,7 +1,6 @@
 import java.io.*;
 import java.awt.*;
 import java.util.*;
-import java.util.List;
 import javax.swing.*;
 import java.util.regex.*;
 import edu.belmont.mth.visigraph.models.*;
@@ -74,7 +73,7 @@ import edu.belmont.mth.visigraph.models.generators.*;
 			// Go through the columns, adding edges to the graph as we go
 			for ( int col = 0; col < cols; ++col )
 			{
-				List incidentVertexes = new ArrayList( 2 );
+				ArrayList incidentVertexes = new ArrayList( 2 );
 				for ( int row = 0; row < rows; ++row )
 					for ( int i = 0; i < mat[row][col]; ++i )
 						incidentVertexes.add( graph.vertexes.get( row ) );
@@ -100,9 +99,9 @@ import edu.belmont.mth.visigraph.models.generators.*;
 		return graph;
 	}
 
-	public String toString                          ( ) { return "From incidence matrix..."; }
+	public String toString                          ( ) { return "From incidence matrix...";                                                                          }
     public String getParametersDescription          ( ) { return "[vertices] [edges] : [0,0] [0,1] [0,2] [...] [1,0] [1,1] [1,2] [...] [2,0] [2,1] [2,2] [... etc.]"; }
-    public String getParametersValidatingExpression ( ) { return "^\\s*(\\d+)\\s+(\\d+)\\s*:\\s*\\d+(\\s+\\d+)*\\s*$"; }
+    public String getParametersValidatingExpression ( ) { return "^\\s*(\\d+)\\s+(\\d+)\\s*:\\s*\\d+(\\s+\\d+)*\\s*$";                                                }
     
 	public GeneratorBase.BooleanRule areLoopsAllowed         ( ) { return GeneratorBase.BooleanRule.ForcedTrue; }
 	public GeneratorBase.BooleanRule areDirectedEdgesAllowed ( ) { return GeneratorBase.BooleanRule.ForcedTrue; }
@@ -110,4 +109,4 @@ import edu.belmont.mth.visigraph.models.generators.*;
 	public GeneratorBase.BooleanRule areCyclesAllowed        ( ) { return GeneratorBase.BooleanRule.ForcedTrue; }
 	public GeneratorBase.BooleanRule areParametersAllowed    ( ) { return GeneratorBase.BooleanRule.ForcedTrue; }
 
-return (GeneratorBase)this;
+return (GeneratorBase) this;

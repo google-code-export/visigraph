@@ -123,7 +123,7 @@ public class Graph extends ObservableModel
 		Map<String, Object> members = JsonUtilities.parseObject( json );
 		
 		this.name = new Property<String>( (String) members.get( "name" ) );
-		this.tag  = new Property<String>( members.containsKey( "tag" ) ? (String) members.get( "tag" ) : null );
+		this.tag = new Property<String>( members.containsKey( "tag" ) ? (String) members.get( "tag" ) : null );
 		
 		this.areLoopsAllowed         = (Boolean) members.get( "areLoopsAllowed" );
 		this.areDirectedEdgesAllowed = (Boolean) members.get( "areDirectedEdgesAllowed" );
@@ -131,7 +131,7 @@ public class Graph extends ObservableModel
 		this.areCyclesAllowed        = (Boolean) members.get( "areCyclesAllowed" );
 		
 		this.notificationsSuspended = false;
-		this.vertexListObserver  = new Observer( )
+		this.vertexListObserver = new Observer( )
 		{
 			@Override
 			public void update( Observable o, Object arg )
@@ -146,7 +146,7 @@ public class Graph extends ObservableModel
 				}
 			}
 		};
-		this.edgeListObserver    = new Observer( )
+		this.edgeListObserver = new Observer( )
 		{
 			@Override
 			public void update( Observable o, Object arg )
@@ -217,19 +217,19 @@ public class Graph extends ObservableModel
 	public Graph ( String name, boolean areLoopsAllowed, boolean areDirectedEdgesAllowed, boolean areMultipleEdgesAllowed, boolean areCyclesAllowed )
 	{
 		this.name = new Property<String>( name );
-		this.tag  = new Property<String>( null );
+		this.tag = new Property<String>( null );
 		
-		this.areLoopsAllowed = areLoopsAllowed;
+		this.areLoopsAllowed         = areLoopsAllowed;
 		this.areDirectedEdgesAllowed = areDirectedEdgesAllowed;
 		this.areMultipleEdgesAllowed = areMultipleEdgesAllowed;
-		this.areCyclesAllowed = areCyclesAllowed;
+		this.areCyclesAllowed        = areCyclesAllowed;
 		
 		this.notificationsSuspended = false;
-		this.vertexListObserver  = new Observer( )
+		this.vertexListObserver = new Observer( )
 		{
 			@Override
 			public void update( Observable o, Object arg )
-			{	
+			{
 				if ( !notificationsSuspended )
 				{
 					if ( edges != null )
@@ -240,7 +240,7 @@ public class Graph extends ObservableModel
 				}
 			}
 		};
-		this.edgeListObserver    = new Observer( )
+		this.edgeListObserver = new Observer( )
 		{
 			@Override
 			public void update( Observable o, Object arg )
@@ -483,14 +483,14 @@ public class Graph extends ObservableModel
 	{
 		HashMap<String, Object> members = new HashMap<String, Object>( );
 		
-		members.put( "name",                    name                    );
-		members.put( "vertexes",                vertexes                );
-		members.put( "edges",                   edges                   );
-		members.put( "captions",                captions                );
-		members.put( "areLoopsAllowed",         areLoopsAllowed         );
+		members.put( "name",                    name );
+		members.put( "vertexes",                vertexes );
+		members.put( "edges",                   edges );
+		members.put( "captions",                captions );
+		members.put( "areLoopsAllowed",         areLoopsAllowed );
 		members.put( "areDirectedEdgesAllowed", areDirectedEdgesAllowed );
 		members.put( "areMultipleEdgesAllowed", areMultipleEdgesAllowed );
-		members.put( "areCyclesAllowed",        areCyclesAllowed        );
+		members.put( "areCyclesAllowed",        areCyclesAllowed );
 		
 		return JsonUtilities.formatObject( members );
 	}
@@ -552,7 +552,7 @@ public class Graph extends ObservableModel
 		for ( Vertex vertex : graph.vertexes )
 		{
 			Vertex newVertex = new Vertex( vertex.toString( ) );
-			newVertexes.put( vertex.id.get().toString( ), newVertex );
+			newVertexes.put( vertex.id.get( ).toString( ), newVertex );
 			newVertex.id.set( UUID.randomUUID( ) );
 			this.vertexes.add( newVertex );
 		}

@@ -3,8 +3,9 @@
  */
 package edu.belmont.mth.visigraph.models;
 
-import java.awt.geom.*;
 import java.util.*;
+import java.awt.geom.*;
+
 import edu.belmont.mth.visigraph.settings.*;
 import edu.belmont.mth.visigraph.utilities.*;
 
@@ -137,15 +138,15 @@ public class Vertex extends ObservableModel
 	 */
 	public Vertex ( double x, double y, String label, double radius, int color, boolean isSelected )
 	{
-		this.id         = new Property<UUID>   ( UUID.randomUUID( ) );
-		this.x          = new Property<Double> ( x          );
-		this.y          = new Property<Double> ( y          );
-		this.label      = new Property<String> ( label      );
-		this.radius     = new Property<Double> ( radius     );
-		this.color      = new Property<Integer>( color      );
+		this.id = new Property<UUID>( UUID.randomUUID( ) );
+		this.x = new Property<Double>( x );
+		this.y = new Property<Double>( y );
+		this.label = new Property<String>( label );
+		this.radius = new Property<Double>( radius );
+		this.color = new Property<Integer>( color );
 		this.isSelected = new Property<Boolean>( isSelected );
-		this.weight     = new Property<Double> ( UserSettings.instance.defaultVertexWeight.get( ) );
-		this.tag        = new Property<String> ( null );
+		this.weight = new Property<Double>( UserSettings.instance.defaultVertexWeight.get( ) );
+		this.tag = new Property<String>( null );
 	}
 	
 	/**
@@ -155,15 +156,15 @@ public class Vertex extends ObservableModel
 	 */
 	public Vertex ( Map<String, Object> members )
 	{
-		this.id         = new Property<UUID>   ( UUID.fromString( (String) members.get( "id" ) ) );
-		this.x          = new Property<Double> ( (Double)  members.get( "x"          ) );
-		this.y          = new Property<Double> ( (Double)  members.get( "y"          ) );
-		this.label      = new Property<String> ( (String)  members.get( "label"      ) );
-		this.radius     = new Property<Double> ( (Double)  members.get( "radius"     ) );
-		this.color      = new Property<Integer>( (Integer) members.get( "color"      ) );
+		this.id = new Property<UUID>( UUID.fromString( (String) members.get( "id" ) ) );
+		this.x = new Property<Double>( (Double) members.get( "x" ) );
+		this.y = new Property<Double>( (Double) members.get( "y" ) );
+		this.label = new Property<String>( (String) members.get( "label" ) );
+		this.radius = new Property<Double>( (Double) members.get( "radius" ) );
+		this.color = new Property<Integer>( (Integer) members.get( "color" ) );
 		this.isSelected = new Property<Boolean>( (Boolean) members.get( "isSelected" ) );
-		this.weight     = new Property<Double> ( (Double)  members.get( "weight"     ) );
-		this.tag        = new Property<String> ( members.containsKey( "tag" ) ? (String) members.get( "tag" ) : null );
+		this.weight = new Property<Double>( (Double) members.get( "weight" ) );
+		this.tag = new Property<String>( members.containsKey( "tag" ) ? (String) members.get( "tag" ) : null );
 	}
 	
 	/**
@@ -189,6 +190,19 @@ public class Vertex extends ObservableModel
 	}
 	
 	/**
+	 * Returns a {@code boolean} indicating whether or not the specified {@code Edge} is adjacent to this {@code Vertex}. A vertex is said to be
+	 * incident to an edge if and only if the edge goes from- or to- the vertex.
+	 * 
+	 * @param edge the {@code Edge} to which to this vertex for incidence
+	 * 
+	 * @return {@code true} if the specified {@code Edge} is incident to this {@code Vertex}, {@code false} otherwise
+	 */
+	public boolean isIncident( Edge edge )
+	{
+		return edge.isIncident( this );
+	}
+	
+	/**
 	 * Returns a string representation of this vertex in JSON format. This method can be used to serialize a vertex, which may later be deserialized
 	 * using the class's string constructor. For more information on the JSON format (used throughout VisiGraph for serialization), visit <a
 	 * href="http://www.json.org/">here</a>.
@@ -202,14 +216,14 @@ public class Vertex extends ObservableModel
 	{
 		HashMap<String, Object> members = new HashMap<String, Object>( );
 		
-		members.put( "id",         id         );
-		members.put( "x",          x          );
-		members.put( "y",          y          );
-		members.put( "label",      label      );
-		members.put( "radius",     radius     );
-		members.put( "color",      color      );
+		members.put( "id", id );
+		members.put( "x", x );
+		members.put( "y", y );
+		members.put( "label", label );
+		members.put( "radius", radius );
+		members.put( "color", color );
 		members.put( "isSelected", isSelected );
-		members.put( "weight",     weight     );
+		members.put( "weight", weight );
 		
 		return JsonUtilities.formatObject( members );
 	}
