@@ -109,7 +109,7 @@ public class NewGraphDialog extends JDialog implements ActionListener
 		generatorParametersField = new ValidatingTextField( 0, ".*" )
 		{
 			{
-				setPreferredSize( new Dimension( generatorComboBox.getPreferredSize( ).width - 25, getPreferredSize( ).height ) );
+				setPreferredSize( new Dimension( 315, getPreferredSize( ).height ) );
 			}
 		};
 		parametersPanel.add( generatorParametersField );

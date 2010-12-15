@@ -18,13 +18,13 @@ import edu.belmont.mth.visigraph.utilities.GeometryUtilities;
 			selectedEdges = g.edges;
 		
 		for( Edge e : selectedEdges )
-			e.weight.set( GeometryUtilities.distance( e.from, e.to ) / 50.0 );
+			e.weight.set( ( Math.abs( e.from.x.get( ) - e.to.x.get( ) ) + Math.abs( e.from.y.get( ) - e.to.y.get( ) ) ) / 10.0 );
 		
 		return null;
 	}
 	
-	public boolean allowsDynamicEvaluation( ) { return false;                           }
-	public boolean allowsOneTimeEvaluation( ) { return true;                            }
-	public String  toString               ( ) { return "Assign edge weights by length"; }
+	public boolean allowsDynamicEvaluation( ) { return false;                                       }
+	public boolean allowsOneTimeEvaluation( ) { return true;                                        }
+	public String  toString               ( ) { return "Assign edge weights by rectilinear length"; }
 	
 return (FunctionBase) this;
