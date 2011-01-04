@@ -210,7 +210,7 @@ public class DownloadsDialog extends JDialog implements ActionListener
 			JCheckBox checkBox = (JCheckBox) component;
 			
 			if( checkBox.isSelected( ) )
-				WebUtilities.downloadFile( String.format( GlobalSettings.applicationFunctionFileUrl, checkBox.getText( ) ), String.format( "functions/%s.java", checkBox.getText( ) ) );
+				WebUtilities.downloadFile( String.format( GlobalSettings.applicationFunctionFileUrl, URLEncoder.encode( checkBox.getText( ), "UTF-8" ) ), String.format( "functions/%s.java", checkBox.getText( ) ) );
 		}
 	}
 	
@@ -226,7 +226,7 @@ public class DownloadsDialog extends JDialog implements ActionListener
 			JCheckBox checkBox = (JCheckBox) component;
 			
 			if( checkBox.isSelected( ) )
-				WebUtilities.downloadFile( String.format( GlobalSettings.applicationGeneratorFileUrl, checkBox.getText( ) ), String.format( "generators/%s.java", checkBox.getText( ) ) );
+				WebUtilities.downloadFile( String.format( GlobalSettings.applicationGeneratorFileUrl, URLEncoder.encode( checkBox.getText( ), "UTF-8" ) ), String.format( "generators/%s.java", checkBox.getText( ) ) );
 		}
 	}
 	
@@ -262,7 +262,7 @@ public class DownloadsDialog extends JDialog implements ActionListener
 		try
 		{
 			URLConnection conn = new URL( GlobalSettings.applicationFunctionDirectoryUrl ).openConnection( );
-			BufferedReader in = new BufferedReader( new InputStreamReader( conn.getInputStream( ) ) );
+			BufferedReader in = new BufferedReader( new InputStreamReader( conn.getInputStream( ), "UTF-8" ) );
 			String line = null;
 			
 			LinkedList<JCheckBox> checkBoxes = new LinkedList<JCheckBox>( );
@@ -272,7 +272,7 @@ public class DownloadsDialog extends JDialog implements ActionListener
 				Matcher matcher = pattern.matcher( line );
 				matcher.find( );
 				
-				if( matcher.matches( ) && matcher.group( 1 ).equals( matcher.group( 2 ) ) )
+				if( matcher.matches( ) && URLDecoder.decode( matcher.group( 1 ), "UTF-8" ).equals( matcher.group( 2 ) ) )
 					checkBoxes.add( new JCheckBox( matcher.group( 1 ) )
 					{
 						{
@@ -300,7 +300,7 @@ public class DownloadsDialog extends JDialog implements ActionListener
 		try
 		{
 			URLConnection conn = new URL( GlobalSettings.applicationGeneratorDirectoryUrl ).openConnection( );
-			BufferedReader in = new BufferedReader( new InputStreamReader( conn.getInputStream( ) ) );
+			BufferedReader in = new BufferedReader( new InputStreamReader( conn.getInputStream( ), "UTF-8" ) );
 			String line = null;
 			
 			LinkedList<JCheckBox> checkBoxes = new LinkedList<JCheckBox>( );
@@ -310,8 +310,8 @@ public class DownloadsDialog extends JDialog implements ActionListener
 				Matcher matcher = pattern.matcher( line );
 				matcher.find( );
 				
-				if( matcher.matches( ) && matcher.group( 1 ).equals( matcher.group( 2 ) ) )
-					checkBoxes.add( new JCheckBox( matcher.group( 1 ) )
+				if( matcher.matches( ) && URLDecoder.decode( matcher.group( 1 ), "UTF-8" ).equals( matcher.group( 2 ) ) )
+					checkBoxes.add( new JCheckBox( matcher.group( 2 ) )
 					{
 						{
 							this.setPreferredSize( new Dimension( 375, 23 ) );
