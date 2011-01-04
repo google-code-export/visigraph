@@ -5,19 +5,16 @@ package edu.belmont.mth.visigraph.resources;
 
 import java.net.*;
 import java.util.*;
-
-import javax.swing.ImageIcon;
-
-import edu.belmont.mth.visigraph.utilities.DebugUtilities;
+import javax.swing.*;
+import edu.belmont.mth.visigraph.utilities.*;
 
 /**
  * @author Cameron Behar
- * 
  */
 public class ImageIconBundle extends ResourceBundle
 {
-	private static HashMap<String, ImageIcon> map = new HashMap<String, ImageIcon>( );
-	private static final ResourceBundle instance = ResourceBundle.getBundle( "edu.belmont.mth.visigraph.resources.ImageIconBundle" );
+	private static Map<String, ImageIcon>	map			= new HashMap<String, ImageIcon>( );
+	private static final ResourceBundle		instance	= ResourceBundle.getBundle( "edu.belmont.mth.visigraph.resources.ImageIconBundle" );
 	
 	public static ImageIcon get( String key )
 	{
@@ -25,7 +22,7 @@ public class ImageIconBundle extends ResourceBundle
 		{
 			return (ImageIcon) instance.getObject( key );
 		}
-		catch ( MissingResourceException ex )
+		catch( MissingResourceException ex )
 		{
 			DebugUtilities.logException( String.format( "An exception occurred while trying to load resource %s.", key ), ex );
 			return null;
@@ -41,7 +38,7 @@ public class ImageIconBundle extends ResourceBundle
 	@Override
 	protected final Object handleGetObject( String key )
 	{
-		return loadImageIcon( key, ".png" );
+		return this.loadImageIcon( key, ".png" );
 	}
 	
 	private ImageIcon loadImageIcon( String filename, String extension )
@@ -50,12 +47,12 @@ public class ImageIconBundle extends ResourceBundle
 		
 		ImageIcon icon = map.get( imageName );
 		
-		if ( icon != null )
+		if( icon != null )
 			return icon;
 		
-		URL url = getClass( ).getResource( "images/" + imageName );
+		URL url = this.getClass( ).getResource( "images/" + imageName );
 		
-		if ( url == null )
+		if( url == null )
 			return null;
 		
 		icon = new ImageIcon( url );

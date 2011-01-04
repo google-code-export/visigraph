@@ -9,7 +9,6 @@ import edu.belmont.mth.visigraph.utilities.*;
 
 /**
  * @author Cameron Behar
- * 
  */
 public class VertexSvgView
 {
@@ -25,7 +24,7 @@ public class VertexSvgView
 		sb.append( "stroke-width=\"1\" " );
 		sb.append( "fill=\"" + SvgUtilities.formatColor( v.isSelected.get( ) ? ColorUtilities.blend( UserSettings.instance.getVertexColor( v.color.get( ) ), UserSettings.instance.selectedVertexFill.get( ) ) : UserSettings.instance.getVertexColor( v.color.get( ) ) ) + "\" />\r\n" );
 		
-		if ( s.showVertexLabels.get( ) )
+		if( s.showVertexLabels.get( ) )
 		{
 			sb.append( "<text " );
 			sb.append( "x=\"" + ( v.x.get( ) + 1.4 * v.radius.get( ) + xOffset ) + "\" " );
@@ -33,12 +32,12 @@ public class VertexSvgView
 			sb.append( "fill=\"" + SvgUtilities.formatColor( v.isSelected.get( ) ? ColorUtilities.blend( UserSettings.instance.vertexLine.get( ), UserSettings.instance.selectedVertexLine.get( ) ) : UserSettings.instance.vertexLine.get( ) ) + "\">" + SvgUtilities.formatString( v.label.get( ) ) + "</text>\r\n" );
 		}
 		
-		if ( s.showVertexWeights.get( ) )
+		if( s.showVertexWeights.get( ) )
 		{
 			sb.append( "<text " );
 			sb.append( "x=\"" + ( v.x.get( ) + 1.4 * v.radius.get( ) + xOffset ) + "\" " );
 			sb.append( "y=\"" + ( v.y.get( ) + yOffset ) + "\" " );
-			sb.append( "fill=\"" + SvgUtilities.formatColor( v.isSelected.get( ) ? ColorUtilities.blend( UserSettings.instance.vertexLine.get( ), UserSettings.instance.selectedVertexLine.get( ) ) : UserSettings.instance.vertexLine.get( ) ) + "\">" + SvgUtilities.formatString( v.weight.get( ).toString( ) ) + "</text>\r\n" );
+			sb.append( "fill=\"" + SvgUtilities.formatColor( v.isSelected.get( ) ? ColorUtilities.blend( UserSettings.instance.vertexLine.get( ), UserSettings.instance.selectedVertexLine.get( ) ) : UserSettings.instance.vertexLine.get( ) ) + "\">" + SvgUtilities.formatString( String.format( "%." + UserSettings.instance.vertexWeightPrecision.get( ) + "f", v.weight.get( ) ) ) + "</text>\r\n" );
 		}
 		
 		return sb.toString( );

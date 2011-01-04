@@ -5,7 +5,6 @@ package edu.belmont.mth.visigraph.models;
 
 import java.util.*;
 import java.awt.geom.*;
-
 import edu.belmont.mth.visigraph.settings.*;
 import edu.belmont.mth.visigraph.utilities.*;
 
@@ -14,64 +13,65 @@ import edu.belmont.mth.visigraph.utilities.*;
  * vertices can be related to each other to form a graph.
  * <p/>
  * As an {@link ObservableModel}, this class supports multiple subscribing {@link Observer}s. Whenever a change is made to any of its properties,
- * notification of that change is automatically propagated upwards until it hits the {@code Graph} level and triggers a
+ * notification of that change is automatically propagated upwards until it hits the {@code Graph} level and triggers an
  * {@link ObservableModel#notifyObservers(Object)} call.
  * 
  * @author Cameron Behar
- * 
- * @see {@link Graph}, {@link Vertex}, {@link Edge}
+ * @see Graph
+ * @see Vertex
+ * @see Edge
  */
 public class Vertex extends ObservableModel
 {
 	/**
 	 * The universally unique identifier of this {@code Vertex}, used in the serialization and deserialization of edges
 	 */
-	public final Property<UUID> id;
+	public final Property<UUID>		id;
 	
 	/**
 	 * The location of this {@code Vertex} along the horizontal (x) axis
 	 */
-	public final Property<Double> x;
+	public final Property<Double>	x;
 	
 	/**
 	 * The location of this {@code Vertex} along the inverted vertical (-y) axis
 	 */
-	public final Property<Double> y;
+	public final Property<Double>	y;
 	
 	/**
 	 * A {@code String} containing this {@code Vertex}'s label
 	 */
-	public final Property<String> label;
+	public final Property<String>	label;
 	
 	/**
 	 * This {@code Vertex}'s radius, in pixels
 	 */
-	public final Property<Double> radius;
+	public final Property<Double>	radius;
 	
 	/**
 	 * An {@code Integer} representing this {@code Vertex}'s numeric color
 	 */
-	public final Property<Integer> color;
+	public final Property<Integer>	color;
 	
 	/**
 	 * A {@code Boolean} indicating whether or not this {@code Vertex} is selected
 	 */
-	public final Property<Boolean> isSelected;
+	public final Property<Boolean>	isSelected;
 	
 	/**
 	 * A {@code Double} representing this {@code Vertex}'s numeric weight
 	 */
-	public final Property<Double> weight;
+	public final Property<Double>	weight;
 	
 	/**
 	 * A catch-all {@code String} that can be used to store this {@code Vertex}'s metadata
 	 */
-	public final Property<String> tag;
+	public final Property<String>	tag;
 	
 	/**
 	 * Constructs a {@code Vertex} at (0.0, 0.0) with the user's default properties
 	 */
-	public Vertex ( )
+	public Vertex( )
 	{
 		this( 0.0, 0.0 );
 	}
@@ -82,7 +82,7 @@ public class Vertex extends ObservableModel
 	 * @param x the location of this {@code Vertex} along the horizontal (x) axis
 	 * @param y the location of this {@code Vertex} along the inverted vertical (-y) axis
 	 */
-	public Vertex ( double x, double y )
+	public Vertex( double x, double y )
 	{
 		this( x, y, UserSettings.instance.defaultVertexPrefix.get( ) );
 	}
@@ -94,7 +94,7 @@ public class Vertex extends ObservableModel
 	 * @param y the location of this {@code Vertex} along the inverted vertical (-y) axis
 	 * @param label a {@code String} containing this {@code Vertex}'s label
 	 */
-	public Vertex ( double x, double y, String label )
+	public Vertex( double x, double y, String label )
 	{
 		this( x, y, label, UserSettings.instance.defaultVertexRadius.get( ) );
 	}
@@ -107,7 +107,7 @@ public class Vertex extends ObservableModel
 	 * @param label a {@code String} containing this {@code Vertex}'s label
 	 * @param radius the radius of this {@code Vertex}, in pixels
 	 */
-	public Vertex ( double x, double y, String label, double radius )
+	public Vertex( double x, double y, String label, double radius )
 	{
 		this( x, y, label, radius, UserSettings.instance.defaultVertexColor.get( ) );
 	}
@@ -121,7 +121,7 @@ public class Vertex extends ObservableModel
 	 * @param radius the radius of this {@code Vertex}, in pixels
 	 * @param color the numeric color of this {@code Vertex}
 	 */
-	public Vertex ( double x, double y, String label, double radius, int color )
+	public Vertex( double x, double y, String label, double radius, int color )
 	{
 		this( x, y, label, radius, color, UserSettings.instance.defaultVertexIsSelected.get( ) );
 	}
@@ -136,7 +136,7 @@ public class Vertex extends ObservableModel
 	 * @param color the numeric color of this {@code Vertex}
 	 * @param isSelected a {@code boolean} indicating whether or not this {@code Vertex} will be initialized selected
 	 */
-	public Vertex ( double x, double y, String label, double radius, int color, boolean isSelected )
+	public Vertex( double x, double y, String label, double radius, int color, boolean isSelected )
 	{
 		this.id = new Property<UUID>( UUID.randomUUID( ) );
 		this.x = new Property<Double>( x );
@@ -154,7 +154,7 @@ public class Vertex extends ObservableModel
 	 * 
 	 * @param members a {@code Map} of property names to values
 	 */
-	public Vertex ( Map<String, Object> members )
+	public Vertex( Map<String, Object> members )
 	{
 		this.id = new Property<UUID>( UUID.fromString( (String) members.get( "id" ) ) );
 		this.x = new Property<Double>( (Double) members.get( "x" ) );
@@ -171,10 +171,9 @@ public class Vertex extends ObservableModel
 	 * Constructs a {@code Vertex} from the specified JSON text
 	 * 
 	 * @param json the JSON text from which to construct this caption
-	 * 
 	 * @see #toString()
 	 */
-	public Vertex ( String json )
+	public Vertex( String json )
 	{
 		this( JsonUtilities.parseObject( json ) );
 	}
@@ -186,15 +185,14 @@ public class Vertex extends ObservableModel
 	 */
 	public Point2D getPoint2D( )
 	{
-		return new Point2D.Double( x.get( ), y.get( ) );
+		return new Point2D.Double( this.x.get( ), this.y.get( ) );
 	}
 	
 	/**
-	 * Returns a {@code boolean} indicating whether or not the specified {@code Edge} is adjacent to this {@code Vertex}. A vertex is said to be
+	 * Returns a {@code boolean} indicating whether or not the specified {@code Edge} is incident to this {@code Vertex}. A vertex is said to be
 	 * incident to an edge if and only if the edge goes from- or to- the vertex.
 	 * 
-	 * @param edge the {@code Edge} to which to this vertex for incidence
-	 * 
+	 * @param edge the {@code Edge} with which to test this vertex for incidence
 	 * @return {@code true} if the specified {@code Edge} is incident to this {@code Vertex}, {@code false} otherwise
 	 */
 	public boolean isIncident( Edge edge )
@@ -208,22 +206,21 @@ public class Vertex extends ObservableModel
 	 * href="http://www.json.org/">here</a>.
 	 * 
 	 * @return this {@code Vertex} serialized as a {@code String}
-	 * 
 	 * @see #Vertex(String)
 	 */
 	@Override
 	public String toString( )
 	{
-		HashMap<String, Object> members = new HashMap<String, Object>( );
+		Map<String, Object> members = new HashMap<String, Object>( );
 		
-		members.put( "id", id );
-		members.put( "x", x );
-		members.put( "y", y );
-		members.put( "label", label );
-		members.put( "radius", radius );
-		members.put( "color", color );
-		members.put( "isSelected", isSelected );
-		members.put( "weight", weight );
+		members.put( "id", this.id );
+		members.put( "x", this.x );
+		members.put( "y", this.y );
+		members.put( "label", this.label );
+		members.put( "radius", this.radius );
+		members.put( "color", this.color );
+		members.put( "isSelected", this.isSelected );
+		members.put( "weight", this.weight );
 		
 		return JsonUtilities.formatObject( members );
 	}

@@ -11,8 +11,9 @@ import java.util.*;
  * changes to subscribed {@code Observers}.
  * 
  * @author Cameron Behar
- * 
- * @see {@link Observable}, {@link Observer}, {@link Property}
+ * @see Observable
+ * @see Observer
+ * @see Property
  */
 public class ObservableModel extends Observable
 {
@@ -35,41 +36,41 @@ public class ObservableModel extends Observable
 	 * to- by any and all {@link Observer}s.
 	 * 
 	 * @author Cameron Behar
-	 * 
-	 * @see {@link ObservableModel}, {@link Observer}
+	 * @see ObservableModel
+	 * @see Observer
 	 */
 	public class Property<T>
 	{
 		/**
 		 * The value set by {@link #set(Object)}, and gotten by {@link #get()}
 		 */
-		private T value;
+		private T				value;
 		
 		/**
 		 * The default value set in this {@code Property}'s constructor and made accessible through {@link #getDefault()}
 		 * 
 		 * @see {@link #reset()}
 		 */
-		private T defaultValue;
+		private final T			defaultValue;
 		
 		/**
 		 * A {@code boolean} flag indicating whether notifications are to be sent on to any of this {@code Property}'s subscribed {@link Observer}s,
 		 * or merely caught and handled internally
 		 */
-		private boolean notificationsSuspended;
+		private boolean			notificationsSuspended;
 		
 		/**
 		 * An {@code Observer} used to notify this {@code Property}'s subscribed {@code Observer}s of changes to any of its value's properties
 		 * if the value extends {@code Observable}
 		 */
-		private Observer valueObserver;
+		private final Observer	valueObserver;
 		
 		/**
 		 * Constructs a {@code Property} with the specified default value
 		 * 
 		 * @param defaultValue the initial value of this property later used in {@link #reset()}
 		 */
-		public Property ( final T defaultValue )
+		public Property( final T defaultValue )
 		{
 			this.notificationsSuspended = false;
 			this.valueObserver = new Observer( )
@@ -77,8 +78,8 @@ public class ObservableModel extends Observable
 				@Override
 				public void update( Observable o, Object arg )
 				{
-					setChanged( );
-					notifyObservers( arg );
+					ObservableModel.this.setChanged( );
+					ObservableModel.this.notifyObservers( arg );
 				}
 			};
 			this.defaultValue = defaultValue;
@@ -94,20 +95,20 @@ public class ObservableModel extends Observable
 		}
 		
 		/**
-		 * Gets this {@code Property}'s default value, as specified in {@link #Property(Object)}
+		 * Gets this {@code Property}'s default value, as specified in the constructor
 		 */
 		public T getDefault( )
 		{
-			return defaultValue;
+			return this.defaultValue;
 		}
 		
 		/**
-		 * Resets this {@code Property}'s value back to the default value specified in the constructor and notifies any subscribed {@code
-		 * Observer}s of the change
+		 * Resets this {@code Property}'s value back to the default value specified in the constructor and notifies any subscribed {@code Observer}s
+		 * of the change
 		 */
 		public void reset( )
 		{
-			this.set( defaultValue );
+			this.set( this.defaultValue );
 		}
 		
 		/**
@@ -117,29 +118,29 @@ public class ObservableModel extends Observable
 		 */
 		public void set( final T value )
 		{
-			if ( value instanceof Number )
+			if( value instanceof Number )
 			{
 				Number num = (Number) value;
-				if ( Double.isInfinite( num.doubleValue( ) ) || Double.isNaN( num.doubleValue( ) ) )
+				if( Double.isInfinite( num.doubleValue( ) ) || Double.isNaN( num.doubleValue( ) ) )
 					return;
 			}
 			
-			if ( this.value != value )
+			if( this.value != value )
 			{
-				suspendNotifications( true );
+				this.suspendNotifications( true );
 				
-				if ( this.value instanceof Observable )
-					( (Observable) this.value ).deleteObserver( valueObserver );
+				if( this.value instanceof Observable )
+					( (Observable) this.value ).deleteObserver( this.valueObserver );
 				
 				this.value = value;
 				
-				if ( value instanceof Observable )
-					( (Observable) value ).addObserver( valueObserver );
+				if( value instanceof Observable )
+					( (Observable) value ).addObserver( this.valueObserver );
 				
-				suspendNotifications( false );
+				this.suspendNotifications( false );
 				
-				setChanged( );
-				notifyObservers( this );
+				ObservableModel.this.setChanged( );
+				ObservableModel.this.notifyObservers( this );
 			}
 		}
 		
@@ -149,15 +150,15 @@ public class ObservableModel extends Observable
 		 * notifications.
 		 * 
 		 * @param suspend a {@code boolean} indicating whether to suspend or reenable notifications to subscribed Observers
-		 * 
 		 * @return {@code true} if notifications were previously suspended, {@code false} otherwise
-		 * 
-		 * @see {@link ObservableModel}, {@link Observer}, {@link ObservableList}
+		 * @see ObservableModel
+		 * @see Observer
+		 * @see ObservableList
 		 */
 		public boolean suspendNotifications( boolean suspend )
 		{
-			boolean ret = notificationsSuspended;
-			notificationsSuspended = suspend;
+			boolean ret = this.notificationsSuspended;
+			this.notificationsSuspended = suspend;
 			return ret;
 		}
 	}

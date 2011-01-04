@@ -3,68 +3,64 @@
  */
 package edu.belmont.mth.visigraph.gui.windows;
 
+import java.io.*;
 import java.awt.*;
+import java.util.*;
+import java.beans.*;
+import javax.swing.*;
 import java.awt.event.*;
 import java.awt.print.*;
-import java.beans.*;
-import java.io.*;
-import java.util.*;
-import javax.swing.*;
 import javax.swing.event.*;
 import javax.swing.filechooser.*;
-import edu.belmont.mth.visigraph.gui.dialogs.*;
 import edu.belmont.mth.visigraph.models.*;
-import edu.belmont.mth.visigraph.resources.*;
 import edu.belmont.mth.visigraph.settings.*;
-import edu.belmont.mth.visigraph.utilities.DebugUtilities;
-import edu.belmont.mth.visigraph.utilities.WebUtilities;
+import edu.belmont.mth.visigraph.resources.*;
+import edu.belmont.mth.visigraph.utilities.*;
+import edu.belmont.mth.visigraph.gui.dialogs.*;
 
 /**
  * @author Cameron Behar
- * 
  */
-@SuppressWarnings("serial")
 public class MainWindow extends JFrame
 {
-	private final JMenuBar	   menuBar;
-	private final JMenu		   fileMenu;
-	private final JMenuItem	    newGraphMenuItem;
-	private final JMenuItem	    duplicateGraphMenuItem;
-	private final JMenuItem	    openGraphMenuItem;
-	private final JMenuItem	    saveGraphMenuItem;
-	private final JMenuItem	    saveAsGraphMenuItem;
-	private final JMenuItem	    printGraphMenuItem;
-	private final JMenuItem	    exitGraphMenuItem;
-	private final JMenu		   editMenu;
-	private final JMenuItem	    undoMenuItem;
-	private final JMenuItem	    redoMenuItem;
-	private final JMenuItem	    cutMenuItem;
-	private final JMenuItem	    copyMenuItem;
-	private final JMenuItem	    pasteMenuItem;
-	private final JMenuItem 	selectAllMenuItem;
-	private final JMenuItem 	selectAllVertexesMenuItem;
-	private final JMenuItem 	selectAllEdgesMenuItem;
-	private final JMenu		   windowsMenu;
-	private final JMenuItem	    cascadeMenuItem;
-	private final JMenuItem	    showSideBySideMenuItem;
-	private final JMenuItem	    showStackedMenuItem;
-	private final JMenuItem	    tileWindowsMenuItem;
-	private final JMenu		   helpMenu;
-	private final JMenuItem	    helpContentsMenuItem;
-	private final JMenuItem	    preferencesMenuItem;
-	private final JMenuItem	    downloadsMenuItem;
-	private final JMenuItem	    aboutVisiGraphMenuItem;
-	private final MainWindow   thisFrame;
-	private final JDesktopPane desktopPane;
-	private final JFileChooser fileChooser;
-	private UserSettings userSettings = UserSettings.instance;
+	private final JMenuBar		menuBar;
+	private final JMenu			fileMenu;
+	private final JMenuItem		newGraphMenuItem;
+	private final JMenuItem		duplicateGraphMenuItem;
+	private final JMenuItem		openGraphMenuItem;
+	private final JMenuItem		saveGraphMenuItem;
+	private final JMenuItem		saveAsGraphMenuItem;
+	private final JMenuItem		printGraphMenuItem;
+	private final JMenuItem		exitGraphMenuItem;
+	private final JMenu			editMenu;
+	private final JMenuItem		undoMenuItem;
+	private final JMenuItem		redoMenuItem;
+	private final JMenuItem		cutMenuItem;
+	private final JMenuItem		copyMenuItem;
+	private final JMenuItem		pasteMenuItem;
+	private final JMenuItem		selectAllMenuItem;
+	private final JMenuItem		selectAllVerticesMenuItem;
+	private final JMenuItem		selectAllEdgesMenuItem;
+	private final JMenu			windowsMenu;
+	private final JMenuItem		cascadeMenuItem;
+	private final JMenuItem		showSideBySideMenuItem;
+	private final JMenuItem		showStackedMenuItem;
+	private final JMenuItem		tileWindowsMenuItem;
+	private final JMenu			helpMenu;
+	private final JMenuItem		helpContentsMenuItem;
+	private final JMenuItem		scriptLibraryMenuItem;
+	private final JMenuItem		preferencesMenuItem;
+	private final JMenuItem		downloadsMenuItem;
+	private final JMenuItem		aboutVisiGraphMenuItem;
+	private final MainWindow	thisFrame;
+	private final JDesktopPane	desktopPane;
+	private final JFileChooser	fileChooser;
 	
-	public MainWindow ( )
+	public MainWindow( )
 	{
 		super( GlobalSettings.applicationName );
 		this.thisFrame = this;
-		this.setSize( new Dimension( userSettings.mainWindowWidth.get( ), userSettings.mainWindowHeight.get( ) ) );
-		this.setLocation( 450, 200 );
+		this.setSize( new Dimension( UserSettings.instance.mainWindowWidth.get( ), UserSettings.instance.mainWindowHeight.get( ) ) );
 		this.setDefaultCloseOperation( DO_NOTHING_ON_CLOSE );
 		this.addWindowListener( new WindowListener( )
 		{
@@ -79,7 +75,7 @@ public class MainWindow extends JFrame
 			@Override
 			public void windowClosing( WindowEvent e )
 			{
-				closingWindow( e );
+				MainWindow.this.closingWindow( e );
 			}
 			
 			@Override
@@ -99,211 +95,209 @@ public class MainWindow extends JFrame
 			{}
 		} );
 		
-		desktopPane = new JDesktopPane( );
-		getContentPane( ).add( desktopPane, BorderLayout.CENTER );
+		this.desktopPane = new JDesktopPane( );
+		this.getContentPane( ).add( this.desktopPane, BorderLayout.CENTER );
 		
-		menuBar = new JMenuBar( );
+		this.menuBar = new JMenuBar( );
 		
-		fileChooser = new JFileChooser( );
+		this.fileChooser = new JFileChooser( );
 		
-		fileMenu = new JMenu( StringBundle.get( "file_menu_text" ) );
-		menuBar.add( fileMenu );
+		this.fileMenu = new JMenu( StringBundle.get( "file_menu_text" ) );
+		this.menuBar.add( this.fileMenu );
 		
-		newGraphMenuItem = new JMenuItem( StringBundle.get( "file_new_menu_text" ) )
+		this.newGraphMenuItem = new JMenuItem( StringBundle.get( "file_new_menu_text" ) )
 		{
 			{
-				addActionListener( new ActionListener( )
+				this.addActionListener( new ActionListener( )
 				{
 					@Override
 					public void actionPerformed( ActionEvent e )
 					{
-						Graph newGraph = NewGraphDialog.showDialog( thisFrame );
-						if ( newGraph != null )
+						Graph newGraph = NewGraphDialog.showDialog( MainWindow.this.thisFrame );
+						if( newGraph != null )
 						{
 							GraphWindow graphWindow = new GraphWindow( newGraph );
-							desktopPane.add( graphWindow );
+							MainWindow.this.desktopPane.add( graphWindow );
 							try
 							{
 								graphWindow.setMaximum( true );
 								graphWindow.setSelected( true );
 							}
-							catch ( PropertyVetoException ex )
+							catch( PropertyVetoException ex )
 							{
 								DebugUtilities.logException( "An exception occurred while loading the graph window.", ex );
 							}
 						}
 					}
 				} );
-				setAccelerator( KeyStroke.getKeyStroke( KeyEvent.VK_N, Toolkit.getDefaultToolkit( ).getMenuShortcutKeyMask( ) ) );
+				this.setAccelerator( KeyStroke.getKeyStroke( KeyEvent.VK_N, Toolkit.getDefaultToolkit( ).getMenuShortcutKeyMask( ) ) );
 			}
 		};
-		fileMenu.add( newGraphMenuItem );
+		this.fileMenu.add( this.newGraphMenuItem );
 		
-		duplicateGraphMenuItem = new JMenuItem( StringBundle.get( "file_duplicate_menu_text" ) )
+		this.duplicateGraphMenuItem = new JMenuItem( StringBundle.get( "file_duplicate_menu_text" ) )
 		{
 			{
-				addActionListener( new ActionListener( )
+				this.addActionListener( new ActionListener( )
 				{
 					@Override
 					public void actionPerformed( ActionEvent e )
 					{
-						JInternalFrame selectedFrame = desktopPane.getSelectedFrame( );
+						JInternalFrame selectedFrame = MainWindow.this.desktopPane.getSelectedFrame( );
 						
-						if ( selectedFrame instanceof GraphWindow )
+						if( selectedFrame instanceof GraphWindow )
 						{
 							Graph graph = ( (GraphWindow) selectedFrame ).getGdc( ).getGraph( );
 							
 							GraphWindow graphWindow = new GraphWindow( new Graph( graph.toString( ) ) );
-							desktopPane.add( graphWindow );
+							MainWindow.this.desktopPane.add( graphWindow );
 							try
 							{
 								graphWindow.setMaximum( true );
 								graphWindow.setSelected( true );
 							}
-							catch ( PropertyVetoException ex )
+							catch( PropertyVetoException ex )
 							{
 								DebugUtilities.logException( "An exception occurred while loading the graph window.", ex );
 							}
 						}
 					}
 				} );
-				setAccelerator( KeyStroke.getKeyStroke( KeyEvent.VK_D, Toolkit.getDefaultToolkit( ).getMenuShortcutKeyMask( ) ) );
+				this.setAccelerator( KeyStroke.getKeyStroke( KeyEvent.VK_D, Toolkit.getDefaultToolkit( ).getMenuShortcutKeyMask( ) ) );
 			}
 		};
-		fileMenu.add( duplicateGraphMenuItem );
+		this.fileMenu.add( this.duplicateGraphMenuItem );
 		
-		fileMenu.addSeparator( );
+		this.fileMenu.addSeparator( );
 		
-		openGraphMenuItem = new JMenuItem( StringBundle.get( "file_open_menu_text" ) )
+		this.openGraphMenuItem = new JMenuItem( StringBundle.get( "file_open_menu_text" ) )
 		{
 			{
-				addActionListener( new ActionListener( )
+				this.addActionListener( new ActionListener( )
 				{
 					@Override
 					public void actionPerformed( ActionEvent e )
 					{
 						GraphWindow graphWindow = null;
 						
-						fileChooser.resetChoosableFileFilters( );
-						fileChooser.setAcceptAllFileFilterUsed( false );
-						fileChooser.setFileFilter( new FileNameExtensionFilter( StringBundle.get( "visigraph_file_description" ), "vsg" ) );
-						fileChooser.setMultiSelectionEnabled( false );
+						MainWindow.this.fileChooser.resetChoosableFileFilters( );
+						MainWindow.this.fileChooser.setAcceptAllFileFilterUsed( false );
+						MainWindow.this.fileChooser.setFileFilter( new FileNameExtensionFilter( StringBundle.get( "visigraph_file_description" ), "vsg" ) );
+						MainWindow.this.fileChooser.setMultiSelectionEnabled( false );
 						
 						boolean success = false;
 						
-						while ( !success )
+						while( !success )
 						{
 							success = false;
 							
-							if ( fileChooser.showOpenDialog( thisFrame ) == JFileChooser.APPROVE_OPTION )
-							{
+							if( MainWindow.this.fileChooser.showOpenDialog( MainWindow.this.thisFrame ) == JFileChooser.APPROVE_OPTION )
 								try
 								{
-									openFile( fileChooser.getSelectedFile( ) );
+									MainWindow.this.openFile( MainWindow.this.fileChooser.getSelectedFile( ) );
 									success = true;
 								}
-								catch ( IOException ex )
+								catch( IOException ex )
 								{
 									DebugUtilities.logException( "An exception occurred while loading a graph from file.", ex );
 								}
-							}
 							else
 								success = true;
 						}
 						
-						if ( graphWindow != null )
+						if( graphWindow != null )
 							graphWindow.setHasChanged( false );
 					}
 				} );
-				setAccelerator( KeyStroke.getKeyStroke( KeyEvent.VK_O, Toolkit.getDefaultToolkit( ).getMenuShortcutKeyMask( ) ) );
+				this.setAccelerator( KeyStroke.getKeyStroke( KeyEvent.VK_O, Toolkit.getDefaultToolkit( ).getMenuShortcutKeyMask( ) ) );
 			}
 		};
-		fileMenu.add( openGraphMenuItem );
+		this.fileMenu.add( this.openGraphMenuItem );
 		
-		saveGraphMenuItem = new JMenuItem( StringBundle.get( "file_save_menu_text" ) )
+		this.saveGraphMenuItem = new JMenuItem( StringBundle.get( "file_save_menu_text" ) )
 		{
 			{
-				addActionListener( new ActionListener( )
+				this.addActionListener( new ActionListener( )
 				{
 					@Override
 					public void actionPerformed( ActionEvent e )
 					{
-						JInternalFrame selectedFrame = desktopPane.getSelectedFrame( );
+						JInternalFrame selectedFrame = MainWindow.this.desktopPane.getSelectedFrame( );
 						GraphWindow graphWindow = ( (GraphWindow) selectedFrame );
 						
-						if ( graphWindow != null )
+						if( graphWindow != null )
 							try
 							{
 								graphWindow.save( );
 							}
-							catch ( IOException ex )
+							catch( IOException ex )
 							{
 								DebugUtilities.logException( "An exception occurred while saving the selected graph.", ex );
 							}
 					}
 				} );
-				setAccelerator( KeyStroke.getKeyStroke( KeyEvent.VK_S, Toolkit.getDefaultToolkit( ).getMenuShortcutKeyMask( ) ) );
+				this.setAccelerator( KeyStroke.getKeyStroke( KeyEvent.VK_S, Toolkit.getDefaultToolkit( ).getMenuShortcutKeyMask( ) ) );
 			}
 		};
-		fileMenu.add( saveGraphMenuItem );
+		this.fileMenu.add( this.saveGraphMenuItem );
 		
-		saveAsGraphMenuItem = new JMenuItem( StringBundle.get( "file_save_as_menu_text" ) )
+		this.saveAsGraphMenuItem = new JMenuItem( StringBundle.get( "file_save_as_menu_text" ) )
 		{
 			{
-				addActionListener( new ActionListener( )
+				this.addActionListener( new ActionListener( )
 				{
 					@Override
 					public void actionPerformed( ActionEvent e )
 					{
-						JInternalFrame selectedFrame = desktopPane.getSelectedFrame( );
+						JInternalFrame selectedFrame = MainWindow.this.desktopPane.getSelectedFrame( );
 						GraphWindow graphWindow = ( (GraphWindow) selectedFrame );
 						
-						if ( graphWindow != null )
+						if( graphWindow != null )
 							graphWindow.saveAs( );
 					}
 				} );
 			}
 		};
-		fileMenu.add( saveAsGraphMenuItem );
+		this.fileMenu.add( this.saveAsGraphMenuItem );
 		
-		fileMenu.addSeparator( );
+		this.fileMenu.addSeparator( );
 		
-		printGraphMenuItem = new JMenuItem( StringBundle.get( "file_print_menu_text" ) )
+		this.printGraphMenuItem = new JMenuItem( StringBundle.get( "file_print_menu_text" ) )
 		{
 			{
-				addActionListener( new ActionListener( )
+				this.addActionListener( new ActionListener( )
 				{
 					@Override
 					public void actionPerformed( ActionEvent e )
 					{
-						JInternalFrame selectedFrame = desktopPane.getSelectedFrame( );
-						if ( selectedFrame != null )
+						JInternalFrame selectedFrame = MainWindow.this.desktopPane.getSelectedFrame( );
+						if( selectedFrame != null )
 						{
 							GraphWindow graphWindow = ( (GraphWindow) selectedFrame );
 							try
 							{
 								graphWindow.getGdc( ).printGraph( );
 							}
-							catch ( PrinterException ex )
+							catch( PrinterException ex )
 							{
 								DebugUtilities.logException( "An exception occurred while printing the selected graph.", ex );
 							}
 						}
 					}
 				} );
-				setAccelerator( KeyStroke.getKeyStroke( KeyEvent.VK_P, Toolkit.getDefaultToolkit( ).getMenuShortcutKeyMask( ) ) );
+				this.setAccelerator( KeyStroke.getKeyStroke( KeyEvent.VK_P, Toolkit.getDefaultToolkit( ).getMenuShortcutKeyMask( ) ) );
 			}
 		};
-		fileMenu.add( printGraphMenuItem );
+		this.fileMenu.add( this.printGraphMenuItem );
 		
-		if ( !System.getProperty( "os.name" ).startsWith( "Mac" ) )
+		if( !System.getProperty( "os.name" ).startsWith( "Mac" ) )
 		{
-			fileMenu.addSeparator( );
+			this.fileMenu.addSeparator( );
 			
-			exitGraphMenuItem = new JMenuItem( StringBundle.get( "file_exit_menu_text" ) )
+			this.exitGraphMenuItem = new JMenuItem( StringBundle.get( "file_exit_menu_text" ) )
 			{
 				{
-					addActionListener( new ActionListener( )
+					this.addActionListener( new ActionListener( )
 					{
 						@Override
 						public void actionPerformed( ActionEvent e )
@@ -313,419 +307,429 @@ public class MainWindow extends JFrame
 					} );
 				}
 			};
-			fileMenu.add( exitGraphMenuItem );
+			this.fileMenu.add( this.exitGraphMenuItem );
 		}
 		else
-			exitGraphMenuItem = null;
+			this.exitGraphMenuItem = null;
 		
-		editMenu = new JMenu( StringBundle.get( "edit_menu_text" ) );
-		menuBar.add( editMenu );
+		this.editMenu = new JMenu( StringBundle.get( "edit_menu_text" ) );
+		this.menuBar.add( this.editMenu );
 		
-		undoMenuItem = new JMenuItem( StringBundle.get( "edit_undo_menu_text" ) )
+		this.undoMenuItem = new JMenuItem( StringBundle.get( "edit_undo_menu_text" ) )
 		{
 			{
-				addActionListener( new ActionListener( )
+				this.addActionListener( new ActionListener( )
 				{
 					@Override
 					public void actionPerformed( ActionEvent e )
 					{
-						JInternalFrame selectedFrame = desktopPane.getSelectedFrame( );
+						JInternalFrame selectedFrame = MainWindow.this.desktopPane.getSelectedFrame( );
 						
-						if ( selectedFrame instanceof GraphWindow )
+						if( selectedFrame instanceof GraphWindow )
 							( (GraphWindow) selectedFrame ).getGdc( ).undo( );
 					}
 				} );
-				setAccelerator( KeyStroke.getKeyStroke( KeyEvent.VK_Z, Toolkit.getDefaultToolkit( ).getMenuShortcutKeyMask( ) ) );
+				this.setAccelerator( KeyStroke.getKeyStroke( KeyEvent.VK_Z, Toolkit.getDefaultToolkit( ).getMenuShortcutKeyMask( ) ) );
 			}
 		};
-		editMenu.add( undoMenuItem );
+		this.editMenu.add( this.undoMenuItem );
 		
-		redoMenuItem = new JMenuItem( StringBundle.get( "edit_redo_menu_text" ) )
+		this.redoMenuItem = new JMenuItem( StringBundle.get( "edit_redo_menu_text" ) )
 		{
 			{
-				addActionListener( new ActionListener( )
+				this.addActionListener( new ActionListener( )
 				{
 					@Override
 					public void actionPerformed( ActionEvent e )
 					{
-						JInternalFrame selectedFrame = desktopPane.getSelectedFrame( );
+						JInternalFrame selectedFrame = MainWindow.this.desktopPane.getSelectedFrame( );
 						
-						if ( selectedFrame instanceof GraphWindow )
+						if( selectedFrame instanceof GraphWindow )
 							( (GraphWindow) selectedFrame ).getGdc( ).redo( );
 					}
 				} );
-				setAccelerator( KeyStroke.getKeyStroke( KeyEvent.VK_Y, Toolkit.getDefaultToolkit( ).getMenuShortcutKeyMask( ) ) );
+				this.setAccelerator( KeyStroke.getKeyStroke( KeyEvent.VK_Y, Toolkit.getDefaultToolkit( ).getMenuShortcutKeyMask( ) ) );
 			}
 		};
-		editMenu.add( redoMenuItem );
+		this.editMenu.add( this.redoMenuItem );
 		
-		editMenu.addSeparator( );
+		this.editMenu.addSeparator( );
 		
-		cutMenuItem = new JMenuItem( StringBundle.get( "edit_cut_menu_text" ) )
+		this.cutMenuItem = new JMenuItem( StringBundle.get( "edit_cut_menu_text" ) )
 		{
 			{
-				addActionListener( new ActionListener( )
+				this.addActionListener( new ActionListener( )
 				{
 					@Override
 					public void actionPerformed( ActionEvent e )
 					{
-						JInternalFrame selectedFrame = desktopPane.getSelectedFrame( );
+						JInternalFrame selectedFrame = MainWindow.this.desktopPane.getSelectedFrame( );
 						
-						if ( selectedFrame instanceof GraphWindow )
+						if( selectedFrame instanceof GraphWindow )
 							( (GraphWindow) selectedFrame ).getGdc( ).cut( );
 					}
 				} );
-				setAccelerator( KeyStroke.getKeyStroke( KeyEvent.VK_X, Toolkit.getDefaultToolkit( ).getMenuShortcutKeyMask( ) ) );
+				this.setAccelerator( KeyStroke.getKeyStroke( KeyEvent.VK_X, Toolkit.getDefaultToolkit( ).getMenuShortcutKeyMask( ) ) );
 			}
 		};
-		editMenu.add( cutMenuItem );
+		this.editMenu.add( this.cutMenuItem );
 		
-		copyMenuItem = new JMenuItem( StringBundle.get( "edit_copy_menu_text" ) )
+		this.copyMenuItem = new JMenuItem( StringBundle.get( "edit_copy_menu_text" ) )
 		{
 			{
-				addActionListener( new ActionListener( )
+				this.addActionListener( new ActionListener( )
 				{
 					@Override
 					public void actionPerformed( ActionEvent e )
 					{
-						JInternalFrame selectedFrame = desktopPane.getSelectedFrame( );
+						JInternalFrame selectedFrame = MainWindow.this.desktopPane.getSelectedFrame( );
 						
-						if ( selectedFrame instanceof GraphWindow )
+						if( selectedFrame instanceof GraphWindow )
 							( (GraphWindow) selectedFrame ).getGdc( ).copy( );
 					}
 				} );
-				setAccelerator( KeyStroke.getKeyStroke( KeyEvent.VK_C, Toolkit.getDefaultToolkit( ).getMenuShortcutKeyMask( ) ) );
+				this.setAccelerator( KeyStroke.getKeyStroke( KeyEvent.VK_C, Toolkit.getDefaultToolkit( ).getMenuShortcutKeyMask( ) ) );
 			}
 		};
-		editMenu.add( copyMenuItem );
+		this.editMenu.add( this.copyMenuItem );
 		
-		pasteMenuItem = new JMenuItem( StringBundle.get( "edit_paste_menu_text" ) )
+		this.pasteMenuItem = new JMenuItem( StringBundle.get( "edit_paste_menu_text" ) )
 		{
 			{
-				addActionListener( new ActionListener( )
+				this.addActionListener( new ActionListener( )
 				{
 					@Override
 					public void actionPerformed( ActionEvent e )
 					{
-						JInternalFrame selectedFrame = desktopPane.getSelectedFrame( );
+						JInternalFrame selectedFrame = MainWindow.this.desktopPane.getSelectedFrame( );
 						
-						if ( selectedFrame instanceof GraphWindow )
+						if( selectedFrame instanceof GraphWindow )
 							( (GraphWindow) selectedFrame ).getGdc( ).paste( );
 					}
 				} );
-				setAccelerator( KeyStroke.getKeyStroke( KeyEvent.VK_V, Toolkit.getDefaultToolkit( ).getMenuShortcutKeyMask( ) ) );
+				this.setAccelerator( KeyStroke.getKeyStroke( KeyEvent.VK_V, Toolkit.getDefaultToolkit( ).getMenuShortcutKeyMask( ) ) );
 			}
 		};
-		editMenu.add( pasteMenuItem );
+		this.editMenu.add( this.pasteMenuItem );
 		
-		editMenu.addSeparator( );
+		this.editMenu.addSeparator( );
 		
-		selectAllMenuItem = new JMenuItem( StringBundle.get( "edit_select_all_menu_text" ) )
+		this.selectAllMenuItem = new JMenuItem( StringBundle.get( "edit_select_all_menu_text" ) )
 		{
 			{
-				addActionListener( new ActionListener( )
+				this.addActionListener( new ActionListener( )
 				{
 					public void actionPerformed( ActionEvent e )
 					{
-						JInternalFrame selectedFrame = desktopPane.getSelectedFrame( );
+						JInternalFrame selectedFrame = MainWindow.this.desktopPane.getSelectedFrame( );
 						
-						if ( selectedFrame instanceof GraphWindow )
+						if( selectedFrame instanceof GraphWindow )
 							( (GraphWindow) selectedFrame ).getGdc( ).selectAll( );
 					}
 				} );
-				setAccelerator( KeyStroke.getKeyStroke( KeyEvent.VK_A, Toolkit.getDefaultToolkit( ).getMenuShortcutKeyMask( ) ) );
+				this.setAccelerator( KeyStroke.getKeyStroke( KeyEvent.VK_A, Toolkit.getDefaultToolkit( ).getMenuShortcutKeyMask( ) ) );
 			}
 		};
-		editMenu.add( selectAllMenuItem );
+		this.editMenu.add( this.selectAllMenuItem );
 		
-		selectAllVertexesMenuItem = new JMenuItem( StringBundle.get( "edit_select_all_vertexes_menu_text" ) )
+		this.selectAllVerticesMenuItem = new JMenuItem( StringBundle.get( "edit_select_all_vertices_menu_text" ) )
 		{
 			{
-				addActionListener( new ActionListener( )
+				this.addActionListener( new ActionListener( )
 				{
 					public void actionPerformed( ActionEvent e )
 					{
-						JInternalFrame selectedFrame = desktopPane.getSelectedFrame( );
+						JInternalFrame selectedFrame = MainWindow.this.desktopPane.getSelectedFrame( );
 						
-						if ( selectedFrame instanceof GraphWindow )
-							( (GraphWindow) selectedFrame ).getGdc( ).selectAllVertexes( );
+						if( selectedFrame instanceof GraphWindow )
+							( (GraphWindow) selectedFrame ).getGdc( ).selectAllVertices( );
 					}
 				} );
 			}
 		};
-		editMenu.add( selectAllVertexesMenuItem );
+		this.editMenu.add( this.selectAllVerticesMenuItem );
 		
-		selectAllEdgesMenuItem = new JMenuItem( StringBundle.get( "edit_select_all_edges_menu_text" ) );
-		selectAllEdgesMenuItem.addActionListener( new ActionListener( )
+		this.selectAllEdgesMenuItem = new JMenuItem( StringBundle.get( "edit_select_all_edges_menu_text" ) )
 		{
-			public void actionPerformed( ActionEvent e )
 			{
-				JInternalFrame selectedFrame = desktopPane.getSelectedFrame( );
-				
-				if ( selectedFrame instanceof GraphWindow )
-					( (GraphWindow) selectedFrame ).getGdc( ).selectAllEdges( );
+				this.addActionListener( new ActionListener( )
+				{
+					public void actionPerformed( ActionEvent e )
+					{
+						JInternalFrame selectedFrame = MainWindow.this.desktopPane.getSelectedFrame( );
+						
+						if( selectedFrame instanceof GraphWindow )
+							( (GraphWindow) selectedFrame ).getGdc( ).selectAllEdges( );
+					}
+				} );
 			}
-		} );
-		editMenu.add( selectAllEdgesMenuItem );
+		};
+		this.editMenu.add( this.selectAllEdgesMenuItem );
 		
-		windowsMenu = new JMenu( StringBundle.get( "windows_menu_text" ) );
-		menuBar.add( windowsMenu );
+		this.windowsMenu = new JMenu( StringBundle.get( "windows_menu_text" ) );
+		this.menuBar.add( this.windowsMenu );
 		
-		cascadeMenuItem = new JMenuItem( StringBundle.get( "windows_cascade_menu_text" ) )
+		this.cascadeMenuItem = new JMenuItem( StringBundle.get( "windows_cascade_menu_text" ) )
 		{
 			{
-				addActionListener( new ActionListener( )
+				this.addActionListener( new ActionListener( )
 				{
 					@Override
 					public void actionPerformed( ActionEvent e )
 					{
-						JInternalFrame[ ] frames = desktopPane.getAllFrames( );
+						JInternalFrame[ ] frames = MainWindow.this.desktopPane.getAllFrames( );
 						
-						for ( int i = 0; i < frames.length; ++i )
-						{
+						for( int i = 0; i < frames.length; ++i )
 							try
 							{
+								frames[frames.length - i - 1].setIcon( false );
 								frames[frames.length - i - 1].setMaximum( false );
-								frames[frames.length - i - 1].setLocation( i * userSettings.cascadeWindowOffset.get( ), i * userSettings.cascadeWindowOffset.get( ) );
-								frames[frames.length - i - 1].setSize( new Dimension( userSettings.graphWindowWidth.get( ), userSettings.graphWindowHeight.get( ) ) );
+								frames[frames.length - i - 1].setLocation( i * UserSettings.instance.cascadeWindowOffset.get( ), i * UserSettings.instance.cascadeWindowOffset.get( ) );
+								frames[frames.length - i - 1].setSize( new Dimension( UserSettings.instance.graphWindowWidth.get( ), UserSettings.instance.graphWindowHeight.get( ) ) );
 							}
-							catch ( PropertyVetoException ex )
+							catch( PropertyVetoException ex )
 							{
 								DebugUtilities.logException( "An exception occurred while repositioning an internal window.", ex );
 							}
-						}
 					}
 				} );
 			}
 		};
-		windowsMenu.add( cascadeMenuItem );
+		this.windowsMenu.add( this.cascadeMenuItem );
 		
-		showSideBySideMenuItem = new JMenuItem( StringBundle.get( "windows_show_side_by_side_menu_text" ) )
+		this.showSideBySideMenuItem = new JMenuItem( StringBundle.get( "windows_show_side_by_side_menu_text" ) )
 		{
 			{
-				addActionListener( new ActionListener( )
+				this.addActionListener( new ActionListener( )
 				{
 					@Override
 					public void actionPerformed( ActionEvent e )
 					{
-						JInternalFrame[ ] frames = desktopPane.getAllFrames( );
+						JInternalFrame[ ] frames = MainWindow.this.desktopPane.getAllFrames( );
 						
-						if ( frames.length > 0 )
+						if( frames.length > 0 )
 						{
-							double frameWidth = desktopPane.getWidth( ) / frames.length;
+							double frameWidth = MainWindow.this.desktopPane.getWidth( ) / frames.length;
 							
-							for ( int i = 0; i < frames.length; ++i )
-							{
+							for( int i = 0; i < frames.length; ++i )
 								try
 								{
+									frames[i].setIcon( false );
 									frames[i].setMaximum( false );
 									frames[i].setLocation( (int) ( i * frameWidth ), 0 );
-									frames[i].setSize( (int) frameWidth, desktopPane.getHeight( ) );
+									frames[i].setSize( (int) frameWidth, MainWindow.this.desktopPane.getHeight( ) );
 								}
-								catch ( PropertyVetoException ex )
+								catch( PropertyVetoException ex )
 								{
 									DebugUtilities.logException( "An exception occurred while repositioning an internal window.", ex );
 								}
-							}
 						}
 					}
 				} );
 			}
 		};
-		windowsMenu.add( showSideBySideMenuItem );
+		this.windowsMenu.add( this.showSideBySideMenuItem );
 		
-		showStackedMenuItem = new JMenuItem( StringBundle.get( "windows_show_stacked_menu_text" ) )
+		this.showStackedMenuItem = new JMenuItem( StringBundle.get( "windows_show_stacked_menu_text" ) )
 		{
 			{
-				addActionListener( new ActionListener( )
+				this.addActionListener( new ActionListener( )
 				{
 					@Override
 					public void actionPerformed( ActionEvent e )
 					{
-						JInternalFrame[ ] frames = desktopPane.getAllFrames( );
-						if ( frames.length > 0 )
+						JInternalFrame[ ] frames = MainWindow.this.desktopPane.getAllFrames( );
+						if( frames.length > 0 )
 						{
-							double frameHeight = desktopPane.getHeight( ) / frames.length;
+							double frameHeight = MainWindow.this.desktopPane.getHeight( ) / frames.length;
 							
-							for ( int i = 0; i < frames.length; ++i )
-							{
+							for( int i = 0; i < frames.length; ++i )
 								try
 								{
+									frames[i].setIcon( false );
 									frames[i].setMaximum( false );
 									frames[i].setLocation( 0, (int) ( i * frameHeight ) );
-									frames[i].setSize( desktopPane.getWidth( ), (int) frameHeight );
+									frames[i].setSize( MainWindow.this.desktopPane.getWidth( ), (int) frameHeight );
 								}
-								catch ( PropertyVetoException ex )
+								catch( PropertyVetoException ex )
 								{
 									DebugUtilities.logException( "An exception occurred while repositioning an internal window.", ex );
 								}
-							}
 						}
 					}
 				} );
 			}
 		};
-		windowsMenu.add( showStackedMenuItem );
+		this.windowsMenu.add( this.showStackedMenuItem );
 		
-		tileWindowsMenuItem = new JMenuItem( StringBundle.get( "windows_tile_menu_text" ) )
+		this.tileWindowsMenuItem = new JMenuItem( StringBundle.get( "windows_tile_menu_text" ) )
 		{
 			{
-				addActionListener( new ActionListener( )
+				this.addActionListener( new ActionListener( )
 				{
 					@Override
 					public void actionPerformed( ActionEvent e )
 					{
-						JInternalFrame[ ] frames = desktopPane.getAllFrames( );
+						JInternalFrame[ ] frames = MainWindow.this.desktopPane.getAllFrames( );
 						
-						if ( frames.length > 0 )
+						if( frames.length > 0 )
 						{
 							int rows = (int) Math.round( Math.sqrt( frames.length ) );
 							int columns = (int) Math.ceil( frames.length / (double) rows );
-							double rowSpace = desktopPane.getHeight( ) / rows;
-							double colSpace = desktopPane.getWidth( ) / columns;
+							double rowSpace = MainWindow.this.desktopPane.getHeight( ) / rows;
+							double colSpace = MainWindow.this.desktopPane.getWidth( ) / columns;
 							
-							for ( int i = 0; i < frames.length; ++i )
-							{
+							for( int i = 0; i < frames.length; ++i )
 								try
 								{
+									frames[i].setIcon( false );
 									frames[i].setMaximum( false );
 									frames[i].setLocation( (int) ( ( i % columns ) * colSpace ), (int) ( ( i / columns ) * rowSpace ) );
 									frames[i].setSize( (int) colSpace, (int) rowSpace );
 								}
-								catch ( PropertyVetoException ex )
+								catch( PropertyVetoException ex )
 								{
 									DebugUtilities.logException( "An exception occurred while repositioning an internal window.", ex );
 								}
-							}
 						}
 					}
 				} );
 			}
 		};
-		windowsMenu.add( tileWindowsMenuItem );
+		this.windowsMenu.add( this.tileWindowsMenuItem );
 		
-		helpMenu = new JMenu( StringBundle.get( "help_menu_text" ) );
-		menuBar.add( helpMenu );
+		this.helpMenu = new JMenu( StringBundle.get( "help_menu_text" ) );
+		this.menuBar.add( this.helpMenu );
 		
-		helpContentsMenuItem = new JMenuItem( StringBundle.get( "help_contents_menu_text" ) )
+		this.helpContentsMenuItem = new JMenuItem( StringBundle.get( "help_contents_menu_text" ) )
 		{
 			{
-				addActionListener( new ActionListener( )
+				this.addActionListener( new ActionListener( )
 				{
 					@Override
-					public void actionPerformed( ActionEvent arg0 )
+					public void actionPerformed( ActionEvent e )
 					{
 						WebUtilities.launchBrowser( GlobalSettings.applicationWebsite );
 					}
 				} );
 			}
 		};
-		helpMenu.add( helpContentsMenuItem );
+		this.helpMenu.add( this.helpContentsMenuItem );
 		
-		helpMenu.addSeparator( );
-		
-		downloadsMenuItem = new JMenuItem( StringBundle.get( "help_downloads_menu_text" ) )
+		this.scriptLibraryMenuItem = new JMenuItem( StringBundle.get( "help_script_library_menu_text" ) )
 		{
 			{
-				addActionListener( new ActionListener( )
+				this.addActionListener( new ActionListener( )
 				{
 					@Override
 					public void actionPerformed( ActionEvent e )
 					{
-						DownloadsDialog.showDialog( thisFrame );
+						new ScriptLibraryWindow( );
 					}
 				} );
 			}
 		};
-		helpMenu.add( downloadsMenuItem );
+		this.helpMenu.add( this.scriptLibraryMenuItem );
 		
-		preferencesMenuItem = new JMenuItem( StringBundle.get( "help_preferences_menu_text" ) )
+		this.helpMenu.addSeparator( );
+		
+		this.downloadsMenuItem = new JMenuItem( StringBundle.get( "help_downloads_menu_text" ) )
 		{
 			{
-				addActionListener( new ActionListener( )
+				this.addActionListener( new ActionListener( )
 				{
 					@Override
-					public void actionPerformed( ActionEvent arg0 )
+					public void actionPerformed( ActionEvent e )
 					{
-						PreferencesDialog.showDialog( thisFrame );
+						DownloadsDialog.showDialog( MainWindow.this.thisFrame );
 					}
 				} );
 			}
 		};
-		helpMenu.add( preferencesMenuItem );
+		this.helpMenu.add( this.downloadsMenuItem );
 		
-		helpMenu.addSeparator( );
-		
-		aboutVisiGraphMenuItem = new JMenuItem( StringBundle.get( "help_about_menu_text" ) )
+		this.preferencesMenuItem = new JMenuItem( StringBundle.get( "help_preferences_menu_text" ) )
 		{
 			{
-				addActionListener( new ActionListener( )
+				this.addActionListener( new ActionListener( )
 				{
 					@Override
-					public void actionPerformed( ActionEvent arg0 )
+					public void actionPerformed( ActionEvent e )
 					{
-						AboutDialog.showDialog( thisFrame );
+						PreferencesDialog.showDialog( MainWindow.this.thisFrame );
 					}
 				} );
 			}
 		};
-		helpMenu.add( aboutVisiGraphMenuItem );
+		this.helpMenu.add( this.preferencesMenuItem );
 		
-		setJMenuBar( menuBar );
+		this.helpMenu.addSeparator( );
+		
+		this.aboutVisiGraphMenuItem = new JMenuItem( StringBundle.get( "help_about_menu_text" ) )
+		{
+			{
+				this.addActionListener( new ActionListener( )
+				{
+					@Override
+					public void actionPerformed( ActionEvent e )
+					{
+						AboutDialog.showDialog( MainWindow.this.thisFrame );
+					}
+				} );
+			}
+		};
+		this.helpMenu.add( this.aboutVisiGraphMenuItem );
+		
+		this.setJMenuBar( this.menuBar );
 		
 		this.setVisible( true );
+	}
+	
+	public void closingWindow( WindowEvent e )
+	{
+		JInternalFrame[ ] frames = this.desktopPane.getAllFrames( );
+		
+		for( JInternalFrame frame : frames )
+		{
+			GraphWindow window = (GraphWindow) frame;
+			
+			window.closingWindow( new InternalFrameEvent( frame, 0 ) );
+			
+			if( !window.isClosed( ) )
+				break;
+		}
+		
+		if( this.desktopPane.getAllFrames( ).length == 0 )
+		{
+			this.dispose( );
+			System.exit( 0 );
+		}
 	}
 	
 	public void openFile( File file ) throws IOException
 	{
 		Scanner scanner = new Scanner( file );
 		StringBuilder sb = new StringBuilder( );
-		while ( scanner.hasNextLine( ) )
+		while( scanner.hasNextLine( ) )
 			sb.append( scanner.nextLine( ) );
 		
 		scanner.close( );
 		
 		Graph newGraph = new Graph( sb.toString( ) );
-		if ( newGraph != null )
+		if( newGraph != null )
 		{
 			GraphWindow graphWindow = new GraphWindow( newGraph );
 			graphWindow.setFile( file );
-			desktopPane.add( graphWindow );
+			this.desktopPane.add( graphWindow );
 			try
 			{
 				graphWindow.setMaximum( true );
 				graphWindow.setSelected( true );
 			}
-			catch ( PropertyVetoException ex )
+			catch( PropertyVetoException ex )
 			{
 				DebugUtilities.logException( "An exception occurred while loading the graph window.", ex );
 			}
 		}
 	}
-	
-	public void closingWindow( WindowEvent e )
-	{
-		JInternalFrame[ ] frames = desktopPane.getAllFrames( );
-		
-		for ( JInternalFrame frame : frames )
-		{
-			GraphWindow window = (GraphWindow) frame;
-			
-			window.closingWindow( new InternalFrameEvent( frame, 0 ) );
-			
-			if ( !window.isClosed( ) )
-				break;
-		}
-		
-		if ( desktopPane.getAllFrames( ).length == 0 )
-		{
-			dispose( );
-			System.exit( 0 );
-		}
-	}
 }
-
-
-
-
-

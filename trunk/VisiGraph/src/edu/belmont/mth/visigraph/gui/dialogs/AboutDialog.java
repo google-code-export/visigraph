@@ -4,20 +4,18 @@
 package edu.belmont.mth.visigraph.gui.dialogs;
 
 import java.awt.*;
+import java.util.*;
 import javax.swing.*;
 import java.awt.event.*;
-import java.util.*;
-import edu.belmont.mth.visigraph.resources.*;
 import edu.belmont.mth.visigraph.settings.*;
+import edu.belmont.mth.visigraph.resources.*;
 
 /**
  * @author Cameron Behar
- * 
  */
-@SuppressWarnings( "serial" )
 public class AboutDialog extends JDialog implements ActionListener
 {
-	private static AboutDialog dialog;
+	private static AboutDialog	dialog;
 	
 	public static void showDialog( Component owner )
 	{
@@ -26,120 +24,124 @@ public class AboutDialog extends JDialog implements ActionListener
 		return;
 	}
 	
-	private AboutDialog ( Frame owner )
+	private AboutDialog( Frame owner )
 	{
 		super( owner, StringBundle.get( "about_dialog_title" ), true );
 		this.setResizable( false );
 		
-		JPanel inputPanel = new JPanel( new GridBagLayout( ) );
-		inputPanel.setBorder( BorderFactory.createEmptyBorder( 8, 0, 8, 0 ) );
+		JPanel inputPanel = new JPanel( new GridBagLayout( ) )
+		{
+			{
+				this.setBorder( BorderFactory.createEmptyBorder( 8, 0, 8, 0 ) );
+			}
+		};
 		
 		JLabel appIconLabel = new JLabel( ImageIconBundle.get( "app_icon_128x128" ) )
 		{
 			{
-				setBorder( BorderFactory.createEmptyBorder( 0, 0, 0, 24 ) );
+				this.setBorder( BorderFactory.createEmptyBorder( 0, 0, 0, 24 ) );
 			}
 		};
 		inputPanel.add( appIconLabel, new GridBagConstraints( )
 		{
 			{
-				fill = GridBagConstraints.HORIZONTAL;
-				gridx = 0;
-				gridy = 0;
-				gridheight = 13;
+				this.fill = GridBagConstraints.HORIZONTAL;
+				this.gridx = 0;
+				this.gridy = 0;
+				this.gridheight = 13;
 			}
 		} );
 		
 		JLabel appTitleLabel = new JLabel( GlobalSettings.applicationName )
 		{
 			{
-				setFont( new Font( getFont( ).getFamily( ), Font.BOLD, 18 ) );
+				this.setFont( new Font( this.getFont( ).getFamily( ), Font.BOLD, 18 ) );
 			}
 		};
 		inputPanel.add( appTitleLabel, new GridBagConstraints( )
 		{
 			{
-				fill = GridBagConstraints.HORIZONTAL;
-				gridx = 1;
-				gridy = 1;
+				this.fill = GridBagConstraints.HORIZONTAL;
+				this.gridx = 1;
+				this.gridy = 1;
 			}
 		} );
 		
 		JLabel appByLabel = new JLabel( String.format( StringBundle.get( "about_dialog_by_label" ), GlobalSettings.applicationAuthor ) )
 		{
 			{
-				setBorder( BorderFactory.createEmptyBorder( 0, 10, 0, 0 ) );
+				this.setBorder( BorderFactory.createEmptyBorder( 0, 10, 0, 0 ) );
 			}
 		};
 		inputPanel.add( appByLabel, new GridBagConstraints( )
 		{
 			{
-				fill = GridBagConstraints.HORIZONTAL;
-				gridx = 1;
-				gridy = 2;
+				this.fill = GridBagConstraints.HORIZONTAL;
+				this.gridx = 1;
+				this.gridy = 2;
 			}
 		} );
 		
 		JLabel appBuildLabel = new JLabel( String.format( StringBundle.get( "about_dialog_version_label" ), GlobalSettings.applicationVersion ) )
 		{
 			{
-				setBorder( BorderFactory.createEmptyBorder( 0, 10, 0, 0 ) );
+				this.setBorder( BorderFactory.createEmptyBorder( 0, 10, 0, 0 ) );
 			}
 		};
 		inputPanel.add( appBuildLabel, new GridBagConstraints( )
 		{
 			{
-				fill = GridBagConstraints.HORIZONTAL;
-				gridx = 1;
-				gridy = 3;
+				this.fill = GridBagConstraints.HORIZONTAL;
+				this.gridx = 1;
+				this.gridy = 3;
 			}
 		} );
 		
 		inputPanel.add( Box.createVerticalStrut( 15 ), new GridBagConstraints( )
 		{
 			{
-				fill = GridBagConstraints.HORIZONTAL;
-				gridx = 1;
-				gridy = 4;
+				this.fill = GridBagConstraints.HORIZONTAL;
+				this.gridx = 1;
+				this.gridy = 4;
 			}
 		} );
 		
 		JLabel appDescriptionLabel = new JLabel( GlobalSettings.applicationDescription )
 		{
 			{
-				setBorder( BorderFactory.createEmptyBorder( 0, 10, 0, 0 ) );
+				this.setBorder( BorderFactory.createEmptyBorder( 0, 10, 0, 0 ) );
 			}
 		};
 		inputPanel.add( appDescriptionLabel, new GridBagConstraints( )
 		{
 			{
-				fill = GridBagConstraints.HORIZONTAL;
-				gridx = 1;
-				gridy = 5;
+				this.fill = GridBagConstraints.HORIZONTAL;
+				this.gridx = 1;
+				this.gridy = 5;
 			}
 		} );
 		
 		inputPanel.add( Box.createVerticalStrut( 5 ), new GridBagConstraints( )
 		{
 			{
-				fill = GridBagConstraints.HORIZONTAL;
-				gridx = 1;
-				gridy = 6;
+				this.fill = GridBagConstraints.HORIZONTAL;
+				this.gridx = 1;
+				this.gridy = 6;
 			}
 		} );
 		
 		JLabel appCopyrightLine0Label = new JLabel( String.format( StringBundle.get( "about_dialog_copyright_line_0" ), Calendar.getInstance( ).get( Calendar.YEAR ), GlobalSettings.applicationAuthor, GlobalSettings.applicationName ) )
 		{
 			{
-				setBorder( BorderFactory.createEmptyBorder( 0, 10, 0, 0 ) );
+				this.setBorder( BorderFactory.createEmptyBorder( 0, 10, 0, 0 ) );
 			}
 		};
 		inputPanel.add( appCopyrightLine0Label, new GridBagConstraints( )
 		{
 			{
-				fill = GridBagConstraints.HORIZONTAL;
-				gridx = 1;
-				gridy = 7;
+				this.fill = GridBagConstraints.HORIZONTAL;
+				this.gridx = 1;
+				this.gridy = 7;
 			}
 		} );
 		
@@ -147,9 +149,9 @@ public class AboutDialog extends JDialog implements ActionListener
 		inputPanel.add( appCopyrightLine1Label, new GridBagConstraints( )
 		{
 			{
-				fill = GridBagConstraints.HORIZONTAL;
-				gridx = 1;
-				gridy = 8;
+				this.fill = GridBagConstraints.HORIZONTAL;
+				this.gridx = 1;
+				this.gridy = 8;
 			}
 		} );
 		
@@ -157,33 +159,33 @@ public class AboutDialog extends JDialog implements ActionListener
 		inputPanel.add( appCopyrightLine2Label, new GridBagConstraints( )
 		{
 			{
-				fill = GridBagConstraints.HORIZONTAL;
-				gridx = 1;
-				gridy = 9;
+				this.fill = GridBagConstraints.HORIZONTAL;
+				this.gridx = 1;
+				this.gridy = 9;
 			}
 		} );
 		
 		inputPanel.add( Box.createVerticalStrut( 5 ), new GridBagConstraints( )
 		{
 			{
-				fill = GridBagConstraints.HORIZONTAL;
-				gridx = 1;
-				gridy = 10;
+				this.fill = GridBagConstraints.HORIZONTAL;
+				this.gridx = 1;
+				this.gridy = 10;
 			}
 		} );
 		
 		JLabel appIncludesLine0Label = new JLabel( StringBundle.get( "about_dialog_includes_line_0" ) )
 		{
 			{
-				setBorder( BorderFactory.createEmptyBorder( 0, 10, 0, 0 ) );
+				this.setBorder( BorderFactory.createEmptyBorder( 0, 10, 0, 0 ) );
 			}
 		};
 		inputPanel.add( appIncludesLine0Label, new GridBagConstraints( )
 		{
 			{
-				fill = GridBagConstraints.HORIZONTAL;
-				gridx = 1;
-				gridy = 11;
+				this.fill = GridBagConstraints.HORIZONTAL;
+				this.gridx = 1;
+				this.gridy = 11;
 			}
 		} );
 		
@@ -191,53 +193,51 @@ public class AboutDialog extends JDialog implements ActionListener
 		inputPanel.add( appIncludesLine1Label, new GridBagConstraints( )
 		{
 			{
-				fill = GridBagConstraints.HORIZONTAL;
-				gridx = 1;
-				gridy = 12;
+				this.fill = GridBagConstraints.HORIZONTAL;
+				this.gridx = 1;
+				this.gridy = 12;
 			}
 		} );
 		
 		// Create and initialize the buttons
-		final Frame finalOwner = owner;
 		final JButton debugButton = new JButton( StringBundle.get( "debug_button_text" ) )
 		{
 			{
-				setPreferredSize( new Dimension( 80, 28 ) );
-				addActionListener( new ActionListener( )
+				this.setPreferredSize( new Dimension( 80, 28 ) );
+				this.addActionListener( new ActionListener( )
 				{
 					@Override
 					public void actionPerformed( ActionEvent e )
 					{
-						DebugDialog.showDialog( finalOwner );
+						DebugDialog.showDialog( AboutDialog.this.getOwner( ) );
 					}
 				} );
 			}
 		};
-		
 		final JButton okButton = new JButton( StringBundle.get( "ok_button_text" ) )
 		{
 			{
-				setPreferredSize( new Dimension( 80, 28 ) );
-				setActionCommand( "Ok" );
+				this.setPreferredSize( new Dimension( 80, 28 ) );
+				this.setActionCommand( "Ok" );
+				this.addActionListener( AboutDialog.this );
+				AboutDialog.this.getRootPane( ).setDefaultButton( this );
 			}
 		};
-		okButton.addActionListener( this );
-		getRootPane( ).setDefaultButton( okButton );
 		
 		// Lay out the buttons from left to right
 		JPanel buttonPanel = new JPanel( )
 		{
 			{
-				setLayout( new BoxLayout( this, BoxLayout.LINE_AXIS ) );
-				setBorder( BorderFactory.createEmptyBorder( -2, 9, 9, 13 ) );
-				add( debugButton );
-				add( Box.createHorizontalGlue( ) );
-				add( okButton );
+				this.setLayout( new BoxLayout( this, BoxLayout.LINE_AXIS ) );
+				this.setBorder( BorderFactory.createEmptyBorder( -2, 9, 9, 13 ) );
+				this.add( debugButton );
+				this.add( Box.createHorizontalGlue( ) );
+				this.add( okButton );
 			}
 		};
 		
 		// Put everything together, using the content pane's BorderLayout
-		Container contentPanel = getContentPane( );
+		Container contentPanel = this.getContentPane( );
 		contentPanel.setLayout( new BorderLayout( 9, 9 ) );
 		contentPanel.add( inputPanel, BorderLayout.CENTER );
 		contentPanel.add( buttonPanel, BorderLayout.PAGE_END );
@@ -245,10 +245,10 @@ public class AboutDialog extends JDialog implements ActionListener
 		Dimension size = this.getPreferredSize( );
 		size.width += 40;
 		size.height += 40;
-		setPreferredSize( size );
+		this.setPreferredSize( size );
 		
-		pack( );
-		setLocationRelativeTo( owner );
+		this.pack( );
+		this.setLocationRelativeTo( owner );
 	}
 	
 	public void actionPerformed( ActionEvent e )

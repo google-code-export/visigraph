@@ -9,7 +9,6 @@ import edu.belmont.mth.visigraph.utilities.*;
 
 /**
  * @author Cameron Behar
- * 
  */
 public class CaptionSvgView
 {
@@ -18,7 +17,7 @@ public class CaptionSvgView
 		StringBuilder sb = new StringBuilder( );
 		
 		String[ ] lines = c.text.get( ).split( "\\n" );
-		for ( int i = 0; i < lines.length; ++i )
+		for( int i = 0; i < lines.length; ++i )
 		{
 			sb.append( "<text " );
 			sb.append( "x=\"" + ( c.x.get( ) + xOffset ) + "\" " );

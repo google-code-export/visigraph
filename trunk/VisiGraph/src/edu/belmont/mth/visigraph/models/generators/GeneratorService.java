@@ -4,13 +4,13 @@
 package edu.belmont.mth.visigraph.models.generators;
 
 import java.io.*;
-
+import bsh.Interpreter;
 import edu.belmont.mth.visigraph.models.*;
 import edu.belmont.mth.visigraph.utilities.*;
-import bsh.Interpreter;
+import edu.belmont.mth.visigraph.models.generators.Generator.*;
 
 /**
- * The {@code GeneratorService} class provides universal access to a Singleton list of graph generators compiled using BeanShell from the generators
+ * The {@code GeneratorService} class provides universal access to a singleton list of graph generators compiled using BeanShell from the "generators"
  * folder of the application's local directory.
  * 
  * @author Cameron Behar
@@ -18,51 +18,16 @@ import bsh.Interpreter;
 public class GeneratorService
 {
 	/**
-	 * The Singleton instance of {@code GeneratorService}
+	 * The singleton instance of {@code GeneratorService}
 	 */
-	public final static GeneratorService instance = new GeneratorService( );
+	public final static GeneratorService	instance	= new GeneratorService( );
 	
 	/**
-	 * The {@code ObservableList} of available generators, compiled at runtime
-	 */
-	public final ObservableList<GeneratorBase> generators;
-	
-	/**
-	 * Constructs the Singleton instance of {@code GeneratorService}, populating the list of graph generators with scripts compiled using BeanShell
-	 * from the generators folder of the application's local directory
-	 */
-	private GeneratorService ( )
-	{
-		generators = new ObservableList<GeneratorBase>( );
-		
-		// Load standard library generators
-		try
-		{
-			for ( Class<GeneratorBase> generator : ReflectionUtilities.getClasses( "edu.belmont.mth.visigraph.models.generators" ) )
-				try { if ( !generator.isInterface( ) && GeneratorBase.class.isAssignableFrom( generator ) ) generators.add( generator.newInstance( ) ); }
-				catch ( Exception ex ) { DebugUtilities.logException( String.format( "An exception occurred while instantiating/casting %s.", generator.getName( ) ), ex ); }
-		}
-		catch ( Exception ex ) { DebugUtilities.logException( "An exception occurred while loading standard library generators.", ex ); }
-		
-		// Load external scripted generators
-		File folder = new File( "generators" );
-		if ( folder.exists( ) )
-			for ( String filename : folder.list( new FilenameFilter( ) { public boolean accept( File dir, String name ) { return name.endsWith( ".java" ); } } ) )
-				try
-				{
-					GeneratorBase generator = (GeneratorBase) new Interpreter( ).source( "generators/" + filename );
-					ValidateGraphGenerator( generator );
-					generators.add( generator );
-				}
-				catch ( Throwable ex ) { DebugUtilities.logException( String.format( "An exception occurred while compiling %s.", filename ), ex ); }
-	}
-	
-	/**
-	 * Validates each {@link GeneratorBase} specified in {@link userSettings} to ensure logical consistency among its rules.
+	 * Validates a {@code Generator} to ensure {@link Generator#getAttribute(Attribute)} returns sufficient and logically consistent values.
 	 * <p/>
-	 * This method does not return a value, but instead throws an {@link Exception} if an {@link GeneratorBase} implements inconsistent rules. Because
-	 * loops, multiple edges, and cycles are not mutually exclusive concepts, we must provide this sanity-check to ensure that no
-	 * {@link GeneratorBase} allows inconsistency or ambiguity. The logic used to validate internal consistency follows:
+	 * This method does not return a value, but instead throws an {@code Exception} if the specified {@code Generator} implements insufficient or
+	 * inconsistent attributes. Because loops, multiple edges, and cycles are not mutually exclusive concepts, we must provide this sanity-check to
+	 * ensure that no {@code Generator} allows inconsistency or ambiguity. The logic used to validate internal consistency follows:
 	 * <p/>
 	 * <ul>
 	 * <li>If cycles are allowed ...
@@ -90,27 +55,114 @@ public class GeneratorService
 	 * </ul>
 	 * </ul>
 	 * 
-	 * @author Cameron Behar
-	 * @throws Error If an {@link GeneratorBase} in the {@link userSettings}'s registry implements inconsistent rules.
+	 * @param generator The {@code Generator} to be validated
+	 * @throws Exception If the specified {@code Generator} implements insufficient or inconsistent attributes.
 	 */
-	private static void ValidateGraphGenerator( GeneratorBase generator ) throws Error
+	private static void validateGenerator( Generator generator ) throws Exception
 	{
-		if ( !generator.areCyclesAllowed( ).isTrue( ) )
+		// Check minimum requirements
+		if( !( generator.getAttribute( Attribute.ARE_LOOPS_ALLOWED ) instanceof BooleanRule ) )
+			throw new Exception( "The \"" + generator + "\" generator's attributes are insufficient: getAttribute( ) must return a BooleanRule for ARE_LOOPS_ALLOWED." );
+		
+		if( !( generator.getAttribute( Attribute.ARE_MULTIPLE_EDGES_ALLOWED ) instanceof BooleanRule ) )
+			throw new Exception( "The \"" + generator + "\" generator's attributes are insufficient: getAttribute( ) must return a BooleanRule for ARE_MULTIPLE_EDGES_ALLOWED." );
+		
+		if( !( generator.getAttribute( Attribute.ARE_DIRECTED_EDGES_ALLOWED ) instanceof BooleanRule ) )
+			throw new Exception( "The \"" + generator + "\" generator's attributes are insufficient: getAttribute( ) must return a BooleanRule for ARE_DIRECTED_EDGES_ALLOWED." );
+		
+		if( !( generator.getAttribute( Attribute.ARE_CYCLES_ALLOWED ) instanceof BooleanRule ) )
+			throw new Exception( "The \"" + generator + "\" generator's attributes are insufficient: getAttribute( ) must return a BooleanRule for ARE_CYCLES_ALLOWED." );
+		
+		if( !( generator.getAttribute( Attribute.ARE_PARAMETERS_ALLOWED ) instanceof Boolean ) )
+			throw new Exception( "The \"" + generator + "\" generator's attributes are insufficient: getAttribute( ) must return a BooleanRule for ARE_PARAMETERS_ALLOWED." );
+		
+		if( (Boolean) generator.getAttribute( Attribute.ARE_PARAMETERS_ALLOWED ) )
 		{
-			if ( generator.areCyclesAllowed( ).isForced( ) )
+			if( !( generator.getAttribute( Attribute.PARAMETERS_DESCRIPTION ) instanceof String ) )
+				throw new Exception( "The \"" + generator + "\" generator's attributes are insufficient: if parameters are allowed, getAttribute( ) must also return a String for PARAMETERS_DESCRIPTION." );
+			
+			if( !( generator.getAttribute( Attribute.PARAMETERS_VALIDATION_EXPRESSION ) instanceof String ) )
+				throw new Exception( "The \"" + generator + "\" generator's attributes are insufficient: if parameters are allowed, getAttribute( ) must also return a String for PARAMETERS_VALIDATION_EXPRESSION." );
+		}
+		
+		// Check logical consistency
+		if( !( (BooleanRule) generator.getAttribute( Attribute.ARE_CYCLES_ALLOWED ) ).isTrue( ) )
+			if( ( (BooleanRule) generator.getAttribute( Attribute.ARE_CYCLES_ALLOWED ) ).isForced( ) )
 			{
-				if ( !( !generator.areLoopsAllowed( ).isTrue( ) && generator.areLoopsAllowed( ).isForced( ) ) )
-					throw new Error( "The \"" + generator + "\" generator's default rules are inconsistent: if cycles are disallowed by force, loops must also be disallowed by force." );
-				if ( !( !generator.areMultipleEdgesAllowed( ).isTrue( ) && generator.areMultipleEdgesAllowed( ).isForced( ) ) )
-					throw new Error( "The \"" + generator + "\" generator's default rules are inconsistent: if cycles are disallowed by force, multiple edges must also be disallowed by force." );
+				if( generator.getAttribute( Attribute.ARE_LOOPS_ALLOWED ) != BooleanRule.FORCED_FALSE )
+					throw new Exception( "The \"" + generator + "\" generator's attributes are inconsistent: if cycles are disallowed by force, loops must also be disallowed by force." );
+				if( generator.getAttribute( Attribute.ARE_MULTIPLE_EDGES_ALLOWED ) != BooleanRule.FORCED_FALSE )
+					throw new Exception( "The \"" + generator + "\" generator's attributes are inconsistent: if cycles are disallowed by force, multiple edges must also be disallowed by force." );
 			}
 			else
 			{
-				if ( generator.areLoopsAllowed( ).isTrue( ) )
-					throw new Error( "The \"" + generator + "\" generator's default rules are inconsistent: if cycles are disallowed by default, loops must also be disallowed, either by force or by default." );
-				if ( generator.areMultipleEdgesAllowed( ).isTrue( ) )
-					throw new Error( "The \"" + generator + "\" generator's default rules are inconsistent: if cycles are disallowed by default, multiple edges must also be disallowed, either by force or by default." );
+				if( ( (BooleanRule) generator.getAttribute( Attribute.ARE_LOOPS_ALLOWED ) ).isTrue( ) )
+					throw new Exception( "The \"" + generator + "\" generator's attributes are inconsistent: if cycles are disallowed by default, loops must also be disallowed, either by force or by default." );
+				if( ( (BooleanRule) generator.getAttribute( Attribute.ARE_MULTIPLE_EDGES_ALLOWED ) ).isTrue( ) )
+					throw new Exception( "The \"" + generator + "\" generator's attributes are inconsistent: if cycles are disallowed by default, multiple edges must also be disallowed, either by force or by default." );
 			}
-		}
+		
+		// Check type consistency
+		if( generator.getAttribute( Attribute.AUTHOR ) != null && !( generator.getAttribute( Attribute.AUTHOR ) instanceof String ) )
+			throw new Exception( "The \"" + generator + "\" generator attributes are inconsistently typed: getAttribute( ) must return a String or null for AUTHOR." );
+		
+		if( generator.getAttribute( Attribute.VERSION ) != null && !( generator.getAttribute( Attribute.VERSION ) instanceof String ) )
+			throw new Exception( "The \"" + generator + "\" generator attributes are inconsistently typed: getAttribute( ) must return a String or null for VERSION." );
+		
+		if( generator.getAttribute( Attribute.ISOMORPHISMS ) != null && !( generator.getAttribute( Attribute.ISOMORPHISMS ) instanceof String[ ] ) )
+			throw new Exception( "The \"" + generator + "\" generator attributes are inconsistently typed: getAttribute( ) must return an array of Strings or null for ISOMORPHISMS." );
+		
+		if( generator.getAttribute( Attribute.DESCRIPTION ) != null && !( generator.getAttribute( Attribute.DESCRIPTION ) instanceof String ) )
+			throw new Exception( "The \"" + generator + "\" generator attributes are inconsistently typed: getAttribute( ) must return a String or null for DESCRIPTION." );
+		
+		if( generator.getAttribute( Attribute.CONSTRAINTS ) != null && !( generator.getAttribute( Attribute.CONSTRAINTS ) instanceof String[ ] ) )
+			throw new Exception( "The \"" + generator + "\" generator attributes are inconsistently typed: getAttribute( ) must return an array of Strings or null for CONSTRAINTS." );
+		
+		if( generator.getAttribute( Attribute.RELATED_GENERATORS ) != null && !( generator.getAttribute( Attribute.RELATED_GENERATORS ) instanceof String[ ] ) )
+			throw new Exception( "The \"" + generator + "\" generator attributes are inconsistently typed: getAttribute( ) must return an array of Strings or null for RELATED_GENERATORS." );
+		
+		if( generator.getAttribute( Attribute.RELATED_FUNCTIONS ) != null && !( generator.getAttribute( Attribute.RELATED_FUNCTIONS ) instanceof String[ ] ) )
+			throw new Exception( "The \"" + generator + "\" generator attributes are inconsistently typed: getAttribute( ) must return an array of Strings or null for RELATED_FUNCTIONS." );
+		
+		if( generator.getAttribute( Attribute.TAGS ) != null && !( generator.getAttribute( Attribute.TAGS ) instanceof String[ ] ) )
+			throw new Exception( "The \"" + generator + "\" generator attributes are inconsistently typed: getAttribute( ) must return an array of Strings or null for TAGS." );
+	}
+	
+	/**
+	 * The {@code ObservableList} of available generators, compiled at runtime
+	 */
+	public final ObservableList<Generator>	generators;
+	
+	/**
+	 * Constructs the singleton instance of {@code GeneratorService}, populating the list of graph generators with scripts compiled using BeanShell
+	 * from the "generators" folder of the application's local directory
+	 */
+	private GeneratorService( )
+	{
+		this.generators = new ObservableList<Generator>( );
+		
+		// Load standard library generators
+		this.generators.add( new EmptyGraph( ) );
+		
+		// Load external scripted generators
+		File folder = new File( "generators" );
+		if( folder.exists( ) )
+			for( String filename : folder.list( new FilenameFilter( )
+			{
+				public boolean accept( File dir, String name )
+				{
+					return name.endsWith( ".java" );
+				}
+			} ) )
+				try
+				{
+					Generator generator = (Generator) new Interpreter( ).source( "generators/" + filename );
+					validateGenerator( generator );
+					this.generators.add( generator );
+				}
+				catch( Throwable ex )
+				{
+					DebugUtilities.logException( String.format( "An exception occurred while compiling %s.", filename ), ex );
+				}
 	}
 }

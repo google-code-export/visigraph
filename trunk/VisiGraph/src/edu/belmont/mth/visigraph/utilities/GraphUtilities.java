@@ -5,140 +5,389 @@ package edu.belmont.mth.visigraph.utilities;
 
 import java.util.*;
 import java.awt.geom.*;
-
 import edu.belmont.mth.visigraph.models.*;
 import edu.belmont.mth.visigraph.settings.*;
 
 /**
  * @author Cameron Behar
- * 
  */
 public class GraphUtilities
 {
-	// Layout methods
+	private static class StronglyConnectedComponentsFinder
+	{
+		private int										index		= 0;
+		private final Stack<Vertex>						stack		= new Stack<Vertex>( );
+		private final Map<Vertex, Integer>				indices		= new HashMap<Vertex, Integer>( );
+		private final Map<Vertex, Integer>				lowLinks	= new HashMap<Vertex, Integer>( );
+		private final Map<Vertex, Boolean>				isOnStack	= new HashMap<Vertex, Boolean>( );
+		private final Collection<Collection<Vertex>>	components	= new LinkedList<Collection<Vertex>>( );
+		
+		public Collection<Collection<Vertex>> find( Graph graph )
+		{
+			if( graph.vertices.isEmpty( ) )
+				return this.components;
+			
+			for( Vertex vertex : graph.vertices )
+				this.isOnStack.put( vertex, false );
+			
+			for( Vertex vertex : graph.vertices )
+				if( !this.indices.containsKey( vertex ) )
+					this.tarjansAlgorithm( vertex, graph );
+			
+			return this.components;
+		}
+		
+		private void tarjansAlgorithm( Vertex from, Graph graph )
+		{
+			this.indices.put( from, this.index );
+			this.lowLinks.put( from, this.index );
+			++this.index;
+			
+			this.stack.push( from );
+			this.isOnStack.put( from, true );
+			
+			for( Edge edge : graph.getEdgesFrom( from ) )
+			{
+				Vertex to = edge.to;
+				
+				if( !this.indices.containsKey( to ) )
+				{
+					this.tarjansAlgorithm( to, graph );
+					this.lowLinks.put( from, Math.min( this.lowLinks.get( from ), this.lowLinks.get( to ) ) );
+				}
+				else if( this.isOnStack.get( to ) )
+					this.lowLinks.put( from, Math.min( this.lowLinks.get( from ), this.indices.get( to ) ) );
+			}
+			
+			if( this.lowLinks.get( from ).equals( this.indices.get( from ) ) )
+			{
+				Vertex to;
+				List<Vertex> component = new LinkedList<Vertex>( );
+				
+				do
+				{
+					to = this.stack.pop( );
+					this.isOnStack.put( to, false );
+					component.add( to );
+				} while( to != from );
+				
+				this.components.add( component );
+			}
+		}
+	}
+	
+	private static class WeaklyConnectedComponentsFinder
+	{
+		private static class Node
+		{
+			public Node		parent	= null;
+			public Vertex	vertex;
+			public int		rank	= 0;
+			
+			public Node( Vertex vertex )
+			{
+				this.vertex = vertex;
+			}
+		}
+		
+		private final Random	random	= new Random( );
+		
+		public Collection<Collection<Vertex>> find( Graph graph )
+		{
+			if( graph.vertices.isEmpty( ) )
+				return new LinkedList<Collection<Vertex>>( );
+			
+			Map<Vertex, Node> vertexNodes = new HashMap<Vertex, Node>( );
+			
+			for( Vertex vertex : graph.vertices )
+				vertexNodes.put( vertex, new Node( vertex ) );
+			
+			for( Edge edge : graph.edges )
+				if( !edge.isLoop )
+					this.unionSets( vertexNodes.get( edge.from ), vertexNodes.get( edge.to ) );
+			
+			Map<Node, Collection<Vertex>> components = new HashMap<Node, Collection<Vertex>>( );
+			for( Node node : vertexNodes.values( ) )
+				if( node.parent == null )
+					components.put( node, new LinkedList<Vertex>( ) );
+			for( Node node : vertexNodes.values( ) )
+				components.get( node.parent == null ? node : this.findParent( node.parent ) ).add( node.vertex );
+			
+			return components.values( );
+		}
+		
+		private Node findParent( Node node )
+		{
+			Node root = node;
+			
+			while( root.parent != null )
+				root = root.parent;
+			
+			Node nextNode;
+			while( node.parent != null )
+			{
+				nextNode = node.parent;
+				node.parent = root;
+				node = nextNode;
+			}
+			
+			return root;
+		}
+		
+		private void unionSets( Node a, Node b )
+		{
+			if( a != null && b != null )
+			{
+				Node rootA = this.findParent( a );
+				Node rootB = this.findParent( b );
+				
+				if( rootA != rootB )
+					if( rootA.rank > rootB.rank || this.random.nextBoolean( ) )
+						rootA.parent = rootB;
+					else
+						rootB.parent = rootA;
+			}
+		}
+	}
+	
+	public static void alignHorizontally( Graph graph )
+	{
+		List<Vertex> selectedVertices = graph.getSelectedVertices( );
+		if( selectedVertices.isEmpty( ) )
+			if( graph.hasSelectedCaptions( ) || graph.hasSelectedEdges( ) )
+				return;
+			else
+				selectedVertices = graph.vertices;
+		
+		double centerY = 0.0;
+		for( Vertex vertex : selectedVertices )
+			centerY += vertex.y.get( );
+		
+		centerY /= selectedVertices.size( );
+		
+		for( Vertex vertex : selectedVertices )
+			vertex.y.set( centerY );
+	}
+	
+	public static void alignVertically( Graph graph )
+	{
+		List<Vertex> selectedVertices = graph.getSelectedVertices( );
+		if( selectedVertices.isEmpty( ) )
+			if( graph.hasSelectedCaptions( ) || graph.hasSelectedEdges( ) )
+				return;
+			else
+				selectedVertices = graph.vertices;
+		
+		double centerX = 0.0;
+		for( Vertex vertex : selectedVertices )
+			centerX += vertex.x.get( );
+		
+		centerX /= selectedVertices.size( );
+		
+		for( Vertex vertex : selectedVertices )
+			vertex.x.set( centerX );
+	}
 	
 	public static void arrangeCircle( Graph graph )
 	{
-		ArrayList<Vertex> selected = new ArrayList<Vertex>( );
+		List<Vertex> selectedVertices = graph.getSelectedVertices( );
+		if( selectedVertices.isEmpty( ) )
+			if( graph.hasSelectedCaptions( ) || graph.hasSelectedEdges( ) )
+				return;
+			else
+				selectedVertices = graph.vertices;
 		
-		for ( Vertex vertex : graph.vertexes )
-			if ( vertex.isSelected.get( ) )
-				selected.add( vertex );
-		
-		if ( selected.size( ) < 1 )
-			selected.addAll( graph.vertexes );
-		
-		double centroidX = 0, centroidY = 0;
-		for ( Vertex vertex : selected )
+		Point2D.Double centroid = new Point2D.Double( 0.0, 0.0 );
+		for( Vertex vertex : selectedVertices )
 		{
-			centroidX += vertex.x.get( );
-			centroidY += vertex.y.get( );
+			centroid.x += vertex.x.get( );
+			centroid.y += vertex.y.get( );
 		}
 		
-		centroidX /= selected.size( );
-		centroidY /= selected.size( );
+		centroid.x /= selectedVertices.size( );
+		centroid.y /= selectedVertices.size( );
 		
-		double radius = UserSettings.instance.arrangeCircleRadiusMultiplier.get( ) * selected.size( );
-		double degreesPerVertex = 2 * Math.PI / selected.size( );
+		double radius = UserSettings.instance.arrangeCircleRadiusMultiplier.get( ) * selectedVertices.size( );
+		double degreesPerVertex = 2.0 * Math.PI / selectedVertices.size( );
 		
-		for ( int i = 0; i < selected.size( ); ++i )
+		for( int i = 0; i < selectedVertices.size( ); ++i )
 		{
-			selected.get( i ).x.set( radius * Math.cos( degreesPerVertex * i - Math.PI / 2.0 ) + centroidX );
-			selected.get( i ).y.set( radius * Math.sin( degreesPerVertex * i - Math.PI / 2.0 ) + centroidY );
+			selectedVertices.get( i ).x.set( radius * Math.cos( degreesPerVertex * i - Math.PI / 2.0 ) + centroid.x );
+			selectedVertices.get( i ).y.set( radius * Math.sin( degreesPerVertex * i - Math.PI / 2.0 ) + centroid.y );
 		}
 	}
 	
 	public static void arrangeGrid( Graph graph )
 	{
-		ArrayList<Vertex> selected = new ArrayList<Vertex>( );
+		List<Vertex> selectedVertices = graph.getSelectedVertices( );
+		if( selectedVertices.isEmpty( ) )
+			if( graph.hasSelectedCaptions( ) || graph.hasSelectedEdges( ) )
+				return;
+			else
+				selectedVertices = graph.vertices;
 		
-		for ( Vertex vertex : graph.vertexes )
-			if ( vertex.isSelected.get( ) )
-				selected.add( vertex );
-		
-		if ( selected.size( ) < 1 )
-			selected.addAll( graph.vertexes );
-		
-		double centroidX = 0, centroidY = 0;
-		for ( Vertex vertex : selected )
-		{
-			centroidX += vertex.x.get( );
-			centroidY += vertex.y.get( );
-		}
-		
-		centroidX /= selected.size( );
-		centroidY /= selected.size( );
-		
-		int n = selected.size( );
+		int n = selectedVertices.size( );
 		int rows = (int) Math.round( Math.sqrt( n ) );
 		int columns = (int) Math.ceil( n / (double) rows );
-		Point2D.Double location = new Point2D.Double( ( columns / 2.0 ) * -UserSettings.instance.arrangeGridSpacing.get( ), ( rows / 2.0 ) * -UserSettings.instance.arrangeGridSpacing.get( ) );
 		
-		for ( int row = 0; row < rows; ++row )
-			for ( int col = 0; ( row < rows - 1 && col < columns ) || ( row == rows - 1 && col < ( n % columns == 0 ? columns : n % columns ) ); ++col )
+		double minX = Double.POSITIVE_INFINITY, minY = Double.POSITIVE_INFINITY;
+		double maxX = Double.NEGATIVE_INFINITY, maxY = Double.NEGATIVE_INFINITY;
+		for( Vertex vertex : selectedVertices )
+		{
+			if( vertex.x.get( ) < minX )
+				minX = vertex.x.get( );
+			else if( vertex.x.get( ) > maxX )
+				maxX = vertex.x.get( );
+			
+			if( vertex.y.get( ) < minY )
+				minY = vertex.y.get( );
+			else if( vertex.y.get( ) > maxY )
+				maxY = vertex.y.get( );
+		}
+		
+		Point2D.Double center = new Point2D.Double( ( minX + maxX ) / 2.0, ( minY + maxY ) / 2.0 );
+		Point2D.Double offset = new Point2D.Double( center.x - ( ( columns - 1 ) * UserSettings.instance.arrangeGridSpacing.get( ) ) / 2.0, center.y - ( ( rows - 1 ) * UserSettings.instance.arrangeGridSpacing.get( ) ) / 2.0 );
+		
+		for( int row = 0; row < rows; ++row )
+			for( int col = 0; ( row < rows - 1 && col < columns ) || ( row == rows - 1 && col < ( n % columns == 0 ? columns : n % columns ) ); ++col )
 			{
-				selected.get( row * columns + col ).x.set( location.x + UserSettings.instance.arrangeGridSpacing.get( ) * col + centroidX );
-				selected.get( row * columns + col ).y.set( location.y + UserSettings.instance.arrangeGridSpacing.get( ) * row + centroidY );
+				selectedVertices.get( row * columns + col ).x.set( UserSettings.instance.arrangeGridSpacing.get( ) * col + offset.x );
+				selectedVertices.get( row * columns + col ).y.set( UserSettings.instance.arrangeGridSpacing.get( ) * row + offset.y );
 			}
+	}
+	
+	public static double arrangeTensors( Graph graph, double speed, Map<Vertex, Point2D> velocities )
+	{
+		List<Vertex> selectedVertices = graph.getSelectedVertices( );
+		if( selectedVertices.isEmpty( ) )
+			if( graph.hasSelectedCaptions( ) || graph.hasSelectedEdges( ) )
+				return 0.0;
+			else
+				selectedVertices = graph.vertices;
+		
+		double totalKineticEnergy = 0;
+		
+		// Initialize the map of net forces
+		Map<Vertex, Point2D.Double> forces = new HashMap<Vertex, Point2D.Double>( );
+		for( Vertex vertex : selectedVertices )
+			forces.put( vertex, new Point2D.Double( 0.0, 0.0 ) );
+		
+		// Apply all repulsive forces
+		for( int i = 0; i < selectedVertices.size( ); ++i )
+			for( int j = i + 1; j < selectedVertices.size( ); ++j )
+			{
+				double xDiff = selectedVertices.get( j ).x.get( ) - selectedVertices.get( i ).x.get( ), yDiff = selectedVertices.get( j ).y.get( ) - selectedVertices.get( i ).y.get( );
+				double force = 8987551787.0 * ( ( UserSettings.instance.autoArrangeRepulsiveForce.get( ) * selectedVertices.get( i ).weight.get( ) ) * ( UserSettings.instance.autoArrangeRepulsiveForce.get( ) * selectedVertices.get( j ).weight.get( ) ) / Math.max( 30.0, xDiff * xDiff + yDiff * yDiff ) );
+				double angle = Math.atan2( yDiff, xDiff );
+				double xForce = -force * Math.cos( angle ), yForce = -force * Math.sin( angle );
+				
+				forces.get( selectedVertices.get( i ) ).x += xForce;
+				forces.get( selectedVertices.get( i ) ).y += yForce;
+				forces.get( selectedVertices.get( j ) ).x -= xForce;
+				forces.get( selectedVertices.get( j ) ).y -= yForce;
+			}
+		
+		// Apply all attractive forces
+		for( Edge edge : graph.edges )
+			if( !edge.isLoop && ( selectedVertices == graph.vertices || edge.from.isSelected.get( ) || edge.to.isSelected.get( ) ) )
+			{
+				double xDiff = edge.from.x.get( ) - edge.to.x.get( );
+				double yDiff = edge.from.y.get( ) - edge.to.y.get( );
+				double distance = Math.max( 30.0, Math.sqrt( xDiff * xDiff + yDiff * yDiff ) );
+				double force = UserSettings.instance.autoArrangeAttractiveForce.get( ) * ( distance - edge.weight.get( ) * 10.0 );
+				double angle = Math.atan2( yDiff, xDiff );
+				double xForce = force * Math.cos( angle ), yForce = force * Math.sin( angle );
+				
+				if( selectedVertices == graph.vertices || edge.from.isSelected.get( ) )
+				{
+					forces.get( edge.from ).x -= xForce;
+					forces.get( edge.from ).y -= yForce;
+				}
+				
+				if( selectedVertices == graph.vertices || edge.to.isSelected.get( ) )
+				{
+					forces.get( edge.to ).x += xForce;
+					forces.get( edge.to ).y += yForce;
+				}
+			}
+		
+		// Apply all net forces
+		for( Vertex vertex : selectedVertices )
+		{
+			if( !velocities.containsKey( vertex ) )
+				velocities.put( vertex, new Point2D.Double( 0, 0 ) );
+			
+			Point2D velocity = velocities.get( vertex );
+			velocity.setLocation( ( velocity.getX( ) + forces.get( vertex ).x ) * 0.85, ( velocity.getY( ) + forces.get( vertex ).y ) * 0.85 );
+			totalKineticEnergy += vertex.weight.get( ) * velocity.distanceSq( 0, 0 );
+		}
+		
+		// Apply all velocities
+		for( Vertex vertex : selectedVertices )
+		{
+			vertex.x.set( vertex.x.get( ) + speed * velocities.get( vertex ).getX( ) );
+			vertex.y.set( vertex.y.get( ) + speed * velocities.get( vertex ).getY( ) );
+		}
+		
+		return totalKineticEnergy;
 	}
 	
 	public static void arrangeTree( Graph graph )
 	{
-		Vector<Vertex> allNodes = new Vector<Vertex>( );
-		Vector<Vector<Vertex>> levels = new Vector<Vector<Vertex>>( );
+		List<Vertex> allNodes = new ArrayList<Vertex>( );
+		List<List<Vertex>> levels = new ArrayList<List<Vertex>>( );
 		
-		// First we need to add all selected vertexes to a root level of the tree
-		levels.add( new Vector<Vertex>( ) );
-		for ( Vertex vertex : graph.vertexes )
-			if ( vertex.isSelected.get( ) )
-			{
-				levels.get( 0 ).add( vertex );
-				allNodes.add( vertex );
-			}
+		// First we need to add all selected vertices to a root level of the tree
+		levels.add( new ArrayList<Vertex>( ) );
+		for( Vertex vertex : graph.getSelectedVertices( ) )
+		{
+			levels.get( 0 ).add( vertex );
+			allNodes.add( vertex );
+		}
 		
-		// While the last level has vertexes, add all their neighbors to the next level that haven't yet been otherwise added
-		while ( levels.lastElement( ).size( ) > 0 )
+		// While the last level has vertices, add all their neighbors to the next level that haven't yet been otherwise added
+		while( levels.get( levels.size( ) - 1 ).size( ) > 0 )
 		{
 			levels.add( new Vector<Vertex>( ) );
 			
-			for ( Vertex vertex : levels.get( levels.size( ) - 2 ) )
-				for ( Vertex neighbor : graph.getNeighbors( vertex ) )
-					if ( !allNodes.contains( neighbor ) )
+			for( Vertex vertex : levels.get( levels.size( ) - 2 ) )
+				for( Vertex neighbor : graph.getNeighbors( vertex ) )
+					if( !allNodes.contains( neighbor ) )
 					{
-						levels.lastElement( ).add( neighbor );
+						levels.get( levels.size( ) - 1 ).add( neighbor );
 						allNodes.add( neighbor );
 					}
 		}
 		
 		// If there were any nodes that weren't added yet, give them their own level
-		if ( allNodes.size( ) < graph.vertexes.size( ) )
-			for ( Vertex vertex : levels.get( levels.size( ) - 1 ) )
-				if ( !allNodes.contains( vertex ) )
+		if( allNodes.size( ) < graph.vertices.size( ) )
+			for( Vertex vertex : levels.get( levels.size( ) - 1 ) )
+				if( !allNodes.contains( vertex ) )
 				{
-					levels.lastElement( ).add( vertex );
+					levels.get( levels.size( ) - 1 ).add( vertex );
 					allNodes.add( vertex );
 				}
 		
 		// If the last level is empty, remove it
-		if ( levels.lastElement( ).size( ) == 0 )
+		if( levels.get( levels.size( ) - 1 ).size( ) == 0 )
 			levels.remove( levels.size( ) - 1 );
 		
 		// Now for the layout!
 		double y = 0.0;
-		double largestWidth = 0;
-		for ( Vector<Vertex> level : levels )
+		double largestWidth = 0.0;
+		for( List<Vertex> level : levels )
 			largestWidth = Math.max( largestWidth, level.size( ) * 150.0 );
 		
-		for ( int row = 0; row < levels.size( ); ++row )
+		for( int row = 0; row < levels.size( ); ++row )
 		{
-			Vector<Vertex> level = levels.get( row );
-			y += 150;
+			List<Vertex> level = levels.get( row );
+			y += 150.0;
 			double colSpace = largestWidth / ( level.size( ) );
 			
-			for ( int col = 0; col < level.size( ); ++col )
+			for( int col = 0; col < level.size( ); ++col )
 			{
 				Vertex vertex = level.get( col );
-				double x = ( col + .5 ) * colSpace - largestWidth / 2.0;
+				double x = ( col + 0.5 ) * colSpace - largestWidth / 2.0;
 				
 				vertex.x.set( x );
 				vertex.y.set( y );
@@ -146,601 +395,313 @@ public class GraphUtilities
 		}
 	}
 	
-	private static HashMap<Vertex, Point2D.Double> velocities = new HashMap<Vertex, Point2D.Double>( );
-	
-	public static boolean arrangeTensors( Graph graph, double speed )
-	{
-		ArrayList<Vertex> selected = new ArrayList<Vertex>( );
-		
-		for ( Vertex vertex : graph.vertexes )
-			if ( vertex.isSelected.get( ) )
-				selected.add( vertex );
-		
-		if ( selected.size( ) == 0 )
-			selected.addAll( graph.vertexes );
-		
-		double charge = 0.0005;
-		double spring = 0.01;
-		double damping = 0.85;
-		
-		double totalKineticEnergy = 0;
-		
-		for ( Vertex v : selected )
-		{
-			Point2D.Double netForce = new Point2D.Double( 0, 0 );
-			
-			for ( Vertex w : selected )
-				if ( v != w )
-				{
-					double xDiff = w.x.get( ) - v.x.get( );
-					double yDiff = w.y.get( ) - v.y.get( );
-					double distanceSquared = ( xDiff * xDiff + yDiff * yDiff );
-					double force = 8987551787.0 * ( ( charge * v.weight.get( ) ) * ( charge * w.weight.get( ) ) / distanceSquared );
-					double angle = Math.atan2( yDiff, xDiff );
-					
-					netForce.setLocation( netForce.x - force * Math.cos( angle ), netForce.y - force * Math.sin( angle ) );
-				}
-			
-			for ( Edge e : graph.getEdges( v ) )
-				if ( !e.isLoop )
-				{
-					double xDiff = e.from.x.get( ) - e.to.x.get( );
-					double yDiff = e.from.y.get( ) - e.to.y.get( );
-					double distance = Math.sqrt( xDiff * xDiff + yDiff * yDiff );
-					double force = spring * ( distance /*- e.weight.get( ) * 100*/);
-					double angle = Math.atan2( yDiff, xDiff );
-					
-					if ( e.from == v )
-						force = -force;
-					
-					netForce.setLocation( netForce.x + force * Math.cos( angle ), netForce.y + force * Math.sin( angle ) );
-				}
-			
-			if ( !velocities.containsKey( v ) )
-				velocities.put( v, new Point2D.Double( 0, 0 ) );
-			
-			Point2D.Double velocity = velocities.get( v );
-			velocity.setLocation( ( velocity.x + netForce.x ) * damping, ( velocity.y + netForce.y ) * damping );
-			totalKineticEnergy += v.weight.get( ) * velocity.distanceSq( 0, 0 );
-		}
-		
-		/*
-		 * // Initialize the hashmap of forces
-		 * for ( Vertex v : selected )
-		 * forces.put( v, new Point2D.Double( 0, 0 ) );
-		 * 
-		 * // Calculate all repulsive forces
-		 * for ( int i = 0; i < selected.size( ); ++i )
-		 * for ( int j = i + 1; j < selected.size( ); ++j )
-		 * {
-		 * Vertex v0 = selected.get( i );
-		 * Vertex v1 = selected.get( j );
-		 * 
-		 * double xDiff = v1.x.get( ) - v0.x.get( );
-		 * double yDiff = v1.y.get( ) - v0.y.get( );
-		 * double distanceSquared = ( xDiff * xDiff + yDiff * yDiff );
-		 * double xForce = UserSettings.instance.autoArrangeRepulsiveForce.get( ) * ( xDiff / distanceSquared );
-		 * double yForce = UserSettings.instance.autoArrangeRepulsiveForce.get( ) * ( yDiff / distanceSquared );
-		 * 
-		 * Point2D.Double force0 = forces.get( v0 );
-		 * force0.x += xForce; force0.y += yForce;
-		 * 
-		 * // And because every action has an opposite and equal reaction
-		 * Point2D.Double force1 = forces.get( v1 );
-		 * force1.x -= xForce; force1.y -= yForce;
-		 * }
-		 * 
-		 * // Calculate all attractive forces
-		 * for ( Edge edge : graph.edges )
-		 * if ( edge.from != edge.to && ( noneWereSelected || edge.from.isSelected.get( ) || edge.to.isSelected.get( ) ) )
-		 * {
-		 * double xDiff = edge.to.x.get( ) - edge.from.x.get( );
-		 * double yDiff = edge.to.y.get( ) - edge.from.y.get( );
-		 * double distanceSquared = ( xDiff * xDiff + yDiff * yDiff );
-		 * double xForce = UserSettings.instance.autoArrangeAttractiveForce.get( ) * xDiff * distanceSquared;
-		 * double yForce = UserSettings.instance.autoArrangeAttractiveForce.get( ) * yDiff * distanceSquared;
-		 * 
-		 * if ( noneWereSelected || edge.from.isSelected.get( ) )
-		 * {
-		 * Point2D.Double force = forces.get( edge.from );
-		 * force.x += xForce; force.y += yForce;
-		 * }
-		 * 
-		 * // And because every action has an opposite and equal reaction
-		 * if ( noneWereSelected || edge.to.isSelected.get( ) )
-		 * {
-		 * Point2D.Double force = forces.get( edge.to );
-		 * force.x -= xForce; force.y -= yForce;
-		 * }
-		 * }
-		 */
-
-		// Apply all net forces
-		for ( Vertex v : selected )
-		{
-			v.x.set( v.x.get( ) + speed * velocities.get( v ).x );
-			v.y.set( v.y.get( ) + speed * velocities.get( v ).y );
-		}
-		
-		return totalKineticEnergy >= 0.01;
-	}
-	
-	public static void alignHorizontally( Graph graph )
-	{
-		double centerY = 0.0;
-		List<Vertex> selectedVertexes = new ArrayList<Vertex>( );
-		
-		for ( Vertex v : graph.vertexes )
-			if ( v.isSelected.get( ) )
-				selectedVertexes.add( v );
-		
-		if ( selectedVertexes.size( ) < 1 )
-		{
-			for ( Edge e : graph.edges )
-				if ( e.isSelected.get( ) )
-					return;
-			
-			for ( Caption c : graph.captions )
-				if ( c.isSelected.get( ) )
-					return;
-			
-			selectedVertexes.addAll( graph.vertexes );
-		}
-		
-		for ( Vertex v : selectedVertexes )
-			centerY += v.y.get( );
-		
-		centerY /= selectedVertexes.size( );
-		
-		for ( Vertex v : selectedVertexes )
-			v.y.set( centerY );
-	}
-	
-	public static void alignVertically( Graph graph )
-	{
-		double centerX = 0.0;
-		List<Vertex> selectedVertexes = new ArrayList<Vertex>( );
-		
-		for ( Vertex v : graph.vertexes )
-			if ( v.isSelected.get( ) )
-				selectedVertexes.add( v );
-		
-		if ( selectedVertexes.size( ) < 1 )
-		{
-			for ( Edge e : graph.edges )
-				if ( e.isSelected.get( ) )
-					return;
-			
-			for ( Caption c : graph.captions )
-				if ( c.isSelected.get( ) )
-					return;
-			
-			selectedVertexes.addAll( graph.vertexes );
-		}
-		
-		for ( Vertex v : selectedVertexes )
-			centerX += v.x.get( );
-		
-		centerX /= selectedVertexes.size( );
-		
-		for ( Vertex v : selectedVertexes )
-			v.x.set( centerX );
-	}
-	
 	public static void distributeHorizontally( Graph graph )
 	{
-		List<Vertex> selectedVertexes = new ArrayList<Vertex>( );
+		List<Vertex> selectedVertices = graph.getSelectedVertices( );
+		if( selectedVertices.isEmpty( ) )
+			if( graph.hasSelectedCaptions( ) || graph.hasSelectedEdges( ) )
+				return;
+			else
+				selectedVertices = graph.vertices;
 		
-		for ( Vertex v : graph.vertexes )
-			if ( v.isSelected.get( ) )
-				selectedVertexes.add( v );
-		
-		if ( selectedVertexes.size( ) < 1 )
-		{
-			for ( Edge e : graph.edges )
-				if ( e.isSelected.get( ) )
-					return;
-			
-			for ( Caption c : graph.captions )
-				if ( c.isSelected.get( ) )
-					return;
-			
-			selectedVertexes.addAll( graph.vertexes );
-		}
-		
-		Collections.sort( selectedVertexes, new Comparator<Vertex>( )
+		Collections.sort( selectedVertices, new Comparator<Vertex>( )
 		{
 			public int compare( Vertex v1, Vertex v2 )
 			{
-				return new Double( Math.signum( v1.x.get( ) - v2.x.get( ) ) ).intValue( );
+				return (int) Math.round( Math.signum( v1.x.get( ) - v2.x.get( ) ) );
 			}
 		} );
 		
-		double spacing = ( selectedVertexes.get( selectedVertexes.size( ) - 1 ).x.get( ) - selectedVertexes.get( 0 ).x.get( ) ) / (double) ( selectedVertexes.size( ) - 1 );
-		double currentX = selectedVertexes.get( 0 ).x.get( ) - spacing;
+		double spacing = ( selectedVertices.get( selectedVertices.size( ) - 1 ).x.get( ) - selectedVertices.get( 0 ).x.get( ) ) / ( selectedVertices.size( ) - 1 );
+		double currentX = selectedVertices.get( 0 ).x.get( ) - spacing;
 		
-		for ( Vertex vertex : selectedVertexes )
+		for( Vertex vertex : selectedVertices )
 			vertex.x.set( currentX += spacing );
 	}
 	
 	public static void distributeVertically( Graph graph )
 	{
-		List<Vertex> selectedVertexes = new ArrayList<Vertex>( );
+		List<Vertex> selectedVertices = graph.getSelectedVertices( );
+		if( selectedVertices.isEmpty( ) )
+			if( graph.hasSelectedCaptions( ) || graph.hasSelectedEdges( ) )
+				return;
+			else
+				selectedVertices = graph.vertices;
 		
-		for ( Vertex v : graph.vertexes )
-			if ( v.isSelected.get( ) )
-				selectedVertexes.add( v );
-		
-		if ( selectedVertexes.size( ) < 1 )
-		{
-			for ( Edge e : graph.edges )
-				if ( e.isSelected.get( ) )
-					return;
-			
-			for ( Caption c : graph.captions )
-				if ( c.isSelected.get( ) )
-					return;
-			
-			selectedVertexes.addAll( graph.vertexes );
-		}
-		
-		Collections.sort( selectedVertexes, new Comparator<Vertex>( )
+		Collections.sort( selectedVertices, new Comparator<Vertex>( )
 		{
 			public int compare( Vertex v1, Vertex v2 )
 			{
-				return new Double( Math.signum( v1.y.get( ) - v2.y.get( ) ) ).intValue( );
+				return (int) Math.round( Math.signum( v1.y.get( ) - v2.y.get( ) ) );
 			}
 		} );
 		
-		double spacing = ( selectedVertexes.get( selectedVertexes.size( ) - 1 ).y.get( ) - selectedVertexes.get( 0 ).y.get( ) ) / (double) ( selectedVertexes.size( ) - 1 );
-		double currentY = selectedVertexes.get( 0 ).y.get( ) - spacing;
+		double spacing = ( selectedVertices.get( selectedVertices.size( ) - 1 ).y.get( ) - selectedVertices.get( 0 ).y.get( ) ) / ( selectedVertices.size( ) - 1 );
+		double currentY = selectedVertices.get( 0 ).y.get( ) - spacing;
 		
-		for ( Vertex vertex : selectedVertexes )
+		for( Vertex vertex : selectedVertices )
 			vertex.y.set( currentY += spacing );
 	}
 	
-	public static void rotateLeft90( Graph graph )
+	public static Collection<Collection<Vertex>> findStronglyConnectedComponents( Graph graph )
 	{
-		Point2D.Double centroid = new Point2D.Double( );
-		
-		List<Vertex> selectedVertexes = new ArrayList<Vertex>( );
-		for ( Vertex v : graph.vertexes )
-			if ( v.isSelected.get( ) )
-				selectedVertexes.add( v );
-		
-		if ( selectedVertexes.size( ) < 1 )
-		{
-			for ( Edge e : graph.edges )
-				if ( e.isSelected.get( ) )
-					return;
-			
-			for ( Caption c : graph.captions )
-				if ( c.isSelected.get( ) )
-					return;
-			
-			selectedVertexes.addAll( graph.vertexes );
-		}
-		
-		List<Edge> selectedEdges = new ArrayList<Edge>( );
-		for ( Edge e : graph.edges )
-			if ( e.isSelected.get( ) )
-				selectedEdges.add( e );
-		
-		for ( Vertex v : selectedVertexes )
-		{
-			centroid.x += v.x.get( );
-			centroid.y += v.y.get( );
-		}
-		
-		for ( Edge e : selectedEdges )
-		{
-			centroid.x += e.handleX.get( );
-			centroid.y += e.handleY.get( );
-		}
-		
-		centroid.x /= (double) selectedVertexes.size( ) + selectedEdges.size( );
-		centroid.y /= (double) selectedVertexes.size( ) + selectedEdges.size( );
-		
-		for ( Edge e : selectedEdges )
-			e.suspendNotifications( true );
-		
-		for ( Vertex v : selectedVertexes )
-		{
-			double oldVertexX = v.x.get( );
-			v.x.set( centroid.x - ( centroid.y - v.y.get( ) ) );
-			v.y.set( centroid.y + ( centroid.x - oldVertexX ) );
-		}
-		
-		for ( Edge e : selectedEdges )
-		{
-			double oldEdgeHandleX = e.handleX.get( );
-			e.handleX.set( centroid.x - ( centroid.y - e.handleY.get( ) ) );
-			e.handleY.set( centroid.y + ( centroid.x - oldEdgeHandleX ) );
-			e.suspendNotifications( false );
-			e.refresh( );
-		}
+		return ( graph.areDirectedEdgesAllowed ? new StronglyConnectedComponentsFinder( ).find( graph ) : new WeaklyConnectedComponentsFinder( ).find( graph ) );
 	}
 	
-	public static void rotateRight90( Graph graph )
+	public static Collection<Collection<Vertex>> findWeaklyConnectedComponents( Graph graph )
 	{
-		Point2D.Double centroid = new Point2D.Double( );
-		
-		List<Vertex> selectedVertexes = new ArrayList<Vertex>( );
-		for ( Vertex v : graph.vertexes )
-			if ( v.isSelected.get( ) )
-				selectedVertexes.add( v );
-		
-		if ( selectedVertexes.size( ) < 1 )
-		{
-			for ( Edge e : graph.edges )
-				if ( e.isSelected.get( ) )
-					return;
-			
-			for ( Caption c : graph.captions )
-				if ( c.isSelected.get( ) )
-					return;
-			
-			selectedVertexes.addAll( graph.vertexes );
-		}
-		
-		List<Edge> selectedEdges = new ArrayList<Edge>( );
-		for ( Edge e : graph.edges )
-			if ( e.isSelected.get( ) )
-				selectedEdges.add( e );
-		
-		for ( Vertex v : selectedVertexes )
-		{
-			centroid.x += v.x.get( );
-			centroid.y += v.y.get( );
-		}
-		
-		for ( Edge e : selectedEdges )
-		{
-			centroid.x += e.handleX.get( );
-			centroid.y += e.handleY.get( );
-		}
-		
-		centroid.x /= (double) selectedVertexes.size( ) + selectedEdges.size( );
-		centroid.y /= (double) selectedVertexes.size( ) + selectedEdges.size( );
-		
-		for ( Edge e : selectedEdges )
-			e.suspendNotifications( true );
-		
-		for ( Vertex v : selectedVertexes )
-		{
-			double oldVertexX = v.x.get( );
-			v.x.set( centroid.x + ( centroid.y - v.y.get( ) ) );
-			v.y.set( centroid.y - ( centroid.x - oldVertexX ) );
-		}
-		
-		for ( Edge e : selectedEdges )
-		{
-			double oldEdgeHandleX = e.handleX.get( );
-			e.handleX.set( centroid.x + ( centroid.y - e.handleY.get( ) ) );
-			e.handleY.set( centroid.y - ( centroid.x - oldEdgeHandleX ) );
-			e.suspendNotifications( false );
-			e.refresh( );
-		}
+		return new WeaklyConnectedComponentsFinder( ).find( graph );
 	}
 	
 	public static void flipHorizontally( Graph graph )
 	{
-		double centerX = 0.0;
-		List<Vertex> selectedVertexes = new ArrayList<Vertex>( );
-		for ( Vertex v : graph.vertexes )
-			if ( v.isSelected.get( ) )
-				selectedVertexes.add( v );
+		List<Vertex> selectedVertices = graph.getSelectedVertices( );
+		List<Edge> selectedEdges = graph.getSelectedEdges( );
 		
-		if ( selectedVertexes.size( ) < 1 )
+		if( selectedVertices.isEmpty( ) )
 		{
-			for ( Edge e : graph.edges )
-				if ( e.isSelected.get( ) )
-					return;
+			if( !selectedEdges.isEmpty( ) || graph.hasSelectedCaptions( ) )
+				return;
 			
-			for ( Caption c : graph.captions )
-				if ( c.isSelected.get( ) )
-					return;
-			
-			selectedVertexes.addAll( graph.vertexes );
+			selectedVertices = graph.vertices;
+			selectedEdges = graph.edges;
 		}
 		
-		List<Edge> selectedEdges = new ArrayList<Edge>( );
-		for ( Edge e : graph.edges )
-			if ( e.isSelected.get( ) )
-				selectedEdges.add( e );
+		double minX = Double.POSITIVE_INFINITY, maxX = Double.NEGATIVE_INFINITY;
+		for( Vertex vertex : selectedVertices )
+			if( vertex.x.get( ) < minX )
+				minX = vertex.x.get( );
+			else if( vertex.x.get( ) > maxX )
+				maxX = vertex.x.get( );
 		
-		for ( Vertex v : selectedVertexes )
-			centerX += v.x.get( );
+		for( Edge edge : selectedEdges )
+			if( edge.handleX.get( ) < minX )
+				minX = edge.handleX.get( );
+			else if( edge.handleX.get( ) > maxX )
+				maxX = edge.handleX.get( );
 		
-		for ( Edge e : selectedEdges )
-			centerX += e.handleX.get( );
+		double centerX = ( minX + maxX ) / 2.0;
 		
-		centerX /= (double) selectedVertexes.size( ) + selectedEdges.size( );
+		if( selectedEdges.isEmpty( ) )
+			for( Edge edge : graph.edges )
+				if( edge.from.isSelected.get( ) && edge.to.isSelected.get( ) )
+					selectedEdges.add( edge );
 		
-		for ( Edge e : selectedEdges )
-			e.suspendNotifications( true );
+		for( Edge edge : selectedEdges )
+			edge.suspendNotifications( true );
 		
-		for ( Vertex v : selectedVertexes )
-			v.x.set( 2.0 * centerX - v.x.get( ) );
+		for( Vertex vertex : selectedVertices )
+			vertex.x.set( 2.0 * centerX - vertex.x.get( ) );
 		
-		for ( Edge e : selectedEdges )
+		for( Edge edge : selectedEdges )
 		{
-			e.handleX.set( 2.0 * centerX - e.handleX.get( ) );
-			e.suspendNotifications( false );
-			e.refresh( );
+			edge.handleX.set( 2.0 * centerX - edge.handleX.get( ) );
+			edge.suspendNotifications( false );
+			edge.refresh( );
 		}
 	}
 	
 	public static void flipVertically( Graph graph )
 	{
-		double centerY = 0.0;
-		List<Vertex> selectedVertexes = new ArrayList<Vertex>( );
-		for ( Vertex v : graph.vertexes )
-			if ( v.isSelected.get( ) )
-				selectedVertexes.add( v );
+		List<Vertex> selectedVertices = graph.getSelectedVertices( );
+		List<Edge> selectedEdges = graph.getSelectedEdges( );
 		
-		if ( selectedVertexes.size( ) < 1 )
+		if( selectedVertices.isEmpty( ) )
 		{
-			for ( Edge e : graph.edges )
-				if ( e.isSelected.get( ) )
-					return;
+			if( !selectedEdges.isEmpty( ) || graph.hasSelectedCaptions( ) )
+				return;
 			
-			for ( Caption c : graph.captions )
-				if ( c.isSelected.get( ) )
-					return;
-			
-			selectedVertexes.addAll( graph.vertexes );
+			selectedVertices = graph.vertices;
+			selectedEdges = graph.edges;
 		}
 		
-		List<Edge> selectedEdges = new ArrayList<Edge>( );
-		for ( Edge e : graph.edges )
-			if ( e.isSelected.get( ) )
-				selectedEdges.add( e );
+		double minY = Double.POSITIVE_INFINITY, maxY = Double.NEGATIVE_INFINITY;
+		for( Vertex vertex : selectedVertices )
+			if( vertex.y.get( ) < minY )
+				minY = vertex.y.get( );
+			else if( vertex.y.get( ) > maxY )
+				maxY = vertex.y.get( );
 		
-		for ( Vertex v : selectedVertexes )
-			centerY += v.y.get( );
+		for( Edge edge : selectedEdges )
+			if( edge.handleY.get( ) < minY )
+				minY = edge.handleY.get( );
+			else if( edge.handleY.get( ) > maxY )
+				maxY = edge.handleY.get( );
 		
-		for ( Edge e : selectedEdges )
-			centerY += e.handleY.get( );
+		double centerY = ( minY + maxY ) / 2.0;
 		
-		centerY /= (double) selectedVertexes.size( ) + selectedEdges.size( );
+		if( selectedEdges.isEmpty( ) )
+			for( Edge edge : graph.edges )
+				if( edge.from.isSelected.get( ) && edge.to.isSelected.get( ) )
+					selectedEdges.add( edge );
 		
-		for ( Edge e : selectedEdges )
-			e.suspendNotifications( true );
+		for( Edge edge : selectedEdges )
+			edge.suspendNotifications( true );
 		
-		for ( Vertex v : selectedVertexes )
-			v.y.set( 2.0 * centerY - v.y.get( ) );
+		for( Vertex vertex : selectedVertices )
+			vertex.y.set( 2.0 * centerY - vertex.y.get( ) );
 		
-		for ( Edge e : selectedEdges )
+		for( Edge edge : selectedEdges )
 		{
-			e.handleY.set( 2.0 * centerY - e.handleY.get( ) );
-			e.suspendNotifications( false );
-			e.refresh( );
+			edge.handleY.set( 2.0 * centerY - edge.handleY.get( ) );
+			edge.suspendNotifications( false );
+			edge.refresh( );
+		}
+	}
+	
+	public static void rotateLeft90( Graph graph )
+	{
+		List<Vertex> selectedVertices = graph.getSelectedVertices( );
+		List<Edge> selectedEdges = graph.getSelectedEdges( );
+		
+		if( selectedVertices.isEmpty( ) )
+		{
+			if( !selectedEdges.isEmpty( ) || graph.hasSelectedCaptions( ) )
+				return;
+			
+			selectedVertices = graph.vertices;
+		}
+		
+		// Find the center
+		double minX = Double.POSITIVE_INFINITY, minY = Double.POSITIVE_INFINITY;
+		double maxX = Double.NEGATIVE_INFINITY, maxY = Double.NEGATIVE_INFINITY;
+		for( Vertex vertex : selectedVertices )
+		{
+			if( vertex.x.get( ) < minX )
+				minX = vertex.x.get( );
+			else if( vertex.x.get( ) > maxX )
+				maxX = vertex.x.get( );
+			
+			if( vertex.y.get( ) < minY )
+				minY = vertex.y.get( );
+			else if( vertex.y.get( ) > maxY )
+				maxY = vertex.y.get( );
+		}
+		
+		for( Edge edge : selectedEdges )
+		{
+			if( edge.handleX.get( ) < minX )
+				minX = edge.handleX.get( );
+			else if( edge.handleX.get( ) > maxX )
+				maxX = edge.handleX.get( );
+			
+			if( edge.handleY.get( ) < minY )
+				minY = edge.handleY.get( );
+			else if( edge.handleY.get( ) > maxY )
+				maxY = edge.handleY.get( );
+		}
+		
+		Point2D.Double center = new Point2D.Double( ( minX + maxX ) / 2.0, ( minY + maxY ) / 2.0 );
+		
+		// Perform the rotation
+		for( Edge edge : selectedEdges )
+			edge.suspendNotifications( true );
+		
+		for( Vertex vertex : selectedVertices )
+		{
+			double oldVertexX = vertex.x.get( );
+			vertex.x.set( center.x - ( center.y - vertex.y.get( ) ) );
+			vertex.y.set( center.y + ( center.x - oldVertexX ) );
+		}
+		
+		for( Edge edge : selectedEdges )
+		{
+			double oldEdgeHandleX = edge.handleX.get( );
+			edge.handleX.set( center.x - ( center.y - edge.handleY.get( ) ) );
+			edge.handleY.set( center.y + ( center.x - oldEdgeHandleX ) );
+			edge.suspendNotifications( false );
+			edge.refresh( );
+		}
+	}
+	
+	public static void rotateRight90( Graph graph )
+	{
+		List<Vertex> selectedVertices = graph.getSelectedVertices( );
+		List<Edge> selectedEdges = graph.getSelectedEdges( );
+		
+		if( selectedVertices.isEmpty( ) )
+		{
+			if( !selectedEdges.isEmpty( ) || graph.hasSelectedCaptions( ) )
+				return;
+			
+			selectedVertices = graph.vertices;
+		}
+		
+		// Find the center
+		double minX = Double.POSITIVE_INFINITY, minY = Double.POSITIVE_INFINITY;
+		double maxX = Double.NEGATIVE_INFINITY, maxY = Double.NEGATIVE_INFINITY;
+		for( Vertex vertex : selectedVertices )
+		{
+			if( vertex.x.get( ) < minX )
+				minX = vertex.x.get( );
+			else if( vertex.x.get( ) > maxX )
+				maxX = vertex.x.get( );
+			
+			if( vertex.y.get( ) < minY )
+				minY = vertex.y.get( );
+			else if( vertex.y.get( ) > maxY )
+				maxY = vertex.y.get( );
+		}
+		
+		for( Edge edge : selectedEdges )
+		{
+			if( edge.handleX.get( ) < minX )
+				minX = edge.handleX.get( );
+			else if( edge.handleX.get( ) > maxX )
+				maxX = edge.handleX.get( );
+			
+			if( edge.handleY.get( ) < minY )
+				minY = edge.handleY.get( );
+			else if( edge.handleY.get( ) > maxY )
+				maxY = edge.handleY.get( );
+		}
+		
+		Point2D.Double center = new Point2D.Double( ( minX + maxX ) / 2.0, ( minY + maxY ) / 2.0 );
+		
+		// Perform the rotation
+		for( Edge edge : selectedEdges )
+			edge.suspendNotifications( true );
+		
+		for( Vertex vertex : selectedVertices )
+		{
+			double oldVertexX = vertex.x.get( );
+			vertex.x.set( center.x + ( center.y - vertex.y.get( ) ) );
+			vertex.y.set( center.y - ( center.x - oldVertexX ) );
+		}
+		
+		for( Edge edge : selectedEdges )
+		{
+			double oldEdgeHandleX = edge.handleX.get( );
+			edge.handleX.set( center.x + ( center.y - edge.handleY.get( ) ) );
+			edge.handleY.set( center.y - ( center.x - oldEdgeHandleX ) );
+			edge.suspendNotifications( false );
+			edge.refresh( );
 		}
 	}
 	
 	public static void scale( Graph graph, double factor )
 	{
+		List<Vertex> selectedVertices = graph.getSelectedVertices( );
+		if( selectedVertices.isEmpty( ) )
+			if( graph.hasSelectedCaptions( ) || graph.hasSelectedEdges( ) )
+				return;
+			else
+				selectedVertices = graph.vertices;
+		
 		Point2D.Double centroid = new Point2D.Double( );
-		List<Vertex> selectedVertexes = new ArrayList<Vertex>( );
-		
-		for ( Vertex v : graph.vertexes )
-			if ( v.isSelected.get( ) )
-				selectedVertexes.add( v );
-		
-		if ( selectedVertexes.size( ) < 1 )
+		for( Vertex vertex : selectedVertices )
 		{
-			for ( Edge e : graph.edges )
-				if ( e.isSelected.get( ) )
-					return;
-			
-			for ( Caption c : graph.captions )
-				if ( c.isSelected.get( ) )
-					return;
-			
-			selectedVertexes.addAll( graph.vertexes );
+			centroid.x += vertex.x.get( );
+			centroid.y += vertex.y.get( );
 		}
 		
-		for ( Vertex v : selectedVertexes )
+		centroid.x /= selectedVertices.size( );
+		centroid.y /= selectedVertices.size( );
+		
+		for( Vertex vertex : selectedVertices )
 		{
-			centroid.x += v.x.get( );
-			centroid.y += v.y.get( );
+			vertex.x.set( factor * ( vertex.x.get( ) - centroid.x ) + centroid.x );
+			vertex.y.set( factor * ( vertex.y.get( ) - centroid.y ) + centroid.y );
 		}
-		
-		centroid.x /= (double) selectedVertexes.size( );
-		centroid.y /= (double) selectedVertexes.size( );
-		
-		for ( Vertex v : selectedVertexes )
-		{
-			v.x.set( factor * ( v.x.get( ) - centroid.x ) + centroid.x );
-			v.y.set( factor * ( v.y.get( ) - centroid.y ) + centroid.y );
-		}
-	}
-	
-	// countConnectedComponents method + supporting class and methods
-	
-	private static Random random = new Random( );
-	
-	public static int countConnectedComponents( Graph graph )
-	{
-		if ( graph.vertexes.size( ) < 1 )
-			return 0;
-		
-		HashMap<Vertex, Node> vertexNodes = new HashMap<Vertex, Node>( );
-		
-		// Add all selected vertices
-		for ( Vertex v : graph.vertexes )
-			if ( v.isSelected.get( ) )
-				vertexNodes.put( v, new Node( ) );
-		
-		// If no vertices were selected, add them all
-		if ( vertexNodes.isEmpty( ) )
-			for ( Vertex v : graph.vertexes )
-				vertexNodes.put( v, new Node( ) );
-		
-		// Union vertex sets using selected edges
-		boolean foundSelectedEdges = false;
-		for ( Edge e : graph.edges )
-			if ( e.isSelected.get( ) )
-			{
-				foundSelectedEdges = true;
-				if ( !e.isLoop )
-					union( vertexNodes.get( e.from ), vertexNodes.get( e.to ) );
-			}
-		
-		// If no edges were selected, union vertex sets using all edges
-		if ( !foundSelectedEdges )
-			for ( Edge e : graph.edges )
-				if ( !e.isLoop )
-					union( vertexNodes.get( e.from ), vertexNodes.get( e.to ) );
-		
-		int connectedComponentCount = 0;
-		
-		for ( Node node : vertexNodes.values( ) )
-			if ( node.parent == null )
-				++connectedComponentCount;
-		
-		return connectedComponentCount;
-	}
-	
-	private static Node find( Node node )
-	{
-		Node root = node;
-		
-		while ( root.parent != null )
-			root = root.parent;
-		
-		Node nextNode;
-		while ( node.parent != null )
-		{
-			nextNode = node.parent;
-			node.parent = root;
-			node = nextNode;
-		}
-		
-		return root;
-	}
-	
-	private static void union( Node a, Node b )
-	{
-		if ( a != null && b != null )
-		{
-			Node rootA = find( a );
-			Node rootB = find( b );
-			
-			if ( rootA != rootB )
-			{
-				if ( rootA.rank > rootB.rank || random.nextBoolean( ) )
-					rootA.parent = rootB;
-				else
-					rootB.parent = rootA;
-			}
-		}
-	}
-	
-	private static class Node
-	{
-		public Node parent = null;
-		public int rank = 0;
 	}
 }

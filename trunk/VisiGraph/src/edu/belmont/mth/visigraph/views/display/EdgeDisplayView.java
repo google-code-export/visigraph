@@ -11,7 +11,6 @@ import edu.belmont.mth.visigraph.utilities.*;
 
 /**
  * @author Cameron Behar
- * 
  */
 public class EdgeDisplayView
 {
@@ -28,7 +27,7 @@ public class EdgeDisplayView
 		g2D.setColor( e.isSelected.get( ) ? ColorUtilities.blend( UserSettings.instance.getEdgeColor( e.color.get( ) ), UserSettings.instance.selectedEdge.get( ) ) : UserSettings.instance.getEdgeColor( e.color.get( ) ) );
 		
 		// Draw the edge
-		if ( e.isLinear( ) )
+		if( e.isLinear( ) )
 			g2D.draw( e.getLine( ) );
 		else
 			g2D.draw( e.getArc( ) );
@@ -37,22 +36,22 @@ public class EdgeDisplayView
 		g2D.setStroke( oldStroke );
 		
 		// Set the handle-specific color
-		if ( e.color.get( ) == -1 )
+		if( e.color.get( ) == -1 )
 			g2D.setColor( e.isSelected.get( ) ? ColorUtilities.blend( UserSettings.instance.edgeHandle.get( ), UserSettings.instance.selectedEdgeHandle.get( ) ) : UserSettings.instance.edgeHandle.get( ) );
 		else
 			g2D.setColor( e.isSelected.get( ) ? ColorUtilities.blend( UserSettings.instance.getEdgeColor( e.color.get( ) ), UserSettings.instance.selectedEdgeHandle.get( ) ) : UserSettings.instance.getEdgeColor( e.color.get( ) ) );
 		
 		// Draw handle
-		if ( s.showEdgeHandles.get( ) )
+		if( s.showEdgeHandles.get( ) )
 			g2D.fill( new Ellipse2D.Double( apparentHandleLocation.getX( ) - handleRadius, apparentHandleLocation.getY( ) - handleRadius, handleRadius * 2.0, handleRadius * 2.0 ) );
 		
 		// Draw arrow head for directed edges
-		if ( e.isDirected )
+		if( e.isDirected )
 		{
 			Point2D.Double[] arrowPoint = new Point2D.Double[3];
 			double tangentAngle;
 			
-			if ( e.isLinear( ) )
+			if( e.isLinear( ) )
 				tangentAngle = Math.atan2( e.to.y.get( ) - e.from.y.get( ), e.to.x.get( ) - e.from.x.get( ) );
 			else
 			{
@@ -62,13 +61,13 @@ public class EdgeDisplayView
 				double fromAngle = Math.atan2( e.from.y.get( ) - e.getCenter( ).getY( ), e.from.x.get( ) - e.getCenter( ).getX( ) );
 				double toAngle = Math.atan2( e.to.y.get( ) - e.getCenter( ).getY( ), e.to.x.get( ) - e.getCenter( ).getX( ) );
 				
-				if ( GeometryUtilities.angleBetween( fromAngle, tangentAngle ) >= GeometryUtilities.angleBetween( fromAngle, toAngle ) )
+				if( GeometryUtilities.angleBetween( fromAngle, tangentAngle ) >= GeometryUtilities.angleBetween( fromAngle, toAngle ) )
 					tangentAngle += Math.PI;
 				
 				tangentAngle += Math.PI / 2;
 			}
 			
-			for ( int i = 0; i < 3; ++i )
+			for( int i = 0; i < 3; ++i )
 			{
 				double theta = tangentAngle + i * 2.0 * Math.PI / 3.0;
 				arrowPoint[i] = new Point2D.Double( e.thickness.get( ) * UserSettings.instance.directedEdgeArrowRatio.get( ) * Math.cos( theta ) + apparentHandleLocation.getX( ), e.thickness.get( ) * UserSettings.instance.directedEdgeArrowRatio.get( ) * Math.sin( theta ) + apparentHandleLocation.getY( ) );
@@ -86,7 +85,7 @@ public class EdgeDisplayView
 		g2D.setColor( e.isSelected.get( ) ? ColorUtilities.blend( UserSettings.instance.getEdgeColor( e.color.get( ) ), UserSettings.instance.selectedEdge.get( ) ) : UserSettings.instance.getEdgeColor( e.color.get( ) ) );
 		
 		// Draw edge label
-		if ( s.showEdgeLabels.get( ) )
+		if( s.showEdgeLabels.get( ) )
 		{
 			Font oldFont = g2D.getFont( );
 			g2D.setFont( new Font( oldFont.getFamily( ), oldFont.getStyle( ), (int) Math.round( 11.0 * handleRadius / 1.5 ) ) );
@@ -95,11 +94,11 @@ public class EdgeDisplayView
 		}
 		
 		// Draw edge weight label
-		if ( s.showEdgeWeights.get( ) )
+		if( s.showEdgeWeights.get( ) )
 		{
 			Font oldFont = g2D.getFont( );
 			g2D.setFont( new Font( oldFont.getFamily( ), oldFont.getStyle( ), (int) Math.round( 11.0 * handleRadius / 1.5 ) ) );
-			g2D.drawString( e.weight.get( ).toString( ), (float) ( apparentHandleLocation.getX( ) - 1.5 * handleRadius ), (float) ( apparentHandleLocation.getY( ) + 9.0 * handleRadius ) );
+			g2D.drawString( String.format( "%." + UserSettings.instance.edgeWeightPrecision.get( ) + "f", e.weight.get( ) ), (float) ( apparentHandleLocation.getX( ) - 1.5 * handleRadius ), (float) ( apparentHandleLocation.getY( ) + 9.0 * handleRadius ) );
 			g2D.setFont( oldFont );
 		}
 	}

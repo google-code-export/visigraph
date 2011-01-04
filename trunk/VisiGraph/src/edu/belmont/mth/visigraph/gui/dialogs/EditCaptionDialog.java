@@ -4,23 +4,53 @@
 package edu.belmont.mth.visigraph.gui.dialogs;
 
 import java.awt.*;
-import java.awt.event.*;
 import javax.swing.*;
+import java.awt.event.*;
 import javax.swing.event.*;
 import edu.belmont.mth.visigraph.resources.*;
 
 /**
  * @author Cameron Behar
- * 
  */
-@SuppressWarnings( "serial" )
 public class EditCaptionDialog extends JDialog implements ActionListener
 {
-	private static EditCaptionDialog 	dialog;
-	private static JLabel 				captionTextLabel;
-	private static JTextArea 			captionTextArea;
-	private static JSlider 				captionFontSizeSlider;
-	private static Value 				value;
+	public class Value
+	{
+		private String	text;
+		private double	size;
+		
+		public Value( String text, double size )
+		{
+			this.text = text;
+			this.size = size;
+		}
+		
+		public double getSize( )
+		{
+			return this.size;
+		}
+		
+		public String getText( )
+		{
+			return this.text;
+		}
+		
+		public void setSize( double size )
+		{
+			this.size = size;
+		}
+		
+		public void setText( String text )
+		{
+			this.text = text;
+		}
+	}
+	
+	private static EditCaptionDialog	dialog;
+	private static JLabel				captionTextLabel;
+	private static JTextArea			captionTextArea;
+	private static JSlider				captionFontSizeSlider;
+	private static Value				value;
 	
 	public static Value showDialog( Component owner, String defaultText, double defaultSize )
 	{
@@ -29,7 +59,7 @@ public class EditCaptionDialog extends JDialog implements ActionListener
 		return value;
 	}
 	
-	private EditCaptionDialog ( Frame owner, String defaultText, final double defaultSize )
+	private EditCaptionDialog( Frame owner, String defaultText, final double defaultSize )
 	{
 		super( owner, StringBundle.get( "edit_caption_dialog_title" ), true );
 		
@@ -38,81 +68,81 @@ public class EditCaptionDialog extends JDialog implements ActionListener
 		inputPanel.add( Box.createRigidArea( new Dimension( 9, 9 ) ), new GridBagConstraints( )
 		{
 			{
-				gridx = 0;
-				gridy = 0;
+				this.gridx = 0;
+				this.gridy = 0;
 			}
 		} );
 		
 		captionTextLabel = new JLabel( StringBundle.get( "edit_caption_dialog_text" ) )
 		{
 			{
-				setHorizontalAlignment( SwingConstants.LEFT );
-				setVerticalAlignment( SwingConstants.TOP );
-				setPreferredSize( new Dimension( getPreferredSize( ).width, 20 ) );
+				this.setHorizontalAlignment( SwingConstants.LEFT );
+				this.setVerticalAlignment( SwingConstants.TOP );
+				this.setPreferredSize( new Dimension( this.getPreferredSize( ).width, 20 ) );
 			}
 		};
 		inputPanel.add( captionTextLabel, new GridBagConstraints( )
 		{
 			{
-				fill = GridBagConstraints.HORIZONTAL;
-				gridx = 0;
-				gridy = 1;
+				this.fill = GridBagConstraints.HORIZONTAL;
+				this.gridx = 0;
+				this.gridy = 1;
 			}
 		} );
 		
 		captionTextArea = new JTextArea( defaultText )
 		{
 			{
-				setFont( captionTextLabel.getFont( ) );
+				this.setFont( captionTextLabel.getFont( ) );
 			}
 		};
 		JScrollPane captionTextAreaScrollPane = new JScrollPane( captionTextArea )
 		{
 			{
-				setHorizontalScrollBarPolicy( JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED );
-				setVerticalScrollBarPolicy( JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED );
-				setPreferredSize( new Dimension( 300, 150 ) );
+				this.setHorizontalScrollBarPolicy( ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED );
+				this.setVerticalScrollBarPolicy( ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED );
+				this.setPreferredSize( new Dimension( 300, 150 ) );
 			}
 		};
 		inputPanel.add( captionTextAreaScrollPane, new GridBagConstraints( )
 		{
 			{
-				fill = GridBagConstraints.HORIZONTAL;
-				gridx = 0;
-				gridy = 2;
-				gridwidth = 2;
+				this.fill = GridBagConstraints.HORIZONTAL;
+				this.gridx = 0;
+				this.gridy = 2;
+				this.gridwidth = 2;
 			}
 		} );
 		
 		captionFontSizeSlider = new JSlider( SwingConstants.HORIZONTAL, 8, 100, 8 )
 		{
 			{
-				setMajorTickSpacing( 10 );
-				setPaintTicks( true );
-				addChangeListener( new ChangeListener( )
+				this.setMajorTickSpacing( 10 );
+				this.setPaintTicks( true );
+				this.addChangeListener( new ChangeListener( )
 				{
 					@Override
 					public void stateChanged( ChangeEvent e )
 					{
-						if ( captionFontSizeSlider != null )
+						if( captionFontSizeSlider != null )
 						{
 							captionFontSizeSlider.setToolTipText( captionFontSizeSlider.getValue( ) + "%" );
 							captionTextArea.setFont( new Font( captionTextArea.getFont( ).getFamily( ), captionTextArea.getFont( ).getStyle( ), (int) Math.round( Math.pow( captionFontSizeSlider.getValue( ) * 0.3155, 2 ) ) ) );
 						}
 					}
 				} );
-				setBorder( BorderFactory.createEmptyBorder( 10, 0, -2, 0 ) );
-				setValue( 9 );
-				setValue( (int) ( Math.round( Math.sqrt( defaultSize ) / 0.315 ) ) );
+				this.setBorder( BorderFactory.createEmptyBorder( 10, 0, -2, 0 ) );
+				this.setValue( 9 );
+				this.setValue( (int) ( Math.round( Math.sqrt( defaultSize ) / 0.315 ) ) );
 			}
 		};
 		inputPanel.add( captionFontSizeSlider, new GridBagConstraints( )
 		{
 			{
-				fill = GridBagConstraints.HORIZONTAL;
-				gridx = 0;
-				gridy = 3;
-				gridwidth = 2;
+				this.fill = GridBagConstraints.HORIZONTAL;
+				this.gridx = 0;
+				this.gridy = 3;
+				this.gridwidth = 2;
 			}
 		} );
 		
@@ -120,45 +150,44 @@ public class EditCaptionDialog extends JDialog implements ActionListener
 		final JButton okButton = new JButton( StringBundle.get( "ok_button_text" ) )
 		{
 			{
-				setPreferredSize( new Dimension( 80, 28 ) );
-				setActionCommand( "Ok" );
+				this.setPreferredSize( new Dimension( 80, 28 ) );
+				this.setActionCommand( "Ok" );
+				this.addActionListener( EditCaptionDialog.this );
+				EditCaptionDialog.this.getRootPane( ).setDefaultButton( this );
 			}
 		};
-		okButton.addActionListener( this );
-		getRootPane( ).setDefaultButton( okButton );
-		
 		final JButton cancelButton = new JButton( StringBundle.get( "cancel_button_text" ) )
 		{
 			{
-				setPreferredSize( new Dimension( 80, 28 ) );
+				this.setPreferredSize( new Dimension( 80, 28 ) );
+				this.addActionListener( EditCaptionDialog.this );
 			}
 		};
-		cancelButton.addActionListener( this );
 		
 		// Lay out the buttons from left to right
 		JPanel buttonPanel = new JPanel( )
 		{
 			{
-				setLayout( new BoxLayout( this, BoxLayout.LINE_AXIS ) );
-				setBorder( BorderFactory.createEmptyBorder( 0, 10, 10, 10 ) );
-				add( Box.createHorizontalGlue( ) );
-				add( okButton );
-				add( Box.createRigidArea( new Dimension( 10, 0 ) ) );
-				add( cancelButton );
+				this.setLayout( new BoxLayout( this, BoxLayout.LINE_AXIS ) );
+				this.setBorder( BorderFactory.createEmptyBorder( 0, 10, 10, 10 ) );
+				this.add( Box.createHorizontalGlue( ) );
+				this.add( okButton );
+				this.add( Box.createRigidArea( new Dimension( 10, 0 ) ) );
+				this.add( cancelButton );
 			}
 		};
 		inputPanel.add( buttonPanel, new GridBagConstraints( )
 		{
 			{
-				fill = GridBagConstraints.HORIZONTAL;
-				gridx = 0;
-				gridy = 5;
-				gridwidth = 3;
+				this.fill = GridBagConstraints.HORIZONTAL;
+				this.gridx = 0;
+				this.gridy = 5;
+				this.gridwidth = 3;
 			}
 		} );
 		
 		// Put everything together, using the content pane's BorderLayout
-		Container contentPanel = getContentPane( );
+		Container contentPanel = this.getContentPane( );
 		contentPanel.setLayout( new BorderLayout( 9, 9 ) );
 		contentPanel.add( inputPanel, BorderLayout.CENTER );
 		contentPanel.add( buttonPanel, BorderLayout.PAGE_END );
@@ -176,41 +205,9 @@ public class EditCaptionDialog extends JDialog implements ActionListener
 	
 	public void actionPerformed( ActionEvent e )
 	{
-		if ( "Ok".equals( e.getActionCommand( ) ) )
+		if( "Ok".equals( e.getActionCommand( ) ) )
 			value = new Value( captionTextArea.getText( ), Math.pow( captionFontSizeSlider.getValue( ) * 0.3155, 2.0 ) );
 		
 		EditCaptionDialog.dialog.setVisible( false );
-	}
-	
-	public class Value
-	{
-		private String text;
-		private double size;
-		
-		public Value ( String text, double size )
-		{
-			this.text = text;
-			this.size = size;
-		}
-		
-		public String getText( )
-		{
-			return text;
-		}
-		
-		public void setText( String text )
-		{
-			this.text = text;
-		}
-		
-		public double getSize( )
-		{
-			return size;
-		}
-		
-		public void setSize( double size )
-		{
-			this.size = size;
-		}
 	}
 }
