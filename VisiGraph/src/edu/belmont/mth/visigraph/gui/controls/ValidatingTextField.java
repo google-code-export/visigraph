@@ -9,17 +9,15 @@ import javax.swing.event.*;
 
 /**
  * @author Cameron Behar
- * 
  */
-@SuppressWarnings( "serial" )
 public class ValidatingTextField extends JTextField
 {
-	public String validatingExpression;
+	public String		validatingExpression;
 	
-	private final Color successColor;
-	private final Color failColor;
+	private final Color	successColor;
+	private final Color	failColor;
 	
-	public ValidatingTextField ( int columns, String validatingExpression )
+	public ValidatingTextField( int columns, String validatingExpression )
 	{
 		super( columns );
 		this.validatingExpression = validatingExpression;
@@ -32,42 +30,42 @@ public class ValidatingTextField extends JTextField
 			@Override
 			public void insertUpdate( DocumentEvent e )
 			{
-				validate( );
+				ValidatingTextField.this.validate( );
 			}
 			
 			@Override
 			public void removeUpdate( DocumentEvent e )
 			{
-				validate( );
+				ValidatingTextField.this.validate( );
 			}
 		} );
 		
-		successColor = new Color( getBackground( ).getRGB( ) );
-		failColor = new Color( 255, 209, 209 );
+		this.successColor = new Color( this.getBackground( ).getRGB( ) );
+		this.failColor = new Color( 255, 209, 209 );
 		
-		validate( );
+		this.validate( );
 	}
 	
-	@Override
-	public void validate( )
+	public String getValidatingExpression( )
 	{
-		setBackground( isValid( ) ? successColor : failColor );
+		return this.validatingExpression;
 	}
 	
 	@Override
 	public boolean isValid( )
 	{
-		return ( validatingExpression == null ? true : getText( ).matches( validatingExpression ) );
-	}
-	
-	public String getValidatingExpression( )
-	{
-		return validatingExpression;
+		return ( this.validatingExpression == null ? true : this.getText( ).matches( this.validatingExpression ) );
 	}
 	
 	public void setValidatingExpression( String validatingExpression )
 	{
 		this.validatingExpression = validatingExpression;
-		validate( );
+		this.validate( );
+	}
+	
+	@Override
+	public void validate( )
+	{
+		this.setBackground( this.isValid( ) ? this.successColor : this.failColor );
 	}
 }

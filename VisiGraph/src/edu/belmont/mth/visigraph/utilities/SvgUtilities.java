@@ -7,7 +7,6 @@ import java.awt.*;
 
 /**
  * @author Cameron Behar
- * 
  */
 public class SvgUtilities
 {

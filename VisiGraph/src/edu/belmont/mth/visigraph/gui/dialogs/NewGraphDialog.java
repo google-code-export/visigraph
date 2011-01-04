@@ -9,31 +9,30 @@ import java.util.*;
 import javax.swing.*;
 import java.awt.event.*;
 import edu.belmont.mth.visigraph.models.*;
+import edu.belmont.mth.visigraph.resources.*;
+import edu.belmont.mth.visigraph.utilities.*;
 import edu.belmont.mth.visigraph.gui.controls.*;
 import edu.belmont.mth.visigraph.models.generators.*;
-import edu.belmont.mth.visigraph.resources.*;
-import edu.belmont.mth.visigraph.utilities.DebugUtilities;
+import edu.belmont.mth.visigraph.models.generators.Generator.*;
 
 /**
  * @author Cameron Behar
- * 
  */
-@SuppressWarnings( "serial" )
 public class NewGraphDialog extends JDialog implements ActionListener
 {
-	private static NewGraphDialog 		dialog;
-	private static JComboBox 			generatorComboBox;
-	private static JLabel 				generatorParametersLabel;
-	private static ValidatingTextField 	generatorParametersField;
-	private static JButton 				loadParametersFromFileButton;
-	private static JCheckBox 			allowLoopsCheckBox;
-	private static JCheckBox 			allowDirectedEdgesCheckBox;
-	private static JCheckBox 			allowMultipleEdgesCheckBox;
-	private static JCheckBox 			allowCyclesCheckBox;
-	private static JButton 				okButton;
-	private static JButton 				cancelButton;
-	private static Graph 				value;
-	private static JFileChooser 		fileChooser;
+	private static NewGraphDialog		dialog;
+	private static JComboBox			generatorComboBox;
+	private static JLabel				generatorParametersLabel;
+	private static ValidatingTextField	generatorParametersField;
+	private static JButton				loadParametersFromFileButton;
+	private static JCheckBox			allowLoopsCheckBox;
+	private static JCheckBox			allowDirectedEdgesCheckBox;
+	private static JCheckBox			allowMultipleEdgesCheckBox;
+	private static JCheckBox			allowCyclesCheckBox;
+	private static JButton				okButton;
+	private static JButton				cancelButton;
+	private static Graph				value;
+	private static JFileChooser			fileChooser;
 	
 	public static Graph showDialog( Component owner )
 	{
@@ -42,7 +41,7 @@ public class NewGraphDialog extends JDialog implements ActionListener
 		return value;
 	}
 	
-	private NewGraphDialog ( Frame owner )
+	private NewGraphDialog( Frame owner )
 	{
 		super( owner, StringBundle.get( "new_graph_dialog_title" ), true );
 		
@@ -51,57 +50,57 @@ public class NewGraphDialog extends JDialog implements ActionListener
 		JPanel inputPanel = new JPanel( new GridBagLayout( )
 		{
 			{
-				rowHeights = new int[ ] { 9, 28, 28, 28, 28 };
+				this.rowHeights = new int[ ] { 9, 28, 28, 28, 28 };
 			}
 		} );
 		
 		JLabel generatorLabel = new JLabel( StringBundle.get( "new_graph_dialog_family_label" ) )
 		{
 			{
-				setHorizontalAlignment( SwingConstants.RIGHT );
+				this.setHorizontalAlignment( SwingConstants.RIGHT );
 			}
 		};
 		inputPanel.add( generatorLabel, new GridBagConstraints( )
 		{
 			{
-				fill = GridBagConstraints.HORIZONTAL;
-				gridx = 0;
-				gridy = 1;
+				this.fill = GridBagConstraints.HORIZONTAL;
+				this.gridx = 0;
+				this.gridy = 1;
 			}
 		} );
 		
 		generatorComboBox = new JComboBox( );
-		for ( GeneratorBase generator : GeneratorService.instance.generators )
+		for( Generator generator : GeneratorService.instance.generators )
 			generatorComboBox.addItem( generator );
 		generatorComboBox.addItemListener( new ItemListener( )
 		{
 			public void itemStateChanged( ItemEvent e )
 			{
-				generatorChanged( e.getItem( ) );
+				NewGraphDialog.this.generatorChanged( e.getItem( ) );
 			}
 		} );
 		inputPanel.add( generatorComboBox, new GridBagConstraints( )
 		{
 			{
-				fill = GridBagConstraints.HORIZONTAL;
-				gridx = 1;
-				gridy = 1;
-				gridwidth = 2;
+				this.fill = GridBagConstraints.HORIZONTAL;
+				this.gridx = 1;
+				this.gridy = 1;
+				this.gridwidth = 2;
 			}
 		} );
 		
 		generatorParametersLabel = new JLabel( StringBundle.get( "new_graph_dialog_parameters_label" ) )
 		{
 			{
-				setHorizontalAlignment( SwingConstants.RIGHT );
+				this.setHorizontalAlignment( SwingConstants.RIGHT );
 			}
 		};
 		inputPanel.add( generatorParametersLabel, new GridBagConstraints( )
 		{
 			{
-				fill = GridBagConstraints.HORIZONTAL;
-				gridx = 0;
-				gridy = 2;
+				this.fill = GridBagConstraints.HORIZONTAL;
+				this.gridx = 0;
+				this.gridy = 2;
 			}
 		} );
 		
@@ -109,16 +108,16 @@ public class NewGraphDialog extends JDialog implements ActionListener
 		generatorParametersField = new ValidatingTextField( 0, ".*" )
 		{
 			{
-				setPreferredSize( new Dimension( 315, getPreferredSize( ).height ) );
+				this.setPreferredSize( new Dimension( 315, this.getPreferredSize( ).height ) );
 			}
 		};
 		parametersPanel.add( generatorParametersField );
 		loadParametersFromFileButton = new JButton( "..." )
 		{
 			{
-				setPreferredSize( new Dimension( 25, generatorParametersField.getPreferredSize( ).height + 2 ) );
-				setToolTipText( StringBundle.get( "new_graph_dialog_load_parameters_from_file_tooltip" ) );
-				addActionListener( new ActionListener( )
+				this.setPreferredSize( new Dimension( 25, generatorParametersField.getPreferredSize( ).height + 2 ) );
+				this.setToolTipText( StringBundle.get( "new_graph_dialog_load_parameters_from_file_tooltip" ) );
+				this.addActionListener( new ActionListener( )
 				{
 					@Override
 					public void actionPerformed( ActionEvent e )
@@ -127,8 +126,7 @@ public class NewGraphDialog extends JDialog implements ActionListener
 						fileChooser.setAcceptAllFileFilterUsed( true );
 						fileChooser.setMultiSelectionEnabled( false );
 						
-						if ( fileChooser.showOpenDialog( dialog ) == JFileChooser.APPROVE_OPTION )
-						{
+						if( fileChooser.showOpenDialog( dialog ) == JFileChooser.APPROVE_OPTION )
 							try
 							{
 								generatorParametersField.setText( "" );
@@ -136,17 +134,16 @@ public class NewGraphDialog extends JDialog implements ActionListener
 								StringBuilder sb = new StringBuilder( );
 								
 								Scanner in = new Scanner( fileChooser.getSelectedFile( ) );
-								while ( in.hasNextLine( ) )
+								while( in.hasNextLine( ) )
 									sb.append( in.nextLine( ) ).append( " " );
 								in.close( );
 								
 								generatorParametersField.setText( sb.toString( ) );
 							}
-							catch ( IOException ex )
+							catch( IOException ex )
 							{
 								DebugUtilities.logException( "An exception occurred while loading parameters from file.", ex );
 							}
-						}
 					}
 				} );
 			}
@@ -156,40 +153,34 @@ public class NewGraphDialog extends JDialog implements ActionListener
 		inputPanel.add( parametersPanel, new GridBagConstraints( )
 		{
 			{
-				fill = GridBagConstraints.HORIZONTAL;
-				gridx = 1;
-				gridy = 2;
-				gridwidth = 2;
+				this.fill = GridBagConstraints.HORIZONTAL;
+				this.gridx = 1;
+				this.gridy = 2;
+				this.gridwidth = 2;
 			}
 		} );
 		
 		allowLoopsCheckBox = new JCheckBox( StringBundle.get( "new_graph_dialog_allow_loops_label" ) )
 		{
 			{
-				setPreferredSize( new Dimension( 160, getPreferredSize( ).height ) );
-				addItemListener( new ItemListener( )
+				this.setPreferredSize( new Dimension( 160, this.getPreferredSize( ).height ) );
+				this.addItemListener( new ItemListener( )
 				{
 					@Override
 					public void itemStateChanged( ItemEvent e )
 					{
-						if ( allowLoopsCheckBox != null )
+						if( allowLoopsCheckBox != null )
 						{
-							GeneratorBase generator = (GeneratorBase) generatorComboBox.getSelectedItem( );
+							Generator generator = (Generator) generatorComboBox.getSelectedItem( );
 							
-							if ( !generator.areCyclesAllowed( ).isForced( ) )
-							{
-								if ( allowLoopsCheckBox.isSelected( ) )
+							if( !( (BooleanRule) generator.getAttribute( Attribute.ARE_CYCLES_ALLOWED ) ).isForced( ) )
+								if( allowLoopsCheckBox.isSelected( ) )
 								{
 									allowCyclesCheckBox.setEnabled( false );
 									allowCyclesCheckBox.setSelected( true );
 								}
-								else
-								{
-									
-									if ( !allowMultipleEdgesCheckBox.isSelected( ) )
-										allowCyclesCheckBox.setEnabled( true );
-								}
-							}
+								else if( !allowMultipleEdgesCheckBox.isSelected( ) )
+									allowCyclesCheckBox.setEnabled( true );
 						}
 					}
 				} );
@@ -198,53 +189,48 @@ public class NewGraphDialog extends JDialog implements ActionListener
 		inputPanel.add( allowLoopsCheckBox, new GridBagConstraints( )
 		{
 			{
-				fill = GridBagConstraints.HORIZONTAL;
-				gridx = 1;
-				gridy = 3;
+				this.fill = GridBagConstraints.HORIZONTAL;
+				this.gridx = 1;
+				this.gridy = 3;
 			}
 		} );
 		
 		allowDirectedEdgesCheckBox = new JCheckBox( StringBundle.get( "new_graph_dialog_allow_directed_edges_label" ) )
 		{
 			{
-				setPreferredSize( new Dimension( 160, getPreferredSize( ).height ) );
+				this.setPreferredSize( new Dimension( 160, this.getPreferredSize( ).height ) );
 			}
 		};
 		inputPanel.add( allowDirectedEdgesCheckBox, new GridBagConstraints( )
 		{
 			{
-				fill = GridBagConstraints.HORIZONTAL;
-				gridx = 2;
-				gridy = 3;
+				this.fill = GridBagConstraints.HORIZONTAL;
+				this.gridx = 2;
+				this.gridy = 3;
 			}
 		} );
 		
 		allowMultipleEdgesCheckBox = new JCheckBox( StringBundle.get( "new_graph_dialog_allow_multiple_edges_label" ) )
 		{
 			{
-				setPreferredSize( new Dimension( 160, getPreferredSize( ).height ) );
-				addItemListener( new ItemListener( )
+				this.setPreferredSize( new Dimension( 160, this.getPreferredSize( ).height ) );
+				this.addItemListener( new ItemListener( )
 				{
 					@Override
 					public void itemStateChanged( ItemEvent e )
 					{
-						if ( allowMultipleEdgesCheckBox != null )
+						if( allowMultipleEdgesCheckBox != null )
 						{
-							GeneratorBase generator = (GeneratorBase) generatorComboBox.getSelectedItem( );
+							Generator generator = (Generator) generatorComboBox.getSelectedItem( );
 							
-							if ( !generator.areCyclesAllowed( ).isForced( ) )
-							{
-								if ( allowMultipleEdgesCheckBox.isSelected( ) )
+							if( !( (BooleanRule) generator.getAttribute( Attribute.ARE_CYCLES_ALLOWED ) ).isForced( ) )
+								if( allowMultipleEdgesCheckBox.isSelected( ) )
 								{
 									allowCyclesCheckBox.setEnabled( false );
 									allowCyclesCheckBox.setSelected( true );
 								}
-								else
-								{
-									if ( !allowLoopsCheckBox.isSelected( ) )
-										allowCyclesCheckBox.setEnabled( true );
-								}
-							}
+								else if( !allowLoopsCheckBox.isSelected( ) )
+									allowCyclesCheckBox.setEnabled( true );
 						}
 					}
 				} );
@@ -253,50 +239,42 @@ public class NewGraphDialog extends JDialog implements ActionListener
 		inputPanel.add( allowMultipleEdgesCheckBox, new GridBagConstraints( )
 		{
 			{
-				fill = GridBagConstraints.HORIZONTAL;
-				gridx = 1;
-				gridy = 4;
+				this.fill = GridBagConstraints.HORIZONTAL;
+				this.gridx = 1;
+				this.gridy = 4;
 			}
 		} );
 		
 		allowCyclesCheckBox = new JCheckBox( StringBundle.get( "new_graph_dialog_allow_cycles_label" ) )
 		{
 			{
-				setPreferredSize( new Dimension( 160, getPreferredSize( ).height ) );
-				addItemListener( new ItemListener( )
+				this.setPreferredSize( new Dimension( 160, this.getPreferredSize( ).height ) );
+				this.addItemListener( new ItemListener( )
 				{
 					@Override
 					public void itemStateChanged( ItemEvent e )
 					{
-						if ( allowCyclesCheckBox != null )
+						if( allowCyclesCheckBox != null )
 						{
-							GeneratorBase generator = (GeneratorBase) generatorComboBox.getSelectedItem( );
+							Generator generator = (Generator) generatorComboBox.getSelectedItem( );
 							
-							if ( !generator.areLoopsAllowed( ).isForced( ) )
-							{
-								if ( allowCyclesCheckBox.isSelected( ) )
-								{
+							if( !( (BooleanRule) generator.getAttribute( Attribute.ARE_LOOPS_ALLOWED ) ).isForced( ) )
+								if( allowCyclesCheckBox.isSelected( ) )
 									allowLoopsCheckBox.setEnabled( true );
-								}
 								else
 								{
 									allowLoopsCheckBox.setEnabled( false );
 									allowLoopsCheckBox.setSelected( false );
 								}
-							}
 							
-							if ( !generator.areMultipleEdgesAllowed( ).isForced( ) )
-							{
-								if ( allowCyclesCheckBox.isSelected( ) )
-								{
+							if( !( (BooleanRule) generator.getAttribute( Attribute.ARE_MULTIPLE_EDGES_ALLOWED ) ).isForced( ) )
+								if( allowCyclesCheckBox.isSelected( ) )
 									allowMultipleEdgesCheckBox.setEnabled( true );
-								}
 								else
 								{
 									allowMultipleEdgesCheckBox.setEnabled( false );
 									allowMultipleEdgesCheckBox.setSelected( false );
 								}
-							}
 						}
 					}
 				} );
@@ -305,9 +283,9 @@ public class NewGraphDialog extends JDialog implements ActionListener
 		inputPanel.add( allowCyclesCheckBox, new GridBagConstraints( )
 		{
 			{
-				fill = GridBagConstraints.HORIZONTAL;
-				gridx = 2;
-				gridy = 4;
+				this.fill = GridBagConstraints.HORIZONTAL;
+				this.gridx = 2;
+				this.gridy = 4;
 			}
 		} );
 		
@@ -315,69 +293,68 @@ public class NewGraphDialog extends JDialog implements ActionListener
 		okButton = new JButton( StringBundle.get( "ok_button_text" ) )
 		{
 			{
-				setPreferredSize( new Dimension( 80, 28 ) );
-				setActionCommand( "Ok" );
+				this.setPreferredSize( new Dimension( 80, 28 ) );
+				this.setActionCommand( "Ok" );
+				this.addActionListener( NewGraphDialog.this );
+				NewGraphDialog.this.getRootPane( ).setDefaultButton( this );
 			}
 		};
-		okButton.addActionListener( this );
-		getRootPane( ).setDefaultButton( okButton );
-		
 		cancelButton = new JButton( StringBundle.get( "cancel_button_text" ) )
 		{
 			{
-				setPreferredSize( new Dimension( 80, 28 ) );
+				this.setPreferredSize( new Dimension( 80, 28 ) );
+				this.addActionListener( NewGraphDialog.this );
 			}
 		};
-		cancelButton.addActionListener( this );
 		
 		// Lay out the buttons from left to right
 		JPanel buttonPanel = new JPanel( )
 		{
 			{
-				setLayout( new BoxLayout( this, BoxLayout.LINE_AXIS ) );
-				setBorder( BorderFactory.createEmptyBorder( 0, 10, 10, 10 ) );
-				add( Box.createHorizontalGlue( ) );
-				add( okButton );
-				add( Box.createRigidArea( new Dimension( 10, 0 ) ) );
-				add( cancelButton );
+				this.setLayout( new BoxLayout( this, BoxLayout.LINE_AXIS ) );
+				this.setBorder( BorderFactory.createEmptyBorder( 0, 10, 10, 10 ) );
+				this.add( Box.createHorizontalGlue( ) );
+				this.add( okButton );
+				this.add( Box.createRigidArea( new Dimension( 10, 0 ) ) );
+				this.add( cancelButton );
 			}
 		};
 		inputPanel.add( buttonPanel, new GridBagConstraints( )
 		{
 			{
-				fill = GridBagConstraints.HORIZONTAL;
-				gridx = 0;
-				gridy = 5;
-				gridwidth = 3;
+				this.fill = GridBagConstraints.HORIZONTAL;
+				this.gridx = 0;
+				this.gridy = 5;
+				this.gridwidth = 3;
 			}
 		} );
 		
 		// Put everything together, using the content pane's BorderLayout
-		Container contentPanel = getContentPane( );
+		Container contentPanel = this.getContentPane( );
 		contentPanel.setLayout( new BorderLayout( 9, 9 ) );
 		contentPanel.add( inputPanel, BorderLayout.CENTER );
 		contentPanel.add( buttonPanel, BorderLayout.PAGE_END );
 		
 		Dimension size = this.getPreferredSize( );
-		size.width = (int) Math.max( size.width, 400 ) + 40;
+		size.width = Math.max( size.width, 400 ) + 40;
 		size.height += 40;
 		this.setPreferredSize( size );
 		
 		this.pack( );
 		this.setResizable( false );
-		setLocationRelativeTo( owner );
-		generatorChanged( generatorComboBox.getSelectedObjects( )[0] );
+		this.setLocationRelativeTo( owner );
+		this.generatorChanged( generatorComboBox.getSelectedObjects( )[0] );
 		value = null;
 	}
 	
 	public void actionPerformed( ActionEvent e )
 	{
-		if ( "Ok".equals( e.getActionCommand( ) ) )
+		if( "Ok".equals( e.getActionCommand( ) ) )
 		{
-			if ( !generatorParametersField.isValid( ) )
+			if( !generatorParametersField.isValid( ) )
 				return;
 			
-			GeneratorBase generator = (GeneratorBase) generatorComboBox.getSelectedObjects( )[0];
+			Generator generator = (Generator) generatorComboBox.getSelectedObjects( )[0];
 			value = generator.generate( generatorParametersField.getText( ), allowLoopsCheckBox.isSelected( ), allowDirectedEdgesCheckBox.isSelected( ), allowMultipleEdgesCheckBox.isSelected( ), allowCyclesCheckBox.isSelected( ), this );
 		}
 		
@@ -386,30 +363,33 @@ public class NewGraphDialog extends JDialog implements ActionListener
 	
 	private void generatorChanged( Object item )
 	{
-		if ( item instanceof GeneratorBase )
+		if( item instanceof Generator )
 		{
-			GeneratorBase generator = (GeneratorBase) item;
+			Generator generator = (Generator) item;
 			
-			generatorParametersLabel.setEnabled( generator.areParametersAllowed( ).isTrue( ) );
-			generatorParametersField.setEnabled( generator.areParametersAllowed( ).isTrue( ) );
-			loadParametersFromFileButton.setEnabled( generator.areParametersAllowed( ).isTrue( ) );
+			generatorParametersLabel.setEnabled( (Boolean) generator.getAttribute( Attribute.ARE_PARAMETERS_ALLOWED ) );
+			generatorParametersField.setEnabled( (Boolean) generator.getAttribute( Attribute.ARE_PARAMETERS_ALLOWED ) );
+			loadParametersFromFileButton.setEnabled( (Boolean) generator.getAttribute( Attribute.ARE_PARAMETERS_ALLOWED ) );
 			
-			allowLoopsCheckBox.setSelected( generator.areLoopsAllowed( ).isTrue( ) );
-			allowLoopsCheckBox.setEnabled( !generator.areLoopsAllowed( ).isForced( ) );
+			allowLoopsCheckBox.setSelected( ( (BooleanRule) generator.getAttribute( Attribute.ARE_LOOPS_ALLOWED ) ).isTrue( ) );
+			allowLoopsCheckBox.setEnabled( !( (BooleanRule) generator.getAttribute( Attribute.ARE_LOOPS_ALLOWED ) ).isForced( ) );
 			
-			allowDirectedEdgesCheckBox.setSelected( generator.areDirectedEdgesAllowed( ).isTrue( ) );
-			allowDirectedEdgesCheckBox.setEnabled( !generator.areDirectedEdgesAllowed( ).isForced( ) );
+			allowDirectedEdgesCheckBox.setSelected( ( (BooleanRule) generator.getAttribute( Attribute.ARE_DIRECTED_EDGES_ALLOWED ) ).isTrue( ) );
+			allowDirectedEdgesCheckBox.setEnabled( !( (BooleanRule) generator.getAttribute( Attribute.ARE_DIRECTED_EDGES_ALLOWED ) ).isForced( ) );
 			
-			allowMultipleEdgesCheckBox.setSelected( generator.areMultipleEdgesAllowed( ).isTrue( ) );
-			allowMultipleEdgesCheckBox.setEnabled( !generator.areMultipleEdgesAllowed( ).isForced( ) );
+			allowMultipleEdgesCheckBox.setSelected( ( (BooleanRule) generator.getAttribute( Attribute.ARE_MULTIPLE_EDGES_ALLOWED ) ).isTrue( ) );
+			allowMultipleEdgesCheckBox.setEnabled( !( (BooleanRule) generator.getAttribute( Attribute.ARE_MULTIPLE_EDGES_ALLOWED ) ).isForced( ) );
 			
-			allowCyclesCheckBox.setSelected( generator.areCyclesAllowed( ).isTrue( ) );
-			allowCyclesCheckBox.setEnabled( !generator.areCyclesAllowed( ).isForced( ) );
+			allowCyclesCheckBox.setSelected( ( (BooleanRule) generator.getAttribute( Attribute.ARE_CYCLES_ALLOWED ) ).isTrue( ) );
+			allowCyclesCheckBox.setEnabled( !( (BooleanRule) generator.getAttribute( Attribute.ARE_CYCLES_ALLOWED ) ).isForced( ) );
 			
 			generatorParametersField.setText( "" );
-			generatorParametersField.setValidatingExpression( generator.getParametersValidatingExpression( ) );
-			generatorParametersField.setToolTipText( generator.getParametersDescription( ) );
-			generatorParametersField.requestFocus( );
+			if( (Boolean) generator.getAttribute( Attribute.ARE_PARAMETERS_ALLOWED ) )
+			{
+				generatorParametersField.setValidatingExpression( (String) generator.getAttribute( Attribute.PARAMETERS_VALIDATION_EXPRESSION ) );
+				generatorParametersField.setToolTipText( (String) generator.getAttribute( Attribute.PARAMETERS_DESCRIPTION ) );
+				generatorParametersField.requestFocus( );
+			}
 		}
 	}
 }

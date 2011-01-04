@@ -3,15 +3,14 @@
  */
 package edu.belmont.mth.visigraph.utilities;
 
-import java.awt.geom.*;
 import java.util.*;
+import java.awt.geom.*;
 import edu.belmont.mth.visigraph.models.*;
 import edu.belmont.mth.visigraph.settings.*;
 import static java.lang.Math.*;
 
 /**
  * @author Cameron Behar
- * 
  */
 public class GeometryUtilities
 {
@@ -33,22 +32,22 @@ public class GeometryUtilities
 	
 	public static double determinant( double[ ][ ] A )
 	{
-		if ( A.length == 1 )
+		if( A.length == 1 )
 			return A[0][0];
 		
-		if ( A.length == 2 )
+		if( A.length == 2 )
 			return A[0][0] * A[1][1] - A[0][1] * A[1][0];
 		
 		double result = 0;
-		for ( int i = 0; i < A[0].length; i++ )
+		for( int i = 0; i < A[0].length; i++ )
 		{
 			double temp[][] = new double[A.length - 1][A[0].length - 1];
 			
-			for ( int j = 1; j < A.length; j++ )
-				for ( int k = 0; k < A[0].length; k++ )
-					if ( k < i )
+			for( int j = 1; j < A.length; j++ )
+				for( int k = 0; k < A[0].length; k++ )
+					if( k < i )
 						temp[j - 1][k] = A[j][k];
-					else if ( k > i )
+					else if( k > i )
 						temp[j - 1][k - 1] = A[j][k];
 			
 			result += A[0][i] * pow( -1, i ) * determinant( temp );
@@ -77,15 +76,15 @@ public class GeometryUtilities
 		double radius1Squared = arc1Center.distanceSq( arc1.getStartPoint( ) );
 		double radius1 = sqrt( radius1Squared );
 		
-		if ( distance > radius0 + radius1 )
+		if( distance > radius0 + radius1 )
 		{
 			// There are no solutions because the circles are separate.
 		}
-		else if ( distance < abs( radius0 - radius1 ) )
+		else if( distance < abs( radius0 - radius1 ) )
 		{
 			// There are no solutions because one circle is contained within the other.
 		}
-		else if ( distance == 0 && radius0 == radius1 )
+		else if( distance == 0 && radius0 == radius1 )
 		{
 			// There are an infinite number of solutions because the circles are coincident.
 		}
@@ -104,16 +103,16 @@ public class GeometryUtilities
 			Point2D.Double intersection = new Point2D.Double( x2 + h * ( y1 - y0 ) / distance, y2 - h * ( x1 - x0 ) / distance );
 			double angle0ToIntersection = toDegrees( atan2( -( intersection.y - y0 ), intersection.x - x0 ) );
 			double angle1ToIntersection = toDegrees( atan2( -( intersection.y - y1 ), intersection.x - x1 ) );
-			if ( arc0.containsAngle( angle0ToIntersection ) && arc1.containsAngle( angle1ToIntersection ) )
+			if( arc0.containsAngle( angle0ToIntersection ) && arc1.containsAngle( angle1ToIntersection ) )
 				ret.add( intersection );
 			
 			// If the circles aren't tangential, calculate the second intersection
-			if ( distance != radius0 + radius1 )
+			if( distance != radius0 + radius1 )
 			{
 				intersection = new Point2D.Double( x2 - h * ( y1 - y0 ) / distance, y2 + h * ( x1 - x0 ) / distance );
 				angle0ToIntersection = toDegrees( atan2( -( intersection.y - y0 ), intersection.x - x0 ) );
 				angle1ToIntersection = toDegrees( atan2( -( intersection.y - y1 ), intersection.x - x1 ) );
-				if ( arc0.containsAngle( angle0ToIntersection ) && arc1.containsAngle( angle1ToIntersection ) )
+				if( arc0.containsAngle( angle0ToIntersection ) && arc1.containsAngle( angle1ToIntersection ) )
 					ret.add( intersection );
 			}
 		}
@@ -143,7 +142,7 @@ public class GeometryUtilities
 		double discriminant = arcRadiusSquared * rDiffSquared - determinant * determinant;
 		
 		// If the line is tangent or secant to the circle...
-		if ( discriminant >= 0 )
+		if( discriminant >= 0 )
 		{
 			// Calculate the first intersection
 			Point2D.Double intersection = new Point2D.Double( );
@@ -152,11 +151,11 @@ public class GeometryUtilities
 			double angleToIntersection = angle( -intersection.y, intersection.x );
 			intersection.x += arcCenter.getX( );
 			intersection.y += arcCenter.getY( );
-			if ( areClose( intersection, line ) && arc.containsAngle( toDegrees( angleToIntersection ) ) )
+			if( areClose( intersection, line ) && arc.containsAngle( toDegrees( angleToIntersection ) ) )
 				ret.add( intersection );
 			
 			// If the line is secant to the circle
-			if ( discriminant > 0 )
+			if( discriminant > 0 )
 			{
 				// Calculate the other intersection
 				intersection = new Point2D.Double( );
@@ -165,7 +164,7 @@ public class GeometryUtilities
 				angleToIntersection = angle( -intersection.y, intersection.x );
 				intersection.x += arcCenter.getX( );
 				intersection.y += arcCenter.getY( );
-				if ( areClose( intersection, line ) && arc.containsAngle( toDegrees( angleToIntersection ) ) )
+				if( areClose( intersection, line ) && arc.containsAngle( toDegrees( angleToIntersection ) ) )
 					ret.add( intersection );
 			}
 		}
@@ -177,7 +176,7 @@ public class GeometryUtilities
 	{
 		Vector<Point2D> ret = new Vector<Point2D>( );
 		
-		if ( line0.intersectsLine( line1 ) )
+		if( line0.intersectsLine( line1 ) )
 		{
 			Point2D.Double intersection = new Point2D.Double( 0.0, 0.0 );
 			

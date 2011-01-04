@@ -6,17 +6,15 @@ package edu.belmont.mth.visigraph.resources;
 import java.awt.*;
 import java.net.*;
 import java.util.*;
-
-import edu.belmont.mth.visigraph.utilities.DebugUtilities;
+import edu.belmont.mth.visigraph.utilities.*;
 
 /**
  * @author Cameron Behar
- * 
  */
 public class ImageBundle extends ResourceBundle
 {
-	private static HashMap<String, Image> map = new HashMap<String, Image>( );
-	private static final ResourceBundle instance = ResourceBundle.getBundle( "edu.belmont.mth.visigraph.resources.ImageBundle" );
+	private static Map<String, Image>	map			= new HashMap<String, Image>( );
+	private static final ResourceBundle	instance	= ResourceBundle.getBundle( "edu.belmont.mth.visigraph.resources.ImageBundle" );
 	
 	public static Image get( String key )
 	{
@@ -24,7 +22,7 @@ public class ImageBundle extends ResourceBundle
 		{
 			return (Image) instance.getObject( key );
 		}
-		catch ( MissingResourceException ex )
+		catch( MissingResourceException ex )
 		{
 			DebugUtilities.logException( String.format( "An exception occurred while trying to load resource %s.", key ), ex );
 			return null;
@@ -40,7 +38,7 @@ public class ImageBundle extends ResourceBundle
 	@Override
 	protected final Object handleGetObject( String key )
 	{
-		return loadImage( key, ".png" );
+		return this.loadImage( key, ".png" );
 	}
 	
 	private Image loadImage( String filename, String extension )
@@ -49,12 +47,12 @@ public class ImageBundle extends ResourceBundle
 		
 		Image image = map.get( imageName );
 		
-		if ( image != null )
+		if( image != null )
 			return image;
 		
-		URL url = getClass( ).getResource( "images/" + imageName );
+		URL url = this.getClass( ).getResource( "images/" + imageName );
 		
-		if ( url == null )
+		if( url == null )
 			return null;
 		
 		image = Toolkit.getDefaultToolkit( ).createImage( url );

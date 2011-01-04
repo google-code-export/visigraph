@@ -7,14 +7,10 @@ import java.util.*;
 
 /**
  * @author Cameron Behar
- * 
  */
 public class DebugUtilities
 {
-	private static final StringBuffer buffer = new StringBuffer( );
-	
-	private DebugUtilities ( )
-	{}
+	private static final StringBuffer	buffer	= new StringBuffer( );
 	
 	public static String getLog( )
 	{
@@ -33,4 +29,7 @@ public class DebugUtilities
 	{
 		buffer.append( String.format( "{Warning %1$tT} %2$s<br/>", Calendar.getInstance( ), message.replaceAll( "<", "&lt;" ).replaceAll( ">", "&gt;" ) ) );
 	}
+	
+	private DebugUtilities( )
+	{}
 }

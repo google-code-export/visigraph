@@ -11,7 +11,6 @@ import edu.belmont.mth.visigraph.utilities.*;
 
 /**
  * @author Cameron Behar
- * 
  */
 public class VertexDisplayView
 {
@@ -28,7 +27,7 @@ public class VertexDisplayView
 		g2D.draw( outline );
 		
 		// Draw label
-		if ( s.showVertexLabels.get( ) )
+		if( s.showVertexLabels.get( ) )
 		{
 			Font oldFont = g2D.getFont( );
 			g2D.setFont( new Font( oldFont.getFamily( ), oldFont.getStyle( ), (int) Math.round( 11.0 * v.radius.get( ) / 5.0 ) ) );
@@ -37,11 +36,11 @@ public class VertexDisplayView
 		}
 		
 		// Draw weight
-		if ( s.showVertexWeights.get( ) )
+		if( s.showVertexWeights.get( ) )
 		{
 			Font oldFont = g2D.getFont( );
 			g2D.setFont( new Font( oldFont.getFamily( ), oldFont.getStyle( ), (int) Math.round( 11.0 * v.radius.get( ) / 5.0 ) ) );
-			g2D.drawString( v.weight.get( ).toString( ), (float) ( v.x.get( ) + 1.4 * v.radius.get( ) ), v.y.get( ).floatValue( ) );
+			g2D.drawString( String.format( "%." + UserSettings.instance.vertexWeightPrecision.get( ) + "f", v.weight.get( ) ), (float) ( v.x.get( ) + 1.4 * v.radius.get( ) ), v.y.get( ).floatValue( ) );
 			g2D.setFont( oldFont );
 		}
 	}

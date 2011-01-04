@@ -11,7 +11,6 @@ import edu.belmont.mth.visigraph.utilities.*;
 
 /**
  * @author Cameron Behar
- *
  */
 public class UserSettings extends ObservableModel
 {
@@ -82,11 +81,16 @@ public class UserSettings extends ObservableModel
 	public final Property<Boolean> usePureStroke;
 	public final Property<Boolean> useBicubicInterpolation;
 	public final Property<Boolean> useFractionalMetrics;
+	public final Property<Integer> vertexWeightPrecision;
+	public final Property<Integer> edgeWeightPrecision;
 	public final Property<Integer> mainWindowWidth;
 	public final Property<Integer> mainWindowHeight;
+	public final Property<Integer> scriptLibraryWindowWidth;
+	public final Property<Integer> scriptLibraryWindowHeight;
 	public final Property<Integer> graphWindowWidth;
 	public final Property<Integer> graphWindowHeight;
 	public final Property<Integer> cascadeWindowOffset;
+	public final Property<String>  language;
 	public final Property<String>  defaultGraphName;
 	public final Property<Double>  directedEdgeArrowRatio;
 	public final Property<Double>  arrowKeyIncrement;
@@ -160,11 +164,16 @@ public class UserSettings extends ObservableModel
 		this.usePureStroke					= new Property<Boolean>( GlobalSettings.defaultUsePureStroke                 );
 		this.useBicubicInterpolation		= new Property<Boolean>( GlobalSettings.defaultUseBicubicInterpolation       );
 		this.useFractionalMetrics			= new Property<Boolean>( GlobalSettings.defaultUseFractionalMetrics          );
+		this.vertexWeightPrecision			= new Property<Integer>( GlobalSettings.defaultVertexWeightPrecision         );
+		this.edgeWeightPrecision			= new Property<Integer>( GlobalSettings.defaultEdgeWeightPrecision           );
 		this.mainWindowWidth				= new Property<Integer>( GlobalSettings.defaultMainWindowWidth               );
 		this.mainWindowHeight				= new Property<Integer>( GlobalSettings.defaultMainWindowHeight              );
+		this.scriptLibraryWindowWidth		= new Property<Integer>( GlobalSettings.defaultScriptLibraryWindowWidth      );
+		this.scriptLibraryWindowHeight		= new Property<Integer>( GlobalSettings.defaultScriptLibraryWindowHeight     );
 		this.graphWindowWidth				= new Property<Integer>( GlobalSettings.defaultGraphWindowWidth              );
 		this.graphWindowHeight				= new Property<Integer>( GlobalSettings.defaultGraphWindowHeight             );
 		this.cascadeWindowOffset			= new Property<Integer>( GlobalSettings.defaultCascadeWindowOffset           );
+		this.language						= new Property<String> ( GlobalSettings.defaultLanguage	                     );
 		this.defaultGraphName				= new Property<String> ( GlobalSettings.defaultGraphName                     );
 		this.directedEdgeArrowRatio			= new Property<Double> ( GlobalSettings.defaultDirectedEdgeArrowRatio        );
 		this.arrowKeyIncrement				= new Property<Double> ( GlobalSettings.defaultArrowKeyIncrement             );
@@ -288,11 +297,16 @@ public class UserSettings extends ObservableModel
 		if ( members.containsKey( "usePureStroke" ) )					usePureStroke				 .set( (Boolean) members.get( "usePureStroke"					) );
 		if ( members.containsKey( "useBicubicInterpolation" ) )			useBicubicInterpolation		 .set( (Boolean) members.get( "useBicubicInterpolation"			) );
 		if ( members.containsKey( "useFractionalMetrics" ) )			useFractionalMetrics		 .set( (Boolean) members.get( "useFractionalMetrics"			) );
+		if ( members.containsKey( "vertexWeightPrecision" ) )			vertexWeightPrecision		 .set( (Integer) members.get( "vertexWeightPrecision"			) );
+		if ( members.containsKey( "edgeWeightPrecision" ) )				edgeWeightPrecision			 .set( (Integer) members.get( "edgeWeightPrecision"				) );
 		if ( members.containsKey( "mainWindowWidth" ) )					mainWindowWidth				 .set( (Integer) members.get( "mainWindowWidth"					) );
 		if ( members.containsKey( "mainWindowHeight" ) )				mainWindowHeight			 .set( (Integer) members.get( "mainWindowHeight"				) );
+		if ( members.containsKey( "scriptLibraryWindowWidth" ) )		scriptLibraryWindowWidth	 .set( (Integer) members.get( "scriptLibraryWindowWidth"		) );
+		if ( members.containsKey( "scriptLibraryWindowHeight" ) )		scriptLibraryWindowHeight	 .set( (Integer) members.get( "scriptLibraryWindowHeight"		) );
 		if ( members.containsKey( "graphWindowWidth" ) )				graphWindowWidth			 .set( (Integer) members.get( "graphWindowWidth"				) );
 		if ( members.containsKey( "graphWindowHeight" ) )				graphWindowHeight			 .set( (Integer) members.get( "graphWindowHeight"				) );
 		if ( members.containsKey( "cascadeWindowOffset" ) )				cascadeWindowOffset			 .set( (Integer) members.get( "cascadeWindowOffset"				) );
+		if ( members.containsKey( "language" ) )						language					 .set( (String)  members.get( "language"						) );
 		if ( members.containsKey( "defaultGraphName" ) )				defaultGraphName			 .set( (String)  members.get( "defaultGraphName"				) );
 		if ( members.containsKey( "directedEdgeArrowRatio" ) )			directedEdgeArrowRatio		 .set( (Double)  members.get( "directedEdgeArrowRatio"			) );
 		if ( members.containsKey( "arrowKeyIncrement" ) )				arrowKeyIncrement			 .set( (Double)  members.get( "arrowKeyIncrement"				) );
@@ -376,11 +390,16 @@ public class UserSettings extends ObservableModel
 		members.put( "usePureStroke",					usePureStroke					);
 		members.put( "useBicubicInterpolation",			useBicubicInterpolation			);
 		members.put( "useFractionalMetrics",			useFractionalMetrics			);
+		members.put( "vertexWeightPrecision",			vertexWeightPrecision			);
+		members.put( "edgeWeightPrecision",				edgeWeightPrecision				);
 		members.put( "mainWindowWidth",					mainWindowWidth					);
 		members.put( "mainWindowHeight",				mainWindowHeight				);
+		members.put( "scriptLibraryWindowWidth",		scriptLibraryWindowWidth		);
+		members.put( "scriptLibraryWindowHeight",		scriptLibraryWindowHeight		);
 		members.put( "graphWindowWidth",				graphWindowWidth				);
 		members.put( "graphWindowHeight",				graphWindowHeight				);
 		members.put( "cascadeWindowOffset",				cascadeWindowOffset				);
+		members.put( "language",						language						);
 		members.put( "defaultGraphName",				defaultGraphName				);
 		members.put( "directedEdgeArrowRatio",			directedEdgeArrowRatio			);
 		members.put( "arrowKeyIncrement",				arrowKeyIncrement				);
@@ -391,17 +410,3 @@ public class UserSettings extends ObservableModel
 		return JsonUtilities.formatObject( members );
 	}
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-

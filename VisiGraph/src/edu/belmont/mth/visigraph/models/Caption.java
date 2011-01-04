@@ -4,7 +4,6 @@
 package edu.belmont.mth.visigraph.models;
 
 import java.util.*;
-
 import edu.belmont.mth.visigraph.settings.*;
 import edu.belmont.mth.visigraph.utilities.*;
 
@@ -15,44 +14,45 @@ import edu.belmont.mth.visigraph.utilities.*;
  * in each {@code Graph} object, and so persists through serialization and deserialization.
  * <p/>
  * As an {@link ObservableModel}, this class also supports multiple subscribing {@link Observer}s. Whenever a change is made to any of its properties,
- * notification of that change is automatically propagated upwards until it hits the {@code Graph} level and triggers a
+ * notification of that change is automatically propagated upwards until it hits the {@code Graph} level and triggers an
  * {@link ObservableModel#notifyObservers(Object)} call.
  * 
  * @author Cameron Behar
- * 
- * @see {@link Graph}, {@link Vertex}, {@link Edge}
+ * @see Graph
+ * @see Vertex
+ * @see Edge
  */
 public class Caption extends ObservableModel
 {
 	/**
 	 * The location of this {@code Caption}'s upper-left-hand corner along the horizontal (x) axis
 	 */
-	public final Property<Double> x;
+	public final Property<Double>	x;
 	
 	/**
 	 * The location of this {@code Caption}'s upper-left-hand corner along the inverted vertical (-y) axis
 	 */
-	public final Property<Double> y;
+	public final Property<Double>	y;
 	
 	/**
 	 * A {@code String} containing this {@code Caption}'s text
 	 */
-	public final Property<String> text;
+	public final Property<String>	text;
 	
 	/**
 	 * The font size, in pixels, of this {@code Caption}'s text
 	 */
-	public final Property<Double> size;
+	public final Property<Double>	size;
 	
 	/**
 	 * A {@code Boolean} indicating whether or not this {@code Caption} is selected
 	 */
-	public final Property<Boolean> isSelected;
+	public final Property<Boolean>	isSelected;
 	
 	/**
 	 * A catch-all {@code String} that can be used to store this {@code Caption}'s metadata
 	 */
-	public final Property<String> tag;
+	public final Property<String>	tag;
 	
 	/**
 	 * Constructs an empty {@code Caption} at the specified location
@@ -60,7 +60,7 @@ public class Caption extends ObservableModel
 	 * @param x the location of this {@code Caption}'s upper-left-hand corner along the horizontal (x) axis
 	 * @param y the location of this {@code Caption}'s upper-left-hand corner along the inverted vertical (-y) axis
 	 */
-	public Caption ( double x, double y )
+	public Caption( double x, double y )
 	{
 		this( x, y, UserSettings.instance.defaultCaptionText.get( ) );
 	}
@@ -72,7 +72,7 @@ public class Caption extends ObservableModel
 	 * @param y the location of this {@code Caption}'s upper-left-hand corner along the inverted vertical (-y) axis
 	 * @param text a {@code String} containing this {@code Caption}'s text
 	 */
-	public Caption ( double x, double y, String text )
+	public Caption( double x, double y, String text )
 	{
 		this( x, y, text, UserSettings.instance.defaultCaptionFontSize.get( ) );
 	}
@@ -85,7 +85,7 @@ public class Caption extends ObservableModel
 	 * @param text a {@code String} containing this {@code Caption}'s text
 	 * @param size the font size, in pixels, of this {@code Caption}'s text
 	 */
-	public Caption ( double x, double y, String text, double size )
+	public Caption( double x, double y, String text, double size )
 	{
 		this( x, y, text, size, UserSettings.instance.defaultCaptionIsSelected.get( ) );
 	}
@@ -99,7 +99,7 @@ public class Caption extends ObservableModel
 	 * @param size the font size, in pixels, of this {@code Caption}'s text
 	 * @param isSelected a {@code boolean} indicating whether or not this {@code Caption} will be initialized selected
 	 */
-	public Caption ( double x, double y, String text, double size, boolean isSelected )
+	public Caption( double x, double y, String text, double size, boolean isSelected )
 	{
 		this.x = new Property<Double>( x );
 		this.y = new Property<Double>( y );
@@ -114,7 +114,7 @@ public class Caption extends ObservableModel
 	 * 
 	 * @param members a {@code Map} of property names to values
 	 */
-	public Caption ( Map<String, Object> members )
+	public Caption( Map<String, Object> members )
 	{
 		this.x = new Property<Double>( (Double) members.get( "x" ) );
 		this.y = new Property<Double>( (Double) members.get( "y" ) );
@@ -128,10 +128,9 @@ public class Caption extends ObservableModel
 	 * Constructs a {@code Caption} from the specified JSON text
 	 * 
 	 * @param json the JSON text from which to construct this caption
-	 * 
 	 * @see #toString()
 	 */
-	public Caption ( String json )
+	public Caption( String json )
 	{
 		this( JsonUtilities.parseObject( json ) );
 	}
@@ -142,19 +141,18 @@ public class Caption extends ObservableModel
 	 * href="http://www.json.org/">here</a>.
 	 * 
 	 * @return this {@code Caption} serialized as a {@code String}
-	 * 
 	 * @see #Caption(String)
 	 */
 	@Override
 	public String toString( )
 	{
-		HashMap<String, Object> members = new HashMap<String, Object>( );
+		Map<String, Object> members = new HashMap<String, Object>( );
 		
-		members.put( "x", x );
-		members.put( "y", y );
-		members.put( "text", text );
-		members.put( "size", size );
-		members.put( "isSelected", isSelected );
+		members.put( "x", this.x );
+		members.put( "y", this.y );
+		members.put( "text", this.text );
+		members.put( "size", this.size );
+		members.put( "isSelected", this.isSelected );
 		
 		return JsonUtilities.formatObject( members );
 	}
