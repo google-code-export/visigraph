@@ -17,7 +17,7 @@ import edu.belmont.mth.visigraph.models.generators.*;
 		for( int i = 0; i < n; ++i )
 			graph.vertices.add( new Vertex( 0.0, 0.0 ) );
 		
-		GraphUtilities.arrangeCircle( graph );
+		LayoutUtilities.arrangeCircle( graph.vertices );
 		
 		for( int i = 0; i < n; ++i )
 		{
@@ -36,7 +36,7 @@ import edu.belmont.mth.visigraph.models.generators.*;
 			case Generator.Attribute.AUTHOR:
 				return "Cameron Behar";
 			case Generator.Attribute.VERSION:
-				return "20110101";
+				return "20110105";
 			case Generator.Attribute.ISOMORPHISMS:
 				return new String[ ] { "<i>C</i><sub>n,1,2,...,<code>floor(<i>n</i>/2)</code></sub> circulant graph" };
 			case Generator.Attribute.DESCRIPTION:

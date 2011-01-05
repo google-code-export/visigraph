@@ -18,7 +18,7 @@ import edu.belmont.mth.visigraph.models.generators.*;
 		for( int i = 0; i < n; ++i )
 			graph.vertices.add( new Vertex( 0.0, 0.0 ) );
 		
-		GraphUtilities.arrangeCircle( graph );
+		LayoutUtilities.arrangeCircle( graph.vertices );
 		
 		for( String offsetString : matcher.group( 2 ).trim( ).split( "\\s+" ) )
 		{
@@ -43,7 +43,7 @@ import edu.belmont.mth.visigraph.models.generators.*;
 			case Generator.Attribute.AUTHOR:
 				return "Cameron Behar";
 			case Generator.Attribute.VERSION:
-				return "20110101";
+				return "20110105";
 			case Generator.Attribute.ISOMORPHISMS:
 				return new String[ ] { "<i>A<sub>n</sub></i> antiprism graph (for <i>C</i><sub>2<i>n</i>,1,2</sub>)", "<i>K<sub>n,n</sub></i> complete bipartite graph (for <i>C</i><sub>n,1,3,...,2\u00B7<code>floor(<i>n</i>/2)</code>+1</sub>)", "<i>K<sub>n</sub></i> complete graph (for <i>C</i><sub><i>n</i>,1,2,...,<code>floor(<i>n</i>/2)</code></sub>)", "<i>C<sub>n</sub></i> cycle graph (for <i>C</i><sub><i>n</i>,1</sub>)", "<i>M<sub>n</sub></i> Möbius ladder graph (for <i>C</i><sub>2<i>n</i>,1,<i>n</i></sub>)", "<i>Y<sub>n</sub></i> prism graph (for <i>C</i><sub>2<i>n</i>,2,<i>n</i></sub>)" };
 			case Generator.Attribute.DESCRIPTION:

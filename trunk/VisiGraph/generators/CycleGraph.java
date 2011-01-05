@@ -17,7 +17,7 @@ import edu.belmont.mth.visigraph.models.generators.*;
 		for( int i = 0; i < n; ++i )
 			graph.vertices.add( new Vertex( 0.0, 0.0 ) );
 		
-		GraphUtilities.arrangeCircle( graph );
+		LayoutUtilities.arrangeCircle( graph.vertices );
 		
 		for( int i = 0; i < n; ++i )
 			graph.edges.add( new Edge( areDirectedEdgesAllowed, graph.vertices.get( i ), graph.vertices.get( ( i + 1 ) % n ) ) );
@@ -32,7 +32,7 @@ import edu.belmont.mth.visigraph.models.generators.*;
 			case Generator.Attribute.AUTHOR:
 				return "Cameron Behar";
 			case Generator.Attribute.VERSION:
-				return "20110101";
+				return "20110105";
 			case Generator.Attribute.ISOMORPHISMS:
 				return new String[ ] { "<i>C</i><sub><i>n</i>,1</sub> circulant graph", "<i>K</i><sub>3</sub> complete graph for (for <i>C</i><sub>3</sub>)", "<i>K</i><sub>3,1</sub> bipartite Kneser graph (for <i>C</i><sub>6</sub>)", "<i>H</i><sub>2</sub> Hadamard graph (for <i>C</i><sub>8</sub>)", "<i>H</i><sub>2^(<i>n</i>-1)+1</sub> Haar graph (for <i>C</i><sub>2<i>n</i></sub>)" };
 			case Generator.Attribute.DESCRIPTION:

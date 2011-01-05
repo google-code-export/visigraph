@@ -56,7 +56,16 @@ public class GraphDisplayController extends JPanel
 					{
 						public void actionPerformed( ActionEvent e )
 						{
-							GraphUtilities.arrangeCircle( GraphDisplayController.this.graph );
+							List<Vertex> selectedVertices = GraphDisplayController.this.graph.getSelectedVertices( );
+							
+							if( selectedVertices.isEmpty( ) )
+								if( GraphDisplayController.this.graph.hasSelectedCaptions( ) || GraphDisplayController.this.graph.hasSelectedEdges( ) )
+									return;
+								else
+									selectedVertices = GraphDisplayController.this.graph.vertices;
+							
+							LayoutUtilities.arrangeCircle( selectedVertices );
+							
 							GraphDisplayController.this.zoomFit( );
 						}
 					} );
@@ -72,7 +81,16 @@ public class GraphDisplayController extends JPanel
 					{
 						public void actionPerformed( ActionEvent e )
 						{
-							GraphUtilities.arrangeGrid( GraphDisplayController.this.graph );
+							List<Vertex> selectedVertices = GraphDisplayController.this.graph.getSelectedVertices( );
+							
+							if( selectedVertices.isEmpty( ) )
+								if( GraphDisplayController.this.graph.hasSelectedCaptions( ) || GraphDisplayController.this.graph.hasSelectedEdges( ) )
+									return;
+								else
+									selectedVertices = GraphDisplayController.this.graph.vertices;
+							
+							LayoutUtilities.arrangeGrid( selectedVertices );
+							
 							GraphDisplayController.this.zoomFit( );
 						}
 					} );
@@ -88,8 +106,12 @@ public class GraphDisplayController extends JPanel
 					{
 						public void actionPerformed( ActionEvent e )
 						{
-							GraphUtilities.arrangeTree( GraphDisplayController.this.graph );
-							GraphDisplayController.this.zoomFit( );
+							List<Vertex> selectedVertices = GraphDisplayController.this.graph.getSelectedVertices( );
+							if( !selectedVertices.isEmpty( ) )
+							{
+								LayoutUtilities.arrangeTree( selectedVertices, GraphDisplayController.this.graph );
+								GraphDisplayController.this.zoomFit( );
+							}
 						}
 					} );
 					this.setToolTipText( StringBundle.get( "arrange_tree_button_tooltip" ) );
@@ -105,7 +127,7 @@ public class GraphDisplayController extends JPanel
 						public void actionPerformed( ActionEvent e )
 						{
 							ArrangeToolBar.this.arrangeWebButton.setEnabled( false );
-							GraphDisplayController.this.arrangeWebSpeed = 3.0;
+							GraphDisplayController.this.arrangeWebSpeed = 5.0;
 							
 							new Timer( 50, new ActionListener( )
 							{
@@ -113,7 +135,16 @@ public class GraphDisplayController extends JPanel
 								
 								public void actionPerformed( ActionEvent e )
 								{
-									if( GraphUtilities.arrangeTensors( GraphDisplayController.this.graph, GraphDisplayController.this.arrangeWebSpeed, this.velocities ) < 0.01 || ( GraphDisplayController.this.arrangeWebSpeed *= UserSettings.instance.autoArrangeDecelerationFactor.get( ) ) < 0.15 )
+									List<Vertex> selectedVertices = GraphDisplayController.this.graph.getSelectedVertices( );
+									if( selectedVertices.isEmpty( ) )
+										if( GraphDisplayController.this.graph.hasSelectedCaptions( ) || GraphDisplayController.this.graph.hasSelectedEdges( ) )
+											return;
+										else
+											selectedVertices = GraphDisplayController.this.graph.vertices;
+									
+									final double kineticEnergy = LayoutUtilities.arrangeTensors( selectedVertices, GraphDisplayController.this.graph.edges, UserSettings.instance.autoArrangeAttractiveForce.get( ), UserSettings.instance.autoArrangeRepulsiveForce.get( ), GraphDisplayController.this.arrangeWebSpeed, this.velocities );
+									
+									if( kineticEnergy < 0.01 || ( GraphDisplayController.this.arrangeWebSpeed *= UserSettings.instance.autoArrangeDecelerationFactor.get( ) ) < 0.15 )
 									{
 										ArrangeToolBar.this.arrangeWebButton.setEnabled( true );
 										( (Timer) e.getSource( ) ).stop( );
@@ -136,7 +167,15 @@ public class GraphDisplayController extends JPanel
 					{
 						public void actionPerformed( ActionEvent e )
 						{
-							GraphUtilities.alignHorizontally( GraphDisplayController.this.graph );
+							List<Vertex> selectedVertices = GraphDisplayController.this.graph.getSelectedVertices( );
+							
+							if( selectedVertices.isEmpty( ) )
+								if( GraphDisplayController.this.graph.hasSelectedCaptions( ) || GraphDisplayController.this.graph.hasSelectedEdges( ) )
+									return;
+								else
+									selectedVertices = GraphDisplayController.this.graph.vertices;
+							
+							LayoutUtilities.alignHorizontally( selectedVertices );
 						}
 					} );
 					this.setToolTipText( StringBundle.get( "align_horizontally_button_tooltip" ) );
@@ -151,7 +190,15 @@ public class GraphDisplayController extends JPanel
 					{
 						public void actionPerformed( ActionEvent e )
 						{
-							GraphUtilities.alignVertically( GraphDisplayController.this.graph );
+							List<Vertex> selectedVertices = GraphDisplayController.this.graph.getSelectedVertices( );
+							
+							if( selectedVertices.isEmpty( ) )
+								if( GraphDisplayController.this.graph.hasSelectedCaptions( ) || GraphDisplayController.this.graph.hasSelectedEdges( ) )
+									return;
+								else
+									selectedVertices = GraphDisplayController.this.graph.vertices;
+							
+							LayoutUtilities.alignVertically( selectedVertices );
 						}
 					} );
 					this.setToolTipText( StringBundle.get( "align_vertically_button_tooltip" ) );
@@ -166,7 +213,15 @@ public class GraphDisplayController extends JPanel
 					{
 						public void actionPerformed( ActionEvent e )
 						{
-							GraphUtilities.distributeHorizontally( GraphDisplayController.this.graph );
+							List<Vertex> selectedVertices = GraphDisplayController.this.graph.getSelectedVertices( );
+							
+							if( selectedVertices.isEmpty( ) )
+								if( GraphDisplayController.this.graph.hasSelectedCaptions( ) || GraphDisplayController.this.graph.hasSelectedEdges( ) )
+									return;
+								else
+									selectedVertices = GraphDisplayController.this.graph.vertices;
+							
+							LayoutUtilities.distributeHorizontally( selectedVertices );
 						}
 					} );
 					this.setToolTipText( StringBundle.get( "distribute_horizontally_button_tooltip" ) );
@@ -181,7 +236,15 @@ public class GraphDisplayController extends JPanel
 					{
 						public void actionPerformed( ActionEvent e )
 						{
-							GraphUtilities.distributeVertically( GraphDisplayController.this.graph );
+							List<Vertex> selectedVertices = GraphDisplayController.this.graph.getSelectedVertices( );
+							
+							if( selectedVertices.isEmpty( ) )
+								if( GraphDisplayController.this.graph.hasSelectedCaptions( ) || GraphDisplayController.this.graph.hasSelectedEdges( ) )
+									return;
+								else
+									selectedVertices = GraphDisplayController.this.graph.vertices;
+							
+							LayoutUtilities.distributeVertically( selectedVertices );
 						}
 					} );
 					this.setToolTipText( StringBundle.get( "distribute_vertically_button_tooltip" ) );
@@ -198,7 +261,18 @@ public class GraphDisplayController extends JPanel
 					{
 						public void actionPerformed( ActionEvent e )
 						{
-							GraphUtilities.rotateLeft90( GraphDisplayController.this.graph );
+							List<Vertex> selectedVertices = GraphDisplayController.this.graph.getSelectedVertices( );
+							List<Edge> selectedEdges = GraphDisplayController.this.graph.getSelectedEdges( );
+							
+							if( selectedVertices.isEmpty( ) )
+							{
+								if( !selectedEdges.isEmpty( ) || GraphDisplayController.this.graph.hasSelectedCaptions( ) )
+									return;
+								
+								selectedVertices = GraphDisplayController.this.graph.vertices;
+							}
+							
+							LayoutUtilities.rotateLeft90( selectedVertices, selectedEdges );
 						}
 					} );
 					this.setToolTipText( StringBundle.get( "rotate_left_90_button_tooltip" ) );
@@ -213,7 +287,18 @@ public class GraphDisplayController extends JPanel
 					{
 						public void actionPerformed( ActionEvent e )
 						{
-							GraphUtilities.rotateRight90( GraphDisplayController.this.graph );
+							List<Vertex> selectedVertices = GraphDisplayController.this.graph.getSelectedVertices( );
+							List<Edge> selectedEdges = GraphDisplayController.this.graph.getSelectedEdges( );
+							
+							if( selectedVertices.isEmpty( ) )
+							{
+								if( !selectedEdges.isEmpty( ) || GraphDisplayController.this.graph.hasSelectedCaptions( ) )
+									return;
+								
+								selectedVertices = GraphDisplayController.this.graph.vertices;
+							}
+							
+							LayoutUtilities.rotateRight90( selectedVertices, selectedEdges );
 						}
 					} );
 					this.setToolTipText( StringBundle.get( "rotate_right_90_button_tooltip" ) );
@@ -228,7 +313,24 @@ public class GraphDisplayController extends JPanel
 					{
 						public void actionPerformed( ActionEvent e )
 						{
-							GraphUtilities.flipHorizontally( GraphDisplayController.this.graph );
+							List<Vertex> selectedVertices = GraphDisplayController.this.graph.getSelectedVertices( );
+							List<Edge> selectedEdges = GraphDisplayController.this.graph.getSelectedEdges( );
+							
+							if( selectedVertices.isEmpty( ) )
+							{
+								if( !selectedEdges.isEmpty( ) || GraphDisplayController.this.graph.hasSelectedCaptions( ) )
+									return;
+								
+								selectedVertices = GraphDisplayController.this.graph.vertices;
+								selectedEdges = GraphDisplayController.this.graph.edges;
+							}
+							
+							if( selectedEdges.isEmpty( ) )
+								for( Edge edge : GraphDisplayController.this.graph.edges )
+									if( edge.from.isSelected.get( ) && edge.to.isSelected.get( ) )
+										selectedEdges.add( edge );
+							
+							LayoutUtilities.flipHorizontally( selectedVertices, selectedEdges );
 						}
 					} );
 					this.setToolTipText( StringBundle.get( "flip_horizontally_button_tooltip" ) );
@@ -243,7 +345,24 @@ public class GraphDisplayController extends JPanel
 					{
 						public void actionPerformed( ActionEvent e )
 						{
-							GraphUtilities.flipVertically( GraphDisplayController.this.graph );
+							List<Vertex> selectedVertices = GraphDisplayController.this.graph.getSelectedVertices( );
+							List<Edge> selectedEdges = GraphDisplayController.this.graph.getSelectedEdges( );
+							
+							if( selectedVertices.isEmpty( ) )
+							{
+								if( !selectedEdges.isEmpty( ) || GraphDisplayController.this.graph.hasSelectedCaptions( ) )
+									return;
+								
+								selectedVertices = GraphDisplayController.this.graph.vertices;
+								selectedEdges = GraphDisplayController.this.graph.edges;
+							}
+							
+							if( selectedEdges.isEmpty( ) )
+								for( Edge edge : GraphDisplayController.this.graph.edges )
+									if( edge.from.isSelected.get( ) && edge.to.isSelected.get( ) )
+										selectedEdges.add( edge );
+							
+							LayoutUtilities.flipVertically( selectedVertices, selectedEdges );
 						}
 					} );
 					this.setToolTipText( StringBundle.get( "flip_vertically_button_tooltip" ) );
@@ -260,7 +379,15 @@ public class GraphDisplayController extends JPanel
 					{
 						public void actionPerformed( ActionEvent e )
 						{
-							GraphUtilities.scale( GraphDisplayController.this.graph, UserSettings.instance.arrangeContractFactor.get( ) );
+							List<Vertex> selectedVertices = GraphDisplayController.this.graph.getSelectedVertices( );
+							
+							if( selectedVertices.isEmpty( ) )
+								if( GraphDisplayController.this.graph.hasSelectedCaptions( ) || GraphDisplayController.this.graph.hasSelectedEdges( ) )
+									return;
+								else
+									selectedVertices = GraphDisplayController.this.graph.vertices;
+							
+							LayoutUtilities.scale( selectedVertices, UserSettings.instance.arrangeContractFactor.get( ) );
 						}
 					} );
 					this.setToolTipText( StringBundle.get( "contract_button_tooltip" ) );
@@ -275,7 +402,15 @@ public class GraphDisplayController extends JPanel
 					{
 						public void actionPerformed( ActionEvent e )
 						{
-							GraphUtilities.scale( GraphDisplayController.this.graph, UserSettings.instance.arrangeExpandFactor.get( ) );
+							List<Vertex> selectedVertices = GraphDisplayController.this.graph.getSelectedVertices( );
+							
+							if( selectedVertices.isEmpty( ) )
+								if( GraphDisplayController.this.graph.hasSelectedCaptions( ) || GraphDisplayController.this.graph.hasSelectedEdges( ) )
+									return;
+								else
+									selectedVertices = GraphDisplayController.this.graph.vertices;
+							
+							LayoutUtilities.scale( selectedVertices, UserSettings.instance.arrangeExpandFactor.get( ) );
 						}
 					} );
 					this.setToolTipText( StringBundle.get( "expand_button_tooltip" ) );

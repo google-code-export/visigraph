@@ -25,7 +25,7 @@ public class EmptyGraph implements Generator
 			for( int i = 0; i < Integer.parseInt( matcher.group( 1 ) ); ++i )
 				graph.vertices.add( new Vertex( 0.0, 0.0 ) );
 		
-		GraphUtilities.arrangeGrid( graph );
+		LayoutUtilities.arrangeGrid( graph.vertices );
 		
 		return graph;
 	}
@@ -37,7 +37,7 @@ public class EmptyGraph implements Generator
 			case AUTHOR:
 				return "Cameron Behar";
 			case VERSION:
-				return "20110101";
+				return "20110105";
 			case ISOMORPHISMS:
 				return new String[ ] { "<i>K\u0305<sub>n</sub></i> complete graph", "Null graph (for <i>K\u0305</i><sub>0</sub>)", "Singleton graph (for <i>K\u0305</i><sub>1</sub>)" };
 			case DESCRIPTION:

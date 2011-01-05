@@ -30,7 +30,7 @@ import edu.belmont.mth.visigraph.models.generators.*;
 		for( int i = 0; i < order; ++i )
 			graph.vertices.add( new Vertex( 0.0, 0.0 ) );
 		
-		GraphUtilities.arrangeCircle( graph );
+		LayoutUtilities.arrangeCircle( graph.vertices );
 		
 		LinkedList possibleEdges = new LinkedList( );
 		for( int i = 0; i < order; ++i )
@@ -62,7 +62,7 @@ import edu.belmont.mth.visigraph.models.generators.*;
 			case Generator.Attribute.AUTHOR:
 				return "Cameron Behar";
 			case Generator.Attribute.VERSION:
-				return "20110101";
+				return "20110105";
 			case Generator.Attribute.DESCRIPTION:
 				return "Constructs a <i>G<sub>m,n</sub></i> random graph using the method introduced by Paul Erd\u0151s and Alfr\u00E9d R\u00E9nyi whereby <i>m</i> vertices are connected by <i>n</i> randomly-chosen edges.</p><p>Vertices are placed in a circle according to the user-defined \"Arrange circle radius multiplier\" setting.";
 			case Generator.Attribute.PARAMETERS_DESCRIPTION:
