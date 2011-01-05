@@ -19,7 +19,7 @@ public class GlobalSettings
 	public static final String		applicationGeneratorFileUrl				= applicationGeneratorDirectoryUrl + "%s.java";
 	public static final String		applicationJarDirectoryUrl				= "http://visigraph.googlecode.com/svn/trunk/VisiGraph/jar/";
 	public static final String		applicationName							= "VisiGraph";
-	public static final String		applicationVersion						= "2.00.01";
+	public static final String		applicationVersion						= "2.00.02";
 	public static final String		applicationWebsite						= "http://code.google.com/p/visigraph";
 	public static final double		defaultAreCloseDistance					= 0.01;
 	public static final double		defaultArrangeCircleRadiusMultiplier	= 10.0;
@@ -27,7 +27,7 @@ public class GlobalSettings
 	public static final double		defaultArrangeExpandFactor				= 1.25;
 	public static final double		defaultArrangeGridSpacing				= 100.0;
 	public static final double		defaultArrowKeyIncrement				= 50.0;
-	public static final double		defaultAutoArrangeAttractiveForce		= 0.01;
+	public static final double		defaultAutoArrangeAttractiveForce		= 0.00005;
 	public static final double		defaultAutoArrangeDecelerationFactor	= 0.95;
 	public static final double		defaultAutoArrangeRepulsiveForce		= 0.0005;
 	public static final Color		defaultCaptionButtonFill				= new Color( 230, 230, 230 );

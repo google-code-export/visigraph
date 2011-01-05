@@ -19,7 +19,7 @@ import edu.belmont.mth.visigraph.models.generators.*;
 		for( int i = 0; i < n; ++i )
 			graph.vertices.add( new Vertex( 0.0, 0.0 ) );
 		
-		GraphUtilities.arrangeCircle( graph );
+		LayoutUtilities.arrangeCircle( graph.vertices );
 		
 		Random random = new Random( );
 		for( int i = 0; i < n; ++i )
@@ -40,7 +40,7 @@ import edu.belmont.mth.visigraph.models.generators.*;
 			case Generator.Attribute.AUTHOR:
 				return "Cameron Behar";
 			case Generator.Attribute.VERSION:
-				return "20110101";
+				return "20110105";
 			case Generator.Attribute.DESCRIPTION:
 				return "Constructs a <i>G<sub>n,\u03C1</sub></i> random graph using the method introduced by Edgar Gilbert whereby <i>n</i> vertices are connected including each possible edge in the graph with a probability <i>\u03C1</i>.</p><p>Vertices are placed in a circle according to the user-defined \"Arrange circle radius multiplier\" setting.";
 			case Generator.Attribute.PARAMETERS_DESCRIPTION:

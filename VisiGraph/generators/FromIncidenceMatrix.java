@@ -6,7 +6,6 @@ import java.util.regex.*;
 import edu.belmont.mth.visigraph.models.*;
 import edu.belmont.mth.visigraph.settings.*;
 import edu.belmont.mth.visigraph.utilities.*;
-import edu.belmont.mth.visigraph.models.functions.Function;
 import edu.belmont.mth.visigraph.models.generators.*;
 
 	public Graph generate( String params, boolean areLoopsAllowed, boolean areDirectedEdgesAllowed, boolean areMultipleEdgesAllowed, boolean areCyclesAllowed, Component owner )
@@ -91,7 +90,7 @@ import edu.belmont.mth.visigraph.models.generators.*;
 			}
 			
 			// Clean the graph up a bit
-			GraphUtilities.arrangeCircle( graph );
+			LayoutUtilities.arrangeCircle( graph.vertices );
 		}
 		catch( Exception ex )
 		{
@@ -113,7 +112,7 @@ import edu.belmont.mth.visigraph.models.generators.*;
 			case Generator.Attribute.AUTHOR:
 				return "Cameron Behar";
 			case Generator.Attribute.VERSION:
-				return "20110101";
+				return "20110105";
 			case Generator.Attribute.DESCRIPTION:
 				return "Constructs a graph from the specified incidence matrix.  An incidence matrix of a finite graph <i>G</i> on <i>m</i> vertices and <i>n</i> edges is a <i>m</i> \u00D7 <i>n</i> matrix where <i>a<sub>i,j</sub></i> > 0 if vertex <i>i</i> and edge <i>j</i> are incident and 0 otherwise. If <i>a<sub>i,j</sub></i> = 2, edge <i>j</i> is a loop; otherwise, <i>a<sub>i,j</sub></i> = 0 or 1.</p><p>Vertices are placed in a circle according to the user-defined \"Arrange circle radius multiplier\" setting.";
 			case Generator.Attribute.PARAMETERS_DESCRIPTION:

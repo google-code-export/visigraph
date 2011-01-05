@@ -69,7 +69,7 @@ import edu.belmont.mth.visigraph.models.generators.*;
 			}			
 			
 			// Clean the graph up a bit
-			GraphUtilities.arrangeCircle( graph );
+			LayoutUtilities.arrangeCircle( graph.vertices );
 		}
 		catch( Exception ex )
 		{
@@ -91,7 +91,7 @@ import edu.belmont.mth.visigraph.models.generators.*;
 			case Generator.Attribute.AUTHOR:
 				return "Cameron Behar";
 			case Generator.Attribute.VERSION:
-				return "20110101";
+				return "20110105";
 			case Generator.Attribute.DESCRIPTION:
 				return "Constructs a graph from the specified adjacency matrix.  The adjacency matrix of a finite graph <i>G</i> on <i>n</i> vertices is the <i>n</i> \u00D7 <i>n</i> matrix where the non-diagonal entry <i>a<sub>i,j</sub></i> is the number of edges from vertex <i>i</i> to vertex <i>j</i>, and the diagonal entry <i>a<sub>i,i</sub></i> is the number of edges from vertex <i>i</i> to itself (i.e. loops).</p><p>Vertices are placed in a circle according to the user-defined \"Arrange circle radius multiplier\" setting.";
 			case Generator.Attribute.PARAMETERS_DESCRIPTION:
