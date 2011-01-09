@@ -17,9 +17,11 @@ public class GlobalSettings
 	public static final String		applicationFunctionFileUrl				= applicationFunctionDirectoryUrl + "%s.java";
 	public static final String		applicationGeneratorDirectoryUrl		= "http://visigraph.googlecode.com/svn/trunk/VisiGraph/generators/";
 	public static final String		applicationGeneratorFileUrl				= applicationGeneratorDirectoryUrl + "%s.java";
+	public static final String		applicationGraphsDirectoryUrl			= "http://visigraph.googlecode.com/svn/trunk/VisiGraph/graphs/";
+	public static final String		applicationGraphsFileUrl				= applicationGraphsDirectoryUrl + "%s.vsg";
 	public static final String		applicationJarDirectoryUrl				= "http://visigraph.googlecode.com/svn/trunk/VisiGraph/jar/";
 	public static final String		applicationName							= "VisiGraph";
-	public static final String		applicationVersion						= "2.00.02";
+	public static final String		applicationVersion						= "2.00.03";
 	public static final String		applicationWebsite						= "http://code.google.com/p/visigraph";
 	public static final double		defaultAreCloseDistance					= 0.01;
 	public static final double		defaultArrangeCircleRadiusMultiplier	= 10.0;
