@@ -28,6 +28,7 @@ public class MainWindow extends JFrame
 	private final JMenuItem		newGraphMenuItem;
 	private final JMenuItem		duplicateGraphMenuItem;
 	private final JMenuItem		openGraphMenuItem;
+	private final JMenuItem		openGraphFromTheWebMenuItem;
 	private final JMenuItem		saveGraphMenuItem;
 	private final JMenuItem		saveAsGraphMenuItem;
 	private final JMenuItem		printGraphMenuItem;
@@ -52,14 +53,12 @@ public class MainWindow extends JFrame
 	private final JMenuItem		preferencesMenuItem;
 	private final JMenuItem		downloadsMenuItem;
 	private final JMenuItem		aboutVisiGraphMenuItem;
-	private final MainWindow	thisFrame;
 	private final JDesktopPane	desktopPane;
 	private final JFileChooser	fileChooser;
 	
 	public MainWindow( )
 	{
 		super( GlobalSettings.applicationName );
-		this.thisFrame = this;
 		this.setSize( new Dimension( UserSettings.instance.mainWindowWidth.get( ), UserSettings.instance.mainWindowHeight.get( ) ) );
 		this.setDefaultCloseOperation( DO_NOTHING_ON_CLOSE );
 		this.addWindowListener( new WindowListener( )
@@ -113,7 +112,7 @@ public class MainWindow extends JFrame
 					@Override
 					public void actionPerformed( ActionEvent e )
 					{
-						Graph newGraph = NewGraphDialog.showDialog( MainWindow.this.thisFrame );
+						Graph newGraph = NewGraphDialog.showDialog( MainWindow.this );
 						if( newGraph != null )
 						{
 							GraphWindow graphWindow = new GraphWindow( newGraph );
@@ -178,8 +177,6 @@ public class MainWindow extends JFrame
 					@Override
 					public void actionPerformed( ActionEvent e )
 					{
-						GraphWindow graphWindow = null;
-						
 						MainWindow.this.fileChooser.resetChoosableFileFilters( );
 						MainWindow.this.fileChooser.setAcceptAllFileFilterUsed( false );
 						MainWindow.this.fileChooser.setFileFilter( new FileNameExtensionFilter( StringBundle.get( "visigraph_file_description" ), "vsg" ) );
@@ -191,7 +188,7 @@ public class MainWindow extends JFrame
 						{
 							success = false;
 							
-							if( MainWindow.this.fileChooser.showOpenDialog( MainWindow.this.thisFrame ) == JFileChooser.APPROVE_OPTION )
+							if( MainWindow.this.fileChooser.showOpenDialog( MainWindow.this ) == JFileChooser.APPROVE_OPTION )
 								try
 								{
 									MainWindow.this.openFile( MainWindow.this.fileChooser.getSelectedFile( ) );
@@ -204,15 +201,46 @@ public class MainWindow extends JFrame
 							else
 								success = true;
 						}
-						
-						if( graphWindow != null )
-							graphWindow.setHasChanged( false );
 					}
 				} );
 				this.setAccelerator( KeyStroke.getKeyStroke( KeyEvent.VK_O, Toolkit.getDefaultToolkit( ).getMenuShortcutKeyMask( ) ) );
 			}
 		};
 		this.fileMenu.add( this.openGraphMenuItem );
+		
+		this.openGraphFromTheWebMenuItem = new JMenuItem( StringBundle.get( "file_open_from_the_web_menu_text" ) )
+		{
+			{
+				this.addActionListener( new ActionListener( )
+				{
+					@Override
+					public void actionPerformed( ActionEvent e )
+					{
+						boolean success = false;
+						
+						while( !success )
+						{
+							success = false;
+							
+							String filename = OpenFromTheWebDialog.showDialog( MainWindow.this );
+							if( filename != null )
+								try
+								{
+									MainWindow.this.openFile( new File( filename ) );
+									success = true;
+								}
+								catch( IOException ex )
+								{
+									DebugUtilities.logException( "An exception occurred while loading a graph from file.", ex );
+								}
+							else
+								success = true;
+						}
+					}
+				} );
+			}
+		};
+		this.fileMenu.add( this.openGraphFromTheWebMenuItem );
 		
 		this.saveGraphMenuItem = new JMenuItem( StringBundle.get( "file_save_menu_text" ) )
 		{
@@ -641,7 +669,7 @@ public class MainWindow extends JFrame
 					@Override
 					public void actionPerformed( ActionEvent e )
 					{
-						DownloadsDialog.showDialog( MainWindow.this.thisFrame );
+						DownloadsDialog.showDialog( MainWindow.this );
 					}
 				} );
 			}
@@ -656,7 +684,7 @@ public class MainWindow extends JFrame
 					@Override
 					public void actionPerformed( ActionEvent e )
 					{
-						PreferencesDialog.showDialog( MainWindow.this.thisFrame );
+						PreferencesDialog.showDialog( MainWindow.this );
 					}
 				} );
 			}
@@ -673,7 +701,7 @@ public class MainWindow extends JFrame
 					@Override
 					public void actionPerformed( ActionEvent e )
 					{
-						AboutDialog.showDialog( MainWindow.this.thisFrame );
+						AboutDialog.showDialog( MainWindow.this );
 					}
 				} );
 			}
