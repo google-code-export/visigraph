@@ -54,6 +54,7 @@ public class GraphDisplayController extends JPanel
 				{
 					this.addActionListener( new ActionListener( )
 					{
+						@Override
 						public void actionPerformed( ActionEvent e )
 						{
 							List<Vertex> selectedVertices = GraphDisplayController.this.graph.getSelectedVertices( );
@@ -1555,7 +1556,7 @@ public class GraphDisplayController extends JPanel
 			@Override
 			public void lostOwnership( Clipboard c, Transferable t )
 			{
-			// Ignore?
+				// Ignore?
 			}
 		} );
 	}
@@ -1770,12 +1771,12 @@ public class GraphDisplayController extends JPanel
 			
 			public void keyReleased( KeyEvent e )
 			{
-			// Do nothing
+				// Do nothing
 			}
 			
 			public void keyTyped( KeyEvent e )
 			{
-			// Do nothing
+				// Do nothing
 			}
 		} );
 		this.viewportPanel.add( this.viewport, BorderLayout.CENTER );

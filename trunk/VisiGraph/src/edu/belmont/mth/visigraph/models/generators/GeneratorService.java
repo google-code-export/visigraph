@@ -143,6 +143,8 @@ public class GeneratorService
 		
 		// Load standard library generators
 		this.generators.add( new EmptyGraph( ) );
+		// --add embedded generators here--
+		// this.generators.add( new LineGraph( ) );
 		
 		// Load external scripted generators
 		File folder = new File( "generators" );
