@@ -64,6 +64,11 @@ public class LayoutUtilities
 	public static void arrangeGrid( Collection<Vertex> vertices )
 	{
 		int rows = (int) Math.round( Math.sqrt( vertices.size( ) ) );
+		arrangeGrid( vertices, rows );
+	}
+	
+	public static void arrangeGrid( Collection<Vertex> vertices, int rows )
+	{
 		int columns = (int) Math.ceil( vertices.size( ) / (double) rows );
 		
 		double minX = Double.POSITIVE_INFINITY, minY = Double.POSITIVE_INFINITY;
