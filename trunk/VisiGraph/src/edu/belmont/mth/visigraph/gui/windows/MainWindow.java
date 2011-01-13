@@ -47,6 +47,8 @@ public class MainWindow extends JFrame
 	private final JMenuItem		showSideBySideMenuItem;
 	private final JMenuItem		showStackedMenuItem;
 	private final JMenuItem		tileWindowsMenuItem;
+	private final JMenuItem		showPreviousMenuItem;
+	private final JMenuItem		showNextMenuItem;
 	private final JMenu			helpMenu;
 	private final JMenuItem		helpContentsMenuItem;
 	private final JMenuItem		scriptLibraryMenuItem;
@@ -114,19 +116,7 @@ public class MainWindow extends JFrame
 					{
 						Graph newGraph = NewGraphDialog.showDialog( MainWindow.this );
 						if( newGraph != null )
-						{
-							GraphWindow graphWindow = new GraphWindow( newGraph );
-							MainWindow.this.desktopPane.add( graphWindow );
-							try
-							{
-								graphWindow.setMaximum( true );
-								graphWindow.setSelected( true );
-							}
-							catch( PropertyVetoException ex )
-							{
-								DebugUtilities.logException( "An exception occurred while loading the graph window.", ex );
-							}
-						}
+							MainWindow.this.addGraphWindow( newGraph );
 					}
 				} );
 				this.setAccelerator( KeyStroke.getKeyStroke( KeyEvent.VK_N, Toolkit.getDefaultToolkit( ).getMenuShortcutKeyMask( ) ) );
@@ -147,18 +137,7 @@ public class MainWindow extends JFrame
 						if( selectedFrame instanceof GraphWindow )
 						{
 							Graph graph = ( (GraphWindow) selectedFrame ).getGdc( ).getGraph( );
-							
-							GraphWindow graphWindow = new GraphWindow( new Graph( graph.toString( ) ) );
-							MainWindow.this.desktopPane.add( graphWindow );
-							try
-							{
-								graphWindow.setMaximum( true );
-								graphWindow.setSelected( true );
-							}
-							catch( PropertyVetoException ex )
-							{
-								DebugUtilities.logException( "An exception occurred while loading the graph window.", ex );
-							}
+							MainWindow.this.addGraphWindow( new Graph( graph.toString( ) ) );
 						}
 					}
 				} );
@@ -505,7 +484,7 @@ public class MainWindow extends JFrame
 					@Override
 					public void actionPerformed( ActionEvent e )
 					{
-						JInternalFrame[ ] frames = MainWindow.this.desktopPane.getAllFrames( );
+						JInternalFrame[ ] frames = MainWindow.this.getInternalFrames( );
 						
 						for( int i = 0; i < frames.length; ++i )
 							try
@@ -533,7 +512,7 @@ public class MainWindow extends JFrame
 					@Override
 					public void actionPerformed( ActionEvent e )
 					{
-						JInternalFrame[ ] frames = MainWindow.this.desktopPane.getAllFrames( );
+						JInternalFrame[ ] frames = MainWindow.this.getInternalFrames( );
 						
 						if( frames.length > 0 )
 						{
@@ -566,7 +545,8 @@ public class MainWindow extends JFrame
 					@Override
 					public void actionPerformed( ActionEvent e )
 					{
-						JInternalFrame[ ] frames = MainWindow.this.desktopPane.getAllFrames( );
+						JInternalFrame[ ] frames = MainWindow.this.getInternalFrames( );
+						
 						if( frames.length > 0 )
 						{
 							double frameHeight = MainWindow.this.desktopPane.getHeight( ) / frames.length;
@@ -598,7 +578,7 @@ public class MainWindow extends JFrame
 					@Override
 					public void actionPerformed( ActionEvent e )
 					{
-						JInternalFrame[ ] frames = MainWindow.this.desktopPane.getAllFrames( );
+						JInternalFrame[ ] frames = MainWindow.this.getInternalFrames( );
 						
 						if( frames.length > 0 )
 						{
@@ -625,6 +605,78 @@ public class MainWindow extends JFrame
 			}
 		};
 		this.windowsMenu.add( this.tileWindowsMenuItem );
+		
+		this.windowsMenu.addSeparator( );
+		
+		this.showPreviousMenuItem = new JMenuItem( StringBundle.get( "windows_show_previous_menu_text" ) )
+		{
+			{
+				this.addActionListener( new ActionListener( )
+				{
+					@Override
+					public void actionPerformed( ActionEvent e )
+					{
+						JInternalFrame[ ] frames = MainWindow.this.getInternalFrames( );
+						JInternalFrame selectedFrame = MainWindow.this.desktopPane.getSelectedFrame( );
+						
+						if( selectedFrame != null )
+						{
+							int selectedFrameIndex = 0;
+							for( selectedFrameIndex = 0; selectedFrameIndex < frames.length; ++selectedFrameIndex )
+								if( frames[selectedFrameIndex] == selectedFrame )
+									break;
+							
+							if( selectedFrameIndex < frames.length )
+								try
+								{
+									frames[( selectedFrameIndex + frames.length - 1 ) % frames.length].setSelected( true );
+								}
+								catch( PropertyVetoException ex )
+								{
+									DebugUtilities.logException( "An exception occurred while selecting the previous graph window.", ex );
+								}
+						}
+					}
+				} );
+				this.setAccelerator( KeyStroke.getKeyStroke( KeyEvent.VK_PAGE_UP, Toolkit.getDefaultToolkit( ).getMenuShortcutKeyMask( ) ) );
+			}
+		};
+		this.windowsMenu.add( this.showPreviousMenuItem );
+		
+		this.showNextMenuItem = new JMenuItem( StringBundle.get( "windows_show_next_menu_text" ) )
+		{
+			{
+				this.addActionListener( new ActionListener( )
+				{
+					@Override
+					public void actionPerformed( ActionEvent e )
+					{
+						JInternalFrame[ ] frames = MainWindow.this.getInternalFrames( );
+						JInternalFrame selectedFrame = MainWindow.this.desktopPane.getSelectedFrame( );
+						
+						if( selectedFrame != null )
+						{
+							int selectedFrameIndex = 0;
+							for( selectedFrameIndex = 0; selectedFrameIndex < frames.length; ++selectedFrameIndex )
+								if( frames[selectedFrameIndex] == selectedFrame )
+									break;
+							
+							if( selectedFrameIndex < frames.length )
+								try
+								{
+									frames[( selectedFrameIndex + 1 ) % frames.length].setSelected( true );
+								}
+								catch( PropertyVetoException ex )
+								{
+									DebugUtilities.logException( "An exception occurred while selecting the next graph window.", ex );
+								}
+						}
+					}
+				} );
+				this.setAccelerator( KeyStroke.getKeyStroke( KeyEvent.VK_PAGE_DOWN, Toolkit.getDefaultToolkit( ).getMenuShortcutKeyMask( ) ) );
+			}
+		};
+		this.windowsMenu.add( this.showNextMenuItem );
 		
 		this.helpMenu = new JMenu( StringBundle.get( "help_menu_text" ) );
 		this.menuBar.add( this.helpMenu );
@@ -713,6 +765,23 @@ public class MainWindow extends JFrame
 		this.setVisible( true );
 	}
 	
+	public GraphWindow addGraphWindow( Graph graph )
+	{
+		GraphWindow graphWindow = new GraphWindow( graph );
+		MainWindow.this.desktopPane.add( graphWindow );
+		try
+		{
+			graphWindow.setMaximum( true );
+			graphWindow.setSelected( true );
+		}
+		catch( PropertyVetoException ex )
+		{
+			DebugUtilities.logException( "An exception occurred while loading the graph window.", ex );
+		}
+		
+		return graphWindow;
+	}
+	
 	public void closingWindow( WindowEvent e )
 	{
 		JInternalFrame[ ] frames = this.desktopPane.getAllFrames( );
@@ -734,6 +803,23 @@ public class MainWindow extends JFrame
 		}
 	}
 	
+	public JInternalFrame[ ] getInternalFrames( )
+	{
+		JInternalFrame[ ] frames = MainWindow.this.desktopPane.getAllFrames( );
+		Arrays.sort( frames, new Comparator<JInternalFrame>( )
+		{
+			@Override
+			public int compare( JInternalFrame frame0, JInternalFrame frame1 )
+			{
+				// Why sort by the seemingly arbitrary value returned by toString()? Well, we actually don't really care about any
+				// particular order, just so long as it stays the same (getAllFrames() does not always return them in a consistent order for some
+				// reason). This is the only property that is guaranteed to be unique to each frame and unchanging throughout the object's lifetime.
+				return frame0.toString( ).compareTo( frame1.toString( ) );
+			}
+		} );
+		return frames;
+	}
+	
 	public void openFile( File file ) throws IOException
 	{
 		Scanner scanner = new Scanner( file );
@@ -745,19 +831,6 @@ public class MainWindow extends JFrame
 		
 		Graph newGraph = new Graph( sb.toString( ) );
 		if( newGraph != null )
-		{
-			GraphWindow graphWindow = new GraphWindow( newGraph );
-			graphWindow.setFile( file );
-			this.desktopPane.add( graphWindow );
-			try
-			{
-				graphWindow.setMaximum( true );
-				graphWindow.setSelected( true );
-			}
-			catch( PropertyVetoException ex )
-			{
-				DebugUtilities.logException( "An exception occurred while loading the graph window.", ex );
-			}
-		}
+			this.addGraphWindow( newGraph ).setFile( file );
 	}
 }
