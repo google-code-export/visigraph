@@ -180,64 +180,96 @@ public class LayoutUtilities
 	
 	public static void arrangeTree( Collection<Vertex> roots, Graph graph )
 	{
-		Set<Vertex> placedVertices = new HashSet<Vertex>( );
-		LinkedList<List<Vertex>> levels = new LinkedList<List<Vertex>>( );
+		Set<Vertex> covered = new HashSet<Vertex>( );
+		List<List<Vertex>> levels = new ArrayList<List<Vertex>>( );
+		Map<Vertex, LinkedList<Vertex>> children = new HashMap<Vertex, LinkedList<Vertex>>( );
 		
 		// First we need to add all root vertices to the tree
 		levels.add( new LinkedList<Vertex>( ) );
 		for( Vertex vertex : roots )
 		{
 			levels.get( 0 ).add( vertex );
-			placedVertices.add( vertex );
+			covered.add( vertex );
 		}
 		
 		// While the last level has vertices, add all their neighbors to the next level that haven't yet been otherwise added
-		while( !levels.getLast( ).isEmpty( ) )
+		while( !levels.get( levels.size( ) - 1 ).isEmpty( ) )
 		{
 			levels.add( new LinkedList<Vertex>( ) );
 			
 			for( Vertex vertex : levels.get( levels.size( ) - 2 ) )
+			{
+				children.put( vertex, new LinkedList<Vertex>( ) );
 				for( Vertex neighbor : graph.getNeighbors( vertex ) )
-					if( !placedVertices.contains( neighbor ) )
+					if( !covered.contains( neighbor ) )
 					{
 						levels.get( levels.size( ) - 1 ).add( neighbor );
-						placedVertices.add( neighbor );
+						covered.add( neighbor );
+						children.get( vertex ).add( neighbor );
 					}
+			}
 		}
 		
 		// If there were any nodes that weren't added yet, give them their own level
-		if( placedVertices.size( ) < graph.vertices.size( ) )
-			for( Vertex vertex : levels.getLast( ) )
-				if( !placedVertices.contains( vertex ) )
+		if( covered.size( ) < graph.vertices.size( ) )
+			for( Vertex vertex : levels.get( levels.size( ) - 1 ) )
+				if( !covered.contains( vertex ) )
 				{
-					levels.getLast( ).add( vertex );
-					placedVertices.add( vertex );
+					levels.get( levels.size( ) - 1 ).add( vertex );
+					covered.add( vertex );
+					children.put( vertex, new LinkedList<Vertex>( ) );
 				}
 		
 		// If the last level is empty, remove it
-		if( levels.getLast( ).isEmpty( ) )
-			levels.removeLast( );
+		if( levels.get( levels.size( ) - 1 ).isEmpty( ) )
+			levels.remove( levels.size( ) - 1 );
 		
 		// Now for the layout!
-		double largestWidth = 0.0;
-		for( List<Vertex> level : levels )
-			largestWidth = Math.max( largestWidth, level.size( ) * 150.0 );
-		
 		double y = 0.0;
 		for( List<Vertex> level : levels )
 		{
-			double colSpace = largestWidth / ( level.size( ) );
-			
 			for( int col = 0; col < level.size( ); ++col )
 			{
 				Vertex vertex = level.get( col );
-				double x = ( col + 0.5 ) * colSpace - largestWidth / 2.0;
+				double x = col * 100.0;
 				
 				vertex.x.set( x );
 				vertex.y.set( y );
 			}
 			
-			y += 150.0;
+			y += 100.0;
+		}
+		
+		for( int i = levels.size( ) - 2; i >= 0; --i )
+		{
+			List<Vertex> level = levels.get( i );
+			
+			for( int j = 0; j < level.size( ); ++j )
+			{
+				Vertex parent = level.get( j );
+				
+				if( !children.get( parent ).isEmpty( ) )
+				{
+					double offset = parent.x.get( ) - ( children.get( parent ).getFirst( ).x.get( ) + children.get( parent ).getLast( ).x.get( ) ) / 2.0;
+					
+					if( offset < 0 )
+						for( int k = j; k < level.size( ); ++k )
+							level.get( k ).x.set( level.get( k ).x.get( ) - offset );
+					else if( offset > 0 )
+					{
+						Queue<Vertex> childrenToMove = new LinkedList<Vertex>( );
+						for( int k = j; k < level.size( ); ++k )
+							childrenToMove.addAll( children.get( level.get( k ) ) );
+						
+						while( !childrenToMove.isEmpty( ) )
+						{
+							Vertex child = childrenToMove.remove( );
+							child.x.set( child.x.get( ) + offset );
+							childrenToMove.addAll( children.get( child ) );
+						}
+					}
+				}
+			}
 		}
 	}
 	
