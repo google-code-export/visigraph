@@ -3,39 +3,28 @@ import java.util.*;
 import javax.swing.*;
 import java.awt.image.*;
 import edu.belmont.mth.visigraph.models.*;
+import edu.belmont.mth.visigraph.settings.*;
+import edu.belmont.mth.visigraph.utilities.*;
 import edu.belmont.mth.visigraph.models.functions.*;
 
-	public class AdjacencyMatrixDialog extends JDialog
+	public class DistanceMatrixDialog extends JDialog
 	{
-		private static int[ ][ ] graphToMatrix( Graph graph )
-		{
-			Map vertexIndices = new HashMap( );
-			for( int i = 0; i < graph.vertices.size( ); ++i )
-				vertexIndices.put( graph.vertices.get( i ), i );
-			
-			int[ ][ ] matrix = new int[graph.vertices.size( )][graph.vertices.size( )];
-			for( Edge edge : graph.edges )
-			{
-				++matrix[vertexIndices.get( edge.from )][vertexIndices.get( edge.to )];
-				if( !edge.isDirected && !edge.isLoop )
-					++matrix[vertexIndices.get( edge.to )][vertexIndices.get( edge.from )];
-			}
-			
-			return matrix;
-		}
-		
-		private static Image matrixToImage( int[ ][ ] matrix, int multiplier )
+		private static Image matrixToImage( double[ ][ ] matrix, int multiplier )
 		{
 			BufferedImage image = new BufferedImage( matrix.length, matrix.length, BufferedImage.TYPE_INT_ARGB );
 			
 			int[ ] imageMatrix = ( (DataBufferInt) image.getRaster( ).getDataBuffer( ) ).getData( );
 			Arrays.fill( imageMatrix, Color.white.getRGB( ) );
 			
-			int BLACK = Color.BLACK.getRGB( );
+			double maxDistance = 0.0;
 			for( int row = 0; row < matrix.length; ++row )
 				for( int col = 0; col < matrix.length; ++col )
-					if( matrix[row][col] > 0 )
-						imageMatrix[matrix.length * row + col] = ( matrix[row][col] > 0 ? BLACK : WHITE );
+					if( matrix[row][col] < Double.POSITIVE_INFINITY )
+						maxDistance = Math.max( maxDistance, matrix[row][col] );
+			
+			for( int row = 0; row < matrix.length; ++row )
+				for( int col = 0; col < matrix.length; ++col )
+					imageMatrix[matrix.length * row + col] = ( matrix[row][col] == Double.POSITIVE_INFINITY ? Color.gray.getRGB( ) : maxDistance == 0.0 ? 0xFFFFFF : Color.getHSBColor( (float) ( 2.0 / 3.0 * ( 1.0 - matrix[row][col] / maxDistance ) ), 1f, 1f ).getRGB( ) );
 			
 			BufferedImage scaledImage = new BufferedImage( multiplier * matrix.length, multiplier * matrix.length, BufferedImage.TYPE_INT_ARGB );
 			Graphics2D g2D = (Graphics2D) scaledImage.getGraphics( );
@@ -45,15 +34,21 @@ import edu.belmont.mth.visigraph.models.functions.*;
 			return scaledImage;
 		}
 		
-		private static String matrixToString( int[ ][ ] matrix )
+		private static String matrixToString( double[ ][ ] matrix )
 		{
 			String newLine = System.getProperty( "line.separator" );
+			
+			int maxWidth = 1;
+			for( int row = 0; row < matrix.length; ++row )
+				for( int col = 0; col < matrix.length; ++col )
+					if( matrix[row][col] < Double.POSITIVE_INFINITY )
+						maxWidth = Math.max( maxWidth, (int) Math.log10( matrix[row][col] ) + 1 );
 			
 			StringBuilder sb = new StringBuilder( );
 			for( int row = 0; row < matrix.length; ++row )
 			{
 				for( int col = 0; col < matrix.length; ++col )
-					sb.append( matrix[row][col] + " " );
+					sb.append( String.format( "%-" + maxWidth + "s ", new Object[ ] { matrix[row][col] == Double.POSITIVE_INFINITY ? "\u221E" : Long.toString( Math.round( matrix[row][col] ) ) } ) );
 				
 				sb.deleteCharAt( sb.length( ) - 1 );
 				sb.append( newLine );
@@ -62,12 +57,10 @@ import edu.belmont.mth.visigraph.models.functions.*;
 			return sb.substring( 0, sb.length( ) - newLine.length( ) );
 		}
 		
-		public AdjacencyMatrixDialog( Graph graph, Frame owner )
+		public DistanceMatrixDialog( String name, double[ ][ ] matrix, Frame owner )
 		{
-			super( owner, "Adjacency matrix of " + graph.name.get( ), true );
+			super( owner, "Distance matrix of " + name, true );
 			this.setResizable( false );
-			
-			int[ ][ ] matrix = graphToMatrix( graph );
 			
 			JTextArea textArea = new JTextArea( matrixToString( matrix ), 15, 30 );
 			textArea.setAutoscrolls( true );
@@ -92,11 +85,11 @@ import edu.belmont.mth.visigraph.models.functions.*;
 	{
 		if( g.vertices.isEmpty( ) )
 		{
-			JOptionPane.showMessageDialog( owner, "The adjacency matrix for the K\u0305\u2080 empty graph is empty!", "Empty adjacency matrix!", JOptionPane.ERROR_MESSAGE );
+			JOptionPane.showMessageDialog( owner, "The distance matrix for the K\u0305\u2080 empty graph is empty!", "Empty distance matrix!", JOptionPane.ERROR_MESSAGE );
 			return null;
 		}
 		
-		new AdjacencyMatrixDialog( g, JOptionPane.getFrameForComponent( owner ) );
+		new DistanceMatrixDialog( g.name.get( ), GraphUtilities.getDistanceMatrix( g, true ), JOptionPane.getFrameForComponent( owner ) );
 		return null;
 	}
 	
@@ -109,9 +102,9 @@ import edu.belmont.mth.visigraph.models.functions.*;
 			case Function.Attribute.VERSION:
 				return "20110129";
 			case Function.Attribute.DESCRIPTION:
-				return "Displays a dialog with the adjacency matrix for a given graph in text and image form.  The adjacency matrix of a finite graph <i>G</i> on <i>n</i> vertices is the <i>n</i> \u00D7 <i>n</i> matrix where the non-diagonal entry <i>a<sub>i,j</sub></i> is the number of edges from vertex <i>i</i> to vertex <i>j</i>, and the diagonal entry <i>a<sub>i,i</sub></i> is the number of edges from vertex <i>i</i> to itself (i.e. loops).";
+				return "Displays a dialog with the unweighted distance matrix for a given graph in text and image form.  The distance matrix of a finite graph <i>G</i> on <i>n</i> vertices is the <i>n</i> \u00D7 <i>n</i> matrix where the entry <i>d<sub>i,j</sub></i> is the geodesic graph distance from vertex <i>i</i> to vertex <i>j</i>.</p><p>In the rendered image, the distance matrix is represented as a heatmap with finite-valued entries colored from blue to red according to each entry's value relative to the highest finite value in the matrix.  In contrast, entries with infinite values are colored gray.</p><p>" + GlobalSettings.applicationName + "'s built-in implementation of the Roy-Floyd-Warshall algorithm is used to efficiently compute the unweighted distance between each pair of vertices in <code><i>O</i>(|<i>V</i>|<sup>3</sup>)</code> time.";
 			case Function.Attribute.OUTPUT:
-				return "The adjacency matrix for the graph.";
+				return "The unweighted distance matrix for the graph.";
 			case Function.Attribute.ALLOWS_DYNAMIC_EVALUATION:
 				return false;
 			case Function.Attribute.ALLOWS_ONE_TIME_EVALUATION:
@@ -119,7 +112,7 @@ import edu.belmont.mth.visigraph.models.functions.*;
 			case Function.Attribute.RELATED_GENERATORS:
 				return new String[ ] { "From adjacency matrix...", "From incidence matrix..." };
 			case Function.Attribute.RELATED_FUNCTIONS:
-				return new String[ ] { "Get incidence matrix...", "Get unweighted distance matrix...", "Get weighted distance matrix..." };
+				return new String[ ] { "Get adjacency matrix...", "Get incidence matrix...", "Get weighted distance matrix..." };
 			case Function.Attribute.TAGS:
 				return new String[ ] { "Graph evaluator" };
 			default:
@@ -134,7 +127,7 @@ import edu.belmont.mth.visigraph.models.functions.*;
 	
 	public String toString( )
 	{
-		return "Get adjacency matrix...";
+		return "Get unweighted distance matrix...";
 	}
 	
 return (Function) this;

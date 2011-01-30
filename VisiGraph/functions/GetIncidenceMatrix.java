@@ -135,7 +135,7 @@ import edu.belmont.mth.visigraph.models.functions.sdfafds.IncidenceMatrixDialog.
 			case Function.Attribute.AUTHOR:
 				return "Cameron Behar";
 			case Function.Attribute.VERSION:
-				return "20110101";
+				return "20110129";
 			case Function.Attribute.DESCRIPTION:
 				return "Displays a dialog with an incidence matrix for a given graph in text and image form.  An incidence matrix of a finite graph <i>G</i> on <i>m</i> vertices and <i>n</i> edges is a <i>m</i> \u00D7 <i>n</i> matrix where <i>a<sub>i,j</sub></i> > 0 if vertex <i>i</i> and edge <i>j</i> are incident and 0 otherwise. If <i>a<sub>i,j</sub></i> = 2, edge <i>j</i> is a loop; otherwise, <i>a<sub>i,j</sub></i> = 0 or 1.";
 			case Function.Attribute.OUTPUT:
@@ -147,7 +147,7 @@ import edu.belmont.mth.visigraph.models.functions.sdfafds.IncidenceMatrixDialog.
 			case Function.Attribute.RELATED_GENERATORS:
 				return new String[ ] { "From adjacency matrix...", "From incidence matrix..." };
 			case Function.Attribute.RELATED_FUNCTIONS:
-				return new String[ ] { "Get adjacency matrix..." };
+				return new String[ ] { "Get adjacency matrix...", "Get unweighted distance matrix...", "Get weighted distance matrix..." };
 			case Function.Attribute.TAGS:
 				return new String[ ] { "Graph evaluator" };
 			default:
