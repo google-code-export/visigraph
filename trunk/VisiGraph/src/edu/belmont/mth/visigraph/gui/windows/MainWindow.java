@@ -159,7 +159,7 @@ public class MainWindow extends JFrame
 						MainWindow.this.fileChooser.resetChoosableFileFilters( );
 						MainWindow.this.fileChooser.setAcceptAllFileFilterUsed( false );
 						MainWindow.this.fileChooser.setFileFilter( new FileNameExtensionFilter( StringBundle.get( "visigraph_file_description" ), "vsg" ) );
-						MainWindow.this.fileChooser.setMultiSelectionEnabled( false );
+						MainWindow.this.fileChooser.setMultiSelectionEnabled( true );
 						
 						boolean success = false;
 						
@@ -170,8 +170,11 @@ public class MainWindow extends JFrame
 							if( MainWindow.this.fileChooser.showOpenDialog( MainWindow.this ) == JFileChooser.APPROVE_OPTION )
 								try
 								{
-									MainWindow.this.openFile( MainWindow.this.fileChooser.getSelectedFile( ) );
-									success = true;
+									for( File selectedFile : MainWindow.this.fileChooser.getSelectedFiles( ) )
+									{
+										MainWindow.this.openFile( selectedFile );
+										success = true;
+									}
 								}
 								catch( IOException ex )
 								{
