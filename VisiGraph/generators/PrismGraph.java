@@ -41,9 +41,9 @@ import edu.belmont.mth.visigraph.models.generators.*;
 			case Generator.Attribute.AUTHOR:
 				return "Cameron Behar";
 			case Generator.Attribute.VERSION:
-				return "20110101";
+				return "20110130";
 			case Generator.Attribute.ISOMORPHISMS:
-				return new String[ ] { "Skeleton of an <i>n</i>-prism", "<i>P<sub>n</sub></i> path graph \u00d7 <i>C</i><sub>2</sub> cycle graph", "<i>C<sub>n</sub></i> circular ladder graph", "<i>P</i><sub>1,<i>n</i></sub> generalized Petersen graph" };
+				return new String[ ] { "Skeleton of an <i>n</i>-prism", "<i>P<sub>n</sub></i> path graph \u25A1 <i>C</i><sub>2</sub> cycle graph", "<i>C<sub>n</sub></i> circular ladder graph", "<i>P</i><sub>1,<i>n</i></sub> generalized Petersen graph" };
 			case Generator.Attribute.DESCRIPTION:
 				return "Constructs a <i>Y<sub>n</sub></i> prism graph by taking the Cartesian product of a <i>C<sub>n</sub></i> cycle graph and a <i>P</i><sub>2</sub> path graph.</p><p>The prism graph's inner cycle of vertices are placed according to the user-defined \"Arrange circle radius multiplier\" setting, with the outer cycle placed along the concentric circle with twice that radius.";
 			case Generator.Attribute.PARAMETERS_DESCRIPTION:
@@ -63,7 +63,7 @@ import edu.belmont.mth.visigraph.models.generators.*;
 			case Generator.Attribute.ARE_PARAMETERS_ALLOWED:
 				return true;
 			case Generator.Attribute.RELATED_GENERATORS:
-				return new String[ ] { "Antiprism graph", "Crossed prism graph", "Cycle graph", "Generalized petersen graph", "Ladder graph", "Möbius ladder graph", "Web graph" };
+				return new String[ ] { "Antiprism graph", "Cartesian product of (two graphs)", "Crossed prism graph", "Cycle graph", "Generalized petersen graph", "Ladder graph", "Möbius ladder graph", "Web graph" };
 			case Generator.Attribute.TAGS:
 				return new String[ ] { "Cartesian product", "Skeleton graph" };
 			default:

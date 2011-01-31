@@ -86,7 +86,7 @@ import edu.belmont.mth.visigraph.models.generators.*;
 			case Generator.Attribute.AUTHOR:
 				return "Cameron Behar";
 			case Generator.Attribute.VERSION:
-				return "20110101";
+				return "20110130";
 			case Generator.Attribute.DESCRIPTION:
 				return "Constructs the line graph of a graph by replacing each edge in <i>G</i> with a vertex and connecting each pair of these vertices if their corresponding edges in <i>G</i> are adjacent (i.e. share at least one vertex).";
 			case Generator.Attribute.PARAMETERS_DESCRIPTION:
@@ -106,7 +106,7 @@ import edu.belmont.mth.visigraph.models.generators.*;
 			case Generator.Attribute.ARE_PARAMETERS_ALLOWED:
 				return true;
 			case Generator.Attribute.RELATED_GENERATORS:
-				return new String[ ] { "Complement of (another graph)", "Condensation of (another graph)" };
+				return new String[ ] { "Cartesian product of (two graphs)", "Complement of (another graph)", "Condensation of (another graph)" };
 			case Generator.Attribute.TAGS:
 				return new String[ ] { "Derived graph" };
 			default:

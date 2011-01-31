@@ -77,9 +77,9 @@ import edu.belmont.mth.visigraph.models.generators.*;
 			case Generator.Attribute.AUTHOR:
 				return "Cameron Behar";
 			case Generator.Attribute.VERSION:
-				return "20110101";
+				return "20110130";
 			case Generator.Attribute.ISOMORPHISMS:
-				return new String[ ] { "<i>K<sub>r,s</sub></i> complete bipartite graph \u00D7 <i>C<sub>n</sub></i> cycle graph" };
+				return new String[ ] { "<i>K<sub>r,s</sub></i> complete bipartite graph \u25A1 <i>C<sub>n</sub></i> cycle graph" };
 			case Generator.Attribute.DESCRIPTION:
 				return "Constructs the Cartesian product of a <i>K<sub>r,s</sub></i> complete bipartite graph and a <i>C<sub>n</sub></i> cycle graph (with one link's edges cut, for clarity), as drawn by Cameron Behar to minimize crossings.";
 			case Generator.Attribute.PARAMETERS_DESCRIPTION:
@@ -99,7 +99,7 @@ import edu.belmont.mth.visigraph.models.generators.*;
 			case Generator.Attribute.ARE_PARAMETERS_ALLOWED:
 				return true;
 			case Generator.Attribute.RELATED_GENERATORS:
-				return new String[ ] { "Cartesian product of a complete bipartite graph and cycle (Scott)", "Complete bipartite graph", "Cycle graph" };
+				return new String[ ] { "Cartesian product of (two graphs)", "Cartesian product of a complete bipartite graph and cycle (Scott)", "Complete bipartite graph", "Cycle graph" };
 			case Generator.Attribute.RELATED_FUNCTIONS:
 				return new String[ ] { "Count crossings" };
 			case Generator.Attribute.TAGS:

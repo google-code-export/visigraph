@@ -582,9 +582,10 @@ public class Edge extends ObservableModel
 			double x0 = this.from.x.get( ), y0 = this.from.y.get( );
 			double x1 = this.handleX.get( ), y1 = this.handleY.get( );
 			double x2 = this.to.x.get( ), y2 = this.to.y.get( );
+			double divisor = 2.0 * determinant( new double[ ][ ] { { x0, y0, 1 }, { x1, y1, 1 }, { x2, y2, 1 } } );
 			
-			double h = determinant( new double[ ][ ] { { x0 * x0 + y0 * y0, y0, 1 }, { x1 * x1 + y1 * y1, y1, 1 }, { x2 * x2 + y2 * y2, y2, 1 } } ) / ( 2.0 * determinant( new double[ ][ ] { { x0, y0, 1 }, { x1, y1, 1 }, { x2, y2, 1 } } ) );
-			double k = determinant( new double[ ][ ] { { x0, x0 * x0 + y0 * y0, 1 }, { x1, x1 * x1 + y1 * y1, 1 }, { x2, x2 * x2 + y2 * y2, 1 } } ) / ( 2.0 * determinant( new double[ ][ ] { { x0, y0, 1 }, { x1, y1, 1 }, { x2, y2, 1 } } ) );
+			double h = determinant( new double[ ][ ] { { x0 * x0 + y0 * y0, y0, 1 }, { x1 * x1 + y1 * y1, y1, 1 }, { x2 * x2 + y2 * y2, y2, 1 } } ) / divisor;
+			double k = determinant( new double[ ][ ] { { x0, x0 * x0 + y0 * y0, 1 }, { x1, x1 * x1 + y1 * y1, 1 }, { x2, x2 * x2 + y2 * y2, 1 } } ) / divisor;
 			
 			this.center.setLocation( h, k );
 		}

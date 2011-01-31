@@ -34,9 +34,9 @@ import edu.belmont.mth.visigraph.models.generators.*;
 			case Generator.Attribute.AUTHOR:
 				return "Cameron Behar";
 			case Generator.Attribute.VERSION:
-				return "20110101";
+				return "20110130";
 			case Generator.Attribute.ISOMORPHISMS:
-				return new String[ ] { "<i>M<sub>m,n</sub></i> mesh graph", "<i>P<sub>m</sub></i> path graph \u00d7 <i>P<sub>n</sub></i> path graph" };
+				return new String[ ] { "<i>M<sub>m,n</sub></i> mesh graph", "<i>P<sub>m</sub></i> path graph \u25A1 <i>P<sub>n</sub></i> path graph" };
 			case Generator.Attribute.DESCRIPTION:
 				return "Constructs a <i>G<sub>m,n</sub></i> grid graph by taking the Cartesian product of a <i>P<sub>m</sub></i> path graph and a <i>P<sub>n</sub></i> path graph.</p><p>Vertices are placed according to the user-defined \"Arrange grid spacing\" setting.";
 			case Generator.Attribute.PARAMETERS_DESCRIPTION:
@@ -56,7 +56,7 @@ import edu.belmont.mth.visigraph.models.generators.*;
 			case Generator.Attribute.ARE_PARAMETERS_ALLOWED:
 				return true;
 			case Generator.Attribute.RELATED_GENERATORS:
-				return new String[ ] { "Path graph" };
+				return new String[ ] { "Cartesian product of (two graphs)", "Path graph" };
 			case Generator.Attribute.TAGS:
 				return new String[ ] { "Cartesian product" };
 			default:

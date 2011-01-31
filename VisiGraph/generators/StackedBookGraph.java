@@ -52,9 +52,9 @@ import edu.belmont.mth.visigraph.models.generators.*;
 			case Generator.Attribute.AUTHOR:
 				return "Cameron Behar";
 			case Generator.Attribute.VERSION:
-				return "20110101";
+				return "20110130";
 			case Generator.Attribute.ISOMORPHISMS:
-				return new String[ ] { "<i>S</i><sub><i>m</i>+1</sub> star graph \u00D7 <i>P<sub>n</sub></i> path graph", "<i>B<sub>m</sub></i> book graph (for <i>B</i><sub><i>m</i>,2</sub>)" };
+				return new String[ ] { "<i>S</i><sub><i>m</i>+1</sub> star graph \u25A1 <i>P<sub>n</sub></i> path graph", "<i>B<sub>m</sub></i> book graph (for <i>B</i><sub><i>m</i>,2</sub>)" };
 			case Generator.Attribute.DESCRIPTION:
 				return "Constructs a <i>B<sub>m,n</sub></i> stacked book graph by taking the Cartesian product of an <i>S</i><sub><i>m</i>+1</sub> star graph and <i>P</i><sub>n</sub> path graph.</p><p>The star graphs' vertices are placed according to the user-defined \"Arrange circle radius multiplier\" setting, with the copies' x- and y-offsets supplied by the \"Arrange grid spacing\" setting.";
 			case Generator.Attribute.PARAMETERS_DESCRIPTION:
@@ -74,7 +74,7 @@ import edu.belmont.mth.visigraph.models.generators.*;
 			case Generator.Attribute.ARE_PARAMETERS_ALLOWED:
 				return true;
 			case Generator.Attribute.RELATED_GENERATORS:
-				return new String[ ] { "Book graph", "Path graph", "Star graph" };
+				return new String[ ] { "Book graph", "Cartesian product of (two graphs)", "Path graph", "Star graph" };
 			case Generator.Attribute.TAGS:
 				return new String[ ] { "Cartesian product" };
 			default:
