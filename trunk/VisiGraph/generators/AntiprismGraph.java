@@ -44,11 +44,11 @@ import edu.belmont.mth.visigraph.models.generators.*;
 			case Generator.Attribute.AUTHOR:
 				return "Cameron Behar";
 			case Generator.Attribute.VERSION:
-				return "20110101";
+				return "20110130";
 			case Generator.Attribute.ISOMORPHISMS:
 				return new String[ ] { "Skeleton of an <i>n</i>-antiprism", "<i>C</i><sub>2<i>n</i>,1,2</sub> circulant graph" };
 			case Generator.Attribute.DESCRIPTION:
-				return "Constructs an <i>A<sub>n</sub></i> antiprism graph from the skeleton of an <i>n</i>-antiprism.  An antiprism is a polyhedron composed of two parallel copies of some particular <i>n</i>-sided polygon, connected by an alternating band of triangles.  Antiprisms differ from prisms in that their bases are twisted relative to each other such that the side faces are triangles, rather than quadrilaterals.</p><p>The antiprism's inner cycle of vertices are placed according to the user-defined \"Arrange circle radius multiplier\" setting, with the outer cycle placed along the concentric circle with twice that radius (or 2.75x for <i>n</i> = 3).";
+				return "Constructs an <i>A<sub>n</sub></i> antiprism graph from the skeleton of an <i>n</i>-antiprism.  An antiprism is a polyhedron composed of two parallel copies of some particular <i>n</i>-sided polygon, connected by an alternating band of triangles.  Antiprisms differ from prisms in that their bases are twisted relative to each other such that the side faces are triangles, rather than quadrilaterals.</p><p>The antiprism's inner cycle of vertices are placed according to the user-defined \"Arrange circle radius multiplier\" setting, with the outer cycle placed along the concentric circle with twice that radius (or 2.75\u00D7 for <i>n</i> = 3).";
 			case Generator.Attribute.PARAMETERS_DESCRIPTION:
 				return "[order of base]";
 			case Generator.Attribute.PARAMETERS_VALIDATION_EXPRESSION:

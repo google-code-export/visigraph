@@ -50,7 +50,7 @@ public class GeometryUtilities
 					else if( k > i )
 						temp[j - 1][k - 1] = A[j][k];
 			
-			result += A[0][i] * pow( -1, i ) * determinant( temp );
+			result += A[0][i] * ( ( i & 1 ) == 0 ? 1 : -1 ) * determinant( temp );
 		}
 		
 		return result;

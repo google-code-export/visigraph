@@ -115,7 +115,7 @@ import edu.belmont.mth.visigraph.models.generators.*;
 			case Generator.Attribute.AUTHOR:
 				return "Cameron Behar";
 			case Generator.Attribute.VERSION:
-				return "20110101";
+				return "20110130";
 			case Generator.Attribute.DESCRIPTION:
 				return "Constructs the condensation of a directed graph by coalscing the vertices of each strongly connected component into a single vertex, resulting in a directed acylcic graph.</p><p>In coalescing each strongly connected component:<ul><li>locations are averaged to find the centroid,</li><li>labels are concatenated,</li><li>radii are summed,</li><li>colors remain if all the same, otherwise reset to default,</li><li>weights are summed</li><li>selections remain if all the same, otherwise reset to default, and</li><li>tags are ignored.</li></ul>";
 			case Generator.Attribute.PARAMETERS_DESCRIPTION:
@@ -135,7 +135,7 @@ import edu.belmont.mth.visigraph.models.generators.*;
 			case Generator.Attribute.ARE_PARAMETERS_ALLOWED:
 				return true;
 			case Generator.Attribute.RELATED_GENERATORS:
-				return new String[ ] { "Complement of (another graph)", "Line graph of (another graph)" };
+				return new String[ ] { "Cartesian product of (two graphs)", "Complement of (another graph)", "Line graph of (another graph)" };
 			case Generator.Attribute.TAGS:
 				return new String[ ] { "Derived graph", "Directed graph" };
 			default:
