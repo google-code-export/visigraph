@@ -61,6 +61,7 @@ public class MainWindow extends JFrame
 	public MainWindow( )
 	{
 		super( GlobalSettings.applicationName );
+		this.setIconImage( ImageBundle.get( "app_icon_16x16" ) );
 		this.setSize( new Dimension( UserSettings.instance.mainWindowWidth.get( ), UserSettings.instance.mainWindowHeight.get( ) ) );
 		this.setDefaultCloseOperation( DO_NOTHING_ON_CLOSE );
 		this.addWindowListener( new WindowListener( )
