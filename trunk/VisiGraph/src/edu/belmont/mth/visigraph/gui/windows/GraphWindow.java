@@ -32,6 +32,7 @@ public class GraphWindow extends JInternalFrame implements GraphChangeEventListe
 	{
 		super( "", true, true, true, true );
 		this.file = null;
+		this.setFrameIcon( ImageIconBundle.get( "app_icon_12x12" ) );
 		this.setSize( new Dimension( UserSettings.instance.graphWindowWidth.get( ), UserSettings.instance.graphWindowHeight.get( ) ) );
 		this.add( this.setGdc( new GraphDisplayController( g ) ) );
 		this.setDefaultCloseOperation( DO_NOTHING_ON_CLOSE );

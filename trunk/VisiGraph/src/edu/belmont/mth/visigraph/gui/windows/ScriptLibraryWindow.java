@@ -21,6 +21,7 @@ public class ScriptLibraryWindow extends JFrame
 	public ScriptLibraryWindow( )
 	{
 		super( StringBundle.get( "script_library_window_text" ) );
+		this.setIconImage( ImageBundle.get( "app_icon_16x16" ) );
 		this.setSize( new Dimension( UserSettings.instance.scriptLibraryWindowWidth.get( ), UserSettings.instance.scriptLibraryWindowHeight.get( ) ) );
 		this.setDefaultCloseOperation( WindowConstants.DISPOSE_ON_CLOSE );
 		
