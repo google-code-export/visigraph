@@ -251,6 +251,7 @@ public class AboutDialog extends JDialog implements ActionListener
 		this.setLocationRelativeTo( owner );
 	}
 	
+	@Override
 	public void actionPerformed( ActionEvent e )
 	{
 		AboutDialog.dialog.setVisible( false );

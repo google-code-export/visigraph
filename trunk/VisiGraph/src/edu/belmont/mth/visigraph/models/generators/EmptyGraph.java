@@ -14,6 +14,7 @@ import edu.belmont.mth.visigraph.utilities.*;
  */
 public class EmptyGraph implements Generator
 {
+	@Override
 	public Graph generate( String params, boolean areLoopsAllowed, boolean areDirectedEdgesAllowed, boolean areMultipleEdgesAllowed, boolean areCyclesAllowed, Component owner )
 	{
 		Graph graph = new Graph( UserSettings.instance.defaultGraphName.get( ) + " " + this.toString( ), areLoopsAllowed, areDirectedEdgesAllowed, areMultipleEdgesAllowed, areCyclesAllowed );
@@ -30,6 +31,7 @@ public class EmptyGraph implements Generator
 		return graph;
 	}
 	
+	@Override
 	public Object getAttribute( Attribute attribute )
 	{
 		switch( attribute )

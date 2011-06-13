@@ -74,6 +74,7 @@ public class NewGraphDialog extends JDialog implements ActionListener
 			generatorComboBox.addItem( generator );
 		generatorComboBox.addItemListener( new ItemListener( )
 		{
+			@Override
 			public void itemStateChanged( ItemEvent e )
 			{
 				NewGraphDialog.this.generatorChanged( e.getItem( ) );
@@ -347,6 +348,7 @@ public class NewGraphDialog extends JDialog implements ActionListener
 		value = null;
 	}
 	
+	@Override
 	public void actionPerformed( ActionEvent e )
 	{
 		if( "Ok".equals( e.getActionCommand( ) ) )

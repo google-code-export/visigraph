@@ -80,6 +80,7 @@ public class GraphDisplayController extends JPanel
 				{
 					this.addActionListener( new ActionListener( )
 					{
+						@Override
 						public void actionPerformed( ActionEvent e )
 						{
 							List<Vertex> selectedVertices = GraphDisplayController.this.graph.getSelectedVertices( );
@@ -105,6 +106,7 @@ public class GraphDisplayController extends JPanel
 				{
 					this.addActionListener( new ActionListener( )
 					{
+						@Override
 						public void actionPerformed( ActionEvent e )
 						{
 							List<Vertex> selectedVertices = GraphDisplayController.this.graph.getSelectedVertices( );
@@ -125,6 +127,7 @@ public class GraphDisplayController extends JPanel
 				{
 					this.addActionListener( new ActionListener( )
 					{
+						@Override
 						public void actionPerformed( ActionEvent e )
 						{
 							ArrangeToolBar.this.arrangeWebButton.setEnabled( false );
@@ -134,6 +137,7 @@ public class GraphDisplayController extends JPanel
 							{
 								Map<Vertex, Point2D>	velocities	= new HashMap<Vertex, Point2D>( );
 								
+								@Override
 								public void actionPerformed( ActionEvent e )
 								{
 									List<Vertex> selectedVertices = GraphDisplayController.this.graph.getSelectedVertices( );
@@ -166,6 +170,7 @@ public class GraphDisplayController extends JPanel
 				{
 					this.addActionListener( new ActionListener( )
 					{
+						@Override
 						public void actionPerformed( ActionEvent e )
 						{
 							List<Vertex> selectedVertices = GraphDisplayController.this.graph.getSelectedVertices( );
@@ -189,6 +194,7 @@ public class GraphDisplayController extends JPanel
 				{
 					this.addActionListener( new ActionListener( )
 					{
+						@Override
 						public void actionPerformed( ActionEvent e )
 						{
 							List<Vertex> selectedVertices = GraphDisplayController.this.graph.getSelectedVertices( );
@@ -212,6 +218,7 @@ public class GraphDisplayController extends JPanel
 				{
 					this.addActionListener( new ActionListener( )
 					{
+						@Override
 						public void actionPerformed( ActionEvent e )
 						{
 							List<Vertex> selectedVertices = GraphDisplayController.this.graph.getSelectedVertices( );
@@ -235,6 +242,7 @@ public class GraphDisplayController extends JPanel
 				{
 					this.addActionListener( new ActionListener( )
 					{
+						@Override
 						public void actionPerformed( ActionEvent e )
 						{
 							List<Vertex> selectedVertices = GraphDisplayController.this.graph.getSelectedVertices( );
@@ -260,6 +268,7 @@ public class GraphDisplayController extends JPanel
 				{
 					this.addActionListener( new ActionListener( )
 					{
+						@Override
 						public void actionPerformed( ActionEvent e )
 						{
 							List<Vertex> selectedVertices = GraphDisplayController.this.graph.getSelectedVertices( );
@@ -286,6 +295,7 @@ public class GraphDisplayController extends JPanel
 				{
 					this.addActionListener( new ActionListener( )
 					{
+						@Override
 						public void actionPerformed( ActionEvent e )
 						{
 							List<Vertex> selectedVertices = GraphDisplayController.this.graph.getSelectedVertices( );
@@ -312,6 +322,7 @@ public class GraphDisplayController extends JPanel
 				{
 					this.addActionListener( new ActionListener( )
 					{
+						@Override
 						public void actionPerformed( ActionEvent e )
 						{
 							List<Vertex> selectedVertices = GraphDisplayController.this.graph.getSelectedVertices( );
@@ -344,6 +355,7 @@ public class GraphDisplayController extends JPanel
 				{
 					this.addActionListener( new ActionListener( )
 					{
+						@Override
 						public void actionPerformed( ActionEvent e )
 						{
 							List<Vertex> selectedVertices = GraphDisplayController.this.graph.getSelectedVertices( );
@@ -378,6 +390,7 @@ public class GraphDisplayController extends JPanel
 				{
 					this.addActionListener( new ActionListener( )
 					{
+						@Override
 						public void actionPerformed( ActionEvent e )
 						{
 							List<Vertex> selectedVertices = GraphDisplayController.this.graph.getSelectedVertices( );
@@ -401,6 +414,7 @@ public class GraphDisplayController extends JPanel
 				{
 					this.addActionListener( new ActionListener( )
 					{
+						@Override
 						public void actionPerformed( ActionEvent e )
 						{
 							List<Vertex> selectedVertices = GraphDisplayController.this.graph.getSelectedVertices( );
@@ -438,6 +452,7 @@ public class GraphDisplayController extends JPanel
 				{
 					this.addActionListener( new ActionListener( )
 					{
+						@Override
 						public void actionPerformed( ActionEvent e )
 						{
 							FunctionToolBar.this.oneTimeFunctionsMenu.show( FunctionToolBar.this.oneTimeFunctionsButton, 0, FunctionToolBar.this.oneTimeFunctionsButton.getHeight( ) );
@@ -453,6 +468,7 @@ public class GraphDisplayController extends JPanel
 				{
 					this.addActionListener( new ActionListener( )
 					{
+						@Override
 						public void actionPerformed( ActionEvent e )
 						{
 							FunctionToolBar.this.dynamicFunctionsMenu.show( FunctionToolBar.this.dynamicFunctionsButton, 0, FunctionToolBar.this.dynamicFunctionsButton.getHeight( ) );
@@ -483,6 +499,7 @@ public class GraphDisplayController extends JPanel
 				this.dynamicFunctionMenuItems = new HashMap<JCheckBoxMenuItem, Function>( );
 				ActionListener oneTimeFunctionMenuItemActionListener = new ActionListener( )
 				{
+					@Override
 					public void actionPerformed( ActionEvent e )
 					{
 						JMenuItem oneTimeFunctionMenuItem = (JMenuItem) e.getSource( );
@@ -492,6 +509,7 @@ public class GraphDisplayController extends JPanel
 				};
 				ActionListener dynamicFunctionMenuItemActionListener = new ActionListener( )
 				{
+					@Override
 					public void actionPerformed( ActionEvent e )
 					{
 						JCheckBoxMenuItem dynamicFunctionMenuItem = (JCheckBoxMenuItem) e.getSource( );
@@ -675,6 +693,7 @@ public class GraphDisplayController extends JPanel
 				{
 					this.addActionListener( new ActionListener( )
 					{
+						@Override
 						public void actionPerformed( ActionEvent e )
 						{
 							GraphDisplayController.this.setTool( Tool.POINTER_TOOL );
@@ -691,6 +710,7 @@ public class GraphDisplayController extends JPanel
 				{
 					this.addActionListener( new ActionListener( )
 					{
+						@Override
 						public void actionPerformed( ActionEvent e )
 						{
 							GraphDisplayController.this.setTool( Tool.GRAPH_TOOL );
@@ -706,6 +726,7 @@ public class GraphDisplayController extends JPanel
 				{
 					this.addActionListener( new ActionListener( )
 					{
+						@Override
 						public void actionPerformed( ActionEvent e )
 						{
 							GraphDisplayController.this.setTool( Tool.CAPTION_TOOL );
@@ -721,6 +742,7 @@ public class GraphDisplayController extends JPanel
 				{
 					this.addActionListener( new ActionListener( )
 					{
+						@Override
 						public void actionPerformed( ActionEvent e )
 						{
 							GraphDisplayController.this.setTool( Tool.CUT_TOOL );
@@ -813,6 +835,7 @@ public class GraphDisplayController extends JPanel
 			
 			final ActionListener paintMenuItemActionListener = new ActionListener( )
 			{
+				@Override
 				public void actionPerformed( ActionEvent e )
 				{
 					GraphDisplayController.this.paintColor = ToolToolBar.this.paintMenu.getComponentIndex( (Component) e.getSource( ) ) - 1;
@@ -907,6 +930,7 @@ public class GraphDisplayController extends JPanel
 				{
 					this.addActionListener( new ActionListener( )
 					{
+						@Override
 						public void actionPerformed( ActionEvent e )
 						{
 							List<Vertex> selectedVertices = GraphDisplayController.this.graph.getSelectedVertices( );
@@ -936,6 +960,7 @@ public class GraphDisplayController extends JPanel
 				{
 					this.addActionListener( new ActionListener( )
 					{
+						@Override
 						public void actionPerformed( ActionEvent e )
 						{
 							List<Vertex> selectedVertices = GraphDisplayController.this.graph.getSelectedVertices( );
@@ -968,6 +993,7 @@ public class GraphDisplayController extends JPanel
 				{
 					this.addActionListener( new ActionListener( )
 					{
+						@Override
 						public void actionPerformed( ActionEvent e )
 						{
 							List<Vertex> selectedVertices = GraphDisplayController.this.graph.getSelectedVertices( );
@@ -997,6 +1023,7 @@ public class GraphDisplayController extends JPanel
 				{
 					this.addActionListener( new ActionListener( )
 					{
+						@Override
 						public void actionPerformed( ActionEvent e )
 						{
 							List<Vertex> selectedVertices = GraphDisplayController.this.graph.getSelectedVertices( );
@@ -1032,6 +1059,7 @@ public class GraphDisplayController extends JPanel
 				{
 					this.addActionListener( new ActionListener( )
 					{
+						@Override
 						public void actionPerformed( ActionEvent e )
 						{
 							List<Edge> selectedEdges = GraphDisplayController.this.graph.getSelectedEdges( );
@@ -1061,6 +1089,7 @@ public class GraphDisplayController extends JPanel
 				{
 					this.addActionListener( new ActionListener( )
 					{
+						@Override
 						public void actionPerformed( ActionEvent e )
 						{
 							List<Edge> selectedEdges = GraphDisplayController.this.graph.getSelectedEdges( );
@@ -1093,6 +1122,7 @@ public class GraphDisplayController extends JPanel
 				{
 					this.addActionListener( new ActionListener( )
 					{
+						@Override
 						public void actionPerformed( ActionEvent e )
 						{
 							List<Edge> selectedEdges = GraphDisplayController.this.graph.getSelectedEdges( );
@@ -1122,6 +1152,7 @@ public class GraphDisplayController extends JPanel
 				{
 					this.addActionListener( new ActionListener( )
 					{
+						@Override
 						public void actionPerformed( ActionEvent e )
 						{
 							List<Edge> selectedEdges = GraphDisplayController.this.graph.getSelectedEdges( );
@@ -1172,6 +1203,7 @@ public class GraphDisplayController extends JPanel
 				printJob.print( );
 		}
 		
+		@Override
 		public int print( Graphics g, PageFormat pageFormat, int pageIndex )
 		{
 			if( pageIndex > 0 )
@@ -1213,6 +1245,7 @@ public class GraphDisplayController extends JPanel
 				{
 					this.addActionListener( new ActionListener( )
 					{
+						@Override
 						public void actionPerformed( ActionEvent e )
 						{
 							GraphDisplayController.this.settings.showVertexLabels.set( !GraphDisplayController.this.settings.showVertexLabels.get( ) );
@@ -1228,6 +1261,7 @@ public class GraphDisplayController extends JPanel
 				{
 					this.addActionListener( new ActionListener( )
 					{
+						@Override
 						public void actionPerformed( ActionEvent e )
 						{
 							GraphDisplayController.this.settings.showVertexWeights.set( !GraphDisplayController.this.settings.showVertexWeights.get( ) );
@@ -1243,6 +1277,7 @@ public class GraphDisplayController extends JPanel
 				{
 					this.addActionListener( new ActionListener( )
 					{
+						@Override
 						public void actionPerformed( ActionEvent e )
 						{
 							GraphDisplayController.this.settings.showEdgeHandles.set( !GraphDisplayController.this.settings.showEdgeHandles.get( ) );
@@ -1258,6 +1293,7 @@ public class GraphDisplayController extends JPanel
 				{
 					this.addActionListener( new ActionListener( )
 					{
+						@Override
 						public void actionPerformed( ActionEvent e )
 						{
 							GraphDisplayController.this.settings.showEdgeLabels.set( !GraphDisplayController.this.settings.showEdgeLabels.get( ) );
@@ -1273,6 +1309,7 @@ public class GraphDisplayController extends JPanel
 				{
 					this.addActionListener( new ActionListener( )
 					{
+						@Override
 						public void actionPerformed( ActionEvent e )
 						{
 							GraphDisplayController.this.settings.showEdgeWeights.set( !GraphDisplayController.this.settings.showEdgeWeights.get( ) );
@@ -1288,6 +1325,7 @@ public class GraphDisplayController extends JPanel
 				{
 					this.addActionListener( new ActionListener( )
 					{
+						@Override
 						public void actionPerformed( ActionEvent e )
 						{
 							GraphDisplayController.this.settings.showCaptionHandles.set( !GraphDisplayController.this.settings.showCaptionHandles.get( ) );
@@ -1303,6 +1341,7 @@ public class GraphDisplayController extends JPanel
 				{
 					this.addActionListener( new ActionListener( )
 					{
+						@Override
 						public void actionPerformed( ActionEvent e )
 						{
 							GraphDisplayController.this.settings.showCaptionEditors.set( !GraphDisplayController.this.settings.showCaptionEditors.get( ) );
@@ -1355,6 +1394,7 @@ public class GraphDisplayController extends JPanel
 				{
 					this.addActionListener( new ActionListener( )
 					{
+						@Override
 						public void actionPerformed( ActionEvent e )
 						{
 							GraphDisplayController.this.zoomFit( );
@@ -1370,6 +1410,7 @@ public class GraphDisplayController extends JPanel
 				{
 					this.addActionListener( new ActionListener( )
 					{
+						@Override
 						public void actionPerformed( ActionEvent e )
 						{
 							GraphDisplayController.this.zoomOneToOne( );
@@ -1385,6 +1426,7 @@ public class GraphDisplayController extends JPanel
 				{
 					this.addActionListener( new ActionListener( )
 					{
+						@Override
 						public void actionPerformed( ActionEvent e )
 						{
 							Point2D.Double viewportCenter = new Point2D.Double( GraphDisplayController.this.viewport.getWidth( ) / 2.0, GraphDisplayController.this.viewport.getHeight( ) / 2.0 );
@@ -1411,6 +1453,7 @@ public class GraphDisplayController extends JPanel
 				{
 					this.addActionListener( new ActionListener( )
 					{
+						@Override
 						public void actionPerformed( ActionEvent e )
 						{
 							Point2D.Double viewportCenter = new Point2D.Double( GraphDisplayController.this.viewport.getWidth( ) / 2.0, GraphDisplayController.this.viewport.getHeight( ) / 2.0 );
@@ -1556,7 +1599,7 @@ public class GraphDisplayController extends JPanel
 			@Override
 			public void lostOwnership( Clipboard c, Transferable t )
 			{
-			// Ignore?
+				// Ignore?
 			}
 		} );
 	}
@@ -1757,6 +1800,7 @@ public class GraphDisplayController extends JPanel
 		} );
 		this.viewport.addMouseWheelListener( new MouseWheelListener( )
 		{
+			@Override
 			public void mouseWheelMoved( MouseWheelEvent e )
 			{
 				GraphDisplayController.this.zoomCenter( new Point2D.Double( GraphDisplayController.this.currentMousePoint.x, GraphDisplayController.this.currentMousePoint.y ), 1 - e.getWheelRotation( ) * UserSettings.instance.scrollIncrementZoom.get( ) );
@@ -1764,19 +1808,22 @@ public class GraphDisplayController extends JPanel
 		} );
 		this.viewport.addKeyListener( new KeyListener( )
 		{
+			@Override
 			public void keyPressed( KeyEvent e )
 			{
 				GraphDisplayController.this.viewportKeyPressed( e );
 			}
 			
+			@Override
 			public void keyReleased( KeyEvent e )
 			{
-			// Do nothing
+				// Do nothing
 			}
 			
+			@Override
 			public void keyTyped( KeyEvent e )
 			{
-			// Do nothing
+				// Do nothing
 			}
 		} );
 		this.viewportPanel.add( this.viewport, BorderLayout.CENTER );
@@ -2196,6 +2243,7 @@ public class GraphDisplayController extends JPanel
 			
 			this.panTimer = new Timer( 50, new ActionListener( )
 			{
+				@Override
 				public void actionPerformed( ActionEvent e )
 				{
 					Timer timer = (Timer) e.getSource( );

@@ -19,8 +19,11 @@ import edu.belmont.mth.visigraph.models.generators.*;
 	
 	public Graph generate( String params, boolean areLoopsAllowed, boolean areDirectedEdgesAllowed, boolean areMultipleEdgesAllowed, boolean areCyclesAllowed, Component owner )
 	{
-		Graph graph = new Graph( UserSettings.instance.defaultGraphName.get( ) + " " + this.toString( ), areLoopsAllowed, areDirectedEdgesAllowed, areMultipleEdgesAllowed, areCyclesAllowed );
-		Pattern pattern = Pattern.compile( (String) this.getAttribute( Generator.Attribute.PARAMETERS_VALIDATION_EXPRESSION ) );
+		Graph graph = new Graph( UserSettings.instance.defaultGraphName.get( ) 
+				+ " " + this.toString( ), areLoopsAllowed, areDirectedEdgesAllowed, 
+				areMultipleEdgesAllowed, areCyclesAllowed );
+		Pattern pattern = Pattern.compile( (String) this.getAttribute( 
+				Generator.Attribute.PARAMETERS_VALIDATION_EXPRESSION ) );
 		Matcher matcher = pattern.matcher( params );
 		matcher.find( );
 		
@@ -35,7 +38,11 @@ import edu.belmont.mth.visigraph.models.generators.*;
 		
 		for( int row = 0; row < rows; ++row )
 			for( int col = 0; col < cols; ++col )
-				graph.vertices.add( new Vertex( UserSettings.instance.arrangeGridSpacing.get( ) * multipliers[col], UserSettings.instance.arrangeGridSpacing.get( ) * row ) );
+				graph.vertices.add( new Vertex( 
+						UserSettings.instance.arrangeGridSpacing.get( ) 
+						* multipliers[col], 
+						UserSettings.instance.arrangeGridSpacing.get( ) 
+						* row ) );
 		
 		LinkedList queue = new LinkedList( );
 		queue.addLast( new VertexRange( 0, 0, rows ) );
@@ -45,10 +52,19 @@ import edu.belmont.mth.visigraph.models.generators.*;
 			VertexRange range = queue.pop( );
 			
 			for( int i = 0; i < range.height; ++i )
-				graph.edges.add( new Edge( true, graph.vertices.get( ( range.row + i ) * cols + range.col % cols ), graph.vertices.get( ( range.row + i ) * cols + ( range.col + 1 ) % cols ) ) );
+				graph.edges.add( new Edge( true, 
+					graph.vertices.get( ( range.row + i ) 
+						* cols + range.col % cols ), 
+					graph.vertices.get( ( range.row + i ) 
+						* cols + ( range.col + 1 ) % cols ) ) );
 			
 			for( int i = 0; i < range.height; ++i )
-				graph.edges.add( new Edge( true, graph.vertices.get( ( range.row + i ) * cols + range.col % cols ), graph.vertices.get( ( range.row + ( i + range.height / 2 ) % range.height ) * cols + ( range.col + 1 ) % cols ) ) );
+				graph.edges.add( new Edge( true, 
+					graph.vertices.get( ( range.row + i ) 
+						* cols + range.col % cols ), 
+					graph.vertices.get( ( range.row 
+						+ ( i + range.height / 2 ) % range.height ) 
+						* cols + ( range.col + 1 ) % cols ) ) );
 			
 			if( range.height > 2 )
 			{

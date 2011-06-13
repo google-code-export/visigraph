@@ -430,6 +430,7 @@ public class MainWindow extends JFrame
 			{
 				this.addActionListener( new ActionListener( )
 				{
+					@Override
 					public void actionPerformed( ActionEvent e )
 					{
 						JInternalFrame selectedFrame = MainWindow.this.desktopPane.getSelectedFrame( );
@@ -448,6 +449,7 @@ public class MainWindow extends JFrame
 			{
 				this.addActionListener( new ActionListener( )
 				{
+					@Override
 					public void actionPerformed( ActionEvent e )
 					{
 						JInternalFrame selectedFrame = MainWindow.this.desktopPane.getSelectedFrame( );
@@ -465,6 +467,7 @@ public class MainWindow extends JFrame
 			{
 				this.addActionListener( new ActionListener( )
 				{
+					@Override
 					public void actionPerformed( ActionEvent e )
 					{
 						JInternalFrame selectedFrame = MainWindow.this.desktopPane.getSelectedFrame( );

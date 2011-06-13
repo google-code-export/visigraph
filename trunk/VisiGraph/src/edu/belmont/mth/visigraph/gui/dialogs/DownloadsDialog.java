@@ -175,7 +175,8 @@ public class DownloadsDialog extends JDialog implements ActionListener
 		}.start( );
 	}
 	
-	public void actionPerformed( ActionEvent e )
+	@Override
+    public void actionPerformed( ActionEvent e )
 	{
 		if( e.getActionCommand( ).equals( "Download" ) )
 			try

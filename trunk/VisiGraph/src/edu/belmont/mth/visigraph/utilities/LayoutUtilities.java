@@ -278,6 +278,7 @@ public class LayoutUtilities
 		LinkedList<Vertex> sortedVertices = new LinkedList<Vertex>( vertices );
 		Collections.sort( sortedVertices, new Comparator<Vertex>( )
 		{
+			@Override
 			public int compare( Vertex v1, Vertex v2 )
 			{
 				return (int) Math.round( Math.signum( v1.x.get( ) - v2.x.get( ) ) );
@@ -296,6 +297,7 @@ public class LayoutUtilities
 		LinkedList<Vertex> sortedVertices = new LinkedList<Vertex>( vertices );
 		Collections.sort( sortedVertices, new Comparator<Vertex>( )
 		{
+			@Override
 			public int compare( Vertex v1, Vertex v2 )
 			{
 				return (int) Math.round( Math.signum( v1.y.get( ) - v2.y.get( ) ) );
