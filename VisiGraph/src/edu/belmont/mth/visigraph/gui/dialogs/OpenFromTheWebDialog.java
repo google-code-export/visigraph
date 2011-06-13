@@ -155,7 +155,8 @@ public class OpenFromTheWebDialog extends JDialog implements ActionListener
 		value = String.format( "graphs/%s.vsg", filename );
 	}
 	
-	public void actionPerformed( ActionEvent e )
+	@Override
+    public void actionPerformed( ActionEvent e )
 	{
 		if( e.getActionCommand( ).equals( "Download" ) )
 			try

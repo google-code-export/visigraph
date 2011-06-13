@@ -106,6 +106,7 @@ public class DebugDialog extends JDialog implements ActionListener
 		this.setLocationRelativeTo( owner );
 	}
 	
+	@Override
 	public void actionPerformed( ActionEvent e )
 	{
 		DebugDialog.dialog.setVisible( false );

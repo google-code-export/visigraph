@@ -40,6 +40,8 @@ public class GraphWindow extends JInternalFrame implements GraphChangeEventListe
 		this.hasLoaded = false;
 		this.addInternalFrameListener( new InternalFrameListener( )
 		{
+			
+			@Override
 			public void internalFrameActivated( InternalFrameEvent e )
 			{
 				if( !GraphWindow.this.hasLoaded )
@@ -49,23 +51,29 @@ public class GraphWindow extends JInternalFrame implements GraphChangeEventListe
 				}
 			}
 			
+			@Override
 			public void internalFrameClosed( InternalFrameEvent e )
 			{}
 			
+			@Override
 			public void internalFrameClosing( InternalFrameEvent e )
 			{
 				GraphWindow.this.closingWindow( e );
 			}
 			
+			@Override
 			public void internalFrameDeactivated( InternalFrameEvent e )
 			{}
 			
+			@Override
 			public void internalFrameDeiconified( InternalFrameEvent e )
 			{}
 			
+			@Override
 			public void internalFrameIconified( InternalFrameEvent e )
 			{}
 			
+			@Override
 			public void internalFrameOpened( InternalFrameEvent e )
 			{}
 		} );
@@ -137,6 +145,7 @@ public class GraphWindow extends JInternalFrame implements GraphChangeEventListe
 		return this.hasChanged;
 	}
 	
+	@Override
 	public void graphChangeEventOccurred( GraphChangeEvent e )
 	{
 		this.setHasChanged( true );

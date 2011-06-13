@@ -199,7 +199,8 @@ public class EditColorDialog extends JDialog implements ActionListener
 		value = null;
 	}
 	
-	public void actionPerformed( ActionEvent e )
+	@Override
+    public void actionPerformed( ActionEvent e )
 	{
 		if( "Ok".equals( e.getActionCommand( ) ) )
 			value = tempValue;

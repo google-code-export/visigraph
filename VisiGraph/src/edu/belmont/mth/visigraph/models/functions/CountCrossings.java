@@ -38,6 +38,7 @@ public class CountCrossings implements Function
 			return GeometryUtilities.getCrossings( e0.getArc( ), e0.getCenter( ), e1.getArc( ), e1.getCenter( ) );
 	}
 	
+	@Override
 	public String evaluate( Graphics2D g2D, Graph g, Component owner )
 	{
 		List<Edge> edges = g.getSelectedEdges( );
@@ -66,6 +67,7 @@ public class CountCrossings implements Function
 		return crossingsCount + "";
 	}
 	
+	@Override
 	public Object getAttribute( Function.Attribute attribute )
 	{
 		switch( attribute )
@@ -91,6 +93,7 @@ public class CountCrossings implements Function
 		}
 	}
 	
+	@Override
 	public boolean isApplicable( boolean areLoopsAllowed, boolean areDirectedEdgesAllowed, boolean areMultipleEdgesAllowed, boolean areCyclesAllowed )
 	{
 		return true;

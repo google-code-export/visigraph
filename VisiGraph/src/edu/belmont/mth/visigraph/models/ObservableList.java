@@ -31,8 +31,8 @@ public class ObservableList<T> extends Observable implements List<T>
 	private boolean			notificationsSuspended;
 	
 	/**
-	 * An {@code Observer} used to notify this {@code ObservableList}'s subscribed {@code Observer}s of changes to any of its {@code
-	 * Observable} elements' properties
+	 * An {@code Observer} used to notify this {@code ObservableList}'s subscribed {@code Observer}s of changes to any of its {@code Observable}
+	 * elements' properties
 	 */
 	private final Observer	elementObserver;
 	
@@ -57,6 +57,7 @@ public class ObservableList<T> extends Observable implements List<T>
 		};
 	}
 	
+	@Override
 	public void add( int location, T object )
 	{
 		this.suspendNotifications( true );
@@ -71,6 +72,7 @@ public class ObservableList<T> extends Observable implements List<T>
 		this.notifyObservers( this );
 	}
 	
+	@Override
 	public boolean add( T object )
 	{
 		this.suspendNotifications( true );
@@ -87,6 +89,7 @@ public class ObservableList<T> extends Observable implements List<T>
 		return ret;
 	}
 	
+	@Override
 	public boolean addAll( Collection<? extends T> collection )
 	{
 		this.suspendNotifications( true );
@@ -104,6 +107,7 @@ public class ObservableList<T> extends Observable implements List<T>
 		return ret;
 	}
 	
+	@Override
 	public boolean addAll( int location, Collection<? extends T> collection )
 	{
 		this.suspendNotifications( true );
@@ -121,6 +125,7 @@ public class ObservableList<T> extends Observable implements List<T>
 		return ret;
 	}
 	
+	@Override
 	public void clear( )
 	{
 		this.suspendNotifications( true );
@@ -136,51 +141,61 @@ public class ObservableList<T> extends Observable implements List<T>
 		this.notifyObservers( this );
 	}
 	
+	@Override
 	public boolean contains( Object object )
 	{
 		return this.list.contains( object );
 	}
 	
+	@Override
 	public boolean containsAll( Collection<?> collection )
 	{
 		return this.list.containsAll( collection );
 	}
 	
+	@Override
 	public T get( int location )
 	{
 		return this.list.get( location );
 	}
 	
+	@Override
 	public int indexOf( Object object )
 	{
 		return this.list.indexOf( object );
 	}
 	
+	@Override
 	public boolean isEmpty( )
 	{
 		return this.list.isEmpty( );
 	}
 	
+	@Override
 	public Iterator<T> iterator( )
 	{
 		return this.list.iterator( );
 	}
 	
+	@Override
 	public int lastIndexOf( Object object )
 	{
 		return this.list.lastIndexOf( object );
 	}
 	
+	@Override
 	public ListIterator<T> listIterator( )
 	{
 		return this.list.listIterator( );
 	}
 	
+	@Override
 	public ListIterator<T> listIterator( int location )
 	{
 		return this.list.listIterator( location );
 	}
 	
+	@Override
 	public T remove( int location )
 	{
 		this.suspendNotifications( true );
@@ -197,6 +212,7 @@ public class ObservableList<T> extends Observable implements List<T>
 		return ret;
 	}
 	
+	@Override
 	public boolean remove( Object object )
 	{
 		this.suspendNotifications( true );
@@ -213,6 +229,7 @@ public class ObservableList<T> extends Observable implements List<T>
 		return ret;
 	}
 	
+	@Override
 	public boolean removeAll( Collection<?> collection )
 	{
 		this.suspendNotifications( true );
@@ -233,6 +250,7 @@ public class ObservableList<T> extends Observable implements List<T>
 		return ret;
 	}
 	
+	@Override
 	public boolean retainAll( Collection<?> collection )
 	{
 		this.suspendNotifications( true );
@@ -251,6 +269,7 @@ public class ObservableList<T> extends Observable implements List<T>
 		return ret;
 	}
 	
+	@Override
 	public T set( int location, T object )
 	{
 		this.suspendNotifications( true );
@@ -273,11 +292,13 @@ public class ObservableList<T> extends Observable implements List<T>
 		return ret;
 	}
 	
+	@Override
 	public int size( )
 	{
 		return this.list.size( );
 	}
 	
+	@Override
 	public List<T> subList( int start, int end )
 	{
 		return this.list.subList( start, end );
@@ -301,11 +322,13 @@ public class ObservableList<T> extends Observable implements List<T>
 		return ret;
 	}
 	
+	@Override
 	public Object[ ] toArray( )
 	{
 		return this.list.toArray( );
 	}
 	
+	@Override
 	@SuppressWarnings( "hiding" )
 	public <T> T[ ] toArray( T[ ] array )
 	{

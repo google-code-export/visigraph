@@ -241,7 +241,8 @@ public class PreferencesDialog extends JDialog implements ActionListener
 		value = null;
 	}
 	
-	public void actionPerformed( ActionEvent e )
+	@Override
+    public void actionPerformed( ActionEvent e )
 	{
 		if( e.getActionCommand( ).equals( "Ok" ) )
 		{

@@ -203,7 +203,8 @@ public class EditCaptionDialog extends JDialog implements ActionListener
 		value = null;
 	}
 	
-	public void actionPerformed( ActionEvent e )
+	@Override
+    public void actionPerformed( ActionEvent e )
 	{
 		if( "Ok".equals( e.getActionCommand( ) ) )
 			value = new Value( captionTextArea.getText( ), Math.pow( captionFontSizeSlider.getValue( ) * 0.3155, 2.0 ) );
