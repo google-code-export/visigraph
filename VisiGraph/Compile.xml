@@ -1,14 +1,22 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <project default="compile" name="Compile VisiGraph">
-    <target name="compile" >
-    	<tstamp/>
-        <jar destfile="jar/VisiGraph (${DSTAMP}${TSTAMP}).jar" filesetmanifest="mergewithoutmain">
-            <manifest>
-                <attribute name="Main-Class" value="edu.belmont.mth.visigraph.Main"/>
-                <attribute name="Class-Path" value="."/>
-            </manifest>
-            <fileset dir="bin"/>
-        	<zipfileset excludes="META-INF/*.SF" src="lib/bsh-2.0b4.jar"/>
-        </jar>
-    </target>
+	<target name="compile" >
+		<tstamp/>
+		<jar destfile="jar/VisiGraph (${DSTAMP}${TSTAMP}).jar" filesetmanifest="mergewithoutmain">
+			<manifest>
+				<attribute name="Main-Class" value="edu.belmont.mth.visigraph.Main"/>
+				<attribute name="Class-Path" value="."/>
+			</manifest>
+			<fileset dir="bin"/>
+			<zipfileset excludes="META-INF/*.SF" src="lib/bsh-2.0b4.jar"/>
+		</jar>
+		<jar destfile="jar/VisiGraph.jar" filesetmanifest="mergewithoutmain">
+			<manifest>
+				<attribute name="Main-Class" value="edu.belmont.mth.visigraph.Main"/>
+				<attribute name="Class-Path" value="."/>
+			</manifest>
+			<fileset dir="bin"/>
+			<zipfileset excludes="META-INF/*.SF" src="lib/bsh-2.0b4.jar"/>
+		</jar>
+	</target>
 </project>
