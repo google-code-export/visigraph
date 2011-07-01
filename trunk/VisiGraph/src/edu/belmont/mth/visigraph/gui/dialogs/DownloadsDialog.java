@@ -8,9 +8,11 @@ import java.awt.*;
 import java.net.*;
 import java.util.*;
 import javax.swing.*;
+import java.util.List;
 import java.awt.event.*;
 import java.util.regex.*;
 import edu.belmont.mth.visigraph.settings.*;
+import edu.belmont.mth.visigraph.gui.dialogs.DownloaderDialog.DownloadData;
 import edu.belmont.mth.visigraph.resources.*;
 import edu.belmont.mth.visigraph.utilities.*;
 
@@ -19,17 +21,17 @@ import edu.belmont.mth.visigraph.utilities.*;
  */
 public class DownloadsDialog extends JDialog implements ActionListener
 {
-	public final JCheckBox			getLatestCheckBox;
-	public final JPanel				generatorsPanel;
-	public final JPanel				functionsPanel;
+	private static JPanel				generatorsPanel;
+	private static JPanel				functionsPanel;
+	private static DownloadsDialog		dialog;
+	private static List<DownloadData>	value;
 	
-	private static DownloadsDialog	dialog;
-	
-	public static void showDialog( Component owner )
+	public static List<DownloadData> showDialog( Component owner )
 	{
+		value = null;
 		dialog = new DownloadsDialog( JOptionPane.getFrameForComponent( owner ) );
 		dialog.setVisible( true );
-		return;
+		return value;
 	}
 	
 	private DownloadsDialog( Frame owner )
@@ -38,7 +40,7 @@ public class DownloadsDialog extends JDialog implements ActionListener
 		this.setResizable( false );
 		
 		JLabel generatorsLabel = new JLabel( StringBundle.get( "downloads_dialog_available_generators_label" ) );
-		this.generatorsPanel = new JPanel( new FlowLayout( FlowLayout.LEFT ) )
+		generatorsPanel = new JPanel( new FlowLayout( FlowLayout.LEFT ) )
 		{
 			{
 				this.setBackground( Color.white );
@@ -53,7 +55,7 @@ public class DownloadsDialog extends JDialog implements ActionListener
 				} );
 			}
 		};
-		JScrollPane generatorsScrollPane = new JScrollPane( this.generatorsPanel )
+		JScrollPane generatorsScrollPane = new JScrollPane( generatorsPanel )
 		{
 			{
 				this.setMinimumSize( new Dimension( 400, 150 ) );
@@ -66,7 +68,7 @@ public class DownloadsDialog extends JDialog implements ActionListener
 				this.setBorder( BorderFactory.createEmptyBorder( 5, 0, 0, 0 ) );
 			}
 		};
-		this.functionsPanel = new JPanel( new FlowLayout( FlowLayout.LEFT ) )
+		functionsPanel = new JPanel( new FlowLayout( FlowLayout.LEFT ) )
 		{
 			{
 				this.setBackground( Color.white );
@@ -80,17 +82,10 @@ public class DownloadsDialog extends JDialog implements ActionListener
 				} );
 			}
 		};
-		JScrollPane functionsScrollPane = new JScrollPane( this.functionsPanel )
+		JScrollPane functionsScrollPane = new JScrollPane( functionsPanel )
 		{
 			{
 				this.setMinimumSize( new Dimension( 400, 150 ) );
-			}
-		};
-		
-		this.getLatestCheckBox = new JCheckBox( String.format( StringBundle.get( "downloads_dialog_download_latest_label" ), GlobalSettings.applicationName ) )
-		{
-			{
-				this.setBorder( BorderFactory.createEmptyBorder( 5, 0, 0, 0 ) );
 			}
 		};
 		
@@ -109,8 +104,8 @@ public class DownloadsDialog extends JDialog implements ActionListener
 		};
 		inputPanel.setLayout( layout );
 		
-		layout.setHorizontalGroup( layout.createSequentialGroup( ).addGroup( layout.createParallelGroup( GroupLayout.Alignment.LEADING ).addComponent( generatorsLabel ).addComponent( generatorsScrollPane ).addComponent( functionsLabel ).addComponent( functionsScrollPane ).addComponent( this.getLatestCheckBox ) ) );
-		layout.setVerticalGroup( layout.createSequentialGroup( ).addGroup( layout.createParallelGroup( GroupLayout.Alignment.LEADING ).addComponent( generatorsLabel ) ).addGroup( layout.createParallelGroup( GroupLayout.Alignment.CENTER ).addComponent( generatorsScrollPane ) ).addGroup( layout.createParallelGroup( GroupLayout.Alignment.LEADING ).addComponent( functionsLabel ) ).addGroup( layout.createParallelGroup( GroupLayout.Alignment.CENTER ).addComponent( functionsScrollPane ) ).addGroup( layout.createParallelGroup( GroupLayout.Alignment.LEADING ).addComponent( this.getLatestCheckBox ) ) );
+		layout.setHorizontalGroup( layout.createSequentialGroup( ).addGroup( layout.createParallelGroup( GroupLayout.Alignment.LEADING ).addComponent( generatorsLabel ).addComponent( generatorsScrollPane ).addComponent( functionsLabel ).addComponent( functionsScrollPane ) ) );
+		layout.setVerticalGroup( layout.createSequentialGroup( ).addGroup( layout.createParallelGroup( GroupLayout.Alignment.LEADING ).addComponent( generatorsLabel ) ).addGroup( layout.createParallelGroup( GroupLayout.Alignment.CENTER ).addComponent( generatorsScrollPane ) ).addGroup( layout.createParallelGroup( GroupLayout.Alignment.LEADING ).addComponent( functionsLabel ) ).addGroup( layout.createParallelGroup( GroupLayout.Alignment.CENTER ).addComponent( functionsScrollPane ) ) );
 		
 		// Create and initialize the buttons
 		final JButton okButton = new JButton( StringBundle.get( "download_button_text" ) )
@@ -179,86 +174,45 @@ public class DownloadsDialog extends JDialog implements ActionListener
     public void actionPerformed( ActionEvent e )
 	{
 		if( e.getActionCommand( ).equals( "Download" ) )
-			try
-			{
-				this.setCursor( Cursor.getPredefinedCursor( Cursor.WAIT_CURSOR ) );
-				this.downloadGenerators( );
-				this.downloadFunctions( );
-				this.downloadLatestVersion( );
-			}
-			catch( Exception ex )
-			{
-				DebugUtilities.logException( "An exception occurred while downloading files.", ex );
-				JOptionPane.showMessageDialog( this, StringBundle.get( "an_exception_occurred_while_downloading_files_dialog_message" ), GlobalSettings.applicationName, JOptionPane.ERROR_MESSAGE );
-			}
-			finally
-			{
-				this.setCursor( Cursor.getDefaultCursor( ) );
-			}
+			value = this.getSelectedDownloads( );
 		
 		DownloadsDialog.dialog.setVisible( false );
 	}
 	
-	public void downloadFunctions( ) throws Exception
+	private List<DownloadData> getSelectedDownloads( )
 	{
-		File folder = new File( "functions" );
+		List<DownloadData> ret = new ArrayList<DownloadData>( );
 		
-		if( !folder.exists( ) || !folder.isDirectory( ) )
-			folder.mkdir( );
-		
-		for( Component component : this.functionsPanel.getComponents( ) )
+		for( Component component : generatorsPanel.getComponents( ) )
 		{
 			JCheckBox checkBox = (JCheckBox) component;
 			
 			if( checkBox.isSelected( ) )
-				WebUtilities.downloadFile( String.format( GlobalSettings.applicationFunctionFileUrl, URLEncoder.encode( checkBox.getText( ), "UTF-8" ) ), String.format( "functions/%s.java", checkBox.getText( ) ) );
-		}
-	}
-	
-	public void downloadGenerators( ) throws Exception
-	{
-		File folder = new File( "generators" );
-		
-		if( !folder.exists( ) || !folder.isDirectory( ) )
-			folder.mkdir( );
-		
-		for( Component component : this.generatorsPanel.getComponents( ) )
-		{
-			JCheckBox checkBox = (JCheckBox) component;
-			
-			if( checkBox.isSelected( ) )
-				WebUtilities.downloadFile( String.format( GlobalSettings.applicationGeneratorFileUrl, URLEncoder.encode( checkBox.getText( ), "UTF-8" ) ), String.format( "generators/%s.java", checkBox.getText( ) ) );
-		}
-	}
-	
-	public void downloadLatestVersion( ) throws Exception
-	{
-		if( this.getLatestCheckBox.isSelected( ) )
-		{
-			URLConnection conn = new URL( GlobalSettings.applicationJarDirectoryUrl ).openConnection( );
-			BufferedReader in = new BufferedReader( new InputStreamReader( conn.getInputStream( ) ) );
-			String line = null, latestJarUrl = null, latestJarFilename = null;
-			
-			while( ( line = in.readLine( ) ) != null )
-			{
-				Pattern pattern = Pattern.compile( "^.*<li><a\\shref=\"([^\\r\\n]+?\\.jar)\">([^\\r\\n]+?\\.jar)</a></li>.*$" );
-				Matcher matcher = pattern.matcher( line );
-				matcher.find( );
-				
-				if( matcher.matches( ) )
+				try
 				{
-					latestJarUrl = matcher.group( 1 );
-					latestJarFilename = matcher.group( 2 );
+					ret.add( new DownloadData( String.format( GlobalSettings.applicationGeneratorFileUrl, URLEncoder.encode( checkBox.getText( ), "UTF-8" ) ), String.format( "generators/%s.java", checkBox.getText( ) ), checkBox.getText( ) ) );
 				}
-			}
-			
-			in.close( );
-			
-			WebUtilities.downloadFile( GlobalSettings.applicationJarDirectoryUrl + latestJarUrl, latestJarFilename );
+				catch( Throwable t )
+				{}
 		}
+		
+		for( Component component : functionsPanel.getComponents( ) )
+		{
+			JCheckBox checkBox = (JCheckBox) component;
+			
+			if( checkBox.isSelected( ) )
+				try
+				{
+					ret.add( new DownloadData( String.format( GlobalSettings.applicationFunctionFileUrl, URLEncoder.encode( checkBox.getText( ), "UTF-8" ) ), String.format( "functions/%s.java", checkBox.getText( ) ), checkBox.getText( ) ) );
+				}
+				catch( Throwable t )
+				{}
+		}
+		
+		return ret;
 	}
 	
-	public void loadFunctions( )
+	private void loadFunctions( )
 	{
 		try
 		{
@@ -278,16 +232,16 @@ public class DownloadsDialog extends JDialog implements ActionListener
 					{
 						{
 							this.setPreferredSize( new Dimension( 375, 23 ) );
-							this.setBackground( DownloadsDialog.this.functionsPanel.getBackground( ) );
+							this.setBackground( functionsPanel.getBackground( ) );
 						}
 					} );
 			}
 			
-			this.functionsPanel.setLayout( new GridLayout( 0, 1 ) );
-			this.functionsPanel.removeAll( );
+			functionsPanel.setLayout( new GridLayout( 0, 1 ) );
+			functionsPanel.removeAll( );
 			for( JCheckBox checkBox : checkBoxes )
-				this.functionsPanel.add( checkBox );
-			this.functionsPanel.updateUI( );
+				functionsPanel.add( checkBox );
+			functionsPanel.updateUI( );
 			in.close( );
 		}
 		catch( Throwable ex )
@@ -296,7 +250,7 @@ public class DownloadsDialog extends JDialog implements ActionListener
 		}
 	}
 	
-	public void loadGenerators( )
+	private void loadGenerators( )
 	{
 		try
 		{
@@ -316,16 +270,16 @@ public class DownloadsDialog extends JDialog implements ActionListener
 					{
 						{
 							this.setPreferredSize( new Dimension( 375, 23 ) );
-							this.setBackground( DownloadsDialog.this.generatorsPanel.getBackground( ) );
+							this.setBackground( generatorsPanel.getBackground( ) );
 						}
 					} );
 			}
 			
-			this.generatorsPanel.setLayout( new GridLayout( 0, 1 ) );
-			this.generatorsPanel.removeAll( );
+			generatorsPanel.setLayout( new GridLayout( 0, 1 ) );
+			generatorsPanel.removeAll( );
 			for( JCheckBox checkBox : checkBoxes )
-				this.generatorsPanel.add( checkBox );
-			this.generatorsPanel.updateUI( );
+				generatorsPanel.add( checkBox );
+			generatorsPanel.updateUI( );
 			in.close( );
 		}
 		catch( Throwable ex )

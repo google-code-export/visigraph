@@ -435,7 +435,7 @@ public class GraphDisplayController extends JPanel
 		}
 	}
 	
-	private class FunctionToolBar extends JToolBar
+	private class FunctionToolBar extends JToolBar implements Observer
 	{
 		private final JButton						oneTimeFunctionsButton;
 		private final JPopupMenu					oneTimeFunctionsMenu;
@@ -486,6 +486,14 @@ public class GraphDisplayController extends JPanel
 			this.dynamicFunctionMenuItems = new HashMap<JCheckBoxMenuItem, Function>( );
 			
 			this.refresh( );
+			
+			FunctionService.instance.functions.addObserver( this );
+		}
+		
+		@Override
+		public void finalize( )
+		{
+			FunctionService.instance.functions.deleteObserver( this );
 		}
 		
 		public void refresh( )
@@ -553,6 +561,12 @@ public class GraphDisplayController extends JPanel
 						}
 					}
 			}
+		}
+		
+		@Override
+		public void update( Observable observable, Object object )
+		{
+			this.refresh( );
 		}
 	}
 	

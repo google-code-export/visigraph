@@ -92,6 +92,7 @@ public class FunctionService
 		
 		// Load standard library functions
 		this.functions.add( new CountCrossings( ) );
+		// --add embedded functions here--
 		
 		// Load external scripted functions
 		File folder = new File( "functions" );
@@ -104,25 +105,38 @@ public class FunctionService
 					return name.endsWith( ".java" );
 				}
 			} ) )
-				try
-				{
-					Function function = (Function) new Interpreter( ).source( "functions/" + filename );
-					validateFunction( function );
-					this.functions.add( function );
-				}
-				catch( Throwable ex )
-				{
-					DebugUtilities.logException( String.format( "An exception occurred while compiling %s.", filename ), ex );
-				}
-		
-		// Sort functions lexicographically by name
-		Collections.sort( this.functions, new Comparator<Function>( )
+				this.loadScript( filename );
+	}
+	
+	/**
+	 * Loads a scripted {@code Function} into the Singleton list of functions maintained by this service in lexicographical position.
+	 * 
+	 * @param filename The filename of the script ending in .java
+	 */
+	public void loadScript( String filename )
+	{
+		try
 		{
-			@Override
-			public int compare( Function function0, Function function1 )
+			Function function = (Function) new Interpreter( ).source( "functions/" + filename );
+			validateFunction( function );
+			
+			int keyIndex = Collections.binarySearch( this.functions, function, new Comparator<Function>( )
 			{
-				return function0.toString( ).compareTo( function1.toString( ) );
-			}
-		} );
+				@Override
+				public int compare( Function f0, Function f1 )
+				{
+					return f0.toString( ).compareTo( f1.toString( ) );
+				}
+			} );
+			
+			if( keyIndex >= 0 )
+				this.functions.set( keyIndex, function );
+			else
+				this.functions.add( -keyIndex - 1, function );
+		}
+		catch( Throwable t )
+		{
+			DebugUtilities.logException( String.format( "An exception occurred while compiling %s.", filename ), t );
+		}
 	}
 }

@@ -8,6 +8,7 @@ import java.awt.*;
 import java.util.*;
 import java.beans.*;
 import javax.swing.*;
+import java.util.List;
 import java.awt.event.*;
 import java.awt.print.*;
 import javax.swing.event.*;
@@ -17,6 +18,9 @@ import edu.belmont.mth.visigraph.settings.*;
 import edu.belmont.mth.visigraph.resources.*;
 import edu.belmont.mth.visigraph.utilities.*;
 import edu.belmont.mth.visigraph.gui.dialogs.*;
+import edu.belmont.mth.visigraph.models.functions.*;
+import edu.belmont.mth.visigraph.models.generators.*;
+import edu.belmont.mth.visigraph.gui.dialogs.DownloaderDialog.*;
 
 /**
  * @author Cameron Behar
@@ -199,26 +203,31 @@ public class MainWindow extends JFrame
 					@Override
 					public void actionPerformed( ActionEvent e )
 					{
-						boolean success = false;
+						List<DownloadData> downloads = OpenFromTheWebDialog.showDialog( MainWindow.this );
 						
-						while( !success )
-						{
-							success = false;
-							
-							String filename = OpenFromTheWebDialog.showDialog( MainWindow.this );
-							if( filename != null )
-								try
+						if( downloads != null && !downloads.isEmpty( ) )
+							try
+							{
+								DownloaderDialog.showDialog( MainWindow.this, downloads, new DownloadListener( )
 								{
-									MainWindow.this.openFile( new File( filename ) );
-									success = true;
-								}
-								catch( IOException ex )
-								{
-									DebugUtilities.logException( "An exception occurred while loading a graph from file.", ex );
-								}
-							else
-								success = true;
-						}
+									@Override
+									public void downloaded( DownloadData download )
+									{
+										try
+										{
+											MainWindow.this.openFile( new File( download.destination ) );
+										}
+										catch( Exception ex )
+										{
+											DebugUtilities.logException( "An exception occurred while loading a graph from file.", ex );
+										}
+									}
+								} );
+							}
+							catch( Exception ex )
+							{
+								DebugUtilities.logException( "An exception occurred while loading a graph from file.", ex );
+							}
 					}
 				} );
 			}
@@ -728,7 +737,29 @@ public class MainWindow extends JFrame
 					@Override
 					public void actionPerformed( ActionEvent e )
 					{
-						DownloadsDialog.showDialog( MainWindow.this );
+						List<DownloadData> downloads = DownloadsDialog.showDialog( MainWindow.this );
+						
+						if( downloads != null && !downloads.isEmpty( ) )
+							try
+							{
+								DownloaderDialog.showDialog( MainWindow.this, downloads, new DownloadListener( )
+								{
+									@Override
+									public void downloaded( DownloadData download )
+									{
+										System.out.println( download.name );
+										if( download.destination.startsWith( "functions/" ) )
+											FunctionService.instance.loadScript( download.destination.substring( "functions/".length( ) ) );
+										else if( download.destination.startsWith( "generators/" ) )
+											GeneratorService.instance.loadScript( download.destination.substring( "generators/".length( ) ) );
+									}
+								} );
+							}
+							catch( Exception ex )
+							{
+								DebugUtilities.logException( "An exception occurred while downloading files.", ex );
+								JOptionPane.showMessageDialog( MainWindow.this, StringBundle.get( "an_exception_occurred_while_downloading_files_dialog_message" ), GlobalSettings.applicationName, JOptionPane.ERROR_MESSAGE );
+							}
 					}
 				} );
 			}

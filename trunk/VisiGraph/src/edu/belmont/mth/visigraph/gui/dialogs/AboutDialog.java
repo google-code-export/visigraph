@@ -21,7 +21,6 @@ public class AboutDialog extends JDialog implements ActionListener
 	{
 		dialog = new AboutDialog( JOptionPane.getFrameForComponent( owner ) );
 		dialog.setVisible( true );
-		return;
 	}
 	
 	private AboutDialog( Frame owner )
