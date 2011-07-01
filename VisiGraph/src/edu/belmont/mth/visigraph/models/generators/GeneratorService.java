@@ -4,6 +4,8 @@
 package edu.belmont.mth.visigraph.models.generators;
 
 import java.io.*;
+import java.util.Collections;
+import java.util.Comparator;
 import bsh.Interpreter;
 import edu.belmont.mth.visigraph.models.*;
 import edu.belmont.mth.visigraph.utilities.*;
@@ -144,7 +146,6 @@ public class GeneratorService
 		// Load standard library generators
 		this.generators.add( new EmptyGraph( ) );
 		// --add embedded generators here--
-		// this.generators.add( new LineGraph( ) );
 		
 		// Load external scripted generators
 		File folder = new File( "generators" );
@@ -157,15 +158,38 @@ public class GeneratorService
 					return name.endsWith( ".java" );
 				}
 			} ) )
-				try
+				this.loadScript( filename );
+	}
+	
+	/**
+	 * Loads a scripted {@code Generator} into the Singleton list of generators maintained by this service in lexicographical position.
+	 * 
+	 * @param filename The filename of the script ending in .java
+	 */
+	public void loadScript( String filename )
+	{
+		try
+		{
+			Generator generator = (Generator) new Interpreter( ).source( "generators/" + filename );
+			validateGenerator( generator );
+			
+			int keyIndex = Collections.binarySearch( this.generators, generator, new Comparator<Generator>( )
+			{
+				@Override
+				public int compare( Generator g0, Generator g1 )
 				{
-					Generator generator = (Generator) new Interpreter( ).source( "generators/" + filename );
-					validateGenerator( generator );
-					this.generators.add( generator );
+					return g0.toString( ).compareTo( g1.toString( ) );
 				}
-				catch( Throwable ex )
-				{
-					DebugUtilities.logException( String.format( "An exception occurred while compiling %s.", filename ), ex );
-				}
+			} );
+			
+			if( keyIndex >= 0 )
+				this.generators.set( keyIndex, generator );
+			else
+				this.generators.add( -keyIndex - 1, generator );
+		}
+		catch( Throwable t )
+		{
+			DebugUtilities.logException( String.format( "An exception occurred while compiling %s.", filename ), t );
+		}
 	}
 }

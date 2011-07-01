@@ -7,6 +7,7 @@ import java.io.*;
 import java.awt.*;
 import java.net.*;
 import java.util.*;
+import java.util.List;
 import javax.swing.*;
 import java.awt.event.*;
 import java.util.regex.*;
@@ -14,6 +15,7 @@ import javax.swing.event.*;
 import edu.belmont.mth.visigraph.settings.*;
 import edu.belmont.mth.visigraph.resources.*;
 import edu.belmont.mth.visigraph.utilities.*;
+import edu.belmont.mth.visigraph.gui.dialogs.DownloaderDialog.*;
 
 /**
  * @author Cameron Behar
@@ -22,10 +24,10 @@ public class OpenFromTheWebDialog extends JDialog implements ActionListener
 {
 	private static JList				graphsList;
 	private static JButton				okButton;
-	private static String				value;
+	private static List<DownloadData>	value;
 	private static OpenFromTheWebDialog	dialog;
 	
-	public static String showDialog( Component owner )
+	public static List<DownloadData> showDialog( Component owner )
 	{
 		dialog = new OpenFromTheWebDialog( JOptionPane.getFrameForComponent( owner ) );
 		dialog.setVisible( true );
@@ -42,7 +44,7 @@ public class OpenFromTheWebDialog extends JDialog implements ActionListener
 			{
 				this.setEnabled( false );
 				this.setAutoscrolls( true );
-				this.setSelectionMode( ListSelectionModel.SINGLE_SELECTION );
+				this.setSelectionMode( ListSelectionModel.MULTIPLE_INTERVAL_SELECTION );
 				this.addListSelectionListener( new ListSelectionListener( )
 				{
 					@Override
@@ -58,20 +60,7 @@ public class OpenFromTheWebDialog extends JDialog implements ActionListener
 					{
 						if( event.getClickCount( ) > 1 )
 						{
-							try
-							{
-								OpenFromTheWebDialog.this.accept( );
-							}
-							catch( Exception ex )
-							{
-								DebugUtilities.logException( "An exception occurred while downloading files.", ex );
-								JOptionPane.showMessageDialog( OpenFromTheWebDialog.this, StringBundle.get( "an_exception_occurred_while_downloading_files_dialog_message" ), GlobalSettings.applicationName, JOptionPane.ERROR_MESSAGE );
-							}
-							finally
-							{
-								OpenFromTheWebDialog.this.setCursor( Cursor.getDefaultCursor( ) );
-							}
-							
+							OpenFromTheWebDialog.this.accept( );
 							OpenFromTheWebDialog.dialog.setVisible( false );
 						}
 					}
@@ -144,15 +133,23 @@ public class OpenFromTheWebDialog extends JDialog implements ActionListener
 				OpenFromTheWebDialog.this.loadGraphs( );
 			}
 		}.start( );
+		
+		value = null;
 	}
 	
-	private void accept( ) throws Exception
+	public void accept( )
 	{
-		this.setCursor( Cursor.getPredefinedCursor( Cursor.WAIT_CURSOR ) );
-		this.downloadGraphs( );
-		
-		String filename = ( (String) graphsList.getSelectedValue( ) ).substring( 1 );
-		value = String.format( "graphs/%s.vsg", filename );
+		value = new ArrayList<DownloadData>( );
+		for( Object selectedValue : graphsList.getSelectedValues( ) )
+		{
+			String filename = ( (String) selectedValue ).substring( 1 );
+			try
+			{
+				value.add( new DownloadData( String.format( GlobalSettings.applicationGraphsFileUrl, URLEncoder.encode( filename, "UTF-8" ).replace( "+", "%20" ) ), String.format( "graphs/%s.vsg", filename ), filename ) );
+			}
+			catch( Throwable t )
+			{}
+		}
 	}
 	
 	@Override
@@ -174,17 +171,6 @@ public class OpenFromTheWebDialog extends JDialog implements ActionListener
 			}
 		
 		OpenFromTheWebDialog.dialog.setVisible( false );
-	}
-	
-	public void downloadGraphs( ) throws Exception
-	{
-		File folder = new File( "graphs" );
-		
-		if( !folder.exists( ) || !folder.isDirectory( ) )
-			folder.mkdir( );
-		
-		String filename = ( (String) graphsList.getSelectedValue( ) ).substring( 1 );
-		WebUtilities.downloadFile( String.format( GlobalSettings.applicationGraphsFileUrl, URLEncoder.encode( filename, "UTF-8" ).replace( "+", "%20" ) ), String.format( "graphs/%s.vsg", filename ) );
 	}
 	
 	public void loadGraphs( )
@@ -214,6 +200,5 @@ public class OpenFromTheWebDialog extends JDialog implements ActionListener
 		{
 			DebugUtilities.logException( "An exception occurred while downloading the standard list of graphs.", ex );
 		}
-		
 	}
 }

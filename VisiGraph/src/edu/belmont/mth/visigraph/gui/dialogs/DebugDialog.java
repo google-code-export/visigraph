@@ -23,7 +23,6 @@ public class DebugDialog extends JDialog implements ActionListener
 	{
 		dialog = new DebugDialog( JOptionPane.getFrameForComponent( owner ) );
 		dialog.setVisible( true );
-		return;
 	}
 	
 	private DebugDialog( Frame owner )
