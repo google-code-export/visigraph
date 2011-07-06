@@ -25,7 +25,7 @@ public class AboutDialog extends JDialog implements ActionListener
 	
 	private AboutDialog( Frame owner )
 	{
-		super( owner, StringBundle.get( "about_dialog_title" ), true );
+		super( owner, String.format( StringBundle.get( "about_dialog_title" ), GlobalSettings.applicationName ), true );
 		this.setResizable( false );
 		
 		JPanel inputPanel = new JPanel( new GridBagLayout( ) )
