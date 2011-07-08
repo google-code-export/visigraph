@@ -21,7 +21,7 @@ public class GlobalSettings
 	public static final String		applicationGraphsFileUrl				= applicationGraphsDirectoryUrl + "%s.vsg";
 	public static final String		applicationJarDirectoryUrl				= "http://visigraph.googlecode.com/svn/trunk/VisiGraph/jar/";
 	public static final String		applicationName							= "VisiGraph";
-	public static final String		applicationVersion						= "2.00.10";
+	public static final String		applicationVersion						= "2.00.11";
 	public static final String		applicationWebsite						= "http://code.google.com/p/visigraph";
 	public static final double		defaultAreCloseDistance					= 0.01;
 	public static final double		defaultArrangeCircleRadiusMultiplier	= 10.0;
@@ -41,6 +41,7 @@ public class GlobalSettings
 	public static final String		defaultCaptionText						= "";
 	public static final Color		defaultCaptionTextColor					= Color.black;
 	public static final int			defaultCascadeWindowOffset				= 15;
+	public static final int			defaultDailyTipIndex					= -1;
 	public static final boolean		defaultDeselectVertexWithNewEdge		= true;
 	public static final double		defaultDirectedEdgeArrowRatio			= 4.0;
 	public static final Color		defaultDraggingEdgeLine					= Color.lightGray;
@@ -65,6 +66,7 @@ public class GlobalSettings
 	public static final int			defaultMainWindowWidth					= 1000;
 	public static final int			defaultScriptLibraryWindowHeight		= 700;
 	public static final int			defaultScriptLibraryWindowWidth			= 1000;
+	public static final boolean		defaultShowDailyTipsOnStartup			= true;
 	public static final double		defaultMaximumZoomFactor				= 100.0;
 	public static final int			defaultPaintToolMenuDelay				= 750;
 	public static final double		defaultPanDecelerationFactor			= -5.0;

@@ -3,7 +3,6 @@
  */
 package edu.belmont.mth.visigraph.gui.dialogs;
 
-import java.io.*;
 import java.awt.*;
 import java.text.*;
 import java.util.*;
@@ -13,7 +12,6 @@ import java.util.regex.*;
 import javax.swing.border.*;
 import edu.belmont.mth.visigraph.settings.*;
 import edu.belmont.mth.visigraph.resources.*;
-import edu.belmont.mth.visigraph.utilities.*;
 import edu.belmont.mth.visigraph.gui.controls.*;
 
 /**
@@ -242,7 +240,7 @@ public class PreferencesDialog extends JDialog implements ActionListener
 	}
 	
 	@Override
-    public void actionPerformed( ActionEvent e )
+	public void actionPerformed( ActionEvent e )
 	{
 		if( e.getActionCommand( ).equals( "Ok" ) )
 		{
@@ -1243,22 +1241,7 @@ public class PreferencesDialog extends JDialog implements ActionListener
 			if( component instanceof ColorPicker )
 				UserSettings.instance.elementColors.add( ( (ColorPicker) component ).getColor( ) );
 		
-		File userSettingsFile = new File( "UserSettings.json" );
-		
-		try
-		{
-			if( !userSettingsFile.exists( ) )
-				userSettingsFile.createNewFile( );
-			
-			FileWriter fileWriter = new FileWriter( userSettingsFile );
-			fileWriter.write( UserSettings.instance.toString( ) );
-			fileWriter.close( );
-		}
-		catch( IOException ex )
-		{
-			DebugUtilities.logException( "An exception occurred while saving preferences to file.", ex );
-			JOptionPane.showMessageDialog( null, String.format( StringBundle.get( "preferences_dialog_unable_to_save_error_message" ), userSettingsFile.getAbsolutePath( ) ), GlobalSettings.applicationName, JOptionPane.ERROR_MESSAGE );
-		}
+		UserSettings.instance.saveToFile( );
 	}
 	
 	public boolean validatePreferences( )
