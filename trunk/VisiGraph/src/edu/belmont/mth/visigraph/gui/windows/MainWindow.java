@@ -801,6 +801,9 @@ public class MainWindow extends JFrame
 		this.setJMenuBar( this.menuBar );
 		
 		this.setVisible( true );
+		
+		if( UserSettings.instance.showDailyTipsOnStartup.get( ) )
+			DailyTipDialog.showDialog( this );
 	}
 	
 	public GraphWindow addGraphWindow( Graph graph )
