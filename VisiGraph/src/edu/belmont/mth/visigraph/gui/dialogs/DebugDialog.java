@@ -70,11 +70,11 @@ public class DebugDialog extends JDialog implements ActionListener
 			}
 		} );
 		
-		final JButton okButton = new JButton( StringBundle.get( "ok_button_text" ) )
+		final JButton closeButton = new JButton( StringBundle.get( "close_button_text" ) )
 		{
 			{
 				this.setPreferredSize( new Dimension( 80, 28 ) );
-				this.setActionCommand( "Ok" );
+				this.setActionCommand( "Close" );
 				this.addActionListener( DebugDialog.this );
 				DebugDialog.this.getRootPane( ).setDefaultButton( this );
 			}
@@ -86,7 +86,7 @@ public class DebugDialog extends JDialog implements ActionListener
 				this.setLayout( new BoxLayout( this, BoxLayout.LINE_AXIS ) );
 				this.setBorder( BorderFactory.createEmptyBorder( -2, 9, 9, 13 ) );
 				this.add( Box.createHorizontalGlue( ) );
-				this.add( okButton );
+				this.add( closeButton );
 			}
 		};
 		
@@ -108,6 +108,7 @@ public class DebugDialog extends JDialog implements ActionListener
 	@Override
 	public void actionPerformed( ActionEvent e )
 	{
-		DebugDialog.dialog.setVisible( false );
+		if( e.getActionCommand( ).equals( "Close" ) )
+			DebugDialog.dialog.setVisible( false );
 	}
 }

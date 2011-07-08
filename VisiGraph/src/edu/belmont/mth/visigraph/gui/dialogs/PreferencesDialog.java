@@ -182,21 +182,15 @@ public class PreferencesDialog extends JDialog implements ActionListener
 		{
 			{
 				this.setMinimumSize( new Dimension( 120, 28 ) );
-				this.addActionListener( new ActionListener( )
-				{
-					@Override
-					public void actionPerformed( ActionEvent e )
-					{
-						PreferencesDialog.this.resetPreferences( );
-					}
-				} );
+				this.setActionCommand( "Reset" );
+				this.addActionListener( PreferencesDialog.this );
 			}
 		};
-		final JButton okButton = new JButton( StringBundle.get( "ok_button_text" ) )
+		final JButton applyButton = new JButton( StringBundle.get( "apply_button_text" ) )
 		{
 			{
 				this.setPreferredSize( new Dimension( 80, 28 ) );
-				this.setActionCommand( "Ok" );
+				this.setActionCommand( "Apply" );
 				this.addActionListener( PreferencesDialog.this );
 				PreferencesDialog.this.getRootPane( ).setDefaultButton( this );
 			}
@@ -205,6 +199,7 @@ public class PreferencesDialog extends JDialog implements ActionListener
 		{
 			{
 				this.setPreferredSize( new Dimension( 80, 28 ) );
+				this.setActionCommand( "Cancel" );
 				this.addActionListener( PreferencesDialog.this );
 			}
 		};
@@ -217,7 +212,7 @@ public class PreferencesDialog extends JDialog implements ActionListener
 				this.setBorder( BorderFactory.createEmptyBorder( -2, 9, 9, 13 ) );
 				this.add( resetButton );
 				this.add( Box.createHorizontalGlue( ) );
-				this.add( okButton );
+				this.add( applyButton );
 				this.add( Box.createRigidArea( new Dimension( 10, 0 ) ) );
 				this.add( cancelButton );
 			}
@@ -242,7 +237,7 @@ public class PreferencesDialog extends JDialog implements ActionListener
 	@Override
 	public void actionPerformed( ActionEvent e )
 	{
-		if( e.getActionCommand( ).equals( "Ok" ) )
+		if( e.getActionCommand( ).equals( "Apply" ) )
 		{
 			if( !this.validatePreferences( ) )
 				JOptionPane.showMessageDialog( this, StringBundle.get( "preferences_dialog_invalid_values_error_message" ), StringBundle.get( "preferences_dialog_invalid_values_error_title" ), JOptionPane.ERROR_MESSAGE );
@@ -253,7 +248,9 @@ public class PreferencesDialog extends JDialog implements ActionListener
 				PreferencesDialog.dialog.setVisible( false );
 			}
 		}
-		else
+		else if( e.getActionCommand( ).equals( "Reset" ) )
+			this.resetPreferences( );
+		else if( e.getActionCommand( ).equals( "Cancel" ) )
 			PreferencesDialog.dialog.setVisible( false );
 	}
 	

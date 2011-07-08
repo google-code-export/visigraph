@@ -23,7 +23,7 @@ import edu.belmont.mth.visigraph.gui.dialogs.DownloaderDialog.*;
 public class OpenFromTheWebDialog extends JDialog implements ActionListener
 {
 	private static JList				graphsList;
-	private static JButton				okButton;
+	private static JButton				downloadButton;
 	private static List<DownloadData>	value;
 	private static OpenFromTheWebDialog	dialog;
 	
@@ -50,7 +50,7 @@ public class OpenFromTheWebDialog extends JDialog implements ActionListener
 					@Override
 					public void valueChanged( ListSelectionEvent event )
 					{
-						okButton.setEnabled( true );
+						downloadButton.setEnabled( true );
 					}
 				} );
 				this.addMouseListener( new MouseAdapter( )
@@ -80,7 +80,7 @@ public class OpenFromTheWebDialog extends JDialog implements ActionListener
 		};
 		
 		// Create and initialize the buttons
-		okButton = new JButton( StringBundle.get( "download_button_text" ) )
+		downloadButton = new JButton( StringBundle.get( "download_button_text" ) )
 		{
 			{
 				this.setPreferredSize( new Dimension( 100, 28 ) );
@@ -105,7 +105,7 @@ public class OpenFromTheWebDialog extends JDialog implements ActionListener
 				this.setLayout( new BoxLayout( this, BoxLayout.LINE_AXIS ) );
 				this.setBorder( BorderFactory.createEmptyBorder( -2, 9, 9, 13 ) );
 				this.add( Box.createHorizontalGlue( ) );
-				this.add( okButton );
+				this.add( downloadButton );
 				this.add( Box.createRigidArea( new Dimension( 10, 0 ) ) );
 				this.add( cancelButton );
 			}

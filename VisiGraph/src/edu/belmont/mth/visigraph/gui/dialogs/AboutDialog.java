@@ -202,22 +202,16 @@ public class AboutDialog extends JDialog implements ActionListener
 		final JButton debugButton = new JButton( StringBundle.get( "debug_button_text" ) )
 		{
 			{
-				this.setPreferredSize( new Dimension( 80, 28 ) );
-				this.addActionListener( new ActionListener( )
-				{
-					@Override
-					public void actionPerformed( ActionEvent e )
-					{
-						DebugDialog.showDialog( AboutDialog.this.getOwner( ) );
-					}
-				} );
+				this.setPreferredSize( new Dimension( 90, 28 ) );
+				this.setActionCommand( "Debug" );
+				this.addActionListener( AboutDialog.this );
 			}
 		};
-		final JButton okButton = new JButton( StringBundle.get( "ok_button_text" ) )
+		final JButton closeButton = new JButton( StringBundle.get( "close_button_text" ) )
 		{
 			{
 				this.setPreferredSize( new Dimension( 80, 28 ) );
-				this.setActionCommand( "Ok" );
+				this.setActionCommand( "Close" );
 				this.addActionListener( AboutDialog.this );
 				AboutDialog.this.getRootPane( ).setDefaultButton( this );
 			}
@@ -231,7 +225,7 @@ public class AboutDialog extends JDialog implements ActionListener
 				this.setBorder( BorderFactory.createEmptyBorder( -2, 9, 9, 13 ) );
 				this.add( debugButton );
 				this.add( Box.createHorizontalGlue( ) );
-				this.add( okButton );
+				this.add( closeButton );
 			}
 		};
 		
@@ -253,6 +247,9 @@ public class AboutDialog extends JDialog implements ActionListener
 	@Override
 	public void actionPerformed( ActionEvent e )
 	{
-		AboutDialog.dialog.setVisible( false );
+		if( e.getActionCommand( ).equals( "Debug" ) )
+			DebugDialog.showDialog( AboutDialog.this.getOwner( ) );
+		else if( e.getActionCommand( ).equals( "Close" ) )
+			AboutDialog.dialog.setVisible( false );
 	}
 }

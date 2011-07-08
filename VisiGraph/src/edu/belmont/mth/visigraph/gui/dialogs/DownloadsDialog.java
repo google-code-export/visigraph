@@ -108,7 +108,7 @@ public class DownloadsDialog extends JDialog implements ActionListener
 		layout.setVerticalGroup( layout.createSequentialGroup( ).addGroup( layout.createParallelGroup( GroupLayout.Alignment.LEADING ).addComponent( generatorsLabel ) ).addGroup( layout.createParallelGroup( GroupLayout.Alignment.CENTER ).addComponent( generatorsScrollPane ) ).addGroup( layout.createParallelGroup( GroupLayout.Alignment.LEADING ).addComponent( functionsLabel ) ).addGroup( layout.createParallelGroup( GroupLayout.Alignment.CENTER ).addComponent( functionsScrollPane ) ) );
 		
 		// Create and initialize the buttons
-		final JButton okButton = new JButton( StringBundle.get( "download_button_text" ) )
+		final JButton downloadButton = new JButton( StringBundle.get( "download_button_text" ) )
 		{
 			{
 				this.setPreferredSize( new Dimension( 100, 28 ) );
@@ -132,7 +132,7 @@ public class DownloadsDialog extends JDialog implements ActionListener
 				this.setLayout( new BoxLayout( this, BoxLayout.LINE_AXIS ) );
 				this.setBorder( BorderFactory.createEmptyBorder( -2, 9, 9, 13 ) );
 				this.add( Box.createHorizontalGlue( ) );
-				this.add( okButton );
+				this.add( downloadButton );
 				this.add( Box.createRigidArea( new Dimension( 10, 0 ) ) );
 				this.add( cancelButton );
 			}
