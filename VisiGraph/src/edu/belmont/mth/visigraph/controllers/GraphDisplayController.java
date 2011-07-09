@@ -1613,7 +1613,7 @@ public class GraphDisplayController extends JPanel
 			@Override
 			public void lostOwnership( Clipboard c, Transferable t )
 			{
-				// Ignore?
+			// Ignore?
 			}
 		} );
 	}
@@ -1831,13 +1831,13 @@ public class GraphDisplayController extends JPanel
 			@Override
 			public void keyReleased( KeyEvent e )
 			{
-				// Do nothing
+			// Do nothing
 			}
 			
 			@Override
 			public void keyTyped( KeyEvent e )
 			{
-				// Do nothing
+			// Do nothing
 			}
 		} );
 		this.viewportPanel.add( this.viewport, BorderLayout.CENTER );
@@ -1871,6 +1871,7 @@ public class GraphDisplayController extends JPanel
 	
 	public void onSettingChanged( Object source )
 	{
+		this.setBackground( UserSettings.instance.graphBackground.get( ) );
 		this.isViewportInvalidated = true;
 		
 		if( this.toolToolBar != null )
