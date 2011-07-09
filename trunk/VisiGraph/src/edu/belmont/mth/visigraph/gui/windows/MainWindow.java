@@ -737,29 +737,7 @@ public class MainWindow extends JFrame
 					@Override
 					public void actionPerformed( ActionEvent e )
 					{
-						List<DownloadData> downloads = DownloadsDialog.showDialog( MainWindow.this );
-						
-						if( downloads != null && !downloads.isEmpty( ) )
-							try
-							{
-								DownloaderDialog.showDialog( MainWindow.this, downloads, new DownloadListener( )
-								{
-									@Override
-									public void downloaded( DownloadData download )
-									{
-										System.out.println( download.name );
-										if( download.destination.startsWith( "functions/" ) )
-											FunctionService.instance.loadScript( download.destination.substring( "functions/".length( ) ) );
-										else if( download.destination.startsWith( "generators/" ) )
-											GeneratorService.instance.loadScript( download.destination.substring( "generators/".length( ) ) );
-									}
-								} );
-							}
-							catch( Exception ex )
-							{
-								DebugUtilities.logException( "An exception occurred while downloading files.", ex );
-								JOptionPane.showMessageDialog( MainWindow.this, StringBundle.get( "an_exception_occurred_while_downloading_files_dialog_message" ), GlobalSettings.applicationName, JOptionPane.ERROR_MESSAGE );
-							}
+						MainWindow.this.showDownloadsDialog( );
 					}
 				} );
 			}
@@ -873,5 +851,32 @@ public class MainWindow extends JFrame
 		Graph newGraph = new Graph( sb.toString( ) );
 		if( newGraph != null )
 			this.addGraphWindow( newGraph ).setFile( file );
+	}
+	
+	public void showDownloadsDialog( )
+	{
+		List<DownloadData> downloads = DownloadsDialog.showDialog( MainWindow.this );
+		
+		if( downloads != null && !downloads.isEmpty( ) )
+			try
+			{
+				DownloaderDialog.showDialog( MainWindow.this, downloads, new DownloadListener( )
+				{
+					@Override
+					public void downloaded( DownloadData download )
+					{
+						System.out.println( download.name );
+						if( download.destination.startsWith( "functions/" ) )
+							FunctionService.instance.loadScript( download.destination.substring( "functions/".length( ) ) );
+						else if( download.destination.startsWith( "generators/" ) )
+							GeneratorService.instance.loadScript( download.destination.substring( "generators/".length( ) ) );
+					}
+				} );
+			}
+			catch( Exception ex )
+			{
+				DebugUtilities.logException( "An exception occurred while downloading files.", ex );
+				JOptionPane.showMessageDialog( MainWindow.this, StringBundle.get( "an_exception_occurred_while_downloading_files_dialog_message" ), GlobalSettings.applicationName, JOptionPane.ERROR_MESSAGE );
+			}
 	}
 }

@@ -22,6 +22,7 @@ import edu.belmont.mth.visigraph.utilities.*;
 import edu.belmont.mth.visigraph.resources.*;
 import edu.belmont.mth.visigraph.gui.dialogs.*;
 import edu.belmont.mth.visigraph.gui.layouts.*;
+import edu.belmont.mth.visigraph.gui.windows.*;
 import edu.belmont.mth.visigraph.views.display.*;
 import edu.belmont.mth.visigraph.models.functions.*;
 
@@ -560,6 +561,25 @@ public class GraphDisplayController extends JPanel
 							this.dynamicFunctionMenuItems.put( dynamicFunctionMenuItem, function );
 						}
 					}
+				
+				ActionListener downloadMoreMenuItemActionListener = new ActionListener( )
+				{
+					@Override
+					public void actionPerformed( ActionEvent e )
+					{
+						( (MainWindow) GraphDisplayController.this.getTopLevelAncestor( ) ).showDownloadsDialog( );
+					}
+				};
+				
+				this.oneTimeFunctionsMenu.addSeparator( );
+				JMenuItem downloadMoreMenuItem = new JMenuItem( StringBundle.get( "functions_menu_download_more_menu_text" ) );
+				this.oneTimeFunctionsMenu.add( downloadMoreMenuItem );
+				downloadMoreMenuItem.addActionListener( downloadMoreMenuItemActionListener );
+				
+				this.dynamicFunctionsMenu.addSeparator( );
+				downloadMoreMenuItem = new JMenuItem( StringBundle.get( "functions_menu_download_more_menu_text" ) );
+				this.dynamicFunctionsMenu.add( downloadMoreMenuItem );
+				downloadMoreMenuItem.addActionListener( downloadMoreMenuItemActionListener );
 			}
 		}
 		
