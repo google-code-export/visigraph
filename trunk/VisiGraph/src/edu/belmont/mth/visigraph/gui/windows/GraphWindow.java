@@ -32,7 +32,7 @@ public class GraphWindow extends JInternalFrame implements GraphChangeEventListe
 	{
 		super( "", true, true, true, true );
 		this.file = null;
-		this.setFrameIcon( ImageIconBundle.get( "app_icon_12x12" ) );
+		this.setFrameIcon( ImageIconBundle.get( "graph_window_icon_16x16" ) );
 		this.setSize( new Dimension( UserSettings.instance.graphWindowWidth.get( ), UserSettings.instance.graphWindowHeight.get( ) ) );
 		this.add( this.setGdc( new GraphDisplayController( g ) ) );
 		this.setDefaultCloseOperation( DO_NOTHING_ON_CLOSE );
@@ -40,7 +40,6 @@ public class GraphWindow extends JInternalFrame implements GraphChangeEventListe
 		this.hasLoaded = false;
 		this.addInternalFrameListener( new InternalFrameListener( )
 		{
-			
 			@Override
 			public void internalFrameActivated( InternalFrameEvent e )
 			{

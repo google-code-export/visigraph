@@ -21,7 +21,7 @@ public class GlobalSettings
 	public static final String		applicationGraphsFileUrl				= applicationGraphsDirectoryUrl + "%s.vsg";
 	public static final String		applicationJarDirectoryUrl				= "http://visigraph.googlecode.com/svn/trunk/VisiGraph/jar/";
 	public static final String		applicationName							= "VisiGraph";
-	public static final String		applicationVersion						= "2.00.16";
+	public static final String		applicationVersion						= "2.00.17";
 	public static final String		applicationWebsite						= "http://code.google.com/p/visigraph";
 	public static final double		defaultAreCloseDistance					= 0.01;
 	public static final double		defaultArrangeCircleRadiusMultiplier	= 10.0;
