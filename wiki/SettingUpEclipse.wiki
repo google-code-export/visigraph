@@ -1,0 +1,17 @@
+#summary How to set up a new VisiGraph source-control client in Eclipse
+#labels Type-Docs
+
+= Prerequisites =
+
+Before you can start working with the VisiGraph source code, you must first install the [http://www.eclipse.org/downloads/ Eclipse IDE for Java Developers] and [http://subclipse.tigris.org/servlets/ProjectProcess?pageID=p4wYuA Subclipse plugin], which will allow you to sync to the most current version of the source code and submit changes.
+
+= Steps =
+
+  # Start Eclipse and open the Java developer perspective, if not already open by default.
+  # Within the package explorer panel on the left, right-click and select _New_ > _Other..._ to open the new project dialog.
+  # Under the _SVN_ folder, select _Checkout Projects from SVN_ and click _Next_.
+  # Select _Create a new repository location_ if not already selected and click _Next_.
+  # Enter `https://visigraph.googlecode.com/svn` as the url and click _Next_.  If you do not use _https://_ you will not be able to commit changes to source-control.
+  # Select _VisiGraph_ under the _trunk_ folder and click _Finish_.
+  # Assuming you have done everything correctly, Eclipse should begin checking out the VisiGraph project from SVN and building a new VisiGraph project (client) on your local machine.  If—once it is done—Eclipse does not look exactly the same as below or you have red x's next to any of the files in the VisiGraph project folder in the package explorer your client is probably not configured correctly.
+  # Should you have any problems configuring a new VisiGraph client using the directions above feel free to email the project owner, [mailto:0x24a537r9@gmail.com Cameron Behar].
