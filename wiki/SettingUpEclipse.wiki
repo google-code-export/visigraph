@@ -5,6 +5,8 @@
 
 Before you can start working with the VisiGraph source code, you must first install the [http://www.eclipse.org/downloads/ Eclipse IDE for Java Developers] and [http://subclipse.tigris.org/servlets/ProjectProcess?pageID=p4wYuA Subclipse plugin], which will allow you to sync to the most current version of the source code and submit changes.
 
+_Note: although you may freely download and edit the VisiGraph source code on your local client, additional permissions and setup are required to commit changes to the main VisiGraph trunk.  To request write-access to the main trunk repository please email the project owner, [mailto:0x24a537r9@gmail.com Cameron Behar]._
+
 = Steps =
 
 1. Start Eclipse and open the Java developer perspective, if not already open by default.
