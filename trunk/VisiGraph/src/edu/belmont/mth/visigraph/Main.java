@@ -29,20 +29,21 @@ public class Main
 		}
 	}
 	
-	public static void main( final String[ ] args )
+	public static void main( String[ ] args )
 	{
 		initializeLookAndFeel( );
 		
+		final String[ ] filenames = args;
 		SwingUtilities.invokeLater( new Runnable( )
 		{
 			@Override
 			public void run( )
 			{
 				MainWindow window = new MainWindow( );
-				for( String arg : args )
+				for( String filename : filenames )
 					try
 					{
-						window.openFile( new File( arg ) );
+						window.openFile( new File( filename ) );
 					}
 					catch( IOException ex )
 					{
